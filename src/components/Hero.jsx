@@ -65,14 +65,6 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
             <span>Chat with Shankar AI</span>
             <span className="bg-stone-950 text-amber-300 text-xs px-2 py-0.5 rounded-full font-black border border-amber-400/40">ONLINE</span>
           </button>
-
-          <button
-            onClick={onOpenUpload}
-            className="px-5 py-3.5 rounded-xl bg-red-950/80 hover:bg-red-900 border border-red-700/50 text-red-100 font-semibold text-sm flex items-center gap-2 transition cursor-pointer"
-          >
-            <UploadCloud className="w-4 h-4 text-amber-300" />
-            <span>Upload School PDF</span>
-          </button>
         </div>
 
         {/* Feature Highlights Row */}

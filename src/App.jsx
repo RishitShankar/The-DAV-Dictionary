@@ -14,7 +14,7 @@ import { PdfReaderModal } from './components/PdfReaderModal';
 import { PricingModal } from './components/PricingModal';
 import { AuthModal } from './components/AuthModal';
 import { UploadPdfModal } from './components/UploadPdfModal';
-import { CloudDbModal } from './components/CloudDbModal';
+import { SectionOverview } from './components/SectionOverview';
 import { Award, Heart, Lock, Sparkles, ArrowRight } from 'lucide-react';
 
 export function App() {
@@ -40,7 +40,6 @@ export function App() {
   const [isAdminProgramOpen, setIsAdminProgramOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isPricingOpen, setIsPricingOpen] = useState(false);
-  const [isDbGuideOpen, setIsDbGuideOpen] = useState(false);
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [aiPrompt, setAiPrompt] = useState('');
   const [isPdfReaderOpen, setIsPdfReaderOpen] = useState(false);
@@ -160,6 +159,8 @@ export function App() {
       {/* Main Content Area */}
       <main className="flex-1">
         {activeSection === 1 ? (
+          <SectionOverview onSelectSection={(secId) => setActiveSection(secId)} />
+        ) : activeSection === 2 ? (
           <>
             <Hero
               onOpenAI={() => {
@@ -173,8 +174,15 @@ export function App() {
               onOpenPdfReader={handleOpenPdfReader}
               onOpenUploadModal={() => setIsUploadOpen(true)}
               onOpenAIWithQuestion={handleOpenAIWithQuestion}
+              uploadedPdfs={uploadedPdfs}
             />
           </>
+        ) : activeSection === 3 ? (
+          <UntitledSection 
+            sectionNumber={3} 
+            title="Section 3: Questions & Answers" 
+            description="Comprehensive chapter-by-chapter exercise solutions and DAV curriculum questions & answers. Currently reserved and ready for your development instructions!" 
+          />
         ) : activeSection === 9 ? (
           <StudentProfileSection user={user} />
         ) : activeSection === 10 ? (
@@ -204,7 +212,6 @@ export function App() {
         isOpen={isAdminProgramOpen}
         onClose={() => setIsAdminProgramOpen(false)}
         currentUser={user}
-        onOpenDbGuide={() => setIsDbGuideOpen(true)}
       />
 
       {/* Shankar AI Engine Component */}
@@ -236,18 +243,12 @@ export function App() {
         user={user}
         onLogin={(u) => setUser(u)}
         onLogout={handleLogout}
-        onOpenDbGuide={() => setIsDbGuideOpen(true)}
       />
 
       <UploadPdfModal
         isOpen={isUploadOpen}
         onClose={() => setIsUploadOpen(false)}
         onAddPdf={handleAddPdf}
-      />
-
-      <CloudDbModal
-        isOpen={isDbGuideOpen}
-        onClose={() => setIsDbGuideOpen(false)}
       />
 
       {/* Locked Feature Modal for Free Preview */}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   BookOpen, Layers, X, Sparkles, Shield, User, ChevronRight, 
-  PanelLeftClose, Award, CheckCircle2, KeyRound, LogOut, Crown, Lock 
+  PanelLeftClose, Award, CheckCircle2, KeyRound, LogOut, Crown, Lock, Compass, HelpCircle
 } from 'lucide-react';
 
 export function GeminiSidebar({ 
@@ -17,14 +17,14 @@ export function GeminiSidebar({
   const isGuest = user?.plan === 'guest';
 
   const sections = [
-    { id: 1, name: 'Section 1: Books (Class 1–8)', icon: BookOpen, status: 'Active (11 Subjects)' },
-    { id: 2, name: 'Section 2: Untitled', icon: Layers, status: 'Reserved' },
-    { id: 3, name: 'Section 3: Untitled', icon: Layers, status: 'Reserved' },
-    { id: 4, name: 'Section 4: Untitled', icon: Layers, status: 'Reserved' },
-    { id: 5, name: 'Section 5: Untitled', icon: Layers, status: 'Reserved' },
-    { id: 6, name: 'Section 6: Untitled', icon: Layers, status: 'Reserved' },
-    { id: 7, name: 'Section 7: Untitled', icon: Layers, status: 'Reserved' },
-    { id: 8, name: 'Section 8: Untitled', icon: Layers, status: 'Reserved' },
+    { id: 1, name: 'Section 1: Master Overview & Hub', icon: Compass, status: '10 Sections Hub' },
+    { id: 2, name: 'Section 2: Official DAV Textbooks (LKG–8)', icon: BookOpen, status: 'Digital Library' },
+    { id: 3, name: 'Section 3: Questions & Answers', icon: HelpCircle, status: 'Reserved' },
+    { id: 4, name: 'Section 4: Shankar AI Companion', icon: Sparkles, status: 'AI Tutor' },
+    { id: 5, name: 'Section 5: Interactive Quizzes', icon: Award, status: 'Self-Testing' },
+    { id: 6, name: 'Section 6: Academic Dictionary', icon: BookOpen, status: 'Vocabulary' },
+    { id: 7, name: 'Section 7: Syllabus & Blueprint', icon: Layers, status: 'Curriculum' },
+    { id: 8, name: 'Section 8: Notice Board & Circulars', icon: Layers, status: 'School Updates' },
     { id: 9, name: 'Section 9: Student Personal Profile', icon: User, status: 'Smart ID Vault' },
     { id: 10, name: 'Section 10: About Creator Rishit Shankar', icon: User, status: 'Head Boy Profile' },
   ];

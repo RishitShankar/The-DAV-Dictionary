@@ -4,7 +4,8 @@ import {
   BookOpen, Star, Crown, Code2, Terminal, Flame, TrendingUp, 
   Gamepad2, CheckCircle2, Target, Cpu, Layers, Copy, Check, 
   ExternalLink, ChevronRight, GraduationCap, Palette, Film, 
-  Compass, Share2, Quote, ArrowUpRight, PartyPopper
+  Compass, Share2, Quote, ArrowUpRight, PartyPopper, MessageCircle,
+  Phone, X, Send
 } from 'lucide-react';
 
 export function AboutCreatorSection() {
@@ -12,6 +13,26 @@ export function AboutCreatorSection() {
   const [copiedBio, setCopiedBio] = useState(false);
   const [isPartyActive, setIsPartyActive] = useState(false);
   const [partyPoppers, setPartyPoppers] = useState([]);
+  
+  // Right-side Social Chat & Contact Panel State
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [copiedPhone, setCopiedPhone] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
+
+  const myPhoneNumber = "+91 99342 00000";
+  const myEmailId = "rishitshankar@gmail.com";
+
+  const handleCopyPhone = () => {
+    navigator.clipboard.writeText(myPhoneNumber);
+    setCopiedPhone(true);
+    setTimeout(() => setCopiedPhone(false), 2000);
+  };
+
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText(myEmailId);
+    setCopiedEmail(true);
+    setTimeout(() => setCopiedEmail(false), 2000);
+  };
 
   const handleCopyBio = () => {
     const bioText = `Rishit Shankar (रीशीत शंकर) • Age 14 • Class 8 DAV Khabra Head Boy, Roll 25. Full-Stack Developer of The DAV Dictionary & Shankar AI. 95% in Class 8 Half-Yearly Exams. Gold Medal in Chess Cluster 3. Trader, Chess Competitor (1000+ Games), 3D Modeler (Blender), and Video Editor (DaVinci Resolve).`;
@@ -737,6 +758,192 @@ export function AboutCreatorSection() {
           <span>Launch Celebration Animation 🎉</span>
         </button>
       </div>
+
+      {/* Floating Chat With Developer Button on Bottom Right */}
+      <div className="fixed right-4 bottom-6 z-40">
+        <button
+          onClick={() => setIsChatOpen(!isChatOpen)}
+          className="px-5 py-3 rounded-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-stone-950 font-black text-xs sm:text-sm shadow-2xl shadow-emerald-500/40 hover:scale-105 transition-all flex items-center gap-2.5 cursor-pointer border-2 border-emerald-300"
+        >
+          <MessageCircle className="w-5 h-5 text-stone-950 animate-bounce" />
+          <span>Chat With Rishit (WhatsApp &amp; Socials)</span>
+          <span className="w-2.5 h-2.5 rounded-full bg-stone-950 animate-ping" />
+        </button>
+      </div>
+
+      {/* Right-Side Slide-Out Social Media & Contact Panel */}
+      {isChatOpen && (
+        <div className="fixed inset-0 z-50 overflow-hidden flex justify-end animate-fadeIn">
+          {/* Backdrop */}
+          <div 
+            onClick={() => setIsChatOpen(false)}
+            className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity"
+          />
+
+          {/* Drawer Panel */}
+          <div className="relative w-full max-w-md bg-stone-900 border-l border-stone-700 shadow-2xl flex flex-col h-full z-10 text-white animate-slideInRight">
+            
+            {/* Header */}
+            <div className="p-5 bg-gradient-to-r from-emerald-950 via-stone-900 to-emerald-950 border-b border-emerald-500/30 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black">
+                  <MessageCircle className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-sm sm:text-base text-white">Chat &amp; Connect With Rishit</h3>
+                  <p className="text-[11px] text-emerald-300/80">Head Boy &amp; Master Full-Stack Developer</p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setIsChatOpen(false)}
+                className="p-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-400 hover:text-white transition cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Content List */}
+            <div className="p-5 overflow-y-auto space-y-4 flex-1">
+              
+              {/* PRIMARY #1: WhatsApp Direct Chat */}
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-900/40 via-emerald-800/20 to-stone-900 border border-emerald-500/40 shadow-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2 text-emerald-400 font-black text-sm">
+                    <MessageCircle className="w-5 h-5" />
+                    <span>WhatsApp Instant Chat</span>
+                  </div>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 uppercase">
+                    Direct
+                  </span>
+                </div>
+                <p className="text-xs text-stone-300 mb-3">
+                  Click below to open WhatsApp on your phone or web browser and start chatting directly with Rishit Shankar.
+                </p>
+                <a
+                  href="https://wa.me/919934200000?text=Hi%20Rishit%2C%20I%20am%20a%20DAV%20student%20using%20The%20DAV%20Dictionary!"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-md"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>Open WhatsApp Chat Now</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
+
+              {/* DIRECT CONTACT #2: Phone & Email Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {/* Phone */}
+                <div className="p-3 rounded-xl bg-stone-800/80 border border-stone-700 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-1.5 text-amber-400 text-xs font-bold mb-1">
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>Phone Number</span>
+                    </div>
+                    <div className="text-[11px] font-mono text-white mb-2">{myPhoneNumber}</div>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <a
+                      href="tel:+919934200000"
+                      className="flex-1 py-1 px-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-stone-950 text-[10px] font-black text-center transition"
+                    >
+                      Call Now
+                    </a>
+                    <button
+                      onClick={handleCopyPhone}
+                      className="p-1 rounded-lg bg-stone-700 hover:bg-stone-600 text-stone-200 transition"
+                      title="Copy Phone Number"
+                    >
+                      {copiedPhone ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Email */}
+                <div className="p-3 rounded-xl bg-stone-800/80 border border-stone-700 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-1.5 text-rose-400 text-xs font-bold mb-1">
+                      <Mail className="w-3.5 h-3.5" />
+                      <span>Google Email</span>
+                    </div>
+                    <div className="text-[10px] font-mono text-white truncate mb-2" title={myEmailId}>{myEmailId}</div>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <a
+                      href="mailto:rishitshankar@gmail.com"
+                      className="flex-1 py-1 px-2 rounded-lg bg-rose-500 hover:bg-rose-400 text-white text-[10px] font-black text-center transition"
+                    >
+                      Send Email
+                    </a>
+                    <button
+                      onClick={handleCopyEmail}
+                      className="p-1 rounded-lg bg-stone-700 hover:bg-stone-600 text-stone-200 transition"
+                      title="Copy Email"
+                    >
+                      {copiedEmail ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* 8 OFFICIAL SOCIAL MEDIA PLATFORMS */}
+              <div>
+                <span className="text-[11px] font-bold text-stone-400 uppercase tracking-wider block mb-2">
+                  Official Social Channels (8 Platforms):
+                </span>
+
+                <div className="space-y-2">
+                  {[
+                    { name: 'Instagram', handle: '@rishitshankar_official', url: 'https://instagram.com/rishitshankar_official', color: 'from-pink-500 to-rose-600', badge: 'Photos & Updates' },
+                    { name: 'Facebook', handle: 'Rishit Shankar (DAV)', url: 'https://facebook.com/rishit.shankar', color: 'from-blue-600 to-indigo-700', badge: 'Community' },
+                    { name: 'LinkedIn', handle: 'Rishit Shankar', url: 'https://linkedin.com/in/rishit-shankar', color: 'from-cyan-600 to-blue-700', badge: 'Developer Network' },
+                    { name: 'Pinterest', handle: '@rishitshankar', url: 'https://pinterest.com/rishitshankar', color: 'from-red-600 to-rose-700', badge: '3D Art & Designs' },
+                    { name: 'X / Twitter', handle: '@rishit_shankar', url: 'https://x.com/rishit_shankar', color: 'from-stone-700 to-black', badge: 'Announcements' },
+                    { name: 'YouTube', handle: '@TheDAVDictionary', url: 'https://youtube.com/@TheDAVDictionary', color: 'from-red-500 to-red-700', badge: 'Tutorials & Videos' },
+                    { name: 'GitHub', handle: '@RishitShankar', url: 'https://github.com/RishitShankar', color: 'from-stone-800 to-stone-950', badge: 'Source Code' },
+                    { name: 'Telegram', handle: '@rishit_shankar', url: 'https://t.me/rishit_shankar', color: 'from-sky-500 to-blue-600', badge: 'Fast Messaging' }
+                  ].map((soc, idx) => (
+                    <a
+                      key={idx}
+                      href={soc.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2.5 rounded-xl bg-stone-800/60 hover:bg-stone-800 border border-stone-700 hover:border-amber-500/40 flex items-center justify-between gap-3 transition group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className={`w-7 h-7 rounded-lg bg-gradient-to-tr ${soc.color} text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm`}>
+                          {soc.name[0]}
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-white group-hover:text-amber-300 transition-colors">
+                            {soc.name}
+                          </div>
+                          <div className="text-[10px] text-stone-400 font-mono">{soc.handle}</div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-stone-900 text-stone-300 border border-stone-700">
+                          {soc.badge}
+                        </span>
+                        <ExternalLink className="w-3.5 h-3.5 text-stone-500 group-hover:text-white" />
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+
+            {/* Footer */}
+            <div className="p-3 bg-stone-950 border-t border-stone-800 text-center text-[10px] text-stone-400">
+              Official Head Boy Communication Desk • Rishit Shankar
+            </div>
+
+          </div>
+        </div>
+      )}
 
     </div>
   );

@@ -20,11 +20,24 @@ const ICON_MAP = {
 export function BookLibrary({ 
   onOpenPdfReader, 
   onOpenUploadModal,
-  onOpenAIWithQuestion
+  onOpenAIWithQuestion,
+  uploadedPdfs = []
 }) {
   const [selectedClass, setSelectedClass] = useState(8);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBookTab, setSelectedBookTab] = useState({});
+
+  const allUploaded = uploadedPdfs.length > 0 
+    ? uploadedPdfs 
+    : (() => {
+        try {
+          return JSON.parse(localStorage.getItem('dav_uploaded_pdfs') || '[]');
+        } catch (e) {
+          return [];
+        }
+      })();
+
+  const classUploadedPdfs = allUploaded.filter(p => String(p.classNum) === String(selectedClass));
 
   const subjects = DAV_SUBJECTS[selectedClass] || [];
 
@@ -48,7 +61,7 @@ export function BookLibrary({
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-red-800 uppercase tracking-wider mb-1">
             <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
-            Section 1: Books & Digital Library
+            Section 2: Official DAV Textbooks &amp; Digital Library
           </div>
           <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
             DAV Official Textbooks ({subjects.length} Subjects)
@@ -61,39 +74,81 @@ export function BookLibrary({
         {/* Upload Custom Book PDF Button */}
         <button
           onClick={onOpenUploadModal}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white hover:bg-slate-800 text-sm font-semibold shadow-sm transition"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white hover:bg-slate-800 text-sm font-semibold shadow-sm transition cursor-pointer"
         >
           <Upload className="w-4 h-4 text-amber-400" />
           <span>Upload School PDF</span>
         </button>
       </div>
 
-      {/* Class Selector Bar */}
+      {/* Class Selector Bar (No Active badge on any class) */}
       <div className="bg-slate-100/90 p-1.5 rounded-2xl flex flex-wrap gap-1.5 mb-8 border border-slate-200">
         {[8, 7, 6, 5, 4, 3, 2, 1, 'UKG', 'LKG'].map((cls) => {
           const isSelected = selectedClass === cls;
-          const isClass8 = cls === 8;
           const label = (cls === 'LKG' || cls === 'UKG') ? cls : `Class ${cls}`;
           return (
             <button
               key={cls}
               onClick={() => setSelectedClass(cls)}
-              className={`flex-1 min-w-[85px] py-2.5 px-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all text-center relative ${
+              className={`flex-1 min-w-[85px] py-2.5 px-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all text-center relative cursor-pointer ${
                 isSelected
                   ? 'bg-red-800 text-white shadow-md shadow-red-950/20 scale-[1.02]'
                   : 'text-slate-600 hover:text-slate-950 hover:bg-white/60'
               }`}
             >
               {label}
-              {isClass8 && (
-                <span className="absolute -top-1.5 -right-1 bg-amber-400 text-slate-950 text-[9px] font-black px-1.5 py-0.2 rounded-full uppercase shadow">
-                  Active
-                </span>
-              )}
             </button>
           );
         })}
       </div>
+
+      {/* Uploaded Custom School PDFs for this class */}
+      {classUploadedPdfs.length > 0 && (
+        <div className="mb-8 p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border border-amber-500/30">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Upload className="w-4 h-4 text-amber-600" />
+              <h3 className="text-sm font-bold text-slate-900">
+                Uploaded School Textbooks &amp; Materials ({classUploadedPdfs.length})
+              </h3>
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-800">
+              Custom Uploads
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {classUploadedPdfs.map((up) => (
+              <div key={up.id} className="p-3.5 rounded-xl bg-white border border-amber-200/80 shadow-xs flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5 overflow-hidden">
+                  <div className="w-8 h-8 rounded-lg bg-red-100 text-red-800 flex items-center justify-center shrink-0 font-bold text-xs">
+                    PDF
+                  </div>
+                  <div className="truncate">
+                    <div className="text-xs font-bold text-slate-800 truncate" title={up.name}>{up.name}</div>
+                    <div className="text-[10px] text-slate-500">{up.subject || 'School Material'} • {up.size || 'PDF'}</div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => onOpenPdfReader({
+                    title: up.name,
+                    subject: up.subject || 'School Subject',
+                    classNum: selectedClass,
+                    pdfUrl: up.data,
+                    fileData: up.data,
+                    summary: `Custom uploaded textbook material for Class ${selectedClass}.`
+                  })}
+                  className="px-3 py-1.5 rounded-lg bg-red-800 hover:bg-red-900 text-white text-[11px] font-bold flex items-center gap-1 shrink-0 transition cursor-pointer"
+                >
+                  <Eye className="w-3 h-3 text-amber-300" />
+                  <span>Read Book</span>
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Search Bar & Stats */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">

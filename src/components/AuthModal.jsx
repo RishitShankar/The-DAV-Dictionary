@@ -267,24 +267,6 @@ export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGu
                 <ArrowRight className="w-4 h-4" />
               </button>
             </form>
-
-            {/* Cloud Database helper notice */}
-            <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-              <span className="flex items-center gap-1">
-                <Database className="w-3.5 h-3.5 text-slate-400" />
-                Cloud Database Integration
-              </span>
-              <button
-                onClick={() => {
-                  onClose();
-                  onOpenDbGuide();
-                }}
-                className="text-red-700 font-bold hover:underline"
-              >
-                Learn How to Connect Supabase
-              </button>
-            </div>
-
           </div>
         )}
 

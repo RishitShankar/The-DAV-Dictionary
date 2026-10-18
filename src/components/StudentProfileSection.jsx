@@ -10,42 +10,71 @@ import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers'
 const PROFILE_STORAGE_KEY = 'dav_student_personal_profile';
 
 export function StudentProfileSection({ user }) {
-  // Initial default profile values
-  const defaultProfile = {
-    fullName: user?.name || 'Rishit Shankar',
-    studentId: user?.studentId || user?.id || 'DAV-2026-7788',
-    gender: 'Male',
-    classNum: user?.classNum || '8',
-    section: 'D',
-    rollNumber: '25',
-    admissionNumber: 'ADM-8921-DAV',
-    motherName: 'Mrs. S. Devi',
-    fatherName: 'Mr. A. Shankar',
-    residentialAddress: 'Khabra, Muzaffarpur, Bihar',
-    city: 'Muzaffarpur',
-    currentAmbition: 'Master Full-Stack Software Developer, Chess Champion & Sanskrit Scholar',
-    favoriteTeacher: 'Sanskrit & Science Teachers',
-    likes: 'Artificial intelligence coding, chess tournaments, Sanskrit literature, 3D modeling, astronomy',
-    dislikes: 'Superficial memorization, lack of discipline, cheating',
-    favoriteSubject: 'Social Science, Sanskrit & Science',
-    photoUrl: '/rishit_shankar.jpg',
-    tierPlan: user?.dimensionName || (user?.plan === 'vvip' ? 'VVIP Ultra Pass' : user?.plan === 'vip' ? 'VIP Pass' : user?.isAdmin ? 'Master Developer' : 'Normal Plan')
+  const currentUserId = user?.id || 'guest';
+  const isMasterRishit = currentUserId.toLowerCase() === 'rishibhai';
+  const storageKey = `dav_student_profile_${currentUserId.toLowerCase()}`;
+
+  const buildDefaultProfile = () => {
+    if (isMasterRishit) {
+      return {
+        fullName: 'Rishit Shankar',
+        studentId: 'rishibhai',
+        gender: 'Male',
+        classNum: '8',
+        section: 'D',
+        rollNumber: '25',
+        admissionNumber: 'ADM-8921-DAV',
+        motherName: 'Mrs. S. Devi',
+        fatherName: 'Mr. A. Shankar',
+        residentialAddress: 'Khabra, Muzaffarpur, Bihar',
+        city: 'Muzaffarpur',
+        currentAmbition: 'Master Full-Stack Software Developer, Chess Champion & Sanskrit Scholar',
+        favoriteTeacher: 'Sanskrit & Science Teachers',
+        likes: 'Artificial intelligence coding, chess tournaments, Sanskrit literature, 3D modeling, astronomy',
+        dislikes: 'Superficial memorization, lack of discipline, cheating',
+        favoriteSubject: 'Social Science, Sanskrit & Science',
+        photoUrl: '/rishit_shankar.jpg',
+        tierPlan: 'Dimension 4: Master Developer'
+      };
+    }
+
+    // Individual Student Account: Clean personalized template (no personal data of Rishit)
+    return {
+      fullName: user?.name || '',
+      studentId: user?.id || user?.studentId || 'DAV-STUDENT',
+      gender: 'Male',
+      classNum: String(user?.classNum || '8'),
+      section: user?.section || 'A',
+      rollNumber: '',
+      admissionNumber: user?.admissionNumber || `ADM-${user?.id || 'NEW'}`,
+      motherName: '',
+      fatherName: '',
+      residentialAddress: '',
+      city: '',
+      currentAmbition: '',
+      favoriteTeacher: '',
+      likes: '',
+      dislikes: '',
+      favoriteSubject: '',
+      photoUrl: '', // Ready for student's own photo
+      tierPlan: user?.dimensionName || (user?.plan === 'vvip' ? 'Dimension 3: VVIP Plan' : user?.plan === 'vip' ? 'Dimension 2: VIP Plan' : 'Dimension 1: Normal Plan')
+    };
   };
 
   const [profile, setProfile] = useState(() => {
     try {
-      const saved = localStorage.getItem(PROFILE_STORAGE_KEY);
+      const saved = localStorage.getItem(storageKey);
       if (saved) {
-        return { ...defaultProfile, ...JSON.parse(saved) };
+        return { ...buildDefaultProfile(), ...JSON.parse(saved) };
       }
     } catch (e) {
       console.warn('Failed to load profile from localStorage:', e);
     }
-    return defaultProfile;
+    return buildDefaultProfile();
   });
 
   const [savedSuccess, setSavedSuccess] = useState(false);
-  const [photoPreview, setPhotoPreview] = useState(profile.photoUrl || '/rishit_shankar.jpg');
+  const [photoPreview, setPhotoPreview] = useState(profile.photoUrl || (isMasterRishit ? '/rishit_shankar.jpg' : ''));
 
   // Password Change State
   const [newPasswordInput, setNewPasswordInput] = useState('');
@@ -88,23 +117,26 @@ export function StudentProfileSection({ user }) {
 
   // Sync when user prop changes
   useEffect(() => {
-    if (user) {
-      setProfile(prev => ({
-        ...prev,
-        fullName: prev.fullName || user.name,
-        studentId: prev.studentId || user.studentId || user.id,
-        classNum: prev.classNum || user.classNum || '8',
-        tierPlan: user.dimensionName || (user.plan === 'vvip' ? 'VVIP Ultra Pass' : user.plan === 'vip' ? 'VIP Pass' : user.isAdmin ? 'Master Developer' : 'Normal Plan')
-      }));
-    }
-  }, [user]);
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setProfile(parsed);
+        setPhotoPreview(parsed.photoUrl || '');
+      } else {
+        const def = buildDefaultProfile();
+        setProfile(def);
+        setPhotoPreview(def.photoUrl || '');
+      }
+    } catch (e) {}
+  }, [user?.id]);
 
   const handleChange = (field, value) => {
     setProfile(prev => {
       const updated = { ...prev, [field]: value };
       // Save continuously to localStorage for 100% persistence on refresh
       try {
-        localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(updated));
+        localStorage.setItem(storageKey, JSON.stringify(updated));
       } catch (err) {
         console.warn('Storage error:', err);
       }
@@ -128,11 +160,11 @@ export function StudentProfileSection({ user }) {
   const handleManualSave = (e) => {
     e.preventDefault();
     try {
-      localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+      localStorage.setItem(storageKey, JSON.stringify(profile));
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 2500);
     } catch (err) {
-      alert('Storage quota exceeded. Please choose a smaller photo.');
+      alert('Photo size is too large for browser storage. Please choose a smaller photo.');
     }
   };
 
@@ -255,15 +287,26 @@ export function StudentProfileSection({ user }) {
                 
                 {/* Photo Display */}
                 <div className="relative group shrink-0">
-                  <div className="w-24 h-28 rounded-2xl overflow-hidden border-2 border-stone-950 bg-stone-900 shadow-md">
-                    <img 
-                      src={photoPreview} 
-                      alt="Student" 
-                      className="w-full h-full object-cover object-top"
-                      onError={(e) => {
-                        e.target.src = '/rishit_shankar.jpg';
-                      }}
-                    />
+                  <div className="w-24 h-28 rounded-2xl overflow-hidden border-2 border-stone-950 bg-stone-900 shadow-md flex items-center justify-center">
+                    {photoPreview ? (
+                      <img 
+                        src={photoPreview} 
+                        alt="Student" 
+                        className="w-full h-full object-cover object-top"
+                        onError={(e) => {
+                          if (isMasterRishit) {
+                            e.target.src = '/rishit_shankar.jpg';
+                          } else {
+                            setPhotoPreview('');
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-stone-900/90 text-stone-400 p-2 text-center">
+                        <User className="w-8 h-8 text-amber-400/80 mb-1" />
+                        <span className="text-[9px] font-bold text-amber-200/90 leading-tight">Upload Photo</span>
+                      </div>
+                    )}
                   </div>
                   <label 
                     htmlFor="photoUploadInput"

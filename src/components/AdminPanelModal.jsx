@@ -258,17 +258,6 @@ _Welcome to The DAV Dictionary! Please keep your password safe._`;
           </div>
           
           <div className="flex items-center gap-2">
-            {onOpenDbGuide && (
-              <button
-                type="button"
-                onClick={onOpenDbGuide}
-                className="px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-400/50 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
-                title="Open Cloud Database & Storage Setup Guide"
-              >
-                <Database className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Cloud DB Guide</span>
-              </button>
-            )}
             <button
               onClick={onClose}
               className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
@@ -381,50 +370,139 @@ _Welcome to The DAV Dictionary! Please keep your password safe._`;
                   </div>
                 </div>
 
-                {/* Fee Amount & Plan Tier Selection (3 Tiers / Dimensions) */}
+                {/* Plan Tier Selection (Independent of Price) */}
                 <div>
                   <label className="block text-slate-300 font-semibold mb-1">
-                    Select Plan & Dimension
+                    Select Plan Tier &amp; Dimension
                   </label>
                   <div className="grid grid-cols-3 gap-2">
                     <button
                       type="button"
-                      onClick={() => handlePlanSelect('33', 'normal')}
-                      className={`py-2 px-2 rounded-lg border text-center transition-all cursor-pointer ${
+                      onClick={() => setPlanTier('normal')}
+                      className={`py-2 px-2 rounded-xl border text-center transition-all cursor-pointer ${
                         planTier === 'normal'
-                          ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300 font-bold'
-                          : 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800'
+                          ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300 font-bold shadow-md'
+                          : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800'
                       }`}
                     >
-                      <div className="text-sm font-black">₹33</div>
-                      <div className="text-[10px] opacity-80">Dim 1: Normal</div>
+                      <div className="text-xs font-black">Dimension 1</div>
+                      <div className="text-[10px] opacity-80">Normal Plan</div>
                     </button>
 
                     <button
                       type="button"
-                      onClick={() => handlePlanSelect('66', 'vip')}
-                      className={`py-2 px-2 rounded-lg border text-center transition-all cursor-pointer ${
+                      onClick={() => setPlanTier('vip')}
+                      className={`py-2 px-2 rounded-xl border text-center transition-all cursor-pointer ${
                         planTier === 'vip'
-                          ? 'bg-blue-500/20 border-blue-400 text-blue-300 font-bold'
-                          : 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800'
+                          ? 'bg-blue-500/20 border-blue-400 text-blue-300 font-bold shadow-md'
+                          : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800'
                       }`}
                     >
-                      <div className="text-sm font-black">₹66</div>
-                      <div className="text-[10px] opacity-80">Dim 2: VIP</div>
+                      <div className="text-xs font-black">Dimension 2</div>
+                      <div className="text-[10px] opacity-80">VIP Pass</div>
                     </button>
 
                     <button
                       type="button"
-                      onClick={() => handlePlanSelect('99', 'vvip')}
-                      className={`py-2 px-2 rounded-lg border text-center transition-all cursor-pointer ${
+                      onClick={() => setPlanTier('vvip')}
+                      className={`py-2 px-2 rounded-xl border text-center transition-all cursor-pointer ${
                         planTier === 'vvip'
-                          ? 'bg-purple-500/20 border-purple-400 text-purple-300 font-bold'
-                          : 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800'
+                          ? 'bg-purple-500/20 border-purple-400 text-purple-300 font-bold shadow-md'
+                          : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800'
                       }`}
                     >
-                      <div className="text-sm font-black">₹99</div>
-                      <div className="text-[10px] opacity-80">Dim 3: VVIP</div>
+                      <div className="text-xs font-black">Dimension 3</div>
+                      <div className="text-[10px] opacity-80">VVIP Ultra</div>
                     </button>
+                  </div>
+                </div>
+
+                {/* Animated Graphic Sliding Price Chart (₹0 to ₹1,00,000) */}
+                <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-700/80 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-slate-300 font-bold block text-xs">Custom Fee &amp; Donation Chart</span>
+                      <span className="text-[10px] text-slate-400">Drag slider or type any custom amount (₹0 to ₹1 Lakh)</span>
+                    </div>
+
+                    <div className="text-right">
+                      <div className="text-base sm:text-lg font-black text-amber-300 font-mono tracking-tight animate-pulse">
+                        ₹{Number(planAmount || 0).toLocaleString('en-IN')}
+                      </div>
+                      <div className="text-[9px] text-emerald-400 font-semibold uppercase tracking-wider">
+                        {Number(planAmount) === 0 ? 'Free Scholarship' : Number(planAmount) <= 99 ? 'Student Rate' : Number(planAmount) <= 1000 ? 'Supporter' : 'Patron Benefactor'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Animated Visual Fill Bar */}
+                  <div className="relative w-full h-3 bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-700">
+                    <div 
+                      className="h-full rounded-full bg-gradient-to-r from-emerald-500 via-amber-400 to-rose-500 transition-all duration-150 shadow-sm"
+                      style={{ width: `${Math.min(100, Math.max(1, (Number(planAmount || 0) / 100000) * 100))}%` }}
+                    />
+                  </div>
+
+                  {/* Interactive Slider Input */}
+                  <input
+                    type="range"
+                    min="0"
+                    max="100000"
+                    step="10"
+                    value={planAmount}
+                    onChange={(e) => setPlanAmount(e.target.value)}
+                    className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-400"
+                  />
+
+                  {/* Direct Number Input Box */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-400 font-bold">Custom Amount:</span>
+                    <div className="relative flex-1">
+                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-amber-400 font-bold text-xs">₹</span>
+                      <input
+                        type="number"
+                        min="0"
+                        max="100000"
+                        value={planAmount}
+                        onChange={(e) => setPlanAmount(e.target.value)}
+                        placeholder="e.g. 50, 1000, 5000"
+                        className="w-full bg-slate-950 border border-slate-700 rounded-lg pl-6 pr-2.5 py-1 text-white text-xs font-mono font-bold focus:outline-none focus:border-amber-400"
+                      />
+                    </div>
+                  </div>
+
+                  {/* 1-Click Bargain & Support Presets */}
+                  <div>
+                    <span className="text-[10px] font-bold text-slate-400 block mb-1.5 uppercase tracking-wider">
+                      Quick 1-Click Presets:
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        { label: '₹0 Free', val: '0' },
+                        { label: '₹33 Standard', val: '33' },
+                        { label: '₹50 Friend', val: '50' },
+                        { label: '₹66 VIP', val: '66' },
+                        { label: '₹99 VVIP', val: '99' },
+                        { label: '₹500 Generous', val: '500' },
+                        { label: '₹1,000 Supporter', val: '1000' },
+                        { label: '₹5,000 Patron', val: '5000' },
+                        { label: '₹50,000 Benefactor', val: '50000' },
+                        { label: '₹1 Lakh Max', val: '100000' }
+                      ].map(p => (
+                        <button
+                          key={p.val}
+                          type="button"
+                          onClick={() => setPlanAmount(p.val)}
+                          className={`px-2 py-0.5 rounded-md text-[10px] font-bold transition-all cursor-pointer ${
+                            planAmount === p.val
+                              ? 'bg-amber-400 text-stone-950 shadow-xs'
+                              : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700'
+                          }`}
+                        >
+                          {p.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
 

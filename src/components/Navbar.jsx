@@ -77,8 +77,18 @@ export function Navbar({
             <span className="px-3 py-1 rounded-lg bg-red-50 text-red-800 font-bold text-xs border border-red-200 flex items-center gap-1.5">
               {activeSection === 1 ? (
                 <>
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Section 1: Website Master Overview</span>
+                </>
+              ) : activeSection === 2 ? (
+                <>
                   <BookOpen className="w-3.5 h-3.5 text-red-700" />
-                  <span>Section 1: Books (11 Subjects)</span>
+                  <span>Section 2: Official Textbooks (LKG–8)</span>
+                </>
+              ) : activeSection === 3 ? (
+                <>
+                  <Layers className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Section 3: Questions & Answers (Reserved)</span>
                 </>
               ) : activeSection === 9 ? (
                 <>
