@@ -1,8 +1,9 @@
 import React from 'react';
 import { 
-  ArrowRight, Sparkles, School, CheckCircle2, ShieldCheck
+  BookOpen, Brain, Award, FileText, User, 
+  HelpCircle, Bell, Compass, ArrowRight, Sparkles, 
+  Layers, School
 } from 'lucide-react';
-import { sectionLogosMap, Section1Logo } from './SectionLogos';
 
 export function SectionOverview({ onSelectSection }) {
   const sectionsList = [
@@ -10,6 +11,7 @@ export function SectionOverview({ onSelectSection }) {
       id: 1,
       title: 'Section 1: Website Master Overview & Hub',
       shortTitle: 'Overview Hub',
+      icon: Compass,
       color: 'from-amber-500 to-orange-600',
       tag: 'Current Section',
       description: 'The master directory and architectural dashboard for all 10 academic dimensions of The DAV Dictionary. Get a quick summary of every tool and jump directly to any section with one click.'
@@ -18,14 +20,16 @@ export function SectionOverview({ onSelectSection }) {
       id: 2,
       title: 'Section 2: Official DAV Textbooks (LKG – Class 8)',
       shortTitle: 'Digital Library',
+      icon: BookOpen,
       color: 'from-red-600 to-rose-700',
       tag: '70 Full Textbooks',
-      description: 'Complete digital repository with uncompressed, verified textbooks for Classes 1 to 8, UKG, and LKG. Includes the built-in PDF Reader with 10-color neon highlighter, pen, undo/redo, and automatic chapter navigation.'
+      description: 'Complete digital repository with uncompressed, verified textbooks for Classes 1 to 8, UKG, and LKG. Includes the built-in PDF Reader with 10-color neon highlighter, pen, and automatic chapter teleportation.'
     },
     {
       id: 3,
       title: 'Section 3: Questions & Answers Bank',
       shortTitle: 'Q&A Repository',
+      icon: HelpCircle,
       color: 'from-blue-600 to-indigo-700',
       tag: 'Curriculum Solutions',
       description: 'Chapter-by-chapter solved exercise answers, textbook back-question solutions, and key exam revision notes curated specifically for DAV Board syllabi.'
@@ -34,7 +38,8 @@ export function SectionOverview({ onSelectSection }) {
       id: 4,
       title: 'Section 4: Shankar AI Academic Companion',
       shortTitle: 'Shankar AI Tutor',
-      color: 'from-cyan-600 to-blue-700',
+      icon: Brain,
+      color: 'from-orange-500 to-amber-600',
       tag: '24/7 AI Intelligence',
       description: 'Powered by Gemini AI and tuned specifically on DAV curriculum materials. Ask any academic doubt in Science, Mathematics, Hindi, English, Sanskrit, or Social Science.'
     },
@@ -42,7 +47,8 @@ export function SectionOverview({ onSelectSection }) {
       id: 5,
       title: 'Section 5: Interactive Chapter Quizzes',
       shortTitle: 'Self-Assessment',
-      color: 'from-amber-500 to-yellow-600',
+      icon: Award,
+      color: 'from-emerald-600 to-teal-700',
       tag: 'Instant Score & Feedback',
       description: 'Multiple-choice quizzes with automated grading, instant answer rationales, and performance scorecards to prepare thoroughly for school exams.'
     },
@@ -50,7 +56,8 @@ export function SectionOverview({ onSelectSection }) {
       id: 6,
       title: 'Section 6: The DAV Academic Dictionary',
       shortTitle: 'Word Dictionary',
-      color: 'from-purple-600 to-indigo-700',
+      icon: FileText,
+      color: 'from-purple-600 to-pink-600',
       tag: 'Vocabulary Engine',
       description: 'Search academic vocabulary with phonetic transcriptions, grammar classifications, definitions, and contextual sentences derived from DAV textbooks.'
     },
@@ -58,7 +65,8 @@ export function SectionOverview({ onSelectSection }) {
       id: 7,
       title: 'Section 7: DAV Syllabus & Curriculum Guides',
       shortTitle: 'Syllabus Blueprint',
-      color: 'from-sky-600 to-blue-700',
+      icon: Layers,
+      color: 'from-cyan-600 to-blue-600',
       tag: 'Examination Scheme',
       description: 'Chapter-wise mark weightage, examination blueprints, monthly split-up syllabus, and prescribed learning objectives across all subjects.'
     },
@@ -66,7 +74,8 @@ export function SectionOverview({ onSelectSection }) {
       id: 8,
       title: 'Section 8: Notice Board & School Announcements',
       shortTitle: 'Live Notice Board',
-      color: 'from-amber-600 to-orange-700',
+      icon: Bell,
+      color: 'from-yellow-600 to-amber-700',
       tag: 'Important Dates',
       description: 'Stay updated with examination schedules, project submission deadlines, holiday calendars, and academic circulars.'
     },
@@ -74,6 +83,7 @@ export function SectionOverview({ onSelectSection }) {
       id: 9,
       title: 'Section 9: Student Personal Profile',
       shortTitle: 'Student Profile',
+      icon: User,
       color: 'from-violet-600 to-purple-800',
       tag: 'Individual ID Vault',
       description: 'Each student manages their own personal profile, uploads their photo, specifies their parent details, roll number, hobbies, and saves securely with cloud persistence.'
@@ -82,9 +92,10 @@ export function SectionOverview({ onSelectSection }) {
       id: 10,
       title: 'Section 10: About Creator Rishit Shankar',
       shortTitle: 'Head Boy Story',
+      icon: Sparkles,
       color: 'from-amber-600 to-yellow-500',
       tag: 'Master Developer',
-      description: 'Meet Rishit Shankar (Head Boy, Class 8 DAV Khabra, 96% aggregate, 100/100 Sanskrit, Chess Gold Medalist). Contact directly via WhatsApp (+91 94700 33984), Call (+91 80922 61750), Snapchat (@rishitshankar), rishitshankar@gmail.com, and Instagram (@rishit_shankar).'
+      description: 'Meet Rishit Shankar (Head Boy, Class 8 DAV Khabra, 96% scorer, 100/100 in Sanskrit, Chess Gold Medalist). Contact directly via WhatsApp (+91 94700 33984), Call (+91 80922 61750), Snapchat (@rishitshankar), rishitshankar@gmail.com, LinkedIn, and Instagram (@rishit_shankar).'
     }
   ];
 
@@ -95,8 +106,8 @@ export function SectionOverview({ onSelectSection }) {
       <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-red-950 via-slate-900 to-stone-900 text-white border border-amber-500/30 shadow-2xl mb-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-stone-950 flex items-center justify-center font-black shadow-lg shrink-0 p-3">
-              <Section1Logo className="w-full h-full" />
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-stone-950 flex items-center justify-center font-black shadow-lg shrink-0">
+              <Compass className="w-9 h-9" />
             </div>
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[11px] font-bold mb-1 border border-amber-400/30">
@@ -117,6 +128,7 @@ export function SectionOverview({ onSelectSection }) {
               onClick={() => onSelectSection(2)}
               className="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 font-black text-xs shadow-lg flex items-center gap-2 cursor-pointer transition transform hover:-translate-y-0.5"
             >
+              <BookOpen className="w-4 h-4" />
               <span>Go to Section 2 (Textbooks) →</span>
             </button>
           </div>
@@ -126,7 +138,7 @@ export function SectionOverview({ onSelectSection }) {
       {/* 10 Sections Interactive Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {sectionsList.map((sec) => {
-          const SectionLogo = sectionLogosMap[sec.id];
+          const IconComp = sec.icon;
           const isCurrent = sec.id === 1;
 
           return (
@@ -142,8 +154,8 @@ export function SectionOverview({ onSelectSection }) {
                 {/* Header row */}
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-stone-950 border border-slate-700/60 p-2 flex items-center justify-center shadow-md shrink-0">
-                      {SectionLogo && <SectionLogo className="w-full h-full" />}
+                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${sec.color} text-white flex items-center justify-center shadow-md`}>
+                      <IconComp className="w-6 h-6" />
                     </div>
                     <div>
                       <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">

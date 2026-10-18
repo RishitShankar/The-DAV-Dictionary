@@ -1,9 +1,8 @@
 import React from 'react';
 import { 
-  X, Sparkles, User, ChevronRight, 
-  PanelLeftClose, CheckCircle2, LogOut, Lock, Award
+  BookOpen, Layers, X, Sparkles, User, ChevronRight, 
+  PanelLeftClose, Award, CheckCircle2, LogOut, Lock, Compass, HelpCircle
 } from 'lucide-react';
-import { sectionLogosMap } from './SectionLogos';
 
 export function GeminiSidebar({ 
   isOpen, 
@@ -18,16 +17,16 @@ export function GeminiSidebar({
   const isGuest = user?.plan === 'guest';
 
   const sections = [
-    { id: 1, name: 'Section 1: Master Overview & Hub', status: '10 Sections Hub' },
-    { id: 2, name: 'Section 2: Official DAV Textbooks (LKG–8)', status: 'Digital Library' },
-    { id: 3, name: 'Section 3: Questions & Answers', status: 'Q&A Solutions' },
-    { id: 4, name: 'Section 4: Shankar AI Companion', status: 'AI Tutor' },
-    { id: 5, name: 'Section 5: Interactive Quizzes', status: 'Self-Testing' },
-    { id: 6, name: 'Section 6: Academic Dictionary', status: 'Vocabulary' },
-    { id: 7, name: 'Section 7: Syllabus & Blueprint', status: 'Curriculum' },
-    { id: 8, name: 'Section 8: Notice Board & Circulars', status: 'School Updates' },
-    { id: 9, name: 'Section 9: Student Personal Profile', status: 'Smart ID Vault' },
-    { id: 10, name: 'Section 10: About Creator Rishit Shankar', status: 'Head Boy Profile' },
+    { id: 1, name: 'Section 1: Master Overview & Hub', icon: Compass, status: '10 Sections Hub' },
+    { id: 2, name: 'Section 2: Official DAV Textbooks (LKG–8)', icon: BookOpen, status: 'Digital Library' },
+    { id: 3, name: 'Section 3: Questions & Answers', icon: HelpCircle, status: 'Reserved' },
+    { id: 4, name: 'Section 4: Shankar AI Companion', icon: Sparkles, status: 'AI Tutor' },
+    { id: 5, name: 'Section 5: Interactive Quizzes', icon: Award, status: 'Self-Testing' },
+    { id: 6, name: 'Section 6: Academic Dictionary', icon: BookOpen, status: 'Vocabulary' },
+    { id: 7, name: 'Section 7: Syllabus & Blueprint', icon: Layers, status: 'Curriculum' },
+    { id: 8, name: 'Section 8: Notice Board & Circulars', icon: Layers, status: 'School Updates' },
+    { id: 9, name: 'Section 9: Student Personal Profile', icon: User, status: 'Smart ID Vault' },
+    { id: 10, name: 'Section 10: About Creator Rishit Shankar', icon: User, status: 'Head Boy Profile' },
   ];
 
   return (
@@ -92,7 +91,7 @@ export function GeminiSidebar({
           {sections.map((sec) => {
             const isActive = activeSection === sec.id;
             const isSpecialCreator = sec.id === 10;
-            const SectionLogo = sectionLogosMap[sec.id];
+            const IconComp = sec.icon;
 
             return (
               <button
@@ -110,15 +109,7 @@ export function GeminiSidebar({
                 }`}
               >
                 <div className="flex items-center gap-3 truncate">
-                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 p-1 transition-transform group-hover:scale-110 ${
-                    isActive 
-                      ? 'bg-red-950/80 border border-amber-400/50 shadow-xs' 
-                      : isSpecialCreator 
-                      ? 'bg-amber-900/40 border border-amber-500/40' 
-                      : 'bg-slate-800/80 border border-slate-700/60'
-                  }`}>
-                    {SectionLogo && <SectionLogo className="w-full h-full" />}
-                  </div>
+                  <IconComp className={`w-4 h-4 shrink-0 ${isActive ? 'text-amber-300' : isSpecialCreator ? 'text-amber-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
                   <div className="truncate">
                     <div className="text-xs truncate font-medium">{sec.name}</div>
                     <div className="text-[10px] opacity-70">{sec.status}</div>
