@@ -15,6 +15,7 @@ import { PricingModal } from './components/PricingModal';
 import { AuthModal } from './components/AuthModal';
 import { UploadPdfModal } from './components/UploadPdfModal';
 import { SectionOverview } from './components/SectionOverview';
+import { QuestionsAnswersSection } from './components/QuestionsAnswersSection';
 import { DonationSection } from './components/DonationSection';
 import { PurpleFooter } from './components/PurpleFooter';
 import { Award, Heart, Lock, Sparkles, ArrowRight } from 'lucide-react';
@@ -185,10 +186,10 @@ export function App() {
             />
           </>
         ) : activeSection === 3 ? (
-          <UntitledSection 
-            sectionNumber={3} 
-            title="Section 3: Questions & Answers" 
-            description="Comprehensive chapter-by-chapter exercise solutions and DAV curriculum questions & answers. Currently reserved and ready for your development instructions!" 
+          <QuestionsAnswersSection 
+            currentUser={user} 
+            onOpenUpgradeModal={() => setIsPricingOpen(true)}
+            onOpenAIWithQuestion={handleOpenAIWithQuestion}
           />
         ) : activeSection === 8 ? (
           <DonationSection currentUser={user} />
