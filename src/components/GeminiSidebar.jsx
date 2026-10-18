@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   X, Sparkles, User, ChevronRight, 
-  PanelLeftClose, CheckCircle2, LogOut, Lock
+  PanelLeftClose, CheckCircle2, LogOut, Lock, Award
 } from 'lucide-react';
 import { sectionLogosMap } from './SectionLogos';
 
