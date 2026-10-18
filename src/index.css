@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+}
+
+.dav-gradient {
+  background: linear-gradient(135deg, #800000 0%, #4a0000 50%, #0f172a 100%);
+}
+
+.dav-gold-gradient {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Authentic chalk typography and borders on the blackboard */
+.chalk-text {
+  color: rgba(248, 250, 252, 0.94);
+  text-shadow:
+    0 0 2px rgba(255, 255, 255, 0.35),
+    1px 1px 0px rgba(0, 0, 0, 0.45);
+  letter-spacing: 0.03em;
+}
+
+.chalk-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed rgba(248, 250, 252, 0.65);
+  color: #f8fafc;
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.chalk-input::placeholder {
+  color: rgba(226, 232, 240, 0.48);
+}
+
+.chalk-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(254, 240, 138, 0.95);
+  box-shadow: 0 0 10px rgba(254, 240, 138, 0.2);
+}
+
+.chalk-btn {
+  background: rgba(248, 250, 252, 0.14);
+  border: 2px solid rgba(248, 250, 252, 0.85);
+  color: #f8fafc;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 3px 0 rgba(248, 250, 252, 0.35);
+  transition: all 0.15s ease;
+}
+
+.chalk-btn:hover {
+  background: rgba(254, 240, 138, 0.22);
+  border-color: #fef08a;
+  color: #fef08a;
+  transform: translateY(-1px);
+}
+
+.chalk-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 rgba(248, 250, 252, 0.35);
+}
+
+/* Exact blackboard inner slate bounds matching the 1024x572 desk image */
+.blackboard-overlay {
+  position: absolute;
+  top: 22.2%;
+  bottom: 24.2%;
+  left: 24.4%;
+  right: 24.4%;
+}
+
+/* Celebration Party Popper Screen Shake */
+@keyframes screenShake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-8px, -6px) rotate(-0.8deg); }
+  20% { transform: translate(7px, 8px) rotate(0.8deg); }
+  30% { transform: translate(-9px, 4px) rotate(-0.6deg); }
+  40% { transform: translate(8px, -4px) rotate(0.6deg); }
+  50% { transform: translate(-6px, 7px) rotate(-0.3deg); }
+  60% { transform: translate(6px, 3px) rotate(0.4deg); }
+  70% { transform: translate(-4px, -6px) rotate(-0.2deg); }
+  80% { transform: translate(5px, 4px) rotate(0.2deg); }
+  90% { transform: translate(-2px, 1px) rotate(-0.1deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.animate-screenShake {
+  animation: screenShake 0.7s cubic-bezier(.36,.07,.19,.97) both;
+}
+
