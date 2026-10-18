@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { PublicHomepage } from './components/PublicHomepage';
 import { BlackboardLogin } from './components/BlackboardLogin';
 import { AdminPanelModal } from './components/AdminPanelModal';
 import { Navbar } from './components/Navbar';
@@ -20,7 +21,8 @@ export function App() {
   const [activeSection, setActiveSection] = useState(1);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
-  // Gatekeeper: Always starts as null so Blackboard Login Portal is the first screen seen on opening
+  // View mode: 'home' (Public Homepage) | 'login' (Blackboard Login Gatekeeper) | 'app' (Main Portal)
+  const [viewMode, setViewMode] = useState('home');
   const [user, setUser] = useState(null);
 
   const [uploadedPdfs, setUploadedPdfs] = useState(() => {
@@ -60,10 +62,12 @@ export function App() {
 
   const handleLoginSuccess = (loggedInUser) => {
     setUser(loggedInUser);
+    setViewMode('app');
   };
 
   const handleLogout = () => {
     setUser(null);
+    setViewMode('home');
     localStorage.removeItem('dav_user');
   };
 
@@ -93,9 +97,21 @@ export function App() {
     setUser(prev => prev ? { ...prev, plan: planId } : null);
   };
 
-  // If no user is logged in, show the authentic Blackboard Login Gatekeeper
+  // Entry Routing: Show Public Homepage first, then Blackboard on Register/Login
   if (!user) {
-    return <BlackboardLogin onLoginSuccess={handleLoginSuccess} />;
+    if (viewMode === 'login') {
+      return (
+        <BlackboardLogin 
+          onLoginSuccess={handleLoginSuccess} 
+          onBackToHome={() => setViewMode('home')} 
+        />
+      );
+    }
+    return (
+      <PublicHomepage 
+        onGoToLogin={() => setViewMode('login')} 
+      />
+    );
   }
 
   const isGuest = user.plan === 'guest';

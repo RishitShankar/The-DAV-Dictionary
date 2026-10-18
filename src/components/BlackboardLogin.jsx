@@ -3,7 +3,7 @@ import { Shield, Sparkles, Check, Key, UserCheck, Eye, EyeOff, Lock, Crown, Awar
 import { PRELOADED_DATABASE_USERS, getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
 import { fetchCloudStudents } from '../services/supabaseClient';
 
-export function BlackboardLogin({ onLoginSuccess }) {
+export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [showId, setShowId] = useState(false);
@@ -163,9 +163,19 @@ export function BlackboardLogin({ onLoginSuccess }) {
           </div>
         </div>
 
-        <div className="text-right hidden sm:block">
-          <div className="text-xs font-mono text-slate-300">4 Dimensions • Class 1–8</div>
-          <div className="text-[10px] text-emerald-400 font-semibold">● Portal Database Online</div>
+        <div className="flex items-center gap-3">
+          {onBackToHome && (
+            <button
+              onClick={onBackToHome}
+              className="py-1.5 px-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer border border-white/15 shadow-sm"
+            >
+              <span>← Back to Homepage</span>
+            </button>
+          )}
+          <div className="text-right hidden sm:block">
+            <div className="text-xs font-mono text-slate-300">4 Dimensions • Class 1–8</div>
+            <div className="text-[10px] text-emerald-400 font-semibold">● Portal Database Online</div>
+          </div>
         </div>
       </div>
 
