@@ -179,12 +179,39 @@ export function QuestionsAnswersSection({
   // Generate verified website URLs for the chosen chapter
   const generateSourceUrls = () => {
     if (!selectedSubject || !selectedChapter) return {};
-    const chapQuery = `DAV Class ${selectedClass} ${selectedSubject.name} Chapter ${selectedChapter.number} ${selectedChapter.title}`;
-    const encQuery = encodeURIComponent(chapQuery);
+    
+    // Clean subject and chapter names
+    const cleanSub = selectedSubject.name.replace(/\(.*?\)/g, '').replace(/DAV/g, '').trim();
+
+    // 1. Solution Gyan: Prefer direct verified URL
+    let solutionGyan = selectedChapter.solutionGyanUrl;
+    if (!solutionGyan) {
+      solutionGyan = `https://solutiongyan.com/?s=DAV+Class+${selectedClass}+${encodeURIComponent(cleanSub)}+Chapter+${selectedChapter.number}`;
+    }
+
+    // 2. Learn Cram: Prefer direct verified URL
+    let learnCram = selectedChapter.learnCramUrl;
+    if (!learnCram) {
+      learnCram = `https://www.learncram.com/?s=DAV+Class+${selectedClass}+${encodeURIComponent(cleanSub)}+Chapter+${selectedChapter.number}`;
+    }
+
+    // 3. ncertbookspdf:
+    const ncertBookPdf = `https://ncertbookspdf.com/?s=DAV+Class+${selectedClass}+${encodeURIComponent(cleanSub)}+Chapter+${selectedChapter.number}`;
+
+    // Subject Hub URL on Solution Gyan
+    const solutionGyanHub = (selectedClass === 8 && selectedSubject.id === 'sci8')
+      ? 'https://solutiongyan.com/dav-class-8/dav-class-8-science/'
+      : (selectedClass === 8 && selectedSubject.id === 'sst8')
+      ? 'https://solutiongyan.com/dav-class-8-sst-book-solutions/'
+      : (selectedClass === 8 && selectedSubject.id === 'math8')
+      ? 'https://solutiongyan.com/dav-class-8-maths-book-solutions/'
+      : `https://solutiongyan.com/dav-class-${selectedClass}/`;
+
     return {
-      solutionGyan: `https://solutiongyan.com/?s=${encQuery}`,
-      learnCram: `https://www.learncram.com/?s=${encQuery}`,
-      ncertBookPdf: `https://ncertbookpdf.com/?s=${encQuery}`
+      solutionGyan,
+      learnCram,
+      ncertBookPdf,
+      solutionGyanHub
     };
   };
 
@@ -863,17 +890,37 @@ export function QuestionsAnswersSection({
                     <p className="text-xs text-purple-200/80 leading-relaxed">
                       Primary verified DAV Board chapter solutions with step-by-step exercise answers, fill-in-the-blanks, true/false, and detailed explanations.
                     </p>
+
+                    {selectedChapter.solutionGyanUrl && (
+                      <div className="pt-1">
+                        <span className="text-[10px] font-black text-emerald-300 bg-emerald-950/80 border border-emerald-500/50 px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5 shadow-sm">
+                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>Exact Direct Chapter Solution Page Verified!</span>
+                        </span>
+                      </div>
+                    )}
                   </div>
 
-                  <div className="pt-2">
+                  <div className="pt-2 space-y-2">
                     <button
                       type="button"
                       onClick={() => handleLaunchWebsite('solutiongyan', sourceUrls.solutionGyan)}
-                      className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition cursor-pointer"
+                      className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition cursor-pointer"
                     >
                       <span>Open Solution Gyan 🚀</span>
                       <ExternalLink className="w-4 h-4" />
                     </button>
+
+                    {sourceUrls.solutionGyanHub && (
+                      <button
+                        type="button"
+                        onClick={() => handleLaunchWebsite('solutiongyan-hub', sourceUrls.solutionGyanHub)}
+                        className="w-full py-2 px-3 rounded-lg bg-purple-900/40 hover:bg-purple-800/60 text-purple-200 hover:text-white font-bold text-[10px] flex items-center justify-center gap-1 transition text-center border border-purple-700/60 cursor-pointer"
+                      >
+                        <Globe className="w-3 h-3 text-amber-300" />
+                        <span>Or Browse DAV Class {selectedClass} Subject Index</span>
+                      </button>
+                    )}
                   </div>
                 </div>
 

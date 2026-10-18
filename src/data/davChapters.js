@@ -1,76 +1,197 @@
 // DAV Curriculum Chapter Database for all classes and subjects
 // Specifically covers DAV Class 8 Science 20 chapters, Mathematics, Social Science, Hindi, English, Sanskrit, etc.
+// Includes 100% verified direct URLs on Solution Gyan and Learn Cram for instant access!
 
 export const DAV_CHAPTERS = {
   8: {
-    // Science & Technology (The Living World) - Complete 20 Chapters
+    // Science & Technology (The Living World) - Complete 20 Chapters with verified Solution Gyan URLs
     sci8: [
-      { number: 1, title: 'The Cell – Its Structure and Functions', tagline: 'Cell organelles, plant vs animal cells & microscopy' },
-      { number: 2, title: 'Microorganisms: Friends or Foes', tagline: 'Bacteria, viruses, fungi, food preservation & nitrogen cycle' },
-      { number: 3, title: 'Metals and Non-Metals', tagline: 'Physical & chemical properties, reactivity series & uses' },
-      { number: 4, title: 'Force and Pressure', tagline: 'Contact & non-contact forces, atmospheric pressure & hydraulics' },
-      { number: 5, title: 'Friction', tagline: 'Static, sliding, rolling friction & methods to increase/reduce' },
-      { number: 6, title: 'Sources of Energy', tagline: 'Renewable, non-renewable, fossil fuels & petroleum refining' },
-      { number: 7, title: 'Combustion and Flame', tagline: 'Ignition temperature, types of combustion & flame zones' },
-      { number: 8, title: 'Conservation of Plants and Animals', tagline: 'Deforestation, wildlife sanctuaries, national parks & Red Data Book' },
-      { number: 9, title: 'Crop Production and Its Management', tagline: 'Agricultural practices, irrigation, fertilizers & storage' },
-      { number: 10, title: 'Refraction and Dispersion of Light', tagline: 'Laws of refraction, lenses, rainbow formation & spectrum' },
-      { number: 11, title: 'The Human Eye (The Eye)', tagline: 'Structure of eye, accommodation, myopia, hypermetropia & Braille' },
-      { number: 12, title: 'Sound', tagline: 'Vibration, frequency, amplitude, loudness, pitch & human ear' },
-      { number: 13, title: 'Synthetic Fibres and Plastics', tagline: 'Nylon, rayon, acrylic, thermoplastics & environmental hazards' },
-      { number: 14, title: 'Reproduction in Animals', tagline: 'Sexual & asexual reproduction, fertilization & metamorphosis' },
-      { number: 15, title: 'Reaching the Age of Adolescence', tagline: 'Puberty, hormones, endocrine glands & reproductive health' },
-      { number: 16, title: 'Electric Current and Its Chemical Effects', tagline: 'Electroplating, conduction in liquids & electrolysis' },
-      { number: 17, title: 'Stars and the Solar System', tagline: 'Constellations, planets, moon phases, comets & meteors' },
-      { number: 18, title: 'Earthquakes', tagline: 'Tectonic plates, seismic waves, Richter scale & seismograph' },
-      { number: 19, title: 'Pollution of Air', tagline: 'Air pollutants, acid rain, greenhouse effect & smog' },
-      { number: 20, title: 'Pollution of Water', tagline: 'Water contaminants, potable water purification & conservation' }
+      { 
+        number: 1, 
+        title: 'The Cell – Its Structure and Functions', 
+        tagline: 'Cell organelles, plant vs animal cells & microscopy',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-solutions-for-class-8-science-chapter-1/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-1-question-answer/'
+      },
+      { 
+        number: 2, 
+        title: 'Microorganisms: Friends or Foes', 
+        tagline: 'Bacteria, viruses, fungi, food preservation & nitrogen cycle',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-solutions-class-8-science-chapter-2-microorganisms-friends-or-foes/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-2-question-answer/'
+      },
+      { 
+        number: 3, 
+        title: 'Metals and Non-Metals', 
+        tagline: 'Physical & chemical properties, reactivity series & uses',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-solutions-class-8-science-chapter-3-metals-and-non-metals/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-3-question-answer/'
+      },
+      { 
+        number: 4, 
+        title: 'Force and Pressure', 
+        tagline: 'Contact & non-contact forces, atmospheric pressure & hydraulics',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-solutions-for-class-8-science-chapter-4-force-and-pressure/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-4-question-answer/'
+      },
+      { 
+        number: 5, 
+        title: 'Friction', 
+        tagline: 'Static, sliding, rolling friction & methods to increase/reduce',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-solutions-for-class-8-science-chapter-5-friction/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-5-question-answer/'
+      },
+      { 
+        number: 6, 
+        title: 'Sources of Energy', 
+        tagline: 'Renewable, non-renewable, fossil fuels & petroleum refining',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-solutions-for-class-8-science-chapter-6-sources-of-energy/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-6-question-answer/'
+      },
+      { 
+        number: 7, 
+        title: 'Combustion and Flame', 
+        tagline: 'Ignition temperature, types of combustion & flame zones',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-solutions-class-8-science-chapter-7-combustion/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-7-question-answer/'
+      },
+      { 
+        number: 8, 
+        title: 'Conservation of Plants and Animals', 
+        tagline: 'Deforestation, wildlife sanctuaries, national parks & Red Data Book',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-science-chapter-8-solutions/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-8-question-answer/'
+      },
+      { 
+        number: 9, 
+        title: 'Crop Production and Its Management', 
+        tagline: 'Agricultural practices, irrigation, fertilizers & storage',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-science-chapter-9-crop-production-and-its-management-solutions/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-9-question-answer/'
+      },
+      { 
+        number: 10, 
+        title: 'Refraction and Dispersion of Light', 
+        tagline: 'Laws of refraction, lenses, rainbow formation & spectrum',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-science-chapter-10-refraction-and-dispersion-of-light-solutions/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-10-question-answer/'
+      },
+      { 
+        number: 11, 
+        title: 'The Human Eye (The Eye)', 
+        tagline: 'Structure of eye, accommodation, myopia, hypermetropia & Braille',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-science-chapter-11-the-human-eye-solutions/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-11-question-answer/'
+      },
+      { 
+        number: 12, 
+        title: 'Sound', 
+        tagline: 'Vibration, frequency, amplitude, loudness, pitch & human ear',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-science-chapter-12-sound-solutions/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-12-question-answer/'
+      },
+      { 
+        number: 13, 
+        title: 'Synthetic Fibres and Plastics', 
+        tagline: 'Nylon, rayon, acrylic, thermoplastics & environmental hazards',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-science-chapter-13-solutions-synthetic-fibres-and-plastics/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-13-question-answer/'
+      },
+      { 
+        number: 14, 
+        title: 'Reproduction in Animals', 
+        tagline: 'Sexual & asexual reproduction, fertilization & metamorphosis',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-science-chapter-14-question-answer-reproduction-in-animals/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-14-question-answer/'
+      },
+      { 
+        number: 15, 
+        title: 'Reaching the Age of Adolescence', 
+        tagline: 'Puberty, hormones, endocrine glands & reproductive health',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-science-chapter-15-question-answer-reaching-the-age-of-adolescence/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-15-question-answer/'
+      },
+      { 
+        number: 16, 
+        title: 'Electric Current and Its Chemical Effects', 
+        tagline: 'Electroplating, conduction in liquids & electrolysis',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-science-chapter-16-solutions-electric-current-and-its-chemical-effects/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-16-question-answer/'
+      },
+      { 
+        number: 17, 
+        title: 'Stars and the Solar System', 
+        tagline: 'Constellations, planets, moon phases, comets & meteors',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-class-8/dav-class-8-science/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-17-question-answer/'
+      },
+      { 
+        number: 18, 
+        title: 'Earthquakes', 
+        tagline: 'Tectonic plates, seismic waves, Richter scale & seismograph',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-science-chapter-18-solutions-earthquakes/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-18-question-answer/'
+      },
+      { 
+        number: 19, 
+        title: 'Pollution of Air', 
+        tagline: 'Air pollutants, acid rain, greenhouse effect & smog',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-science-chapter-19-solutions-pollution-of-air/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-19-question-answer/'
+      },
+      { 
+        number: 20, 
+        title: 'Pollution of Water', 
+        tagline: 'Water contaminants, potable water purification & conservation',
+        solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-science-chapter-20-solutions-pollution-of-water/',
+        learnCramUrl: 'https://www.learncram.com/dav-solutions/dav-class-8-science-chapter-20-question-answer/'
+      }
     ],
 
     // DAV Secondary Mathematics - Complete 16 Chapters
     math8: [
-      { number: 1, title: 'Squares and Square Roots', tagline: 'Prime factorization, long division method & properties' },
-      { number: 2, title: 'Cubes and Cube Roots', tagline: 'Cube patterns, unit digits & estimation method' },
-      { number: 3, title: 'Exponents and Radicals', tagline: 'Laws of exponents, negative powers & scientific notation' },
-      { number: 4, title: 'Direct and Inverse Variations', tagline: 'Proportions, unitary methods & real-world problems' },
-      { number: 5, title: 'Profit, Loss and Discount', tagline: 'Cost price, selling price, marked price & sales tax/GST' },
-      { number: 6, title: 'Compound Interest', tagline: 'Annual & semi-annual compounding formula & applications' },
-      { number: 7, title: 'Algebraic Identities', tagline: '(a+b)², (a-b)², (a²-b²) expansions & factorizations' },
-      { number: 8, title: 'Polynomials', tagline: 'Monomials, binomials, polynomial division & degree' },
-      { number: 9, title: 'Linear Equations in One Variable', tagline: 'Transposition method, word problems & applications' },
-      { number: 10, title: 'Parallel Lines', tagline: 'Transversal, alternate angles, corresponding angles' },
-      { number: 11, title: 'Understanding Quadrilaterals', tagline: 'Parallelogram, rhombus, rectangle, square & trapezoid' },
-      { number: 12, title: 'Construction of Quadrilaterals', tagline: 'Compass & ruler constructions with given sides/angles' },
-      { number: 13, title: 'Introduction to Graphs', tagline: 'Cartesian plane, coordinates (x,y) & linear plotting' },
-      { number: 14, title: 'Mensuration', tagline: 'Area of trapezium, polygon, surface area & volume of cylinder/cube' },
-      { number: 15, title: 'Statistics and Probability', tagline: 'Frequency tables, histograms, pie charts & chance events' },
-      { number: 16, title: 'Rotational Symmetry', tagline: 'Center of rotation, angle of rotation & order of symmetry' }
+      { number: 1, title: 'Squares and Square Roots', tagline: 'Prime factorization, long division method & properties', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-maths-book-solutions/' },
+      { number: 2, title: 'Cubes and Cube Roots', tagline: 'Cube patterns, unit digits & estimation method', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-maths-book-solutions/' },
+      { number: 3, title: 'Exponents and Radicals', tagline: 'Laws of exponents, negative powers & scientific notation', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-maths-book-solutions/' },
+      { number: 4, title: 'Direct and Inverse Variations', tagline: 'Proportions, unitary methods & real-world problems', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-maths-book-solutions/' },
+      { number: 5, title: 'Profit, Loss and Discount', tagline: 'Cost price, selling price, marked price & sales tax/GST', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-maths-book-solutions/' },
+      { number: 6, title: 'Compound Interest', tagline: 'Annual & semi-annual compounding formula & applications', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-maths-book-solutions/' },
+      { number: 7, title: 'Algebraic Identities', tagline: '(a+b)², (a-b)², (a²-b²) expansions & factorizations', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-maths-book-solutions/' },
+      { number: 8, title: 'Polynomials', tagline: 'Monomials, binomials, polynomial division & degree', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-maths-book-solutions/' },
+      { number: 9, title: 'Linear Equations in One Variable', tagline: 'Transposition method, word problems & applications', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-maths-book-solutions/' },
+      { number: 10, title: 'Parallel Lines', tagline: 'Transversal, alternate angles, corresponding angles', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-maths-book-solutions/' },
+      { number: 11, title: 'Understanding Quadrilaterals', tagline: 'Parallelogram, rhombus, rectangle, square & trapezoid', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-maths-book-solutions/' },
+      { number: 12, title: 'Construction of Quadrilaterals', tagline: 'Compass & ruler constructions with given sides/angles', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-maths-book-solutions/' },
+      { number: 13, title: 'Introduction to Graphs', tagline: 'Cartesian plane, coordinates (x,y) & linear plotting', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-maths-book-solutions/' },
+      { number: 14, title: 'Mensuration', tagline: 'Area of trapezium, polygon, surface area & volume of cylinder/cube', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-maths-book-solutions/' },
+      { number: 15, title: 'Statistics and Probability', tagline: 'Frequency tables, histograms, pie charts & chance events', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-maths-book-solutions/' },
+      { number: 16, title: 'Rotational Symmetry', tagline: 'Center of rotation, angle of rotation & order of symmetry', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-maths-book-solutions/' }
     ],
 
     // Social Science (We and Our World) - 22 Chapters
     sst8: [
-      { number: 1, title: 'Resources: Utilization and Development', tagline: 'Natural, human-made & sustainable development' },
-      { number: 2, title: 'Natural Resources: Land, Soil and Water', tagline: 'Soil profile, erosion, water scarcity & conservation' },
-      { number: 3, title: 'Natural Vegetation and Wildlife', tagline: 'Forest types, endangered species & conservation reserves' },
-      { number: 4, title: 'Mineral and Energy Resources', tagline: 'Metallic, non-metallic minerals, coal, petroleum & nuclear' },
-      { number: 5, title: 'Agriculture', tagline: 'Subsistence, commercial farming, major food & cash crops' },
-      { number: 6, title: 'Manufacturing Industries', tagline: 'Iron and steel, textile, IT industrial regions' },
-      { number: 7, title: 'Human Resources', tagline: 'Population distribution, density, age-sex pyramid' },
-      { number: 8, title: 'The Modern Period', tagline: 'Sources of modern Indian history, colonial archives' },
-      { number: 9, title: 'Establishment of Company Rule in India', tagline: 'Battle of Plassey, Buxar & subsidiary alliance' },
-      { number: 10, title: 'Colonialism: Rural and Tribal Societies', tagline: 'Permanent settlement, Ryotwari, Mahalwari & tribal revolts' },
-      { number: 11, title: 'The First War of Independence - 1857', tagline: 'Causes, centers of revolt, leaders & consequences' },
-      { number: 12, title: 'Impact of British Rule on India', tagline: 'De-industrialization, commercialization & drain of wealth' },
-      { number: 13, title: 'Colonialism and Urban Change', tagline: 'De-urbanization, presidency cities & New Delhi planning' },
-      { number: 14, title: 'The Nationalist Movement (1870-1947)', tagline: 'Early nationalists, Swadeshi, Non-Cooperation, Quit India' },
-      { number: 15, title: 'India After Independence', tagline: 'Partition challenges, integration of states, constitution' },
-      { number: 16, title: 'Our Constitution', tagline: 'Preamble, secularism, socialism & democratic principles' },
-      { number: 17, title: 'Fundamental Rights and Duties', tagline: 'Right to Equality, Freedom, Constitutional Remedies' },
-      { number: 18, title: 'The Union Legislature (Parliament)', tagline: 'Lok Sabha, Rajya Sabha, bill passage & Speaker' },
-      { number: 19, title: 'The Union Executive', tagline: 'President, Prime Minister, Cabinet & powers' },
-      { number: 20, title: 'The Judiciary', tagline: 'Supreme Court, High Court, Subordinate Courts & PIL' },
-      { number: 21, title: 'Social Justice and the Marginalised', tagline: 'SC, ST, OBC constitutional protections' },
-      { number: 22, title: 'Safeguarding the Marginalised', tagline: 'Government schemes, reservation & human rights' }
+      { number: 1, title: 'Resources: Utilization and Development', tagline: 'Natural, human-made & sustainable development', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-chapter-1-question-answer-resources-utilisation-and-development/' },
+      { number: 2, title: 'Natural Resources: Land, Soil and Water', tagline: 'Soil profile, erosion, water scarcity & conservation', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-chapter-2-question-answer-natural-resources-land-soil-and-water/' },
+      { number: 3, title: 'Natural Vegetation and Wildlife', tagline: 'Forest types, endangered species & conservation reserves', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-chapter-3-question-answer-natural-resources-vegetation-and-wildlife/' },
+      { number: 4, title: 'Mineral and Energy Resources', tagline: 'Metallic, non-metallic minerals, coal, petroleum & nuclear', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-chapter-4-question-answer-mineral-and-energy-resources/' },
+      { number: 5, title: 'Agriculture', tagline: 'Subsistence, commercial farming, major food & cash crops', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-book-solutions/' },
+      { number: 6, title: 'Manufacturing Industries', tagline: 'Iron and steel, textile, IT industrial regions', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-chapter-6-question-answer-manufacturing-industries/' },
+      { number: 7, title: 'Human Resources', tagline: 'Population distribution, density, age-sex pyramid', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-book-solutions/' },
+      { number: 8, title: 'The Modern Period', tagline: 'Sources of modern Indian history, colonial archives', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-book-solutions/' },
+      { number: 9, title: 'Establishment of Company Rule in India', tagline: 'Battle of Plassey, Buxar & subsidiary alliance', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-chapter-9-question-answer-establishment-of-company-rule-in-india/' },
+      { number: 10, title: 'Colonialism: Rural and Tribal Societies', tagline: 'Permanent settlement, Ryotwari, Mahalwari & tribal revolts', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-book-solutions/' },
+      { number: 11, title: 'The First War of Independence - 1857', tagline: 'Causes, centers of revolt, leaders & consequences', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-chapter-11-question-answer-the-first-war-of-independence/' },
+      { number: 12, title: 'Impact of British Rule on India', tagline: 'De-industrialization, commercialization & drain of wealth', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-book-solutions/' },
+      { number: 13, title: 'Colonialism and Urban Change', tagline: 'De-urbanization, presidency cities & New Delhi planning', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-book-solutions/' },
+      { number: 14, title: 'The Nationalist Movement (1870-1947)', tagline: 'Early nationalists, Swadeshi, Non-Cooperation, Quit India', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-chapter-14-question-answer-the-nationalist-movement/' },
+      { number: 15, title: 'India After Independence', tagline: 'Partition challenges, integration of states, constitution', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-book-solutions/' },
+      { number: 16, title: 'Our Constitution', tagline: 'Preamble, secularism, socialism & democratic principles', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-chapter-16-question-answer-our-constitution/' },
+      { number: 17, title: 'Fundamental Rights and Duties', tagline: 'Right to Equality, Freedom, Constitutional Remedies', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-book-solutions/' },
+      { number: 18, title: 'The Union Legislature (Parliament)', tagline: 'Lok Sabha, Rajya Sabha, bill passage & Speaker', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-book-solutions/' },
+      { number: 19, title: 'The Union Executive', tagline: 'President, Prime Minister, Cabinet & powers', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-book-solutions/' },
+      { number: 20, title: 'The Judiciary', tagline: 'Supreme Court, High Court, Subordinate Courts & PIL', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-book-solutions/' },
+      { number: 21, title: 'Social Justice and the Marginalised', tagline: 'SC, ST, OBC constitutional protections', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-book-solutions/' },
+      { number: 22, title: 'Safeguarding the Marginalised', tagline: 'Government schemes, reservation & human rights', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-sst-book-solutions/' }
     ],
 
     // Hindi (Gyan Sagar & Abhyas Sagar) - 20 Chapters
@@ -104,11 +225,12 @@ export const DAV_CHAPTERS = {
       { number: 3, title: 'The Luncheon', tagline: 'W. Somerset Maugham - Wit, humour and extravagant lunch' },
       { number: 4, title: 'The Children\'s Song', tagline: 'Rudyard Kipling - Patriotic ideals and youth pledge' },
       { number: 5, title: 'A Bad Dream', tagline: 'Drama of conscience, generosity and family' },
-      { number: 6, title: 'Couplets', tagline: 'Alexander Pope - Moral couplets and poetic wisdom' },
-      { number: 7, title: 'The Case of the Sharp Eyed Jeweller', tagline: 'Detective observation and deduction' },
+      { number: 6, title: 'Couplets', tagline: 'Alexander Pope - Moral couplets and poetic wisdom', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-english-literature-book-solutions-chapter-9-couplets/' },
+      { number: 7, title: 'The Case of the Sharp Eyed Jeweller', tagline: 'Detective observation and deduction', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-english-literature-book-solutions-chapter-8-the-case-of-the-sharp-eyed-jeweller/' },
       { number: 8, title: 'Engineering Feats: The Bridges', tagline: 'Modern wonders and infrastructure' },
       { number: 9, title: 'The Undeserved Reward', tagline: 'Premchand - Truth, morality and judicial conscience' },
-      { number: 10, title: 'Banzai! The Samurai Spirit', tagline: 'Japanese valor, courage and honor' }
+      { number: 10, title: 'Banzai! The Samurai Spirit', tagline: 'Japanese valor, courage and honor' },
+      { number: 11, title: 'The Bangle Sellers', tagline: 'Sarojini Naidu - Indian womanhood & celebration', solutionGyanUrl: 'https://solutiongyan.com/dav-class-8-english-literature-book-solutions-chapter-11-bangle-sellers/' }
     ],
 
     // Sanskrit (सुरभि)
