@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { BlackDogLogo } from './BlackDogLogo';
 import { askShankarAI } from '../services/geminiService';
+import { saveCloudPdfAnnotation, loadCloudPdfAnnotation } from '../services/supabaseClient';
 
 // DAV Chapter-to-Page Index Guide for automatic AI navigation
 const DAV_PAGE_INDEX = {
@@ -172,7 +173,7 @@ const NOTE_FONTS = [
   { id: 'calligraphy', name: 'Royal Calligraphy', className: 'font-serif italic font-bold' }
 ];
 
-export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion }) {
+export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, currentUser }) {
   if (!isOpen || !book) return null;
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -266,38 +267,70 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion }) 
     restoreCanvas();
   }, [currentPage, book.title]);
 
-  const restoreCanvas = () => {
+  const restoreCanvas = async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // 1. Instant local load from browser cache
+    let localData = null;
     try {
-      const savedDataUrl = localStorage.getItem(storageKeyCanvas);
-      if (savedDataUrl) {
+      localData = localStorage.getItem(storageKeyCanvas);
+      if (localData) {
         const img = new Image();
         img.onload = () => {
           ctx.drawImage(img, 0, 0);
         };
-        img.src = savedDataUrl;
+        img.src = localData;
       }
     } catch (e) {}
+
+    // 2. Cloud sync from Supabase
+    try {
+      const activeUid = currentUser?.id || 'default_student';
+      const cloudData = await loadCloudPdfAnnotation(activeUid, book.title, currentPage);
+      if (cloudData && cloudData.canvas_data) {
+        if (!localData || localData !== cloudData.canvas_data) {
+          const img = new Image();
+          img.onload = () => {
+            ctx.drawImage(img, 0, 0);
+          };
+          img.src = cloudData.canvas_data;
+          try {
+            localStorage.setItem(storageKeyCanvas, cloudData.canvas_data);
+          } catch (e) {}
+        }
+      }
+      if (cloudData && Array.isArray(cloudData.notes) && cloudData.notes.length > 0) {
+        setTextNotes(prev => (prev.length === 0 ? cloudData.notes : prev));
+      }
+    } catch (err) {
+      console.warn('Supabase PDF annotation load error:', err);
+    }
   };
 
-  // Save notes to localStorage
+  // Save notes to localStorage & Supabase Cloud
   const saveNotes = (updatedNotes) => {
     setTextNotes(updatedNotes);
     try {
       localStorage.setItem(storageKeyNotes, JSON.stringify(updatedNotes));
+      const canvas = canvasRef.current;
+      const dataUrl = canvas ? canvas.toDataURL() : null;
+      const activeUid = currentUser?.id || 'default_student';
+      saveCloudPdfAnnotation(activeUid, book.title, currentPage, dataUrl, updatedNotes);
     } catch (e) {}
   };
 
-  // Save canvas to localStorage
+  // Save canvas to localStorage & Supabase Cloud
   const saveCanvasData = () => {
     const canvas = canvasRef.current;
     if (canvas) {
       try {
         const dataUrl = canvas.toDataURL();
         localStorage.setItem(storageKeyCanvas, dataUrl);
+        const activeUid = currentUser?.id || 'default_student';
+        saveCloudPdfAnnotation(activeUid, book.title, currentPage, dataUrl, textNotes);
       } catch (e) {}
     }
   };

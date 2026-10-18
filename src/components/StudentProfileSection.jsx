@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { 
   User, Camera, Save, RefreshCw, CheckCircle2, Shield, 
   Crown, Award, MapPin, Heart, BookOpen, Sparkles, Download, 
-  Upload, Printer, GraduationCap, Phone, Home, Mail
+  Upload, Printer, GraduationCap, Phone, Home, Mail, Key, Lock
 } from 'lucide-react';
+import { updateCloudPassword } from '../services/supabaseClient';
+import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
 
 const PROFILE_STORAGE_KEY = 'dav_student_personal_profile';
 
@@ -44,6 +46,45 @@ export function StudentProfileSection({ user }) {
 
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [photoPreview, setPhotoPreview] = useState(profile.photoUrl || '/rishit_shankar.jpg');
+
+  // Password Change State
+  const [newPasswordInput, setNewPasswordInput] = useState('');
+  const [passwordChangeStatus, setPasswordChangeStatus] = useState('');
+  const [isChangingPass, setIsChangingPass] = useState(false);
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    const cleanPass = newPasswordInput.trim();
+    if (!cleanPass) {
+      setPasswordChangeStatus('Please enter a new password.');
+      return;
+    }
+    if (cleanPass.length < 6) {
+      setPasswordChangeStatus('Password must be at least 6 characters.');
+      return;
+    }
+
+    const currentId = user?.id || profile.studentId;
+    setIsChangingPass(true);
+    setPasswordChangeStatus('Syncing new password to Cloud Database...');
+
+    // 1. Update locally in browser cache
+    const localUsers = getRegisteredUsers();
+    const updatedUsers = localUsers.map(u => u.id.toLowerCase() === currentId.toLowerCase() ? { ...u, password: cleanPass } : u);
+    saveRegisteredUsers(updatedUsers);
+
+    // 2. Update live in Supabase Cloud Database
+    const cloudOk = await updateCloudPassword(currentId, cleanPass);
+    setIsChangingPass(false);
+    if (cloudOk) {
+      setPasswordChangeStatus('✅ Password updated in Cloud Database! You can now log in with this new password on any device.');
+      setNewPasswordInput('');
+    } else {
+      setPasswordChangeStatus('✅ Password updated locally on this device!');
+      setNewPasswordInput('');
+    }
+    setTimeout(() => setPasswordChangeStatus(''), 5000);
+  };
 
   // Sync when user prop changes
   useEffect(() => {
@@ -501,6 +542,44 @@ export function StudentProfileSection({ user }) {
               </div>
 
             </form>
+
+            {/* Cloud Database Password Change Section */}
+            <div className="mt-8 pt-6 border-t border-stone-800">
+              <div className="flex items-center gap-2 text-amber-400 font-bold text-sm mb-2">
+                <Lock className="w-4 h-4" />
+                <span>Cloud Account Security & Change Password</span>
+              </div>
+              <p className="text-xs text-stone-400 mb-4">
+                Update your account password in the live Cloud Database. Once updated, you can log in with this new password on any phone or laptop.
+              </p>
+
+              <form onSubmit={handleChangePassword} className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+                <div className="relative flex-1">
+                  <Key className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="password"
+                    placeholder="Enter new secure password (min 6 chars)"
+                    value={newPasswordInput}
+                    onChange={(e) => setNewPasswordInput(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-stone-950 border border-stone-700 text-white text-xs focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={isChangingPass}
+                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-md disabled:opacity-50"
+                >
+                  <Key className="w-3.5 h-3.5" />
+                  <span>{isChangingPass ? 'Updating...' : 'Update Password in Cloud'}</span>
+                </button>
+              </form>
+
+              {passwordChangeStatus && (
+                <div className="mt-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-semibold text-amber-300 animate-fadeIn">
+                  {passwordChangeStatus}
+                </div>
+              )}
+            </div>
           </div>
 
         </div>

@@ -21,6 +21,12 @@ import {
 } from 'lucide-react';
 
 import { PRELOADED_DATABASE_USERS, getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
+import { 
+  fetchCloudStudents, 
+  saveCloudStudent, 
+  updateCloudPassword, 
+  deleteCloudStudent 
+} from '../services/supabaseClient';
 
 export function AdminPanelModal({ isOpen, onClose, currentUser, onOpenDbGuide }) {
   // Only accessible to Administrator rishibhai
@@ -43,9 +49,23 @@ export function AdminPanelModal({ isOpen, onClose, currentUser, onOpenDbGuide })
   const [successMessage, setSuccessMessage] = useState('');
   const [lastGeneratedAccount, setLastGeneratedAccount] = useState(null);
 
-  // Load existing registered users (25 Database accounts)
+  // Load existing registered users (Merging Local & Supabase Cloud)
   useEffect(() => {
     loadUsers();
+    fetchCloudStudents().then(cloudUsers => {
+      if (cloudUsers && cloudUsers.length > 0) {
+        const local = getRegisteredUsers();
+        const mergedMap = new Map();
+        local.forEach(u => mergedMap.set(u.id.toLowerCase(), u));
+        cloudUsers.forEach(u => {
+          const key = u.id.toLowerCase();
+          mergedMap.set(key, { ...(mergedMap.get(key) || {}), ...u });
+        });
+        const merged = Array.from(mergedMap.values());
+        setRegisteredUsers(merged);
+        saveRegisteredUsers(merged);
+      }
+    }).catch(err => console.warn('Supabase fetch error in admin:', err));
   }, []);
 
   const loadUsers = () => {
@@ -53,10 +73,9 @@ export function AdminPanelModal({ isOpen, onClose, currentUser, onOpenDbGuide })
     setRegisteredUsers(users);
   };
 
-
   const saveUsers = (users) => {
     setRegisteredUsers(users);
-    localStorage.setItem('dav_registered_users', JSON.stringify(users));
+    saveRegisteredUsers(users);
   };
 
   // Quick Generator for IDs and Passwords
@@ -125,9 +144,10 @@ export function AdminPanelModal({ isOpen, onClose, currentUser, onOpenDbGuide })
 
     const updated = [newAccount, ...registeredUsers];
     saveUsers(updated);
+    saveCloudStudent(newAccount); // Sync account directly to Supabase cloud!
 
     setLastGeneratedAccount(newAccount);
-    setSuccessMessage(`Account activated for ${newAccount.name} (Class ${newAccount.classNum}-${newAccount.section})! Saved permanently to local database.`);
+    setSuccessMessage(`Account activated for ${newAccount.name} (Class ${newAccount.classNum}-${newAccount.section})! Saved to local and Supabase cloud database.`);
     
     // Reset inputs for next student
     setStudentName('');
@@ -139,9 +159,24 @@ export function AdminPanelModal({ isOpen, onClose, currentUser, onOpenDbGuide })
     if (window.confirm(`Are you sure you want to revoke access for ID: ${idToDelete}?`)) {
       const updated = registeredUsers.filter(u => u.id !== idToDelete);
       saveUsers(updated);
+      deleteCloudStudent(idToDelete); // Delete from Supabase cloud
       if (lastGeneratedAccount?.id === idToDelete) {
         setLastGeneratedAccount(null);
       }
+    }
+  };
+
+  const handleEditPassword = async (userObj) => {
+    const newPass = window.prompt(`Enter new password for ${userObj.name} (${userObj.id}):`, userObj.password);
+    if (!newPass || !newPass.trim()) return;
+    const cleanPass = newPass.trim();
+    const updated = registeredUsers.map(u => u.id === userObj.id ? { ...u, password: cleanPass } : u);
+    saveUsers(updated);
+    const cloudSuccess = await updateCloudPassword(userObj.id, cleanPass);
+    if (cloudSuccess) {
+      alert(`Password for ${userObj.name} (${userObj.id}) successfully updated in both local browser and Supabase Cloud Database!`);
+    } else {
+      alert(`Password updated locally! (Cloud update skipped if offline)`);
     }
   };
 
@@ -522,9 +557,17 @@ _Welcome to The DAV Dictionary! Please keep your password safe._`;
                               type="button"
                               onClick={() => togglePasswordVisibility(u.id)}
                               className="text-slate-400 hover:text-white cursor-pointer"
-                              title={isRevealed ? "Hide" : "Show"}
+                              title={isRevealed ? "Hide Password" : "Show Password"}
                             >
                               {isRevealed ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleEditPassword(u)}
+                              className="text-amber-400 hover:text-amber-200 cursor-pointer ml-1 p-0.5 rounded hover:bg-slate-700"
+                              title="Change Password in Cloud Database"
+                            >
+                              <Key className="w-3 h-3" />
                             </button>
                           </div>
                         </td>

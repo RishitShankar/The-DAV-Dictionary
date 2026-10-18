@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Sparkles, Check, Key, UserCheck, Eye, EyeOff, Lock, Crown, Award, ExternalLink } from 'lucide-react';
-import { PRELOADED_DATABASE_USERS, getRegisteredUsers } from '../data/preloadedUsers';
+import { Shield, Sparkles, Check, Key, UserCheck, Eye, EyeOff, Lock, Crown, Award, ExternalLink, Loader2 } from 'lucide-react';
+import { PRELOADED_DATABASE_USERS, getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
+import { fetchCloudStudents } from '../services/supabaseClient';
 
 export function BlackboardLogin({ onLoginSuccess }) {
   const [userId, setUserId] = useState('');
@@ -10,13 +11,26 @@ export function BlackboardLogin({ onLoginSuccess }) {
   const [feedback, setFeedback] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
 
-  // Initialize the 25 verified database accounts in localStorage
+  // Sync with Supabase Cloud on mount
   useEffect(() => {
     getRegisteredUsers();
+    fetchCloudStudents().then(cloudUsers => {
+      if (cloudUsers && cloudUsers.length > 0) {
+        const local = getRegisteredUsers();
+        const mergedMap = new Map();
+        local.forEach(u => mergedMap.set(u.id.toLowerCase(), u));
+        cloudUsers.forEach(u => {
+          const key = u.id.toLowerCase();
+          mergedMap.set(key, { ...(mergedMap.get(key) || {}), ...u });
+        });
+        saveRegisteredUsers(Array.from(mergedMap.values()));
+      }
+    }).catch(() => {});
   }, []);
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     const idVal = userId.trim();
     const passVal = password.trim();
@@ -33,6 +47,8 @@ export function BlackboardLogin({ onLoginSuccess }) {
       setFeedback('Please enter your Password.');
       return;
     }
+
+    setIsAuthenticating(true);
 
     // 1. Check Master Developer & Administrator Credentials (Dimension 4)
     if (idVal === 'rishibhai' && passVal === '123456789@aA') {
@@ -51,14 +67,35 @@ export function BlackboardLogin({ onLoginSuccess }) {
       setFeedback('');
       setLoggedInUser(adminUser);
       setIsSuccess(true);
+      setIsAuthenticating(false);
       return;
     }
 
-    // 2. Check Database Accounts (25 Preloaded Accounts + Any Admin-Generated)
+    // 2. Check Database Accounts (Local cache first)
     const storedUsers = getRegisteredUsers();
-    const matched = storedUsers.find(
+    let matched = storedUsers.find(
       (u) => u.id.toLowerCase() === idVal.toLowerCase() && u.password === passVal
     );
+
+    // If not found in local cache, query live Supabase Cloud Database!
+    if (!matched) {
+      try {
+        const cloudUsers = await fetchCloudStudents();
+        if (cloudUsers) {
+          matched = cloudUsers.find(
+            (u) => u.id.toLowerCase() === idVal.toLowerCase() && u.password === passVal
+          );
+          if (matched) {
+            const updated = [matched, ...storedUsers.filter(u => u.id.toLowerCase() !== matched.id.toLowerCase())];
+            saveRegisteredUsers(updated);
+          }
+        }
+      } catch (err) {
+        console.warn('Supabase cloud login fallback warning:', err);
+      }
+    }
+
+    setIsAuthenticating(false);
 
     if (matched) {
       const studentUser = {

@@ -203,6 +203,7 @@ export function App() {
         isOpen={isPdfReaderOpen}
         onClose={() => setIsPdfReaderOpen(false)}
         book={readerBook}
+        currentUser={user}
         onOpenAIWithQuestion={handleOpenAIWithQuestion}
       />
 
