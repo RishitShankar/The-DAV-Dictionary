@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   BookOpen, Layers, X, Sparkles, User, ChevronRight, 
-  PanelLeftClose, Award, CheckCircle2, LogOut, Lock, Compass, HelpCircle
+  PanelLeftClose, Award, CheckCircle2, LogOut, Lock, Compass, HelpCircle, Heart
 } from 'lucide-react';
 
 export function GeminiSidebar({ 
@@ -24,7 +24,7 @@ export function GeminiSidebar({
     { id: 5, name: 'Section 5: Interactive Quizzes', icon: Award, status: 'Self-Testing' },
     { id: 6, name: 'Section 6: Academic Dictionary', icon: BookOpen, status: 'Vocabulary' },
     { id: 7, name: 'Section 7: Syllabus & Blueprint', icon: Layers, status: 'Curriculum' },
-    { id: 8, name: 'Section 8: Notice Board & Circulars', icon: Layers, status: 'School Updates' },
+    { id: 8, name: 'Section 8: Donate to Developer', icon: Heart, status: 'Support & Bills' },
     { id: 9, name: 'Section 9: Student Personal Profile', icon: User, status: 'Smart ID Vault' },
     { id: 10, name: 'Section 10: About Creator Rishit Shankar', icon: User, status: 'Head Boy Profile' },
   ];

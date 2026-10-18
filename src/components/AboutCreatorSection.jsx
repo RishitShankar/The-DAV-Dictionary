@@ -325,7 +325,7 @@ export function AboutCreatorSection() {
                   rel="noopener noreferrer"
                   className="px-3 py-1.5 rounded-xl bg-yellow-500/20 hover:bg-yellow-400 text-yellow-300 hover:text-stone-950 border border-yellow-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
                 >
-                  <SnapchatLogo className="w-3.5 h-3.5 fill-current" />
+                  <SnapchatLogo className="w-4 h-4 shrink-0" />
                   <span>Snapchat</span>
                 </a>
 

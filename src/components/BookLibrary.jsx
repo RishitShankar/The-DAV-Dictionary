@@ -3,7 +3,7 @@ import { DAV_SUBJECTS } from '../data/mockData';
 import { 
   BookOpen, Calculator, Languages, HeartHandshake, Globe, Sparkles, 
   Compass, Cpu, FileText, Download, Eye, Upload, ChevronRight, Lock, 
-  CheckCircle2, Search, ExternalLink, HelpCircle, Brain, BookMarked
+  CheckCircle2, Search, ExternalLink, HelpCircle, Brain, BookMarked, Trash2
 } from 'lucide-react';
 
 const ICON_MAP = {
@@ -21,7 +21,8 @@ export function BookLibrary({
   onOpenPdfReader, 
   onOpenUploadModal,
   onOpenAIWithQuestion,
-  uploadedPdfs = []
+  uploadedPdfs = [],
+  onDeletePdf
 }) {
   const [selectedClass, setSelectedClass] = useState(8);
   const [searchQuery, setSearchQuery] = useState('');
@@ -130,20 +131,44 @@ export function BookLibrary({
                   </div>
                 </div>
 
-                <button
-                  onClick={() => onOpenPdfReader({
-                    title: up.name,
-                    subject: up.subject || 'School Subject',
-                    classNum: selectedClass,
-                    pdfUrl: up.data,
-                    fileData: up.data,
-                    summary: `Custom uploaded textbook material for Class ${selectedClass}.`
-                  })}
-                  className="px-3 py-1.5 rounded-lg bg-red-800 hover:bg-red-900 text-white text-[11px] font-bold flex items-center gap-1 shrink-0 transition cursor-pointer"
-                >
-                  <Eye className="w-3 h-3 text-amber-300" />
-                  <span>Read Book</span>
-                </button>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    onClick={() => onOpenPdfReader({
+                      title: up.name,
+                      subject: up.subject || 'School Subject',
+                      classNum: selectedClass,
+                      pdfUrl: up.data,
+                      fileData: up.data,
+                      summary: `Custom uploaded textbook material for Class ${selectedClass}.`
+                    })}
+                    className="px-3 py-1.5 rounded-lg bg-red-800 hover:bg-red-900 text-white text-[11px] font-bold flex items-center gap-1 transition cursor-pointer"
+                  >
+                    <Eye className="w-3 h-3 text-amber-300" />
+                    <span>Read Book</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (window.confirm(`Are you sure you want to remove and delete "${up.name}" from your school library?`)) {
+                        if (onDeletePdf) {
+                          onDeletePdf(up.id);
+                        } else {
+                          try {
+                            const list = JSON.parse(localStorage.getItem('dav_uploaded_pdfs') || '[]');
+                            const updated = list.filter(p => p.id !== up.id);
+                            localStorage.setItem('dav_uploaded_pdfs', JSON.stringify(updated));
+                            window.location.reload();
+                          } catch (err) {}
+                        }
+                      }
+                    }}
+                    title="Remove and delete this custom uploaded PDF"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 hover:border-rose-200 transition cursor-pointer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>

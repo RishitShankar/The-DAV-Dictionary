@@ -15,6 +15,8 @@ import { PricingModal } from './components/PricingModal';
 import { AuthModal } from './components/AuthModal';
 import { UploadPdfModal } from './components/UploadPdfModal';
 import { SectionOverview } from './components/SectionOverview';
+import { DonationSection } from './components/DonationSection';
+import { PurpleFooter } from './components/PurpleFooter';
 import { Award, Heart, Lock, Sparkles, ArrowRight } from 'lucide-react';
 
 export function App() {
@@ -90,6 +92,10 @@ export function App() {
 
   const handleAddPdf = (newPdf) => {
     setUploadedPdfs(prev => [newPdf, ...prev]);
+  };
+
+  const handleDeletePdf = (pdfId) => {
+    setUploadedPdfs(prev => prev.filter(p => p.id !== pdfId));
   };
 
   const handleUpgradePlan = (planId) => {
@@ -175,6 +181,7 @@ export function App() {
               onOpenUploadModal={() => setIsUploadOpen(true)}
               onOpenAIWithQuestion={handleOpenAIWithQuestion}
               uploadedPdfs={uploadedPdfs}
+              onDeletePdf={handleDeletePdf}
             />
           </>
         ) : activeSection === 3 ? (
@@ -183,6 +190,8 @@ export function App() {
             title="Section 3: Questions & Answers" 
             description="Comprehensive chapter-by-chapter exercise solutions and DAV curriculum questions & answers. Currently reserved and ready for your development instructions!" 
           />
+        ) : activeSection === 8 ? (
+          <DonationSection currentUser={user} />
         ) : activeSection === 9 ? (
           <StudentProfileSection user={user} />
         ) : activeSection === 10 ? (
@@ -192,20 +201,10 @@ export function App() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-slate-950 text-white border-t border-slate-800 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-400">The DAV Dictionary</span>
-            <span>• 10 Sections • Created by Rishit Shankar</span>
-          </div>
-          <div className="flex items-center gap-2 text-slate-400">
-            <span>Made with dedication for DAV Public School</span>
-            <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
-            <span>Digital India 🇮🇳</span>
-          </div>
-        </div>
-      </footer>
+      {/* Official Purple Footer displayed ONLY on Section 9 & 10 as requested by the user */}
+      {(activeSection === 9 || activeSection === 10) && (
+        <PurpleFooter onSelectSection={(secId) => setActiveSection(secId)} />
+      )}
 
       {/* Modals */}
       <AdminPanelModal

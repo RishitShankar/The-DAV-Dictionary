@@ -224,7 +224,10 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   ]);
 
   const hasRealPdf = Boolean(book.pdfUrl || book.fileData);
-  const pdfBaseSource = book.pdfUrl || book.fileData;
+  const rawSource = book.pdfUrl || book.fileData || '';
+  const pdfBaseSource = (rawSource.startsWith('data:') || rawSource.startsWith('blob:'))
+    ? rawSource
+    : encodeURI(rawSource);
 
   // Offset of +2 pages so book page 1 maps to PDF file page 3 (accounting for cover + preface)
   const pdfPhysicalPage = currentPage + 2;
@@ -237,10 +240,12 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   const storageKeyNotes = `dav_pdf_notes_${book.title}_p${currentPage}`;
   const storageKeyCanvas = `dav_pdf_canvas_${book.title}_p${currentPage}`;
 
+  const iframeRef = useRef(null);
+
   // Page flipping handlers that save the current page and switch clean state
   const handlePrevPage = () => {
     if (currentPage > 1) {
-      saveCanvasData();
+      saveCanvasData(currentPage);
       setUndoStack([]);
       setRedoStack([]);
       setCurrentPage(prev => prev - 1);
@@ -248,11 +253,25 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   };
 
   const handleNextPage = () => {
-    saveCanvasData();
+    saveCanvasData(currentPage);
     setUndoStack([]);
     setRedoStack([]);
     setCurrentPage(prev => prev + 1);
   };
+
+  // Keyboard arrow listener for smooth page navigation without reload
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'ArrowRight') {
+        handleNextPage();
+      } else if (e.key === 'ArrowLeft') {
+        handlePrevPage();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentPage, isEditorActive]);
 
   // Wheel listener to flip pages cleanly when editor is active
   const handleContainerWheel = (e) => {
@@ -362,14 +381,15 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   };
 
   // Save canvas to localStorage & Supabase Cloud
-  const saveCanvasData = () => {
+  const saveCanvasData = (pageToSave = currentPage) => {
     const canvas = canvasRef.current;
     if (canvas) {
       try {
         const dataUrl = canvas.toDataURL();
-        localStorage.setItem(storageKeyCanvas, dataUrl);
+        const pageKey = `dav_pdf_canvas_${book.title}_p${pageToSave}`;
+        localStorage.setItem(pageKey, dataUrl);
         const activeUid = currentUser?.id || 'default_student';
-        saveCloudPdfAnnotation(activeUid, book.title, currentPage, dataUrl, textNotes);
+        saveCloudPdfAnnotation(activeUid, book.title, pageToSave, dataUrl, textNotes);
       } catch (e) {}
     }
   };
@@ -378,7 +398,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     const p = parseInt(pageNumber, 10);
     if (!isNaN(p) && p > 0) {
       // Save existing page drawing before navigating
-      saveCanvasData();
+      saveCanvasData(currentPage);
       setCurrentPage(p);
       setTeleportInput('');
       setAiMessages(prev => [
@@ -425,7 +445,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
       });
 
       if (matchedChapter) {
-        saveCanvasData();
+        saveCanvasData(currentPage);
         setCurrentPage(matchedChapter.page);
         setAiMessages(prev => [
           ...prev,
@@ -441,7 +461,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
       if (pageMatch && parseInt(pageMatch[1], 10) > 0 && parseInt(pageMatch[1], 10) <= 600) {
         const targetPage = parseInt(pageMatch[1], 10);
         if (/page|p\.|go|open|jump|teleport|take me|\b\d{1,3}\b/i.test(q)) {
-          saveCanvasData();
+          saveCanvasData(currentPage);
           setCurrentPage(targetPage);
           setAiMessages(prev => [
             ...prev,
@@ -1166,9 +1186,18 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
           {hasRealPdf ? (
             <div className="relative w-full h-full">
               
-              {/* PDF Viewer Iframe with +2 Physical Page Offset */}
+              {/* Sticky Page Annotation Lock Indicator when Editor Active */}
+              {isEditorActive && (
+                <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 px-4 py-1.5 rounded-full bg-stone-950/90 text-amber-300 border border-amber-500/50 shadow-2xl backdrop-blur-md text-[11px] font-bold flex items-center gap-2 pointer-events-none">
+                  <Highlighter className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                  <span>Annotation Mode: Page {currentPage} Locked • Use ← / → to switch pages cleanly</span>
+                </div>
+              )}
+
+              {/* PDF Viewer Iframe with Static Key to completely eliminate 2-3s blank page blink */}
               <iframe
-                key={`${pdfBaseSource}-${pdfPhysicalPage}`}
+                key={book.title || 'pdf-viewer'}
+                ref={iframeRef}
                 src={pdfSourceWithPage}
                 title={book.title}
                 className="w-full h-full border-none bg-white block"

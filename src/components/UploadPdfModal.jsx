@@ -22,29 +22,39 @@ export function UploadPdfModal({ isOpen, onClose, onAddPdf }) {
     e.preventDefault();
     if (!file && !fileName) return;
 
-    let fileUrl = null;
-    if (file) {
-      fileUrl = URL.createObjectURL(file);
-    }
+    const processUpload = (base64OrBlobUrl) => {
+      const newPdfRecord = {
+        id: `custom_${Date.now()}`,
+        name: fileName || file?.name?.replace('.pdf', '') || 'Class Book Material',
+        classNum: String(classNum),
+        subject: subject,
+        size: file ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : '1.8 MB',
+        data: base64OrBlobUrl,
+        uploadedAt: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+      };
 
-    const newPdfRecord = {
-      id: `custom_${Date.now()}`,
-      name: fileName || file?.name || 'Class Book Material',
-      classNum: classNum,
-      subject: subject,
-      size: file ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : '1.8 MB',
-      data: fileUrl,
-      uploadedAt: new Date().toLocaleDateString()
+      onAddPdf(newPdfRecord);
+      setIsSuccess(true);
+      setTimeout(() => {
+        setIsSuccess(false);
+        setFile(null);
+        setFileName('');
+        onClose();
+      }, 1000);
     };
 
-    onAddPdf(newPdfRecord);
-    setIsSuccess(true);
-    setTimeout(() => {
-      setIsSuccess(false);
-      setFile(null);
-      setFileName('');
-      onClose();
-    }, 1200);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        processUpload(reader.result);
+      };
+      reader.onerror = () => {
+        processUpload(URL.createObjectURL(file));
+      };
+      reader.readAsDataURL(file);
+    } else {
+      processUpload(null);
+    }
   };
 
   return (

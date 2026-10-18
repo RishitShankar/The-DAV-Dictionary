@@ -1,5 +1,5 @@
-import React from 'react';
-import { Menu, Award, BookOpen, Layers, ShieldAlert, LogOut, KeyRound, User, Crown, Sparkles, Lock } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Menu, Award, BookOpen, Layers, ShieldAlert, LogOut, KeyRound, User, Crown, Sparkles, Lock, Heart } from 'lucide-react';
 import { BlackDogLogo } from './BlackDogLogo';
 
 export function Navbar({ 
@@ -13,6 +13,44 @@ export function Navbar({
 }) {
   const isAdmin = user?.isAdmin || user?.id === 'rishibhai';
   const isGuest = user?.plan === 'guest';
+
+  // State to track user's real uploaded photo from Section 9 (Student Profile)
+  const [userPhoto, setUserPhoto] = useState(() => {
+    try {
+      const uid = (user?.id || 'rishibhai').toLowerCase();
+      const saved = localStorage.getItem(`dav_student_profile_${uid}`);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.photoUrl) return parsed.photoUrl;
+      }
+      if (user?.photoUrl) return user.photoUrl;
+      if (uid === 'rishibhai') return '/rishit_shankar.jpg';
+    } catch (e) {}
+    return null;
+  });
+
+  // Listen to profile photo uploads in real-time
+  useEffect(() => {
+    const handlePhotoUpdate = (e) => {
+      if (e?.detail?.photoUrl) {
+        setUserPhoto(e.detail.photoUrl);
+      }
+    };
+    window.addEventListener('dav_profile_photo_updated', handlePhotoUpdate);
+
+    const uid = (user?.id || 'rishibhai').toLowerCase();
+    try {
+      const saved = localStorage.getItem(`dav_student_profile_${uid}`);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.photoUrl) setUserPhoto(parsed.photoUrl);
+      } else if (uid === 'rishibhai') {
+        setUserPhoto('/rishit_shankar.jpg');
+      }
+    } catch (e) {}
+
+    return () => window.removeEventListener('dav_profile_photo_updated', handlePhotoUpdate);
+  }, [user?.id]);
 
   // Badge styling according to dimension
   let tierBadgeBg = 'bg-emerald-600 text-white';
@@ -90,6 +128,11 @@ export function Navbar({
                   <Layers className="w-3.5 h-3.5 text-blue-600" />
                   <span>Section 3: Questions & Answers (Reserved)</span>
                 </>
+              ) : activeSection === 8 ? (
+                <>
+                  <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
+                  <span>Section 8: Donate to Developer</span>
+                </>
               ) : activeSection === 9 ? (
                 <>
                   <User className="w-3.5 h-3.5 text-amber-500" />
@@ -152,10 +195,19 @@ export function Navbar({
 
               <button
                 onClick={onOpenAuth}
-                className="w-10 h-10 rounded-full bg-gradient-to-tr from-red-800 to-amber-600 text-white font-black text-sm flex items-center justify-center border-2 border-amber-400 shadow-sm hover:scale-105 transition cursor-pointer"
-                title="Account Details"
+                className="w-10 h-10 rounded-full bg-gradient-to-tr from-red-800 to-amber-600 text-white font-black text-sm flex items-center justify-center border-2 border-amber-400 shadow-sm hover:scale-105 transition cursor-pointer overflow-hidden shrink-0"
+                title="Account Details & Profile Photo"
               >
-                {user?.name ? user.name.slice(0, 2).toUpperCase() : 'RS'}
+                {userPhoto ? (
+                  <img 
+                    src={userPhoto} 
+                    alt={user?.name || 'User DP'} 
+                    className="w-full h-full object-cover rounded-full"
+                    onError={() => setUserPhoto(null)}
+                  />
+                ) : (
+                  <span>{user?.name ? user.name.slice(0, 2).toUpperCase() : 'RS'}</span>
+                )}
               </button>
 
               <button

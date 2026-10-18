@@ -17,8 +17,10 @@ import {
   Users, 
   Sparkles,
   MessageSquare,
-  Database
+  Database,
+  Receipt
 } from 'lucide-react';
+import { DavInvoiceModal } from './DavInvoiceModal';
 
 import { PRELOADED_DATABASE_USERS, getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
 import { 
@@ -48,6 +50,7 @@ export function AdminPanelModal({ isOpen, onClose, currentUser, onOpenDbGuide })
   const [copiedReceiptId, setCopiedReceiptId] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [lastGeneratedAccount, setLastGeneratedAccount] = useState(null);
+  const [activeInvoice, setActiveInvoice] = useState(null);
 
   // Load existing registered users (Merging Local & Supabase Cloud)
   useEffect(() => {
@@ -210,6 +213,27 @@ _Welcome to The DAV Dictionary! Please keep your password safe._`;
     navigator.clipboard.writeText(text);
     setCopiedReceiptId(acc.id);
     setTimeout(() => setCopiedReceiptId(null), 3000);
+  };
+
+  const handleOpenInvoice = (userObj) => {
+    const invoiceNum = `DAV-INV-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const paidMatch = (userObj.paidAmount || '').match(/\d+/);
+    const amount = paidMatch ? parseInt(paidMatch[0], 10) : 10;
+    setActiveInvoice({
+      invoiceNumber: invoiceNum,
+      date: userObj.createdAt || new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+      time: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
+      studentName: userObj.name || userObj.id,
+      studentId: userObj.id,
+      classNum: userObj.classNum || '8',
+      planName: userObj.dimensionName || `${(userObj.plan || 'VIP').toUpperCase()} PASS`,
+      baseAmount: amount,
+      donationAmount: 0,
+      totalAmount: amount,
+      paymentMode: userObj.paymentMode || 'School In-Hand Cash',
+      transactionId: `TXN-${userObj.id}-${Date.now().toString().slice(-6)}`,
+      note: `Official account activation receipt for ${userObj.name}. Issued & authorized by Rishit Shankar.`
+    });
   };
 
   // Export JSON backup for Rishit
@@ -658,6 +682,14 @@ _Welcome to The DAV Dictionary! Please keep your password safe._`;
                           <div className="flex items-center justify-end gap-1.5">
                             <button
                               type="button"
+                              onClick={() => handleOpenInvoice(u)}
+                              title="View & Print Official Bill / Tax Invoice"
+                              className="p-1 rounded hover:bg-slate-700 text-cyan-400 hover:text-cyan-200 cursor-pointer"
+                            >
+                              <Receipt className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              type="button"
                               onClick={() => handleCopyReceipt(u)}
                               title="Copy WhatsApp Receipt Message"
                               className="p-1 rounded hover:bg-slate-700 text-slate-300 hover:text-white cursor-pointer"
@@ -704,6 +736,13 @@ _Welcome to The DAV Dictionary! Please keep your password safe._`;
         </div>
 
       </div>
+
+      {/* Official Tax Invoice & Bill Generator Modal */}
+      <DavInvoiceModal
+        isOpen={Boolean(activeInvoice)}
+        onClose={() => setActiveInvoice(null)}
+        invoiceData={activeInvoice}
+      />
     </div>
   );
 }

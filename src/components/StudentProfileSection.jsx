@@ -160,6 +160,10 @@ export function StudentProfileSection({ user }) {
         const base64Data = reader.result;
         setPhotoPreview(base64Data);
         handleChange('photoUrl', base64Data);
+        // Instant synchronization with Navbar and site-wide mini-profile
+        window.dispatchEvent(new CustomEvent('dav_profile_photo_updated', {
+          detail: { photoUrl: base64Data, userId: currentUserId }
+        }));
       };
       reader.readAsDataURL(file);
     }
