@@ -4,7 +4,7 @@ import {
   CheckCircle2, ArrowRight, Lock, UserCheck, Brain, 
   Search, Library, Star, Crown, ChevronDown, ChevronUp,
   FileText, HelpCircle, Heart, Code2, LogIn, Highlighter,
-  Flame, Laptop, Check, ArrowUpRight, School
+  Flame, Laptop, Check, ArrowUpRight, School, Phone, Mail, MessageCircle
 } from 'lucide-react';
 
 export function PublicHomepage({ onGoToLogin }) {
@@ -476,13 +476,59 @@ export function PublicHomepage({ onGoToLogin }) {
                   </div>
                 </div>
 
-                <div className="pt-2 flex flex-wrap items-center gap-3">
+                <div className="pt-2 flex flex-wrap items-center gap-2.5">
                   <button
                     onClick={onGoToLogin}
-                    className="px-6 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold text-xs flex items-center gap-2 transition cursor-pointer shadow-md"
+                    className="px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs flex items-center gap-2 transition cursor-pointer shadow-md"
                   >
-                    <span>Connect &amp; Register Now →</span>
+                    <span>Register / Sign In →</span>
                   </button>
+
+                  <a
+                    href="https://wa.me/918092261750?text=Hi%20Rishit%2C%20I%20am%20a%20DAV%20student%20using%20The%20DAV%20Dictionary!"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-stone-950 border border-emerald-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>WhatsApp</span>
+                  </a>
+
+                  <a
+                    href="tel:+918092261750"
+                    className="px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-amber-400 text-amber-300 hover:text-stone-950 border border-stone-700 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                  >
+                    <Phone className="w-3.5 h-3.5" />
+                    <span>+91 80922 61750</span>
+                  </a>
+
+                  <a
+                    href="mailto:rishitshankar@gmail.com"
+                    className="px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-rose-500 text-rose-300 hover:text-white border border-stone-700 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                  >
+                    <Mail className="w-3.5 h-3.5" />
+                    <span>rishitshankar@gmail.com</span>
+                  </a>
+
+                  <a
+                    href="https://www.instagram.com/rishit_shankar?cplk=MXNlYzVmajBtdzFxag=="
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3.5 py-2 rounded-xl bg-pink-500/20 hover:bg-pink-500 text-pink-300 hover:text-white border border-pink-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                  >
+                    <span className="w-3.5 h-3.5 rounded bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 text-[9px] flex items-center justify-center font-bold text-white leading-none">📸</span>
+                    <span>Instagram</span>
+                  </a>
+
+                  <a
+                    href="https://www.linkedin.com/in/rishit-shankar"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3.5 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500 text-cyan-300 hover:text-white border border-cyan-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                  >
+                    <span className="w-3.5 h-3.5 rounded bg-cyan-600 text-[9px] flex items-center justify-center font-bold text-white leading-none">in</span>
+                    <span>LinkedIn</span>
+                  </a>
                 </div>
 
               </div>

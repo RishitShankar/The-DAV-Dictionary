@@ -28,6 +28,10 @@ export function StudentProfileSection({ user }) {
         fatherName: 'Mr. A. Shankar',
         residentialAddress: 'Khabra, Muzaffarpur, Bihar',
         city: 'Muzaffarpur',
+        phoneNumber: '8092261750',
+        email: 'rishitshankar@gmail.com',
+        instagram: 'https://www.instagram.com/rishit_shankar?cplk=MXNlYzVmajBtdzFxag==',
+        linkedin: 'https://www.linkedin.com/in/rishit-shankar',
         currentAmbition: 'Master Full-Stack Software Developer, Chess Champion & Sanskrit Scholar',
         favoriteTeacher: 'Sanskrit & Science Teachers',
         likes: 'Artificial intelligence coding, chess tournaments, Sanskrit literature, 3D modeling, astronomy',
@@ -51,6 +55,10 @@ export function StudentProfileSection({ user }) {
       fatherName: '',
       residentialAddress: '',
       city: '',
+      phoneNumber: '',
+      email: user?.email || '',
+      instagram: '',
+      linkedin: '',
       currentAmbition: '',
       favoriteTeacher: '',
       likes: '',
@@ -344,6 +352,16 @@ export function StudentProfileSection({ user }) {
                   <div className="text-[10px] font-medium text-stone-900">
                     City: <span className="font-bold">{profile.city}</span>
                   </div>
+                  {profile.phoneNumber && (
+                    <div className="text-[10px] font-mono text-stone-900">
+                      Mob: <span className="font-bold">{profile.phoneNumber}</span>
+                    </div>
+                  )}
+                  {profile.email && (
+                    <div className="text-[9px] font-mono text-stone-900 truncate" title={profile.email}>
+                      Email: <span className="font-bold">{profile.email}</span>
+                    </div>
+                  )}
                 </div>
 
               </div>
@@ -506,6 +524,54 @@ export function StudentProfileSection({ user }) {
                     value={profile.residentialAddress}
                     onChange={(e) => handleChange('residentialAddress', e.target.value)}
                     placeholder="Address / Locality"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-stone-950 border border-stone-700 text-white focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              {/* Row: Student Contact Details */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-stone-300 font-bold mb-1">Phone / Mobile Number:</label>
+                  <input
+                    type="text"
+                    value={profile.phoneNumber || ''}
+                    onChange={(e) => handleChange('phoneNumber', e.target.value)}
+                    placeholder="e.g. 8092261750"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-stone-950 border border-stone-700 text-white focus:outline-none focus:border-amber-400 font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block text-stone-300 font-bold mb-1">Email ID:</label>
+                  <input
+                    type="email"
+                    value={profile.email || ''}
+                    onChange={(e) => handleChange('email', e.target.value)}
+                    placeholder="e.g. rishitshankar@gmail.com"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-stone-950 border border-stone-700 text-white focus:outline-none focus:border-amber-400 font-mono"
+                  />
+                </div>
+              </div>
+
+              {/* Row: Social Media Links */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-stone-300 font-bold mb-1">Instagram Link / Handle:</label>
+                  <input
+                    type="text"
+                    value={profile.instagram || ''}
+                    onChange={(e) => handleChange('instagram', e.target.value)}
+                    placeholder="https://www.instagram.com/rishit_shankar..."
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-stone-950 border border-stone-700 text-white focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+                <div>
+                  <label className="block text-stone-300 font-bold mb-1">LinkedIn Profile Link:</label>
+                  <input
+                    type="text"
+                    value={profile.linkedin || ''}
+                    onChange={(e) => handleChange('linkedin', e.target.value)}
+                    placeholder="https://www.linkedin.com/in/..."
                     className="w-full px-3.5 py-2.5 rounded-xl bg-stone-950 border border-stone-700 text-white focus:outline-none focus:border-amber-400"
                   />
                 </div>

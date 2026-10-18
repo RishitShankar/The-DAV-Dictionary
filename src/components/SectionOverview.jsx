@@ -95,7 +95,7 @@ export function SectionOverview({ onSelectSection }) {
       icon: Sparkles,
       color: 'from-amber-600 to-yellow-500',
       tag: 'Master Developer',
-      description: 'Meet Rishit Shankar (Head Boy, Class 8 DAV Khabra, 95% scorer, Chess Gold Medalist). Explore his biography, vision, tech stack, and direct social media chat links.'
+      description: 'Meet Rishit Shankar (Head Boy, Class 8 DAV Khabra, 95% scorer, Chess Gold Medalist). Contact directly via WhatsApp/Call (+91 80922 61750), rishitshankar@gmail.com, LinkedIn, and Instagram (@rishit_shankar).'
     }
   ];
 

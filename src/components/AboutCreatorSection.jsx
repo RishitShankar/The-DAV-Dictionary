@@ -19,8 +19,11 @@ export function AboutCreatorSection() {
   const [copiedPhone, setCopiedPhone] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
 
-  const myPhoneNumber = "+91 99342 00000";
+  const myPhoneNumber = "+91 80922 61750";
+  const rawPhoneNumber = "8092261750";
   const myEmailId = "rishitshankar@gmail.com";
+  const myInstagramUrl = "https://www.instagram.com/rishit_shankar?cplk=MXNlYzVmajBtdzFxag==";
+  const myLinkedInUrl = "https://www.linkedin.com/in/rishit-shankar";
 
   const handleCopyPhone = () => {
     navigator.clipboard.writeText(myPhoneNumber);
@@ -253,6 +256,55 @@ export function AboutCreatorSection() {
                   <Sparkles className="w-3.5 h-3.5 text-purple-400" />
                   <span>Founder: The DAV Dictionary</span>
                 </div>
+              </div>
+
+              {/* Direct Quick Contact & Socials Bar */}
+              <div className="mt-4 pt-4 border-t border-stone-800/80 flex flex-wrap items-center justify-center lg:justify-start gap-2">
+                <a
+                  href={`https://wa.me/91${rawPhoneNumber}?text=Hi%20Rishit%2C%20I%20am%20a%20DAV%20student%20using%20The%20DAV%20Dictionary!`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-stone-950 border border-emerald-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                >
+                  <MessageCircle className="w-3.5 h-3.5" />
+                  <span>WhatsApp: {myPhoneNumber}</span>
+                </a>
+
+                <a
+                  href={`tel:+91${rawPhoneNumber}`}
+                  className="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-400 text-amber-300 hover:text-stone-950 border border-amber-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                >
+                  <Phone className="w-3.5 h-3.5" />
+                  <span>Call: {myPhoneNumber}</span>
+                </a>
+
+                <a
+                  href={`mailto:${myEmailId}`}
+                  className="px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white border border-rose-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  <span>{myEmailId}</span>
+                </a>
+
+                <a
+                  href={myInstagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-xl bg-pink-500/20 hover:bg-pink-500 text-pink-300 hover:text-white border border-pink-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                >
+                  <span className="w-3.5 h-3.5 rounded bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 text-[9px] flex items-center justify-center font-bold text-white leading-none">📸</span>
+                  <span>Instagram</span>
+                </a>
+
+                <a
+                  href={myLinkedInUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500 text-cyan-300 hover:text-white border border-cyan-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                >
+                  <span className="w-3.5 h-3.5 rounded bg-cyan-600 text-[9px] flex items-center justify-center font-bold text-white leading-none">in</span>
+                  <span>LinkedIn</span>
+                </a>
               </div>
 
             </div>
@@ -821,7 +873,7 @@ export function AboutCreatorSection() {
                   Click below to open WhatsApp on your phone or web browser and start chatting directly with Rishit Shankar.
                 </p>
                 <a
-                  href="https://wa.me/919934200000?text=Hi%20Rishit%2C%20I%20am%20a%20DAV%20student%20using%20The%20DAV%20Dictionary!"
+                  href={`https://wa.me/91${rawPhoneNumber}?text=Hi%20Rishit%2C%20I%20am%20a%20DAV%20student%20using%20The%20DAV%20Dictionary!`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-md"
@@ -845,7 +897,7 @@ export function AboutCreatorSection() {
                   </div>
                   <div className="flex items-center gap-1.5">
                     <a
-                      href="tel:+919934200000"
+                      href={`tel:+91${rawPhoneNumber}`}
                       className="flex-1 py-1 px-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-stone-950 text-[10px] font-black text-center transition"
                     >
                       Call Now
@@ -871,7 +923,7 @@ export function AboutCreatorSection() {
                   </div>
                   <div className="flex items-center gap-1.5">
                     <a
-                      href="mailto:rishitshankar@gmail.com"
+                      href={`mailto:${myEmailId}`}
                       className="flex-1 py-1 px-2 rounded-lg bg-rose-500 hover:bg-rose-400 text-white text-[10px] font-black text-center transition"
                     >
                       Send Email
@@ -895,9 +947,9 @@ export function AboutCreatorSection() {
 
                 <div className="space-y-2">
                   {[
-                    { name: 'Instagram', handle: '@rishitshankar_official', url: 'https://instagram.com/rishitshankar_official', color: 'from-pink-500 to-rose-600', badge: 'Photos & Updates' },
+                    { name: 'Instagram', handle: '@rishit_shankar', url: myInstagramUrl, color: 'from-pink-500 to-rose-600', badge: 'Official Profile' },
+                    { name: 'LinkedIn', handle: 'Rishit Shankar', url: myLinkedInUrl, color: 'from-cyan-600 to-blue-700', badge: 'Developer Network' },
                     { name: 'Facebook', handle: 'Rishit Shankar (DAV)', url: 'https://facebook.com/rishit.shankar', color: 'from-blue-600 to-indigo-700', badge: 'Community' },
-                    { name: 'LinkedIn', handle: 'Rishit Shankar', url: 'https://linkedin.com/in/rishit-shankar', color: 'from-cyan-600 to-blue-700', badge: 'Developer Network' },
                     { name: 'Pinterest', handle: '@rishitshankar', url: 'https://pinterest.com/rishitshankar', color: 'from-red-600 to-rose-700', badge: '3D Art & Designs' },
                     { name: 'X / Twitter', handle: '@rishit_shankar', url: 'https://x.com/rishit_shankar', color: 'from-stone-700 to-black', badge: 'Announcements' },
                     { name: 'YouTube', handle: '@TheDAVDictionary', url: 'https://youtube.com/@TheDAVDictionary', color: 'from-red-500 to-red-700', badge: 'Tutorials & Videos' },
