@@ -1,19 +1,28 @@
 import { createClient } from '@supabase/supabase-js';
 
+const DEFAULT_SUPABASE_URL = 'https://trafnmjbnlcexxzcbzqg.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRyYWZubWpibmxjZXh4emNienFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIyNzY1MjksImV4cCI6MjEwNzg1MjUyOX0.o-3LhqKnymn87nU1qd7s-wVLCyyntuMD7lb8xkdP7kE';
+
+let cachedClient = null;
+
 /**
- * Returns the active Supabase client instance or null if not configured.
- * Checks import.meta.env first, then falls back to localStorage configured via CloudDbModal.
+ * Returns the active Supabase client instance.
+ * Automatically connects to live Supabase Cloud Database across all devices,
+ * localhost, and Vercel production deployment.
  */
 export function getSupabaseClient() {
-  const url = import.meta.env.VITE_SUPABASE_URL || localStorage.getItem('dav_supabase_url');
-  const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || localStorage.getItem('dav_supabase_anon_key');
+  if (cachedClient) return cachedClient;
+
+  const url = import.meta.env.VITE_SUPABASE_URL || localStorage.getItem('dav_supabase_url') || DEFAULT_SUPABASE_URL;
+  const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || localStorage.getItem('dav_supabase_anon_key') || DEFAULT_SUPABASE_ANON_KEY;
 
   if (!url || !anonKey || !url.startsWith('http')) {
     return null;
   }
 
   try {
-    return createClient(url, anonKey);
+    cachedClient = createClient(url, anonKey);
+    return cachedClient;
   } catch (err) {
     console.error('Failed to initialize Supabase client:', err);
     return null;

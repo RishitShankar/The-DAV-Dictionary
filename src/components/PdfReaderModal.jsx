@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   X, Download, BookOpen, Brain, Sparkles, 
   Send, Navigation, RefreshCw, Edit3, Type,
-  Palette, Trash2, CheckCircle2, ChevronRight,
+  Palette, Trash2, CheckCircle2, ChevronRight, ChevronLeft,
   Highlighter, HelpCircle, Eye, EyeOff, Save,
-  RotateCcw, Sparkle, ArrowRight, Move, Sliders,
+  RotateCcw, RotateCw, Sparkle, ArrowRight, Move, Sliders,
   Check
 } from 'lucide-react';
 import { BlackDogLogo } from './BlackDogLogo';
@@ -199,6 +199,10 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   const [newNoteText, setNewNoteText] = useState('');
   const [activeNotePosition, setActiveNotePosition] = useState(null);
 
+  // Undo & Redo History Stacks
+  const [undoStack, setUndoStack] = useState([]);
+  const [redoStack, setRedoStack] = useState([]);
+
   // Dragging state for notes
   const [draggingNoteId, setDraggingNoteId] = useState(null);
   const [dragOffset, setDragOffset] = useState({ startX: 0, startY: 0, initX: 0, initY: 0 });
@@ -206,6 +210,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
   const isDrawingRef = useRef(false);
+  const lastWheelTimeRef = useRef(0);
 
   const [aiMessages, setAiMessages] = useState([
     {
@@ -223,11 +228,45 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
   // Offset of +2 pages so book page 1 maps to PDF file page 3 (accounting for cover + preface)
   const pdfPhysicalPage = currentPage + 2;
-  const pdfSourceWithPage = `${pdfBaseSource}#page=${pdfPhysicalPage}&toolbar=1`;
+  // In editor mode, lock view cleanly to Fit and disable native scrolling so drawings stay 100% attached to their page
+  const pdfSourceWithPage = isEditorActive
+    ? `${pdfBaseSource}#page=${pdfPhysicalPage}&view=Fit&toolbar=0&navpanes=0&scrollbar=0`
+    : `${pdfBaseSource}#page=${pdfPhysicalPage}&toolbar=1`;
 
   // Storage keys for page-specific canvas and notes
   const storageKeyNotes = `dav_pdf_notes_${book.title}_p${currentPage}`;
   const storageKeyCanvas = `dav_pdf_canvas_${book.title}_p${currentPage}`;
+
+  // Page flipping handlers that save the current page and switch clean state
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      saveCanvasData();
+      setUndoStack([]);
+      setRedoStack([]);
+      setCurrentPage(prev => prev - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    saveCanvasData();
+    setUndoStack([]);
+    setRedoStack([]);
+    setCurrentPage(prev => prev + 1);
+  };
+
+  // Wheel listener to flip pages cleanly when editor is active
+  const handleContainerWheel = (e) => {
+    if (!isEditorActive) return;
+    const now = Date.now();
+    if (now - lastWheelTimeRef.current < 450) return;
+    if (e.deltaY > 60) {
+      lastWheelTimeRef.current = now;
+      handleNextPage();
+    } else if (e.deltaY < -60) {
+      lastWheelTimeRef.current = now;
+      handlePrevPage();
+    }
+  };
 
   // Resize canvas so coordinates match mouse 1:1 exactly
   const syncCanvasDimensions = () => {
@@ -463,17 +502,25 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     const ctx = canvas.getContext('2d');
     const { x, y } = getCanvasCoordinates(e);
 
+    // Save current canvas state to undo stack before starting new stroke
+    try {
+      const snapshot = canvas.toDataURL();
+      setUndoStack(prev => [...prev.slice(-25), snapshot]);
+      setRedoStack([]); // Clear redo stack on new action
+    } catch (err) {}
+
     isDrawingRef.current = true;
     ctx.beginPath();
     ctx.moveTo(x, y);
 
     if (editorTool === 'highlighter') {
-      // 100% TRANSPARENT MULTIPLY BLEND (Text always visible underneath!)
-      ctx.globalCompositeOperation = 'multiply';
-      ctx.strokeStyle = highlighterColor + '4D'; // 30% alpha for smooth neon highlighting
+      // Semi-transparent neon stroke combined with mixBlendMode: 'multiply' on canvas element
+      // makes the text 100% visible and unblocked underneath!
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = highlighterColor + '80'; // 50% opacity
       ctx.lineWidth = highlighterThickness;
-      ctx.lineCap = 'square';
-      ctx.lineJoin = 'bevel';
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
     } else if (editorTool === 'whitener') {
       // Pure opaque white correction fluid
       ctx.globalCompositeOperation = 'source-over';
@@ -520,9 +567,76 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     }
   };
 
+  // Undo last drawing stroke
+  const handleUndo = () => {
+    const canvas = canvasRef.current;
+    if (!canvas || undoStack.length === 0) return;
+    const ctx = canvas.getContext('2d');
+    const previousSnapshot = undoStack[undoStack.length - 1];
+    const currentSnapshot = canvas.toDataURL();
+
+    setRedoStack(prev => [...prev.slice(-25), currentSnapshot]);
+    setUndoStack(prev => prev.slice(0, prev.length - 1));
+
+    const img = new Image();
+    img.onload = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      saveCanvasData();
+    };
+    img.src = previousSnapshot;
+  };
+
+  // Redo previously undone stroke
+  const handleRedo = () => {
+    const canvas = canvasRef.current;
+    if (!canvas || redoStack.length === 0) return;
+    const ctx = canvas.getContext('2d');
+    const nextSnapshot = redoStack[redoStack.length - 1];
+    const currentSnapshot = canvas.toDataURL();
+
+    setUndoStack(prev => [...prev.slice(-25), currentSnapshot]);
+    setRedoStack(prev => prev.slice(0, prev.length - 1));
+
+    const img = new Image();
+    img.onload = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      saveCanvasData();
+    };
+    img.src = nextSnapshot;
+  };
+
+  // Keyboard shortcut listener for Ctrl+Z (Undo) and Ctrl+Y (Redo)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!isEditorActive) return;
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) {
+        if (e.shiftKey) {
+          e.preventDefault();
+          handleRedo();
+        } else {
+          e.preventDefault();
+          handleUndo();
+        }
+      } else if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || e.key === 'Y')) {
+        e.preventDefault();
+        handleRedo();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isEditorActive, undoStack, redoStack]);
+
   const clearCanvas = () => {
     const canvas = canvasRef.current;
     if (canvas) {
+      try {
+        const snapshot = canvas.toDataURL();
+        setUndoStack(prev => [...prev.slice(-25), snapshot]);
+        setRedoStack([]);
+      } catch (err) {}
+
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       saveCanvasData();
@@ -639,11 +753,39 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
           </div>
         </div>
 
-        {/* AI Page Teleporter Bar */}
+        {/* AI Page Teleporter Bar & Quick Navigation */}
         <div className="flex items-center gap-1.5 sm:gap-2 bg-stone-950 border border-orange-500/40 rounded-xl px-2.5 py-1 text-xs">
-          <Navigation className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+          {/* Quick Prev & Next Page Steppers */}
+          <button
+            type="button"
+            onClick={handlePrevPage}
+            disabled={currentPage <= 1}
+            className="px-2 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 disabled:opacity-30 disabled:cursor-not-allowed text-stone-200 text-xs font-bold flex items-center gap-1 transition cursor-pointer"
+            title="Go to previous page (Drawings stay saved)"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Prev</span>
+          </button>
+
+          <span className="px-2 py-1 rounded-lg bg-stone-900 border border-amber-500/40 text-amber-300 font-mono text-xs font-bold">
+            Page {currentPage}
+          </span>
+
+          <button
+            type="button"
+            onClick={handleNextPage}
+            className="px-2 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold flex items-center gap-1 transition cursor-pointer"
+            title="Go to next page (Drawings stay saved)"
+          >
+            <span className="hidden sm:inline">Next</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+
+          <div className="h-4 w-[1px] bg-stone-800 hidden md:block" />
+
+          <Navigation className="w-3.5 h-3.5 text-amber-400 shrink-0 hidden md:inline" />
           <span className="text-[11px] font-bold text-orange-300 uppercase hidden md:inline">
-            Flip Page:
+            Jump:
           </span>
           <form
             onSubmit={(e) => {
@@ -654,19 +796,19 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
           >
             <input
               type="number"
-              placeholder="e.g. 100"
+              placeholder="e.g. 50"
               min="1"
               max="600"
               value={teleportInput}
               onChange={(e) => setTeleportInput(e.target.value)}
-              className="w-16 sm:w-20 px-2 py-1 text-xs bg-stone-900 border border-stone-700 rounded-lg text-white font-mono focus:outline-none focus:border-amber-400"
+              className="w-14 sm:w-16 px-2 py-1 text-xs bg-stone-900 border border-stone-700 rounded-lg text-white font-mono focus:outline-none focus:border-amber-400"
             />
             <button
               type="submit"
               disabled={!teleportInput}
-              className="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-stone-950 font-black text-xs transition cursor-pointer"
+              className="px-2 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-stone-950 font-black text-xs transition cursor-pointer"
             >
-              Flip
+              Go
             </button>
           </form>
 
@@ -963,6 +1105,30 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
           {/* Right Action buttons for editor */}
           <div className="flex items-center gap-2">
+            {/* Undo Button */}
+            <button
+              type="button"
+              onClick={handleUndo}
+              disabled={undoStack.length === 0}
+              className="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 disabled:opacity-30 disabled:cursor-not-allowed text-stone-200 text-xs flex items-center gap-1.5 transition cursor-pointer border border-stone-700 shadow-xs"
+              title="Undo last stroke (Ctrl+Z)"
+            >
+              <RotateCcw className="w-3.5 h-3.5 text-amber-400" />
+              <span>Undo</span>
+            </button>
+
+            {/* Redo Button */}
+            <button
+              type="button"
+              onClick={handleRedo}
+              disabled={redoStack.length === 0}
+              className="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 disabled:opacity-30 disabled:cursor-not-allowed text-stone-200 text-xs flex items-center gap-1.5 transition cursor-pointer border border-stone-700 shadow-xs"
+              title="Redo stroke (Ctrl+Y)"
+            >
+              <RotateCw className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Redo</span>
+            </button>
+
             <button
               type="button"
               onClick={clearCanvas}
@@ -970,7 +1136,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
               title="Clear drawings on this page"
             >
               <Trash2 className="w-3 h-3" />
-              <span>Clear Page Drawings</span>
+              <span>Clear Page</span>
             </button>
             <button
               type="button"
@@ -993,6 +1159,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
         {/* PDF Frame & Interactive Editor Overlay */}
         <div 
           ref={containerRef} 
+          onWheel={handleContainerWheel}
           className="flex-1 h-full bg-stone-950 flex flex-col overflow-hidden relative"
         >
           
@@ -1007,13 +1174,37 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                 className="w-full h-full border-none bg-white block"
               />
 
-              {/* 100% ACCURATE DRAWING CANVAS LAYER */}
+              {/* Floating Page Flip Controls (Left & Right) */}
+              {currentPage > 1 && (
+                <button
+                  type="button"
+                  onClick={handlePrevPage}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-stone-950/80 hover:bg-amber-500 hover:text-stone-950 text-stone-300 border border-stone-700/80 shadow-2xl transition backdrop-blur-md cursor-pointer group"
+                  title={`Go back to Page ${currentPage - 1} (Drawings stay on their page)`}
+                >
+                  <ChevronLeft className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={handleNextPage}
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-stone-950/80 hover:bg-amber-500 hover:text-stone-950 text-stone-300 border border-stone-700/80 shadow-2xl transition backdrop-blur-md cursor-pointer group"
+                title={`Go forward to Page ${currentPage + 1} (Drawings stay on their page)`}
+              >
+                <ChevronRight className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              </button>
+
+              {/* 100% ACCURATE DRAWING CANVAS LAYER WITH TRANSLUCENT MULTIPLY BLEND */}
               <canvas
                 ref={canvasRef}
                 onMouseDown={startDrawing}
                 onMouseMove={draw}
                 onMouseUp={stopDrawing}
                 onMouseLeave={stopDrawing}
+                style={{
+                  mixBlendMode: editorTool === 'whitener' ? 'normal' : 'multiply'
+                }}
                 className={`absolute inset-0 w-full h-full z-20 ${
                   isEditorActive && editorTool !== 'text' 
                     ? 'pointer-events-auto cursor-crosshair' 

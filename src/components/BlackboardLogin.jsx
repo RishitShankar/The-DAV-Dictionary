@@ -74,7 +74,7 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
     // 2. Check Database Accounts (Local cache first)
     const storedUsers = getRegisteredUsers();
     let matched = storedUsers.find(
-      (u) => u.id.toLowerCase() === idVal.toLowerCase() && u.password === passVal
+      (u) => (u.id.toLowerCase() === idVal.toLowerCase() || (u.admissionNumber && u.admissionNumber.toLowerCase() === idVal.toLowerCase()) || (u.name && u.name.toLowerCase() === idVal.toLowerCase())) && u.password === passVal
     );
 
     // If not found in local cache, query live Supabase Cloud Database!
@@ -83,7 +83,7 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
         const cloudUsers = await fetchCloudStudents();
         if (cloudUsers) {
           matched = cloudUsers.find(
-            (u) => u.id.toLowerCase() === idVal.toLowerCase() && u.password === passVal
+            (u) => (u.id.toLowerCase() === idVal.toLowerCase() || (u.admissionNumber && u.admissionNumber.toLowerCase() === idVal.toLowerCase()) || (u.name && u.name.toLowerCase() === idVal.toLowerCase())) && u.password === passVal
           );
           if (matched) {
             const updated = [matched, ...storedUsers.filter(u => u.id.toLowerCase() !== matched.id.toLowerCase())];

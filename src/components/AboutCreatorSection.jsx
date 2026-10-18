@@ -7,6 +7,11 @@ import {
   Compass, Share2, Quote, ArrowUpRight, PartyPopper, MessageCircle,
   Phone, X, Send
 } from 'lucide-react';
+import { 
+  InstagramLogo, LinkedInLogo, FacebookLogo, SnapchatLogo, 
+  YouTubeLogo, XTwitterLogo, PinterestLogo, GitHubLogo, 
+  TelegramLogo, WhatsAppLogo 
+} from './SocialLogos';
 
 export function AboutCreatorSection() {
   const [activeTab, setActiveTab] = useState('story');
@@ -21,9 +26,20 @@ export function AboutCreatorSection() {
 
   const myPhoneNumber = "+91 80922 61750";
   const rawPhoneNumber = "8092261750";
+  const myWhatsAppNumber = "+91 94700 33984";
+  const rawWhatsAppNumber = "9470033984";
   const myEmailId = "rishitshankar@gmail.com";
+  
+  // Official Links Provided by Rishit Shankar
   const myInstagramUrl = "https://www.instagram.com/rishit_shankar?cplk=MXNlYzVmajBtdzFxag==";
-  const myLinkedInUrl = "https://www.linkedin.com/in/rishit-shankar";
+  const myLinkedInUrl = "https://www.linkedin.com/in/rishit-shankar-05559b2bb";
+  const myFacebookUrl = "https://www.facebook.com/share/1DqeFxcLH5/";
+  const mySnapchatUrl = "https://www.snapchat.com/add/rishitshankar?share_id=-ZCpwO3-VMM&locale=en-IN";
+  const myPinterestUrl = "https://pin.it/62wWl4pk8";
+  const myXTwitterUrl = "https://x.com/RishitShan59909";
+  const myYouTubeUrl = "https://youtube.com/@tofaugerman8214?si=NvJkQQPIn";
+  const myGitHubUrl = "https://github.com/RishitShankar";
+  const myTelegramUrl = "https://t.me/+919470033984";
 
   const handleCopyPhone = () => {
     navigator.clipboard.writeText(myPhoneNumber);
@@ -38,7 +54,7 @@ export function AboutCreatorSection() {
   };
 
   const handleCopyBio = () => {
-    const bioText = `Rishit Shankar (रीशीत शंकर) • Age 14 • Class 8 DAV Khabra Head Boy, Roll 25. Full-Stack Developer of The DAV Dictionary & Shankar AI. 95% in Class 8 Half-Yearly Exams. Gold Medal in Chess Cluster 3. Trader, Chess Competitor (1000+ Games), 3D Modeler (Blender), and Video Editor (DaVinci Resolve).`;
+    const bioText = `Rishit Shankar (रीशीत शंकर) • Age 14 • Class 8 DAV Khabra Head Boy, Roll 25. Full-Stack Developer of The DAV Dictionary & Shankar AI. 96% in Class 8 Half-Yearly Exams (100/100 in Sanskrit, 99 in Hindi, 97 in Science & SST). Gold Medal in Chess Cluster 3. Trader, Chess Competitor (1000+ Games), 3D Modeler (Blender), and Video Editor (DaVinci Resolve). WhatsApp: +91 94700 33984 • Call: +91 80922 61750.`;
     navigator.clipboard.writeText(bioText);
     setCopiedBio(true);
     setTimeout(() => setCopiedBio(false), 2000);
@@ -101,7 +117,7 @@ export function AboutCreatorSection() {
 
   const tabs = [
     { id: 'story', label: 'Identity & Leadership', icon: Crown, color: 'text-amber-400', badge: 'Head Boy' },
-    { id: 'academics', label: 'Academics & Half-Yearly', icon: GraduationCap, color: 'text-rose-400', badge: '95% Class 8' },
+    { id: 'academics', label: 'Academics & Half-Yearly', icon: GraduationCap, color: 'text-rose-400', badge: '96% Class 8' },
     { id: 'tech', label: 'Coding & Tech Stack', icon: Code2, color: 'text-cyan-400', badge: 'Full-Stack' },
     { id: 'creative', label: 'Design, 3D & Video', icon: Palette, color: 'text-purple-400', badge: 'Blender & Media' },
     { id: 'gaming_chess', label: 'Chess & Strategy', icon: Gamepad2, color: 'text-emerald-400', badge: '1000+ Chess' },
@@ -138,7 +154,7 @@ export function AboutCreatorSection() {
               <span>🎊</span>
             </div>
             <p className="text-xs sm:text-sm font-bold text-stone-950 mt-1">
-              Class 8 DAV Khabra Head Boy • 95% in Class 8 Half-Yearly Exams • Founder of The DAV Dictionary!
+              Class 8 DAV Khabra Head Boy • 96% in Class 8 Half-Yearly Exams • 100/100 in Sanskrit • Founder of The DAV Dictionary!
             </p>
           </div>
         </div>
@@ -231,7 +247,7 @@ export function AboutCreatorSection() {
               </p>
 
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl mx-auto lg:mx-0 mb-6">
-                Class 8 DAV Khabra Head Boy, full-stack software developer, 95% in Class 8 half-yearly exams, and creator of <strong>The DAV Dictionary</strong> and <strong>Shankar AI</strong>. Driven to unite disciplined learning and cutting-edge artificial intelligence to empower students across India.
+                Class 8 DAV Khabra Head Boy, full-stack software developer, 96% in Class 8 half-yearly exams, and creator of <strong>The DAV Dictionary</strong> and <strong>Shankar AI</strong>. Driven to unite disciplined learning and cutting-edge artificial intelligence to empower students across India.
               </p>
 
               {/* Key Quick Facts Pills */}
@@ -246,7 +262,7 @@ export function AboutCreatorSection() {
                 </div>
                 <div className="px-3 py-1.5 rounded-xl bg-stone-800/80 border border-stone-700 text-emerald-300 flex items-center gap-1.5 font-bold">
                   <GraduationCap className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Age 14 • 95%</span>
+                  <span>Age 14 • 96%</span>
                 </div>
                 <div className="px-3 py-1.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center gap-1.5 font-bold">
                   <Crown className="w-3.5 h-3.5 text-amber-400" />
@@ -261,13 +277,13 @@ export function AboutCreatorSection() {
               {/* Direct Quick Contact & Socials Bar */}
               <div className="mt-4 pt-4 border-t border-stone-800/80 flex flex-wrap items-center justify-center lg:justify-start gap-2">
                 <a
-                  href={`https://wa.me/91${rawPhoneNumber}?text=Hi%20Rishit%2C%20I%20am%20a%20DAV%20student%20using%20The%20DAV%20Dictionary!`}
+                  href={`https://wa.me/91${rawWhatsAppNumber}?text=Hi%20Rishit%2C%20I%20am%20a%20DAV%20student%20using%20The%20DAV%20Dictionary!`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-stone-950 border border-emerald-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
                 >
-                  <MessageCircle className="w-3.5 h-3.5" />
-                  <span>WhatsApp: {myPhoneNumber}</span>
+                  <WhatsAppLogo className="w-3.5 h-3.5 fill-current" />
+                  <span>WhatsApp: {myWhatsAppNumber}</span>
                 </a>
 
                 <a
@@ -279,7 +295,7 @@ export function AboutCreatorSection() {
                 </a>
 
                 <a
-                  href={`mailto:${myEmailId}`}
+                  href={`mailto:${myEmailId}?subject=Hello%20Rishit%20-%20The%20DAV%20Dictionary&body=Hi%20Rishit%2C%0A%0A`}
                   className="px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white border border-rose-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
                 >
                   <Mail className="w-3.5 h-3.5" />
@@ -292,8 +308,18 @@ export function AboutCreatorSection() {
                   rel="noopener noreferrer"
                   className="px-3 py-1.5 rounded-xl bg-pink-500/20 hover:bg-pink-500 text-pink-300 hover:text-white border border-pink-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
                 >
-                  <span className="w-3.5 h-3.5 rounded bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 text-[9px] flex items-center justify-center font-bold text-white leading-none">📸</span>
+                  <InstagramLogo className="w-3.5 h-3.5 fill-current" />
                   <span>Instagram</span>
+                </a>
+
+                <a
+                  href={mySnapchatUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-xl bg-yellow-500/20 hover:bg-yellow-400 text-yellow-300 hover:text-stone-950 border border-yellow-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                >
+                  <SnapchatLogo className="w-3.5 h-3.5 fill-current" />
+                  <span>Snapchat</span>
                 </a>
 
                 <a
@@ -302,7 +328,7 @@ export function AboutCreatorSection() {
                   rel="noopener noreferrer"
                   className="px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500 text-cyan-300 hover:text-white border border-cyan-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
                 >
-                  <span className="w-3.5 h-3.5 rounded bg-cyan-600 text-[9px] flex items-center justify-center font-bold text-white leading-none">in</span>
+                  <LinkedInLogo className="w-3.5 h-3.5 fill-current" />
                   <span>LinkedIn</span>
                 </a>
               </div>
@@ -315,7 +341,7 @@ export function AboutCreatorSection() {
         {/* 6 Metric Highlight Cards with Exact Marks */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 border-t border-stone-800 bg-stone-950/70 p-4 sm:p-6 gap-3">
           <div className="p-3 rounded-2xl bg-stone-900/60 border border-amber-500/40 text-center">
-            <div className="text-xl sm:text-2xl font-black text-amber-400">95%</div>
+            <div className="text-xl sm:text-2xl font-black text-amber-400">96%</div>
             <div className="text-[11px] font-bold text-stone-300 mt-0.5">Class 8 Half-Yearly</div>
             <div className="text-[10px] text-amber-300 font-semibold">Overall Aggregate</div>
           </div>
@@ -324,6 +350,11 @@ export function AboutCreatorSection() {
             <div className="text-xl sm:text-2xl font-black text-orange-400">99 / 100</div>
             <div className="text-[11px] font-bold text-stone-300 mt-0.5">Hindi Course</div>
             <div className="text-[10px] text-stone-500">Gyan & Abhyas Sagar</div>
+          </div>
+          <div className="p-3 rounded-2xl bg-stone-900/60 border border-amber-500/40 bg-gradient-to-b from-amber-500/10 to-stone-900/60 text-center">
+            <div className="text-xl sm:text-2xl font-black text-amber-300">100 / 100</div>
+            <div className="text-[11px] font-bold text-stone-200 mt-0.5">Surabhi Sanskrit</div>
+            <div className="text-[10px] text-amber-400 font-bold">80/80 + 20 Century!</div>
           </div>
           <div className="p-3 rounded-2xl bg-stone-900/60 border border-stone-800 text-center">
             <div className="text-xl sm:text-2xl font-black text-purple-400">97 / 100</div>
@@ -334,11 +365,6 @@ export function AboutCreatorSection() {
             <div className="text-xl sm:text-2xl font-black text-cyan-400">94 / 100</div>
             <div className="text-[11px] font-bold text-stone-300 mt-0.5">Mathematics</div>
             <div className="text-[10px] text-stone-500">74/80 + 20 Marks</div>
-          </div>
-          <div className="p-3 rounded-2xl bg-stone-900/60 border border-stone-800 text-center">
-            <div className="text-xl sm:text-2xl font-black text-rose-400">89 / 100</div>
-            <div className="text-[11px] font-bold text-stone-300 mt-0.5">English Course</div>
-            <div className="text-[10px] text-stone-500">69/80 + 20 Marks</div>
           </div>
           <div className="p-3 rounded-2xl bg-stone-900/60 border border-stone-800 text-center">
             <div className="text-xl sm:text-2xl font-black text-yellow-400">Trader</div>
@@ -862,7 +888,7 @@ export function AboutCreatorSection() {
               <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-900/40 via-emerald-800/20 to-stone-900 border border-emerald-500/40 shadow-lg">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2 text-emerald-400 font-black text-sm">
-                    <MessageCircle className="w-5 h-5" />
+                    <WhatsAppLogo className="w-5 h-5 fill-current" />
                     <span>WhatsApp Instant Chat</span>
                   </div>
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 uppercase">
@@ -870,16 +896,16 @@ export function AboutCreatorSection() {
                   </span>
                 </div>
                 <p className="text-xs text-stone-300 mb-3">
-                  Click below to open WhatsApp on your phone or web browser and start chatting directly with Rishit Shankar.
+                  Click below to open WhatsApp on your phone or web browser and start chatting directly with Rishit Shankar ({myWhatsAppNumber}).
                 </p>
                 <a
-                  href={`https://wa.me/91${rawPhoneNumber}?text=Hi%20Rishit%2C%20I%20am%20a%20DAV%20student%20using%20The%20DAV%20Dictionary!`}
+                  href={`https://wa.me/91${rawWhatsAppNumber}?text=Hi%20Rishit%2C%20I%20am%20a%20DAV%20student%20using%20The%20DAV%20Dictionary!`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-md"
                 >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>Open WhatsApp Chat Now</span>
+                  <WhatsAppLogo className="w-4 h-4 fill-current" />
+                  <span>Open WhatsApp Chat ({myWhatsAppNumber})</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               </div>
@@ -923,10 +949,20 @@ export function AboutCreatorSection() {
                   </div>
                   <div className="flex items-center gap-1.5">
                     <a
-                      href={`mailto:${myEmailId}`}
+                      href={`mailto:${myEmailId}?subject=Hello%20Rishit%20-%20The%20DAV%20Dictionary&body=Hi%20Rishit%2C%0A%0AI%20am%20contacting%20you%20from%20The%20DAV%20Dictionary.%0A%0A`}
                       className="flex-1 py-1 px-2 rounded-lg bg-rose-500 hover:bg-rose-400 text-white text-[10px] font-black text-center transition"
+                      title="Direct Mailto"
                     >
                       Send Email
+                    </a>
+                    <a
+                      href={`https://mail.google.com/mail/?view=cm&fs=1&to=${myEmailId}&su=Hello%20Rishit%20-%20The%20DAV%20Dictionary`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="py-1 px-2 rounded-lg bg-rose-600/50 hover:bg-rose-600 text-white text-[9px] font-bold text-center transition"
+                      title="Open in Gmail Web"
+                    >
+                      Gmail
                     </a>
                     <button
                       onClick={handleCopyEmail}
@@ -939,50 +975,54 @@ export function AboutCreatorSection() {
                 </div>
               </div>
 
-              {/* 8 OFFICIAL SOCIAL MEDIA PLATFORMS */}
+              {/* OFFICIAL SOCIAL MEDIA PLATFORMS WITH REAL OFFICIAL LOGOS */}
               <div>
                 <span className="text-[11px] font-bold text-stone-400 uppercase tracking-wider block mb-2">
-                  Official Social Channels (8 Platforms):
+                  Official Verified Channels (All Platforms):
                 </span>
 
                 <div className="space-y-2">
                   {[
-                    { name: 'Instagram', handle: '@rishit_shankar', url: myInstagramUrl, color: 'from-pink-500 to-rose-600', badge: 'Official Profile' },
-                    { name: 'LinkedIn', handle: 'Rishit Shankar', url: myLinkedInUrl, color: 'from-cyan-600 to-blue-700', badge: 'Developer Network' },
-                    { name: 'Facebook', handle: 'Rishit Shankar (DAV)', url: 'https://facebook.com/rishit.shankar', color: 'from-blue-600 to-indigo-700', badge: 'Community' },
-                    { name: 'Pinterest', handle: '@rishitshankar', url: 'https://pinterest.com/rishitshankar', color: 'from-red-600 to-rose-700', badge: '3D Art & Designs' },
-                    { name: 'X / Twitter', handle: '@rishit_shankar', url: 'https://x.com/rishit_shankar', color: 'from-stone-700 to-black', badge: 'Announcements' },
-                    { name: 'YouTube', handle: '@TheDAVDictionary', url: 'https://youtube.com/@TheDAVDictionary', color: 'from-red-500 to-red-700', badge: 'Tutorials & Videos' },
-                    { name: 'GitHub', handle: '@RishitShankar', url: 'https://github.com/RishitShankar', color: 'from-stone-800 to-stone-950', badge: 'Source Code' },
-                    { name: 'Telegram', handle: '@rishit_shankar', url: 'https://t.me/rishit_shankar', color: 'from-sky-500 to-blue-600', badge: 'Fast Messaging' }
-                  ].map((soc, idx) => (
-                    <a
-                      key={idx}
-                      href={soc.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2.5 rounded-xl bg-stone-800/60 hover:bg-stone-800 border border-stone-700 hover:border-amber-500/40 flex items-center justify-between gap-3 transition group"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <div className={`w-7 h-7 rounded-lg bg-gradient-to-tr ${soc.color} text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm`}>
-                          {soc.name[0]}
-                        </div>
-                        <div>
-                          <div className="text-xs font-bold text-white group-hover:text-amber-300 transition-colors">
-                            {soc.name}
+                    { name: 'Instagram', handle: '@rishit_shankar', url: myInstagramUrl, Logo: InstagramLogo, color: 'bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600', badge: 'Official Profile' },
+                    { name: 'Snapchat', handle: '@rishitshankar', url: mySnapchatUrl, Logo: SnapchatLogo, color: 'bg-yellow-400 text-black', badge: 'Snap & Stories' },
+                    { name: 'LinkedIn', handle: 'Rishit Shankar', url: myLinkedInUrl, Logo: LinkedInLogo, color: 'bg-[#0077b5]', badge: 'Developer Network' },
+                    { name: 'Facebook', handle: 'Rishit Shankar', url: myFacebookUrl, Logo: FacebookLogo, color: 'bg-[#1877f2]', badge: 'Community' },
+                    { name: 'Pinterest', handle: 'Rishit Shankar', url: myPinterestUrl, Logo: PinterestLogo, color: 'bg-[#e60023]', badge: 'Art & Pinboards' },
+                    { name: 'X / Twitter', handle: '@RishitShan59909', url: myXTwitterUrl, Logo: XTwitterLogo, color: 'bg-black border border-stone-700', badge: 'Official Announcements' },
+                    { name: 'YouTube', handle: '@tofaugerman8214', url: myYouTubeUrl, Logo: YouTubeLogo, color: 'bg-[#ff0000]', badge: 'Channel' },
+                    { name: 'GitHub', handle: '@RishitShankar', url: myGitHubUrl, Logo: GitHubLogo, color: 'bg-stone-900 border border-stone-700', badge: 'Source Code' },
+                    { name: 'Telegram', handle: '+91 94700 33984', url: myTelegramUrl, Logo: TelegramLogo, color: 'bg-[#229ed9]', badge: 'Instant Ping' }
+                  ].map((soc, idx) => {
+                    const LogoComponent = soc.Logo;
+                    return (
+                      <a
+                        key={idx}
+                        href={soc.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2.5 rounded-xl bg-stone-800/60 hover:bg-stone-800 border border-stone-700 hover:border-amber-500/40 flex items-center justify-between gap-3 transition group"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className={`w-7 h-7 rounded-lg ${soc.color} flex items-center justify-center shrink-0 shadow-sm p-1.5`}>
+                            <LogoComponent className="w-full h-full fill-current" />
                           </div>
-                          <div className="text-[10px] text-stone-400 font-mono">{soc.handle}</div>
+                          <div>
+                            <div className="text-xs font-bold text-white group-hover:text-amber-300 transition-colors">
+                              {soc.name}
+                            </div>
+                            <div className="text-[10px] text-stone-400 font-mono">{soc.handle}</div>
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="flex items-center gap-2">
-                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-stone-900 text-stone-300 border border-stone-700">
-                          {soc.badge}
-                        </span>
-                        <ExternalLink className="w-3.5 h-3.5 text-stone-500 group-hover:text-white" />
-                      </div>
-                    </a>
-                  ))}
+                        <div className="flex items-center gap-2">
+                          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-stone-900 text-stone-300 border border-stone-700">
+                            {soc.badge}
+                          </span>
+                          <ExternalLink className="w-3.5 h-3.5 text-stone-500 group-hover:text-white" />
+                        </div>
+                      </a>
+                    );
+                  })}
                 </div>
               </div>
 

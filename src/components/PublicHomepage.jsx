@@ -6,6 +6,7 @@ import {
   FileText, HelpCircle, Heart, Code2, LogIn, Highlighter,
   Flame, Laptop, Check, ArrowUpRight, School, Phone, Mail, MessageCircle
 } from 'lucide-react';
+import { WhatsAppLogo, InstagramLogo, LinkedInLogo, SnapchatLogo } from './SocialLogos';
 
 export function PublicHomepage({ onGoToLogin }) {
   const [activeGradeFilter, setActiveGradeFilter] = useState('8');
@@ -70,7 +71,7 @@ export function PublicHomepage({ onGoToLogin }) {
     },
     {
       q: "Who is the developer of this platform?",
-      a: "The DAV Dictionary was conceived, designed, and developed by Rishit Shankar (Head Boy, Class 8 DAV Khabra, Roll 25), who scored 95% in his Class 8 exams and is a Chess Cluster 3 Gold Medalist. He created this platform as an official student initiative to empower every DAVian."
+      a: "The DAV Dictionary was conceived, designed, and developed by Rishit Shankar (Head Boy, Class 8 DAV Khabra, Roll 25), who scored 96% in his Class 8 exams (with 100/100 in Sanskrit and 99/100 in Hindi) and is a Chess Cluster 3 Gold Medalist. He created this platform as an official student initiative to empower every DAVian."
     }
   ];
 
@@ -463,8 +464,8 @@ export function PublicHomepage({ onGoToLogin }) {
                 {/* Developer Highlights */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
                   <div className="p-3 rounded-xl bg-stone-950/70 border border-stone-800">
-                    <div className="text-amber-400 font-black text-sm">95% Score</div>
-                    <div className="text-[10px] text-stone-400">Class 8 Half-Yearly</div>
+                    <div className="text-amber-400 font-black text-sm">96% Score</div>
+                    <div className="text-[10px] text-stone-400">Class 8 Half-Yearly (100/100 Sanskrit)</div>
                   </div>
                   <div className="p-3 rounded-xl bg-stone-950/70 border border-stone-800">
                     <div className="text-emerald-400 font-black text-sm">Gold Medalist</div>
@@ -485,12 +486,12 @@ export function PublicHomepage({ onGoToLogin }) {
                   </button>
 
                   <a
-                    href="https://wa.me/918092261750?text=Hi%20Rishit%2C%20I%20am%20a%20DAV%20student%20using%20The%20DAV%20Dictionary!"
+                    href="https://wa.me/919470033984?text=Hi%20Rishit%2C%20I%20am%20a%20DAV%20student%20using%20The%20DAV%20Dictionary!"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-stone-950 border border-emerald-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                    className="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-stone-950 border border-emerald-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
                   >
-                    <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
+                    <WhatsAppLogo className="w-3.5 h-3.5 fill-current" />
                     <span>WhatsApp</span>
                   </a>
 
@@ -503,7 +504,7 @@ export function PublicHomepage({ onGoToLogin }) {
                   </a>
 
                   <a
-                    href="mailto:rishitshankar@gmail.com"
+                    href="mailto:rishitshankar@gmail.com?subject=Hello%20Rishit%20-%20The%20DAV%20Dictionary"
                     className="px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-rose-500 text-rose-300 hover:text-white border border-stone-700 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
                   >
                     <Mail className="w-3.5 h-3.5" />
@@ -514,19 +515,29 @@ export function PublicHomepage({ onGoToLogin }) {
                     href="https://www.instagram.com/rishit_shankar?cplk=MXNlYzVmajBtdzFxag=="
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3.5 py-2 rounded-xl bg-pink-500/20 hover:bg-pink-500 text-pink-300 hover:text-white border border-pink-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                    className="px-3.5 py-2 rounded-xl bg-pink-500/20 hover:bg-pink-500 text-pink-300 hover:text-white border border-pink-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
                   >
-                    <span className="w-3.5 h-3.5 rounded bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 text-[9px] flex items-center justify-center font-bold text-white leading-none">📸</span>
+                    <InstagramLogo className="w-3.5 h-3.5 fill-current" />
                     <span>Instagram</span>
                   </a>
 
                   <a
-                    href="https://www.linkedin.com/in/rishit-shankar"
+                    href="https://www.snapchat.com/add/rishitshankar?share_id=-ZCpwO3-VMM&locale=en-IN"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3.5 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500 text-cyan-300 hover:text-white border border-cyan-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                    className="px-3.5 py-2 rounded-xl bg-yellow-500/20 hover:bg-yellow-400 text-yellow-300 hover:text-stone-950 border border-yellow-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
                   >
-                    <span className="w-3.5 h-3.5 rounded bg-cyan-600 text-[9px] flex items-center justify-center font-bold text-white leading-none">in</span>
+                    <SnapchatLogo className="w-3.5 h-3.5 fill-current" />
+                    <span>Snapchat</span>
+                  </a>
+
+                  <a
+                    href="https://www.linkedin.com/in/rishit-shankar-05559b2bb"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3.5 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500 text-cyan-300 hover:text-white border border-cyan-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                  >
+                    <LinkedInLogo className="w-3.5 h-3.5 fill-current" />
                     <span>LinkedIn</span>
                   </a>
                 </div>
