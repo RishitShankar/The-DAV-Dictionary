@@ -23,6 +23,7 @@ export function AboutCreatorSection() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [copiedWhatsApp, setCopiedWhatsApp] = useState(false);
 
   const myPhoneNumber = "+91 80922 61750";
   const rawPhoneNumber = "8092261750";
@@ -40,6 +41,12 @@ export function AboutCreatorSection() {
   const myYouTubeUrl = "https://youtube.com/@tofaugerman8214?si=NvJkQQPIn";
   const myGitHubUrl = "https://github.com/RishitShankar";
   const myTelegramUrl = "https://t.me/+919470033984";
+
+  const handleCopyWhatsApp = () => {
+    navigator.clipboard.writeText(myWhatsAppNumber);
+    setCopiedWhatsApp(true);
+    setTimeout(() => setCopiedWhatsApp(false), 2000);
+  };
 
   const handleCopyPhone = () => {
     navigator.clipboard.writeText(myPhoneNumber);
@@ -898,16 +905,36 @@ export function AboutCreatorSection() {
                 <p className="text-xs text-stone-300 mb-3">
                   Click below to open WhatsApp on your phone or web browser and start chatting directly with Rishit Shankar ({myWhatsAppNumber}).
                 </p>
-                <a
-                  href={`https://wa.me/91${rawWhatsAppNumber}?text=Hi%20Rishit%2C%20I%20am%20a%20DAV%20student%20using%20The%20DAV%20Dictionary!`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-md"
-                >
-                  <WhatsAppLogo className="w-4 h-4 fill-current" />
-                  <span>Open WhatsApp Chat ({myWhatsAppNumber})</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
+                <div className="flex flex-col sm:flex-row items-center gap-2">
+                  <a
+                    href={`https://wa.me/91${rawWhatsAppNumber}?text=Hi%20Rishit%2C%20I%20am%20a%20DAV%20student%20using%20The%20DAV%20Dictionary!`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 w-full py-2.5 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-md"
+                  >
+                    <WhatsAppLogo className="w-4 h-4 fill-current" />
+                    <span>Open App ({myWhatsAppNumber})</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+
+                  <a
+                    href={`https://web.whatsapp.com/send?phone=91${rawWhatsAppNumber}&text=Hi%20Rishit%2C%20I%20am%20a%20DAV%20student%20using%20The%20DAV%20Dictionary!`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="py-2.5 px-3 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 border border-emerald-500/40 text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer"
+                    title="Open directly in WhatsApp Web in browser"
+                  >
+                    <span>WhatsApp Web</span>
+                  </a>
+
+                  <button
+                    onClick={handleCopyWhatsApp}
+                    className="p-2.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 border border-stone-700 transition cursor-pointer"
+                    title="Copy WhatsApp Number"
+                  >
+                    {copiedWhatsApp ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
 
               {/* DIRECT CONTACT #2: Phone & Email Cards */}
