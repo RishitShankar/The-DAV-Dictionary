@@ -73,6 +73,27 @@ export function App() {
     (user?.dimensionName && user?.dimensionName.toLowerCase().includes('faculty'))
   );
 
+  // Sub-Dimensions for Dimension 5 (Teachers):
+  // 'teacher_only' = Sub-Dimension 5A: Only Teacher (Faculty OS)
+  // 'teacher_explorer' = Sub-Dimension 5B: Teacher & Explorer (Full Campus 1-10 + Section 5 Faculty Master OS)
+  const [teacherSubDimension, setTeacherSubDimension] = useState(() => {
+    try {
+      const saved = localStorage.getItem('dav_teacher_sub_dim');
+      if (saved === 'teacher_only' || saved === 'teacher_explorer') return saved;
+    } catch (e) {}
+    return 'teacher_explorer'; // Default to Explorer so teacher has all 10 sections + Section 5
+  });
+
+  const handleToggleTeacherSubDimension = (mode) => {
+    setTeacherSubDimension(mode);
+    try {
+      localStorage.setItem('dav_teacher_sub_dim', mode);
+    } catch (e) {}
+    if (mode === 'teacher_only') {
+      setActiveSection(5);
+    }
+  };
+
   const [teacherSubSection, setTeacherSubSection] = useState('homework');
 
   const [uploadedPdfs, setUploadedPdfs] = useState(() => {
@@ -125,12 +146,14 @@ export function App() {
   };
 
   const handleSelectSection = (secId) => {
-    if (isTeacher) {
-      // Teachers only have access to Section 5 (which functions as Section 1 for them)
+    if (isTeacher && teacherSubDimension === 'teacher_only') {
+      // In 5A Only Teacher mode, locked to Faculty OS (Section 5)
       setActiveSection(5);
       return;
     }
+    // In 5B Teacher & Explorer mode, teacher can explore all 10 sections freely!
     setActiveSection(secId);
+    setIsSidebarOpen(false);
   };
 
   const handleLogout = () => {
@@ -215,6 +238,8 @@ export function App() {
         onSelectSection={handleSelectSection}
         user={user}
         isTeacher={isTeacher}
+        teacherSubDimension={teacherSubDimension}
+        onToggleSubDimension={handleToggleTeacherSubDimension}
         teacherSubSection={teacherSubSection}
         onSelectTeacherSubSection={(sub) => {
           setTeacherSubSection(sub);
@@ -230,6 +255,8 @@ export function App() {
         onToggleSidebar={() => setIsSidebarOpen(prev => !prev)}
         user={user}
         isTeacher={isTeacher}
+        teacherSubDimension={teacherSubDimension}
+        onToggleSubDimension={handleToggleTeacherSubDimension}
         teacherSubSection={teacherSubSection}
         onSelectTeacherSubSection={(sub) => setTeacherSubSection(sub)}
         deviceDimension={deviceDimension}
@@ -258,12 +285,14 @@ export function App() {
 
       {/* Main Content Area */}
       <main className={`flex-1 ${deviceDimension === 'mobile' ? 'pb-24' : ''}`}>
-        {isTeacher ? (
+        {(isTeacher && teacherSubDimension === 'teacher_only') ? (
           <TeachersSection 
             user={user} 
             isTeacherOS={true}
             initialSubSection={teacherSubSection}
             onSubSectionChange={(sub) => setTeacherSubSection(sub)}
+            teacherSubDimension={teacherSubDimension}
+            onToggleSubDimension={handleToggleTeacherSubDimension}
           />
         ) : activeSection === 1 ? (
           <SectionOverview onSelectSection={handleSelectSection} />
@@ -299,7 +328,11 @@ export function App() {
         ) : activeSection === 5 ? (
           <TeachersSection 
             user={user} 
-            isTeacherOS={false}
+            isTeacherOS={isTeacher}
+            initialSubSection={teacherSubSection}
+            onSubSectionChange={(sub) => setTeacherSubSection(sub)}
+            teacherSubDimension={teacherSubDimension}
+            onToggleSubDimension={handleToggleTeacherSubDimension}
           />
         ) : activeSection === 8 ? (
           <DonationSection currentUser={user} />

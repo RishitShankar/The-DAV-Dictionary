@@ -231,8 +231,11 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
   // Offset of +2 pages so book page 1 maps to PDF file page 3 (accounting for cover + preface)
   const pdfPhysicalPage = currentPage + 2;
-  // Always lock view cleanly to Fit and disable native scrolling so drawings stay 100% attached to their page
-  const pdfSourceWithPage = `${pdfBaseSource}#page=${pdfPhysicalPage}&view=Fit&toolbar=0&navpanes=0&scrollbar=0`;
+  // When in editor mode, lock view cleanly to Fit and disable scrollbars so drawings stay attached
+  // When in reading mode, allow full-width FitH, native scrollbars, and smooth reading
+  const pdfSourceWithPage = isEditorActive
+    ? `${pdfBaseSource}#page=${pdfPhysicalPage}&view=Fit&toolbar=0&navpanes=0&scrollbar=0`
+    : `${pdfBaseSource}#page=${pdfPhysicalPage}&view=FitH&toolbar=1&navpanes=0&scrollbar=1`;
 
   // Storage keys for page-specific canvas and notes
   const storageKeyNotes = `dav_pdf_notes_${book.title}_p${currentPage}`;
@@ -244,13 +247,31 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   const touchStartYRef = useRef(null);
   const touchStartXRef = useRef(null);
 
+  // Lock body overflow so background website NEVER scrolls while reading PDF
+  useEffect(() => {
+    if (isOpen) {
+      const origOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = origOverflow;
+      };
+    }
+  }, [isOpen]);
+
+  // Ensure current page resets properly when book changes and is never 0
+  useEffect(() => {
+    if (book) {
+      setCurrentPage(Math.max(1, book.page || 1));
+    }
+  }, [book]);
+
   // Page flipping handlers that save the current page and switch clean state
   const handlePrevPage = () => {
     if (currentPage > 1) {
       saveCanvasData(currentPage);
       setUndoStack([]);
       setRedoStack([]);
-      setCurrentPage(prev => prev - 1);
+      setCurrentPage(prev => Math.max(1, prev - 1));
     }
   };
 
@@ -277,8 +298,11 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentPage, isEditorActive]);
 
-  // Wheel listener to flip pages cleanly (drawings stay 100% attached to their respective page)
+  // Wheel listener to flip pages cleanly when in Annotation Mode
   const handlePageWheel = (e) => {
+    // In normal reading mode, let native PDF iframe handle scrolling freely
+    if (!isEditorActive) return;
+
     // If user is actively drawing a stroke with pen/highlighter, do not flip page mid-stroke
     if (isDrawingRef.current) return;
 
@@ -303,10 +327,10 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     }
   };
 
-  // Native non-passive wheel listener on container to guarantee browser never scrolls
+  // Native non-passive wheel listener on container only when in Annotation Mode
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    if (!container || !isEditorActive) return;
 
     const onWheelNative = (e) => {
       handlePageWheel(e);
@@ -1233,7 +1257,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
         {/* PDF Frame & Interactive Editor Overlay */}
         <div 
           ref={containerRef} 
-          onWheel={handlePageWheel}
+          onWheel={isEditorActive ? handlePageWheel : undefined}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
           className="flex-1 h-full bg-stone-950 flex flex-col overflow-hidden relative select-none"
@@ -1250,14 +1274,15 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                 </div>
               )}
 
-              {/* PDF Viewer Iframe with Dynamic Page Key to guarantee instant navigation on page change */}
-              {/* NOTE: pointer-events-none prevents Chrome native PDF viewer from capturing continuous scroll drift */}
+              {/* PDF Viewer Iframe with Dynamic Key to guarantee instant navigation on page change */}
               <iframe
-                key={`${book.title || 'pdf-viewer'}-page-${currentPage}`}
+                key={`${book.title || 'pdf-viewer'}-page-${currentPage}-${isEditorActive ? 'edit' : 'read'}`}
                 ref={iframeRef}
                 src={pdfSourceWithPage}
                 title={book.title}
-                className="w-full h-full border-none bg-white block pointer-events-none select-none"
+                className={`w-full h-full border-none bg-white block select-none ${
+                  isEditorActive ? 'pointer-events-none' : 'pointer-events-auto'
+                }`}
               />
 
               {/* Floating Page Flip Controls (Left & Right) */}
@@ -1266,7 +1291,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                   type="button"
                   onClick={handlePrevPage}
                   className="absolute left-3 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-stone-950/80 hover:bg-amber-500 hover:text-stone-950 text-stone-300 border border-stone-700/80 shadow-2xl transition backdrop-blur-md cursor-pointer group"
-                  title={`Go back to Page ${currentPage - 1} (Drawings stay on their page)`}
+                  title={`Go back to Page ${currentPage - 1}`}
                 >
                   <ChevronLeft className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 </button>
@@ -1276,15 +1301,19 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                 type="button"
                 onClick={handleNextPage}
                 className="absolute right-3 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-stone-950/80 hover:bg-amber-500 hover:text-stone-950 text-stone-300 border border-stone-700/80 shadow-2xl transition backdrop-blur-md cursor-pointer group"
-                title={`Go forward to Page ${currentPage + 1} (Drawings stay on their page)`}
+                title={`Go forward to Page ${currentPage + 1}`}
               >
                 <ChevronRight className="w-5 h-5 group-hover:scale-110 transition-transform" />
               </button>
 
-              {/* Bottom Subtle Page Lock and Flip Helper Badge */}
+              {/* Bottom Subtle Status and Page Helper Badge */}
               <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-25 px-3 py-1 rounded-full bg-stone-950/90 text-stone-300 border border-stone-700 text-[10px] font-medium flex items-center gap-2 pointer-events-none shadow-xl backdrop-blur-md">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Page {currentPage} Locked • Scroll wheel or use ← / → to flip pages</span>
+                <span className={`w-1.5 h-1.5 rounded-full ${isEditorActive ? 'bg-amber-400' : 'bg-emerald-400'} animate-pulse`} />
+                <span>
+                  {isEditorActive 
+                    ? `Annotation Mode • Page ${currentPage} Active • Use toolbar to draw` 
+                    : `Reading Mode • Page ${currentPage} • Scroll freely to read`}
+                </span>
               </div>
 
               {/* 100% ACCURATE DRAWING CANVAS LAYER WITH TRANSLUCENT MULTIPLY BLEND */}
@@ -1294,7 +1323,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                 onMouseMove={draw}
                 onMouseUp={stopDrawing}
                 onMouseLeave={stopDrawing}
-                onWheel={handlePageWheel}
+                onWheel={isEditorActive ? handlePageWheel : undefined}
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
                 style={{
@@ -1305,7 +1334,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                     ? editorTool === 'text'
                       ? 'pointer-events-none'
                       : 'pointer-events-auto cursor-crosshair'
-                    : 'pointer-events-auto cursor-default'
+                    : 'pointer-events-none'
                 }`}
               />
 

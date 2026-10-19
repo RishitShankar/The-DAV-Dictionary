@@ -10,11 +10,12 @@ import {
   CheckCheck, Volume2, Sparkle, Eye, Star, Layers, Zap, X,
   ExternalLink, RefreshCw, Bot, Smartphone, RotateCcw,
   ArrowRight, Play, CheckSquare, Radio, Maximize2, Minimize2,
-  PenTool, Eraser, PhoneOff, Hand, MessageSquareMore, CheckCircle
+  PenTool, Eraser, PhoneOff, Hand, MessageSquareMore, CheckCircle,
+  ChevronLeft, Compass
 } from 'lucide-react';
 import { ShankarAILogo } from './ShankarAILogo';
 import { DAV_50_TEACHERS, getAllTeachers } from '../data/davTeachers50';
-import { saveCloudDoubtChats, fetchCloudDoubtChats } from '../services/supabaseClient';
+import { saveCloudDoubtChats, fetchCloudDoubtChats, subscribeCloudDoubtChats } from '../services/supabaseClient';
 
 // Complete DAV School Class and Section Configuration
 const SCHOOL_CLASSES_CONFIG = [
@@ -105,7 +106,14 @@ _Sent via DAV Public School Portal_`;
   return `https://wa.me/${phone}?text=${encodeURIComponent(body)}`;
 };
 
-export function TeachersSection({ user, initialSubSection, onSubSectionChange, isTeacherOS = false }) {
+export function TeachersSection({ 
+  user, 
+  initialSubSection, 
+  onSubSectionChange, 
+  isTeacherOS = false,
+  teacherSubDimension = 'teacher_explorer',
+  onToggleSubDimension
+}) {
   // Dimension 5 Mode: true = Faculty Master View, false = Student Lounge
   const [isFacultyRole, setIsFacultyRole] = useState(Boolean(
     isTeacherOS || 
@@ -117,6 +125,15 @@ export function TeachersSection({ user, initialSubSection, onSubSectionChange, i
     (user?.role && user?.role.toLowerCase().includes('teacher')) ||
     (user?.dimensionName && user?.dimensionName.toLowerCase().includes('faculty'))
   ));
+
+  // 4-Page Academic Presentation Configuration (+ 5th Attendance Register)
+  const PRESENTATION_PAGES = [
+    { id: 'homework', num: 1, title: 'Page 1: Daily Homework Hub', subtitle: 'Class LKG to 8 • Section A-E Syllabus assignments' },
+    { id: 'doubts_chat', num: 2, title: 'Page 2: 50+ Faculty WhatsApp Doubt Desk', subtitle: 'Live Multi-Device Chatting & Manual Replies' },
+    { id: 'live_class', num: 3, title: 'Page 3: Real Online Live Classroom', subtitle: 'WebRTC P2P HD Video • 100% Free • Unlimited' },
+    { id: 'tests', num: 4, title: 'Page 4: Online Test & Exam Suite', subtitle: 'Auto-Graded Weekly Quizzes & Term Exams' },
+    { id: 'attendance', num: 5, title: 'Page 5: Digital Attendance Register', subtitle: 'Daily Rolls & Roster Management' }
+  ];
 
   // Current Active Page among the 5 Graphical Animated Pages
   // 1: 'homework' | 2: 'doubts_chat' | 3: 'live_class' | 4: 'tests' | 5: 'attendance'
@@ -135,6 +152,37 @@ export function TeachersSection({ user, initialSubSection, onSubSectionChange, i
       onSubSectionChange(pageId);
     }
   };
+
+  const currentPageIdx = Math.max(0, PRESENTATION_PAGES.findIndex(p => p.id === activePage));
+
+  const handlePrevSlide = () => {
+    if (currentPageIdx > 0) {
+      handlePageChange(PRESENTATION_PAGES[currentPageIdx - 1].id);
+      playSoundChime('sent');
+    }
+  };
+
+  const handleNextSlide = () => {
+    if (currentPageIdx < PRESENTATION_PAGES.length - 1) {
+      handlePageChange(PRESENTATION_PAGES[currentPageIdx + 1].id);
+      playSoundChime('sent');
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyNav = (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.isComposing) return;
+      if (e.key === 'ArrowRight' && (e.altKey || e.ctrlKey)) {
+        e.preventDefault();
+        handleNextSlide();
+      } else if (e.key === 'ArrowLeft' && (e.altKey || e.ctrlKey)) {
+        e.preventDefault();
+        handlePrevSlide();
+      }
+    };
+    window.addEventListener('keydown', handleKeyNav);
+    return () => window.removeEventListener('keydown', handleKeyNav);
+  }, [activePage, currentPageIdx]);
 
   // Dynamic teachers roster: merges 50 base verified teachers with any newly registered teacher accounts
   const [teachersList, setTeachersList] = useState(() => getAllTeachers(user));
@@ -349,6 +397,95 @@ export function TeachersSection({ user, initialSubSection, onSubSectionChange, i
     }
   }, [activeChatMessages, activeTeacherId, activePage]);
 
+  // Real-Time Cross-Device Synchronization for Doubt Desk (Supabase Realtime + Fast 2.5s Poller + Storage Event)
+  useEffect(() => {
+    let isSubscribed = true;
+
+    const handleIncomingSync = (cloudChats) => {
+      if (!cloudChats || typeof cloudChats !== 'object') return;
+      setTeacherChatsMap(prev => {
+        let hasNew = false;
+        let incomingFromOther = false;
+        const merged = { ...prev };
+
+        Object.keys(cloudChats).forEach(teacherId => {
+          const cloudList = cloudChats[teacherId];
+          const localList = merged[teacherId] || [];
+
+          if (Array.isArray(cloudList) && cloudList.length > 0) {
+            const localIds = new Set(localList.map(m => m.id));
+            const newItems = cloudList.filter(m => !localIds.has(m.id));
+
+            if (newItems.length > 0 || cloudList.length > localList.length) {
+              const allMap = new Map();
+              [...localList, ...cloudList].forEach(m => {
+                allMap.set(m.id, m);
+              });
+              merged[teacherId] = Array.from(allMap.values()).sort((a, b) => a.id - b.id);
+              hasNew = true;
+
+              if (newItems.some(m => m.sender !== chatRole)) {
+                incomingFromOther = true;
+              }
+            }
+          }
+        });
+
+        if (hasNew) {
+          try {
+            localStorage.setItem(TEACHER_CHATS_STORAGE_KEY, JSON.stringify(merged));
+          } catch (e) {}
+          if (incomingFromOther) {
+            playSoundChime('received');
+          }
+          return merged;
+        }
+        return prev;
+      });
+    };
+
+    // 1. Initial fetch on mount
+    fetchCloudDoubtChats().then(cloudChats => {
+      if (isSubscribed && cloudChats) {
+        handleIncomingSync(cloudChats);
+      }
+    }).catch(() => {});
+
+    // 2. Supabase Realtime channel subscription (sub-second cross-device push)
+    const unsubscribe = subscribeCloudDoubtChats((cloudChats) => {
+      if (isSubscribed && cloudChats) {
+        handleIncomingSync(cloudChats);
+      }
+    });
+
+    // 3. Fast backup poller (runs every 2500ms for mobile background reliability)
+    const poller = setInterval(() => {
+      fetchCloudDoubtChats().then(cloudChats => {
+        if (isSubscribed && cloudChats) {
+          handleIncomingSync(cloudChats);
+        }
+      }).catch(() => {});
+    }, 2500);
+
+    // 4. Same-device cross-tab synchronization via window storage event
+    const handleStorageChange = (e) => {
+      if (e.key === TEACHER_CHATS_STORAGE_KEY && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          handleIncomingSync(parsed);
+        } catch (err) {}
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      isSubscribed = false;
+      unsubscribe();
+      clearInterval(poller);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [chatRole]);
+
   const persistTeacherChats = (updated) => {
     setTeacherChatsMap(updated);
     try {
@@ -444,14 +581,14 @@ export function TeachersSection({ user, initialSubSection, onSubSectionChange, i
   const [activeLiveSessionData, setActiveLiveSessionData] = useState(null);
   const [copiedLiveLink, setCopiedLiveLink] = useState(false);
 
-  // Real WebRTC Live Room Link Generator for DAV School
+  // Real WebRTC Live Room Link Generator for DAV School (100% Free, Unlimited Minutes, Zero Disconnects)
   const getLiveRoomUrl = (session, classNum) => {
     const rawId = session?.id || 'live_stream';
     const safeId = rawId.replace(/[^a-zA-Z0-9_-]/g, '_');
     const safeClass = (classNum || '8').replace(/[^a-zA-Z0-9_-]/g, '_');
     const roomName = `DAV_School_Class_${safeClass}_${safeId}`;
     const userName = encodeURIComponent(user?.name || (isFacultyRole ? 'DAV Faculty Teacher' : 'DAV Student'));
-    return `https://meet.jit.si/${roomName}#userInfo.displayName="${userName}"&config.prejoinPageEnabled=false&config.disableDeepLinking=true`;
+    return `https://p2p.mirotalk.com/join/${roomName}?name=${userName}`;
   };
 
   // Live Room Real Controls
@@ -924,6 +1061,38 @@ export function TeachersSection({ user, initialSubSection, onSubSectionChange, i
 
           {/* Controls: Role Switcher & Official WhatsApp Callout */}
           <div className="flex items-center gap-3 flex-wrap">
+            {/* Sub-Dimension 5A vs 5B Switcher */}
+            {onToggleSubDimension && (
+              <div className="bg-slate-900/90 border border-purple-500/60 p-1 rounded-xl flex items-center gap-1 shadow-inner text-xs">
+                <button
+                  type="button"
+                  onClick={() => onToggleSubDimension('teacher_only')}
+                  className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition cursor-pointer ${
+                    teacherSubDimension === 'teacher_only'
+                      ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md font-black'
+                      : 'text-purple-300 hover:text-white'
+                  }`}
+                  title="Sub-Dimension 5A: Operates solely on Section 5 Faculty Master OS"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Sub-Dim 5A: Only Faculty (OS)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onToggleSubDimension('teacher_explorer')}
+                  className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition cursor-pointer ${
+                    teacherSubDimension === 'teacher_explorer'
+                      ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-slate-950 shadow-md font-black'
+                      : 'text-purple-300 hover:text-white'
+                  }`}
+                  title="Sub-Dimension 5B: Full Campus Access across all 10 sections + Section 5"
+                >
+                  <Compass className="w-3.5 h-3.5" />
+                  <span>Sub-Dim 5B: Teacher &amp; Explorer (All 10 Sections)</span>
+                </button>
+              </div>
+            )}
+
             {/* Perspective Role Switcher */}
             {isTeacherOS ? (
               <div className="bg-purple-900/60 border border-teal-400/80 px-3.5 py-1.5 rounded-xl flex items-center gap-2 shadow-inner text-xs">
@@ -970,6 +1139,65 @@ export function TeachersSection({ user, initialSubSection, onSubSectionChange, i
               <ExternalLink className="w-3 h-3" />
             </a>
           </div>
+
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 4-PAGE PRESENTATION SLIDE CONTROLLER DECK                                 */}
+      {/* ========================================================================= */}
+      <div className="w-full px-4 md:px-8 pt-5 pb-1">
+        <div className="w-full bg-gradient-to-r from-purple-950/90 via-slate-900 to-teal-950/90 border border-purple-500/50 rounded-2xl p-3.5 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-3">
+          
+          {/* Previous Slide Button */}
+          <button
+            type="button"
+            onClick={handlePrevSlide}
+            disabled={currentPageIdx <= 0}
+            className="w-full sm:w-auto px-4 py-2 rounded-xl bg-purple-900/60 hover:bg-purple-800 disabled:opacity-30 disabled:cursor-not-allowed text-teal-300 border border-purple-500/40 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-sm"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            <span>Previous Page</span>
+          </button>
+
+          {/* Current Page Presentation Pill & Dot Stepper */}
+          <div className="flex flex-col items-center gap-1.5 text-center">
+            <div className="flex items-center gap-2 flex-wrap justify-center">
+              <span className="px-3 py-0.5 rounded-full bg-teal-400 text-slate-950 font-black text-[11px] uppercase font-mono shadow-sm">
+                Presentation Page {currentPageIdx + 1} of 4
+              </span>
+              <h2 className="text-sm font-black text-white">
+                {PRESENTATION_PAGES[currentPageIdx]?.title || 'Academic Page'}
+              </h2>
+            </div>
+            {/* Slide Dots */}
+            <div className="flex items-center gap-1.5">
+              {PRESENTATION_PAGES.slice(0, 4).map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => handlePageChange(p.id)}
+                  title={p.title}
+                  className={`h-2 rounded-full transition-all cursor-pointer ${
+                    activePage === p.id 
+                      ? 'w-8 bg-gradient-to-r from-teal-400 to-purple-400 shadow-sm shadow-teal-500/50' 
+                      : 'w-2.5 bg-purple-800/80 hover:bg-purple-600'
+                  }`}
+                />
+              ))}
+              <span className="text-[10px] text-purple-400 ml-1 font-mono">(Alt + ← / → to flip)</span>
+            </div>
+          </div>
+
+          {/* Next Slide Button */}
+          <button
+            type="button"
+            onClick={handleNextSlide}
+            disabled={currentPageIdx >= PRESENTATION_PAGES.length - 1}
+            className="w-full sm:w-auto px-4 py-2 rounded-xl bg-purple-900/60 hover:bg-purple-800 disabled:opacity-30 disabled:cursor-not-allowed text-teal-300 border border-purple-500/40 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-sm"
+          >
+            <span>Next Page</span>
+            <ChevronRight className="w-4 h-4" />
+          </button>
 
         </div>
       </div>
@@ -2194,7 +2422,7 @@ export function TeachersSection({ user, initialSubSection, onSubSectionChange, i
                     <div className="w-full h-full bg-slate-900 rounded-2xl overflow-hidden border border-purple-500/40 relative shadow-2xl flex flex-col">
                       <iframe
                         src={getLiveRoomUrl(activeLiveSessionData, selectedLiveClassNum)}
-                        allow="camera; microphone; display-capture; autoplay; clipboard-write; fullscreen"
+                        allow="camera; microphone; display-capture; autoplay; clipboard-read; clipboard-write; fullscreen"
                         className="w-full flex-1 border-0"
                         title="DAV Real Online Live Classroom"
                       />

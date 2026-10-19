@@ -12,6 +12,8 @@ export function GeminiSidebar({
   onSelectSection, 
   user,
   isTeacher = false,
+  teacherSubDimension = 'teacher_explorer',
+  onToggleSubDimension,
   teacherSubSection = 'homework',
   onSelectTeacherSubSection,
   onOpenAdminProgram,
@@ -101,15 +103,50 @@ export function GeminiSidebar({
 
         {/* Navigation List: Teacher Sub-Sections OR Student 10 Sections */}
         <div className="flex-1 overflow-y-auto p-3 space-y-1">
-          {isTeacher ? (
+          {isTeacher && (
+            <div className="p-2.5 mb-3 rounded-2xl bg-purple-950/70 border border-purple-500/40 shadow-inner">
+              <div className="text-[10px] text-purple-300 font-bold uppercase mb-2 flex items-center justify-between">
+                <span>Faculty Dimension Mode:</span>
+                <span className="font-mono text-teal-300 font-black">
+                  {teacherSubDimension === 'teacher_only' ? '5A Only Faculty' : '5B Explorer'}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-1.5 text-[10px]">
+                <button
+                  type="button"
+                  onClick={() => onToggleSubDimension && onToggleSubDimension('teacher_only')}
+                  className={`py-1.5 px-2 rounded-xl font-bold text-center transition cursor-pointer flex items-center justify-center gap-1 ${
+                    teacherSubDimension === 'teacher_only'
+                      ? 'bg-purple-600 text-white shadow-md font-black border border-purple-400'
+                      : 'bg-purple-900/40 text-purple-300 hover:bg-purple-800/60'
+                  }`}
+                >
+                  <span>🎓 5A: Only OS</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onToggleSubDimension && onToggleSubDimension('teacher_explorer')}
+                  className={`py-1.5 px-2 rounded-xl font-bold text-center transition cursor-pointer flex items-center justify-center gap-1 ${
+                    teacherSubDimension === 'teacher_explorer'
+                      ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md font-black border border-teal-400'
+                      : 'bg-purple-900/40 text-purple-300 hover:bg-purple-800/60'
+                  }`}
+                >
+                  <span>🌐 5B: Explorer</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {isTeacher && teacherSubDimension === 'teacher_only' ? (
             <>
               <div className="px-3 py-2 text-[11px] font-bold text-purple-300 uppercase tracking-wider flex items-center justify-between">
                 <span className="flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-                  <span>Faculty Master Sub-Sections</span>
+                  <span>Section 1: Faculty Master OS</span>
                 </span>
                 <span className="text-[9px] px-2 py-0.5 rounded-full bg-purple-900/60 text-purple-300 font-mono">
-                  Dim 5
+                  Dim 5A
                 </span>
               </div>
 
@@ -159,6 +196,7 @@ export function GeminiSidebar({
               {sections.map((sec) => {
                 const isActive = activeSection === sec.id;
                 const isSpecialCreator = sec.id === 10;
+                const isTeacherSec5 = sec.id === 5 && isTeacher;
                 const IconComp = sec.icon;
 
                 return (
@@ -170,22 +208,37 @@ export function GeminiSidebar({
                     }}
                     className={`w-full text-left p-3 rounded-xl transition-all flex items-center justify-between group cursor-pointer ${
                       isActive
-                        ? 'bg-gradient-to-r from-red-800 to-red-900 text-white font-bold shadow-md shadow-red-950/40'
+                        ? isTeacherSec5
+                          ? 'bg-gradient-to-r from-purple-800 to-teal-900 text-white font-bold shadow-md shadow-purple-950/40 border border-teal-400'
+                          : 'bg-gradient-to-r from-red-800 to-red-900 text-white font-bold shadow-md shadow-red-950/40'
+                        : isTeacherSec5
+                        ? 'bg-purple-950/40 border border-purple-500/40 text-teal-300 hover:bg-purple-900/60 font-semibold'
                         : isSpecialCreator
                         ? 'bg-amber-950/20 border border-amber-500/30 text-amber-200 hover:bg-amber-900/40'
                         : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-3 truncate">
-                      <IconComp className={`w-4 h-4 shrink-0 ${isActive ? 'text-amber-300' : isSpecialCreator ? 'text-amber-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
+                      <IconComp className={`w-4 h-4 shrink-0 ${
+                        isActive 
+                          ? isTeacherSec5 ? 'text-teal-300' : 'text-amber-300' 
+                          : isTeacherSec5 ? 'text-teal-400' : isSpecialCreator ? 'text-amber-400' : 'text-slate-400 group-hover:text-slate-200'
+                      }`} />
                       <div className="truncate">
-                        <div className="text-xs truncate font-medium">{sec.name}</div>
+                        <div className="text-xs truncate font-medium flex items-center gap-1.5">
+                          <span>{sec.name}</span>
+                          {isTeacherSec5 && (
+                            <span className="text-[9px] px-1.5 py-0.2 rounded bg-teal-400 text-slate-950 font-black">
+                              MY FACULTY OS
+                            </span>
+                          )}
+                        </div>
                         <div className="text-[10px] opacity-70">{sec.status}</div>
                       </div>
                     </div>
 
                     {isActive ? (
-                      <CheckCircle2 className="w-4 h-4 text-amber-300 shrink-0" />
+                      <CheckCircle2 className={`w-4 h-4 shrink-0 ${isTeacherSec5 ? 'text-teal-300' : 'text-amber-300'}`} />
                     ) : (
                       <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-slate-300 shrink-0 transition" />
                     )}

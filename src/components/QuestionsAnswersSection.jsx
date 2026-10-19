@@ -1329,8 +1329,6 @@ export function QuestionsAnswersSection({
                 Choose from verified academic portals below. Clicking on any unlocked source will open the exact chapter solution:
               </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                
               {/* Verification & Direct Landing Info */}
               <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-xl bg-purple-900/40 border border-purple-700/60 text-xs">
                 <span className="text-purple-200">
@@ -1681,8 +1679,6 @@ export function QuestionsAnswersSection({
 
                 </div>
               )}
-
-              </div>
             </div>
 
             {/* Pop-Up Footer Navigation */}

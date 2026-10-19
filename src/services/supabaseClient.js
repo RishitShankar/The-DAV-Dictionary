@@ -262,6 +262,8 @@ export async function saveCloudDonation(donation) {
   }
 }
 
+export const FACULTY_DOUBT_VAULT_UUID = '00000000-0000-0000-0000-000000000001';
+
 /**
  * Save doubt chats to Supabase cloud
  */
@@ -270,14 +272,22 @@ export async function saveCloudDoubtChats(chats) {
   if (!client || !chats) return false;
   try {
     const row = {
-      id: 'active_doubt_vault',
-      chats_json: JSON.stringify(chats),
+      id: FACULTY_DOUBT_VAULT_UUID,
+      user_id: 'global_faculty_doubt_desk',
+      book_title: 'FACULTY_DOUBT_CHATS_STORE',
+      page_number: 1,
+      canvas_data: JSON.stringify(chats),
+      notes: [],
       updated_at: new Date().toISOString()
     };
-    const { error } = await client.from('dav_settings').upsert(row, { onConflict: 'id' });
-    if (error) return false;
+    const { error } = await client.from('dav_pdf_annotations').upsert(row, { onConflict: 'id' });
+    if (error) {
+      console.warn('saveCloudDoubtChats error:', error.message);
+      return false;
+    }
     return true;
   } catch (e) {
+    console.error('saveCloudDoubtChats exception:', e);
     return false;
   }
 }
@@ -289,11 +299,53 @@ export async function fetchCloudDoubtChats() {
   const client = getSupabaseClient();
   if (!client) return null;
   try {
-    const { data, error } = await client.from('dav_settings').select('chats_json').eq('id', 'active_doubt_vault').single();
-    if (error || !data?.chats_json) return null;
-    return JSON.parse(data.chats_json);
+    const { data, error } = await client
+      .from('dav_pdf_annotations')
+      .select('canvas_data, updated_at')
+      .eq('id', FACULTY_DOUBT_VAULT_UUID)
+      .single();
+    if (error || !data?.canvas_data) return null;
+    return JSON.parse(data.canvas_data);
   } catch (e) {
     return null;
+  }
+}
+
+/**
+ * Real-time subscription to doubt chats across multiple phones & browsers
+ */
+export function subscribeCloudDoubtChats(onUpdate) {
+  const client = getSupabaseClient();
+  if (!client || !onUpdate) return () => {};
+  try {
+    const channel = client
+      .channel('public:dav_faculty_doubt_chats')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'dav_pdf_annotations',
+          filter: `id=eq.${FACULTY_DOUBT_VAULT_UUID}`
+        },
+        (payload) => {
+          if (payload.new && payload.new.canvas_data) {
+            try {
+              const parsed = JSON.parse(payload.new.canvas_data);
+              onUpdate(parsed);
+            } catch (err) {}
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      try {
+        client.removeChannel(channel);
+      } catch (err) {}
+    };
+  } catch (err) {
+    return () => {};
   }
 }
 
