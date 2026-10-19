@@ -17,8 +17,30 @@ export const MASTER_DEVELOPER_ACCOUNT = {
   createdAt: 'System Root'
 };
 
+export const DEFAULT_TEACHER_ACCOUNT = {
+  id: 'teacher1',
+  password: 'Teach1@DAV2026',
+  name: 'Mrs. Sunita Sharma',
+  role: 'DAV Faculty Teacher',
+  subject: 'Science & Biology',
+  department: 'Science',
+  classNum: '8',
+  section: 'D',
+  plan: 'teacher',
+  dimension: 5,
+  dimensionName: 'Dimension 5: Faculty OS',
+  paidAmount: 'Institutional',
+  paymentMode: 'DAV School Official Faculty',
+  isAdmin: false,
+  isTeacher: true,
+  personalWhatsApp: '919470033984',
+  phoneNumber: '919470033984',
+  createdAt: 'Official Faculty Registry'
+};
+
 export const PRELOADED_DATABASE_USERS = [
-  MASTER_DEVELOPER_ACCOUNT
+  MASTER_DEVELOPER_ACCOUNT,
+  DEFAULT_TEACHER_ACCOUNT
 ];
 
 // Helper to initialize or retrieve registered users from database
@@ -28,21 +50,28 @@ export function getRegisteredUsers() {
     try {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
+        let updated = [...parsed];
         // Ensure admin account is always present
-        const hasAdmin = parsed.some(u => u.id === 'rishibhai' || u.isAdmin);
+        const hasAdmin = updated.some(u => u.id === 'rishibhai' || u.isAdmin);
         if (!hasAdmin) {
-          const withAdmin = [MASTER_DEVELOPER_ACCOUNT, ...parsed];
-          localStorage.setItem('dav_registered_users', JSON.stringify(withAdmin));
-          return withAdmin;
+          updated = [MASTER_DEVELOPER_ACCOUNT, ...updated];
         }
-        return parsed;
+        // Ensure default teacher account is present
+        const hasTeacher = updated.some(u => u.id === 'teacher1' || (u.dimension === 5 && u.isTeacher));
+        if (!hasTeacher) {
+          updated = [...updated, DEFAULT_TEACHER_ACCOUNT];
+        }
+        if (updated.length !== parsed.length) {
+          localStorage.setItem('dav_registered_users', JSON.stringify(updated));
+        }
+        return updated;
       }
     } catch (e) {
       console.warn('Error reading dav_registered_users:', e);
     }
   }
-  // Initialize with only the master administrator (0 paid students initially)
-  const initial = [MASTER_DEVELOPER_ACCOUNT];
+  // Initialize with master administrator and default teacher
+  const initial = [MASTER_DEVELOPER_ACCOUNT, DEFAULT_TEACHER_ACCOUNT];
   try {
     localStorage.setItem('dav_registered_users', JSON.stringify(initial));
   } catch (err) {}

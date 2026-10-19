@@ -214,21 +214,37 @@ Verified by Developer Rishit Shankar. Thank you for your support!`);
             </table>
           </div>
 
-          {/* Developer Seal & Note */}
+          {/* Developer Seal, Paytm QR Code & Note */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-slate-200">
-            <div className="text-xs text-slate-600 max-w-sm">
+            <div className="text-xs text-slate-600 max-w-sm space-y-2">
               <p className="font-semibold italic text-slate-700">"{note}"</p>
-              <p className="text-[10px] text-slate-400 mt-1">
-                Computer-generated receipt saved in Supabase cloud vault.
-              </p>
+              <div className="flex items-center gap-2 text-[10px] text-slate-500">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Computer-generated official receipt saved in Supabase cloud vault.</span>
+              </div>
             </div>
 
-            {/* Circular Digital Stamp */}
-            <div className="w-28 h-28 rounded-full border-4 border-dashed border-red-800 p-2 flex flex-col items-center justify-center text-center text-[9px] font-black text-red-900 leading-tight uppercase bg-red-50/60 rotate-[-4deg] shadow-xs select-none">
-              <Award className="w-4 h-4 text-red-700 mb-0.5" />
-              <span>OFFICIAL SEAL</span>
-              <span className="text-[8px] font-extrabold text-slate-700">RISHIT SHANKAR</span>
-              <span className="text-[7px] text-red-600 font-bold">DAV HEAD BOY</span>
+            <div className="flex items-center gap-4">
+              {/* Paytm Real QR Code Container */}
+              <div className="bg-slate-50 p-2 rounded-xl border border-slate-300 flex flex-col items-center shadow-xs">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(`upi://pay?pa=9470033984@upi&pn=Rishit%20Shankar&am=${calculatedTotal}&cu=INR&tn=${invoiceNumber}`)}`}
+                  alt="Paytm Official Payment QR"
+                  className="w-20 h-20 object-contain rounded"
+                />
+                <div className="text-[9px] font-black text-slate-800 mt-1 flex items-center gap-1">
+                  <span className="text-[#002e6e] font-black">Pay</span><span className="text-[#00baf2] font-black">tm</span>
+                  <span className="text-[8px] text-slate-500 font-mono">9470033984@upi</span>
+                </div>
+              </div>
+
+              {/* Circular Digital Stamp */}
+              <div className="w-24 h-24 rounded-full border-4 border-dashed border-red-800 p-2 flex flex-col items-center justify-center text-center text-[9px] font-black text-red-900 leading-tight uppercase bg-red-50/60 rotate-[-4deg] shadow-xs select-none">
+                <Award className="w-4 h-4 text-red-700 mb-0.5" />
+                <span>OFFICIAL SEAL</span>
+                <span className="text-[8px] font-extrabold text-slate-700">RISHIT SHANKAR</span>
+                <span className="text-[7px] text-red-600 font-bold">DAV HEAD BOY</span>
+              </div>
             </div>
           </div>
 

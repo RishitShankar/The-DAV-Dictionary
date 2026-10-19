@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, Award, BookOpen, Layers, ShieldAlert, LogOut, KeyRound, User, Crown, Sparkles, Lock, Heart } from 'lucide-react';
+import { Menu, Award, BookOpen, Layers, ShieldAlert, LogOut, KeyRound, User, Crown, Sparkles, Lock, Heart, Smartphone, Monitor } from 'lucide-react';
 import { BlackDogLogo } from './BlackDogLogo';
 
 export function Navbar({ 
   activeSection, 
   onToggleSidebar, 
   user, 
+  isTeacher = false,
+  teacherSubSection = 'homework',
+  onSelectTeacherSubSection,
+  deviceDimension = 'pc',
+  onToggleDevice,
   onOpenAuth, 
   onOpenAdminProgram,
   onOpenAI,
@@ -55,7 +60,10 @@ export function Navbar({
   // Badge styling according to dimension
   let tierBadgeBg = 'bg-emerald-600 text-white';
   let tierLabel = 'Normal Plan';
-  if (user?.dimension === 4 || isAdmin) {
+  if (isTeacher || user?.dimension === 5 || user?.plan === 'teacher') {
+    tierBadgeBg = 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white';
+    tierLabel = 'Dim 5 • Faculty';
+  } else if (user?.dimension === 4 || isAdmin) {
     tierBadgeBg = 'bg-amber-600 text-white';
     tierLabel = 'Dev Master';
   } else if (user?.dimension === 3 || user?.plan === 'vvip') {
@@ -84,11 +92,15 @@ export function Navbar({
           <div className="flex items-center gap-3">
             <button
               onClick={onToggleSidebar}
-              className="p-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-slate-950 transition border border-slate-200 shadow-2xs flex items-center gap-2 cursor-pointer"
-              title="Open 10 Sections Menu"
+              className={`p-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-slate-950 transition border shadow-2xs flex items-center gap-2 cursor-pointer ${
+                isTeacher ? 'border-purple-300 bg-purple-50/50' : 'border-slate-200'
+              }`}
+              title={isTeacher ? "Open Faculty Master OS Menu" : "Open 10 Sections Menu"}
             >
-              <Menu className="w-5 h-5 text-slate-800" />
-              <span className="hidden sm:inline text-xs font-bold text-slate-600">Sections</span>
+              <Menu className={`w-5 h-5 ${isTeacher ? 'text-purple-700' : 'text-slate-800'}`} />
+              <span className={`hidden sm:inline text-xs font-bold ${isTeacher ? 'text-purple-800' : 'text-slate-600'}`}>
+                {isTeacher ? 'Faculty Menu' : 'Sections'}
+              </span>
             </button>
 
             <div className="flex items-center gap-3 cursor-pointer">
@@ -100,60 +112,160 @@ export function Navbar({
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-extrabold text-lg sm:text-xl text-slate-900 tracking-tight">The DAV Dictionary</span>
-                  <span className="px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase rounded-full bg-red-100 text-red-800 border border-red-200">
-                    Official
+                  <span className={`px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase rounded-full border ${
+                    isTeacher 
+                      ? 'bg-purple-100 text-purple-800 border-purple-200' 
+                      : 'bg-red-100 text-red-800 border-red-200'
+                  }`}>
+                    {isTeacher ? 'Faculty Portal' : 'Official'}
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 font-medium">Head Boy Digital Reference Campus</p>
+                <p className="text-xs text-slate-500 font-medium">
+                  {isTeacher ? 'Dimension 5: DAV Faculty Master OS' : 'Head Boy Digital Reference Campus'}
+                </p>
               </div>
             </div>
           </div>
 
           {/* Current Section Indicator in Header */}
           <div className="hidden lg:flex items-center gap-2">
-            <span className="text-xs text-slate-400 font-medium">Active:</span>
-            <span className="px-3 py-1 rounded-lg bg-red-50 text-red-800 font-bold text-xs border border-red-200 flex items-center gap-1.5">
-              {activeSection === 1 ? (
-                <>
-                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                  <span>Section 1: Website Master Overview</span>
-                </>
-              ) : activeSection === 2 ? (
-                <>
-                  <BookOpen className="w-3.5 h-3.5 text-red-700" />
-                  <span>Section 2: Official Textbooks (LKG–8)</span>
-                </>
-              ) : activeSection === 3 ? (
-                <>
-                  <Layers className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Section 3: Questions & Answers (Reserved)</span>
-                </>
-              ) : activeSection === 8 ? (
-                <>
-                  <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
-                  <span>Section 8: Donate to Developer</span>
-                </>
-              ) : activeSection === 9 ? (
-                <>
-                  <User className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Section 9: Student Personal Profile</span>
-                </>
-              ) : activeSection === 10 ? (
-                <>
-                  <User className="w-3.5 h-3.5 text-amber-600" />
-                  <span>Section 10: About Creator Rishit Shankar</span>
-                </>
-              ) : (
-                <>
-                  <Layers className="w-3.5 h-3.5 text-slate-500" />
-                  <span>Section {activeSection}: Untitled</span>
-                </>
-              )}
-            </span>
+            {isTeacher ? (
+              <>
+                <span className="text-xs text-purple-400 font-medium">Faculty OS:</span>
+                <span className="px-3 py-1 rounded-lg bg-purple-50 text-purple-900 font-bold text-xs border border-purple-200 flex items-center gap-1.5 shadow-xs">
+                  <Award className="w-3.5 h-3.5 text-purple-600" />
+                  <span>Section 1: DAV Faculty Master OS</span>
+                  <span className="text-purple-300 mx-1">•</span>
+                  <span className="capitalize font-extrabold text-purple-700">
+                    {teacherSubSection === 'homework' && '📋 Homework Hub'}
+                    {teacherSubSection === 'doubts_chat' && '💬 WhatsApp Doubts Desk'}
+                    {teacherSubSection === 'live_class' && '🎥 Live Video Classes'}
+                    {teacherSubSection === 'tests' && '📝 Tests & Exams'}
+                    {teacherSubSection === 'attendance' && '📊 Attendance'}
+                  </span>
+                </span>
+
+                {/* Quick sub-section switcher tabs on desktop */}
+                <div className="hidden xl:flex items-center gap-1 ml-2 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                  <button
+                    onClick={() => onSelectTeacherSubSection && onSelectTeacherSubSection('homework')}
+                    className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer ${
+                      teacherSubSection === 'homework' ? 'bg-white text-purple-700 shadow-xs border border-purple-200' : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    📋 HW
+                  </button>
+                  <button
+                    onClick={() => onSelectTeacherSubSection && onSelectTeacherSubSection('doubts_chat')}
+                    className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer ${
+                      teacherSubSection === 'doubts_chat' ? 'bg-white text-emerald-700 shadow-xs border border-emerald-200' : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    💬 Doubts
+                  </button>
+                  <button
+                    onClick={() => onSelectTeacherSubSection && onSelectTeacherSubSection('live_class')}
+                    className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer ${
+                      teacherSubSection === 'live_class' ? 'bg-white text-rose-700 shadow-xs border border-rose-200' : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    🎥 Live
+                  </button>
+                  <button
+                    onClick={() => onSelectTeacherSubSection && onSelectTeacherSubSection('tests')}
+                    className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer ${
+                      teacherSubSection === 'tests' ? 'bg-white text-indigo-700 shadow-xs border border-indigo-200' : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    📝 Tests
+                  </button>
+                  <button
+                    onClick={() => onSelectTeacherSubSection && onSelectTeacherSubSection('attendance')}
+                    className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer ${
+                      teacherSubSection === 'attendance' ? 'bg-white text-amber-700 shadow-xs border border-amber-200' : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    📊 Attendance
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <span className="text-xs text-slate-400 font-medium">Active:</span>
+                <span className="px-3 py-1 rounded-lg bg-red-50 text-red-800 font-bold text-xs border border-red-200 flex items-center gap-1.5">
+                  {activeSection === 1 ? (
+                    <>
+                      <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Section 1: Website Master Overview</span>
+                    </>
+                  ) : activeSection === 2 ? (
+                    <>
+                      <BookOpen className="w-3.5 h-3.5 text-red-700" />
+                      <span>Section 2: Official Textbooks (LKG–8)</span>
+                    </>
+                  ) : activeSection === 3 ? (
+                    <>
+                      <Layers className="w-3.5 h-3.5 text-blue-600" />
+                      <span>Section 3: Questions & Answers (Reserved)</span>
+                    </>
+                  ) : activeSection === 8 ? (
+                    <>
+                      <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
+                      <span>Section 8: Donate to Developer</span>
+                    </>
+                  ) : activeSection === 9 ? (
+                    <>
+                      <User className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Section 9: Student Personal Profile</span>
+                    </>
+                  ) : activeSection === 10 ? (
+                    <>
+                      <User className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Section 10: About Creator Rishit Shankar</span>
+                    </>
+                  ) : (
+                    <>
+                      <Layers className="w-3.5 h-3.5 text-slate-500" />
+                      <span>Section {activeSection}: Untitled</span>
+                    </>
+                  )}
+                </span>
+              </>
+            )}
           </div>
 
           {/* User Account / Admin Superpower Button */}
           <div className="flex items-center gap-2 sm:gap-3">
+
+            {/* 5th Dimension Switcher: PC vs Mobile Mode */}
+            <div className="flex items-center bg-slate-100 p-0.5 sm:p-1 rounded-xl border border-slate-200">
+              <button
+                type="button"
+                onClick={() => onToggleDevice && onToggleDevice('pc')}
+                className={`px-2 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer ${
+                  deviceDimension === 'pc' 
+                    ? 'bg-white text-slate-900 shadow-sm border border-slate-200' 
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+                title="PC Dimension: Full Desktop Interface"
+              >
+                <Monitor className="w-3.5 h-3.5 text-blue-600" />
+                <span className="hidden md:inline">PC</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onToggleDevice && onToggleDevice('mobile')}
+                className={`px-2 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer ${
+                  deviceDimension === 'mobile' 
+                    ? 'bg-gradient-to-r from-red-800 to-amber-600 text-white shadow-sm' 
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+                title="5th Dimension: Mobile Dimension (Auto-Optimized Touch UI)"
+              >
+                <Smartphone className="w-3.5 h-3.5 text-amber-300" />
+                <span className="hidden md:inline">5D Mobile</span>
+              </button>
+            </div>
             
             {/* Launch Shankar AI Button */}
             {onOpenAI && (

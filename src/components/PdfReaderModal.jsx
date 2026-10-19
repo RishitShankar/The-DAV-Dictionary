@@ -231,16 +231,18 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
   // Offset of +2 pages so book page 1 maps to PDF file page 3 (accounting for cover + preface)
   const pdfPhysicalPage = currentPage + 2;
-  // In editor mode, lock view cleanly to Fit and disable native scrolling so drawings stay 100% attached to their page
-  const pdfSourceWithPage = isEditorActive
-    ? `${pdfBaseSource}#page=${pdfPhysicalPage}&view=Fit&toolbar=0&navpanes=0&scrollbar=0`
-    : `${pdfBaseSource}#page=${pdfPhysicalPage}&toolbar=1`;
+  // Always lock view cleanly to Fit and disable native scrolling so drawings stay 100% attached to their page
+  const pdfSourceWithPage = `${pdfBaseSource}#page=${pdfPhysicalPage}&view=Fit&toolbar=0&navpanes=0&scrollbar=0`;
 
   // Storage keys for page-specific canvas and notes
   const storageKeyNotes = `dav_pdf_notes_${book.title}_p${currentPage}`;
   const storageKeyCanvas = `dav_pdf_canvas_${book.title}_p${currentPage}`;
 
   const iframeRef = useRef(null);
+
+  const wheelAccumulatorRef = useRef(0);
+  const touchStartYRef = useRef(null);
+  const touchStartXRef = useRef(null);
 
   // Page flipping handlers that save the current page and switch clean state
   const handlePrevPage = () => {
@@ -259,13 +261,15 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     setCurrentPage(prev => prev + 1);
   };
 
-  // Keyboard arrow listener for smooth page navigation without reload
+  // Keyboard navigation for smooth page flipping without reload
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      if (e.key === 'ArrowRight') {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+        e.preventDefault();
         handleNextPage();
-      } else if (e.key === 'ArrowLeft') {
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
         handlePrevPage();
       }
     };
@@ -273,17 +277,69 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentPage, isEditorActive]);
 
-  // Wheel listener to flip pages cleanly when editor is active
-  const handleContainerWheel = (e) => {
-    if (!isEditorActive) return;
+  // Wheel listener to flip pages cleanly (drawings stay 100% attached to their respective page)
+  const handlePageWheel = (e) => {
+    // If user is actively drawing a stroke with pen/highlighter, do not flip page mid-stroke
+    if (isDrawingRef.current) return;
+
+    if (e.cancelable) {
+      e.preventDefault();
+    }
+    e.stopPropagation?.();
+
     const now = Date.now();
-    if (now - lastWheelTimeRef.current < 450) return;
-    if (e.deltaY > 60) {
+    if (now - lastWheelTimeRef.current < 350) return;
+
+    wheelAccumulatorRef.current += e.deltaY;
+
+    if (wheelAccumulatorRef.current > 25) {
+      wheelAccumulatorRef.current = 0;
       lastWheelTimeRef.current = now;
       handleNextPage();
-    } else if (e.deltaY < -60) {
+    } else if (wheelAccumulatorRef.current < -25) {
+      wheelAccumulatorRef.current = 0;
       lastWheelTimeRef.current = now;
       handlePrevPage();
+    }
+  };
+
+  // Native non-passive wheel listener on container to guarantee browser never scrolls
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const onWheelNative = (e) => {
+      handlePageWheel(e);
+    };
+
+    container.addEventListener('wheel', onWheelNative, { passive: false });
+    return () => container.removeEventListener('wheel', onWheelNative);
+  }, [currentPage, isEditorActive]);
+
+  // Touch handlers for smooth mobile swipe page turns
+  const handleTouchStart = (e) => {
+    if (isDrawingRef.current) return;
+    if (e.touches && e.touches.length === 1) {
+      touchStartYRef.current = e.touches[0].clientY;
+      touchStartXRef.current = e.touches[0].clientX;
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    if (isDrawingRef.current || touchStartYRef.current === null) return;
+    if (!e.changedTouches || e.changedTouches.length === 0) return;
+    const diffY = touchStartYRef.current - e.changedTouches[0].clientY;
+    const diffX = touchStartXRef.current - e.changedTouches[0].clientX;
+
+    touchStartYRef.current = null;
+    touchStartXRef.current = null;
+
+    if (Math.abs(diffY) > 40 || Math.abs(diffX) > 40) {
+      if (diffY > 40 || diffX > 40) {
+        handleNextPage();
+      } else if (diffY < -40 || diffX < -40) {
+        handlePrevPage();
+      }
     }
   };
 
@@ -338,7 +394,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
       if (localData) {
         const img = new Image();
         img.onload = () => {
-          ctx.drawImage(img, 0, 0);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         };
         img.src = localData;
       }
@@ -352,7 +408,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
         if (!localData || localData !== cloudData.canvas_data) {
           const img = new Image();
           img.onload = () => {
-            ctx.drawImage(img, 0, 0);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
           };
           img.src = cloudData.canvas_data;
           try {
@@ -422,8 +478,8 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     setAiLoading(true);
 
     try {
-      // 1. Direct Page Match: e.g. "go to page 100", "page 100", "open 100", "p. 80"
-      const pageMatch = q.match(/(?:page|p\.?|goto|go to|open|jump to|take me to)?\s*(\b\d{1,3}\b)/i);
+      // 1. Direct Page Match: e.g. "navigate me to page 50", "navigate me to page number 50", "open page number 100", "go to page 100", "page 100", "p. 80", "50"
+      const pageMatch = q.match(/(?:navigate(?:\s+me)?\s+to\s+page(?:\s+number)?|open\s+page(?:\s+number)?|go\s+to\s+page(?:\s+number)?|jump\s+to\s+page(?:\s+number)?|teleport(?:\s+me)?\s+to\s+page(?:\s+number)?|flip\s+to\s+page(?:\s+number)?|page(?:\s+number)?|p\.?|pg\.?)\s*[:#-]?\s*(\b\d{1,4}\b)/i) || q.match(/^\s*(\d{1,4})\s*$/);
       
       // 2. Syllabus chapter lookups
       let matchedChapter = null;
@@ -460,19 +516,17 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
       if (pageMatch && parseInt(pageMatch[1], 10) > 0 && parseInt(pageMatch[1], 10) <= 600) {
         const targetPage = parseInt(pageMatch[1], 10);
-        if (/page|p\.|go|open|jump|teleport|take me|\b\d{1,3}\b/i.test(q)) {
-          saveCanvasData(currentPage);
-          setCurrentPage(targetPage);
-          setAiMessages(prev => [
-            ...prev,
-            {
-              role: 'assistant',
-              text: `🚀 **Navigated directly to Page ${targetPage}** in *${book.title}*!\n\nThe full-page viewer has automatically opened Page ${targetPage}. Ask me anything about this page!`
-            }
-          ]);
-          setAiLoading(false);
-          return;
-        }
+        saveCanvasData(currentPage);
+        setCurrentPage(targetPage);
+        setAiMessages(prev => [
+          ...prev,
+          {
+            role: 'assistant',
+            text: `🚀 **Navigated directly to Page ${targetPage}** in *${book.title}*!\n\nThe full-page viewer has automatically opened Page ${targetPage}. Ask me anything about this page!`
+          }
+        ]);
+        setAiLoading(false);
+        return;
       }
 
       // General query -> Ask Shankar AI with textbook context
@@ -1179,28 +1233,31 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
         {/* PDF Frame & Interactive Editor Overlay */}
         <div 
           ref={containerRef} 
-          onWheel={handleContainerWheel}
-          className="flex-1 h-full bg-stone-950 flex flex-col overflow-hidden relative"
+          onWheel={handlePageWheel}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          className="flex-1 h-full bg-stone-950 flex flex-col overflow-hidden relative select-none"
         >
           
           {hasRealPdf ? (
-            <div className="relative w-full h-full">
+            <div className="relative w-full h-full overflow-hidden">
               
               {/* Sticky Page Annotation Lock Indicator when Editor Active */}
               {isEditorActive && (
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 px-4 py-1.5 rounded-full bg-stone-950/90 text-amber-300 border border-amber-500/50 shadow-2xl backdrop-blur-md text-[11px] font-bold flex items-center gap-2 pointer-events-none">
                   <Highlighter className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-                  <span>Annotation Mode: Page {currentPage} Locked • Use ← / → to switch pages cleanly</span>
+                  <span>Annotation Mode: Page {currentPage} Locked • Scroll or use ← / → to switch pages cleanly</span>
                 </div>
               )}
 
-              {/* PDF Viewer Iframe with Static Key to completely eliminate 2-3s blank page blink */}
+              {/* PDF Viewer Iframe with Dynamic Page Key to guarantee instant navigation on page change */}
+              {/* NOTE: pointer-events-none prevents Chrome native PDF viewer from capturing continuous scroll drift */}
               <iframe
-                key={book.title || 'pdf-viewer'}
+                key={`${book.title || 'pdf-viewer'}-page-${currentPage}`}
                 ref={iframeRef}
                 src={pdfSourceWithPage}
                 title={book.title}
-                className="w-full h-full border-none bg-white block"
+                className="w-full h-full border-none bg-white block pointer-events-none select-none"
               />
 
               {/* Floating Page Flip Controls (Left & Right) */}
@@ -1224,6 +1281,12 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                 <ChevronRight className="w-5 h-5 group-hover:scale-110 transition-transform" />
               </button>
 
+              {/* Bottom Subtle Page Lock and Flip Helper Badge */}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-25 px-3 py-1 rounded-full bg-stone-950/90 text-stone-300 border border-stone-700 text-[10px] font-medium flex items-center gap-2 pointer-events-none shadow-xl backdrop-blur-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Page {currentPage} Locked • Scroll wheel or use ← / → to flip pages</span>
+              </div>
+
               {/* 100% ACCURATE DRAWING CANVAS LAYER WITH TRANSLUCENT MULTIPLY BLEND */}
               <canvas
                 ref={canvasRef}
@@ -1231,19 +1294,25 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                 onMouseMove={draw}
                 onMouseUp={stopDrawing}
                 onMouseLeave={stopDrawing}
+                onWheel={handlePageWheel}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
                 style={{
                   mixBlendMode: editorTool === 'whitener' ? 'normal' : 'multiply'
                 }}
                 className={`absolute inset-0 w-full h-full z-20 ${
-                  isEditorActive && editorTool !== 'text' 
-                    ? 'pointer-events-auto cursor-crosshair' 
-                    : 'pointer-events-none'
+                  isEditorActive
+                    ? editorTool === 'text'
+                      ? 'pointer-events-none'
+                      : 'pointer-events-auto cursor-crosshair'
+                    : 'pointer-events-auto cursor-default'
                 }`}
               />
 
               {/* CLICK-TO-DROP & MOVABLE/DRAGGABLE TEXT NOTE LAYER */}
               <div
                 onClick={handleCanvasClick}
+                onWheel={handlePageWheel}
                 className={`absolute inset-0 w-full h-full z-20 ${
                   isEditorActive && editorTool === 'text'
                     ? 'pointer-events-auto cursor-text bg-cyan-950/10'

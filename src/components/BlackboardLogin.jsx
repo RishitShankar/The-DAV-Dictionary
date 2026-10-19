@@ -98,19 +98,46 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
     setIsAuthenticating(false);
 
     if (matched) {
-      const studentUser = {
+      const isTeacher = Boolean(
+        matched.isTeacher || 
+        matched.plan === 'teacher' || 
+        matched.dimension === 5 || 
+        (matched.role && matched.role.toLowerCase().includes('teacher')) ||
+        (matched.dimensionName && matched.dimensionName.toLowerCase().includes('faculty'))
+      );
+      const isDevAdmin = Boolean(
+        matched.isAdmin || 
+        matched.plan === 'developer' || 
+        matched.dimension === 4 || 
+        matched.id === 'rishibhai'
+      );
+
+      const resolvedUser = {
         id: matched.id,
         name: matched.name || matched.id,
-        role: matched.role || 'Student',
+        role: matched.role || (isTeacher ? 'DAV Faculty Teacher' : isDevAdmin ? 'Administrator & Developer' : 'Student'),
         studentId: matched.id,
         classNum: matched.classNum || '8',
-        plan: matched.plan || 'normal',
-        dimension: matched.dimension || (matched.plan === 'vvip' ? 3 : matched.plan === 'vip' ? 2 : 1),
-        dimensionName: matched.dimensionName || (matched.plan === 'vvip' ? 'Dimension 3: VVIP Plan' : matched.plan === 'vip' ? 'Dimension 2: VIP Plan' : 'Dimension 1: Normal Plan'),
-        isAdmin: false
+        section: matched.section || 'D',
+        plan: matched.plan || (isTeacher ? 'teacher' : isDevAdmin ? 'developer' : 'normal'),
+        dimensionName: matched.dimensionName || (
+          isTeacher ? 'Dimension 5: Faculty OS' :
+          isDevAdmin ? 'Dimension 4: Master Developer' :
+          matched.plan === 'vvip' ? 'Dimension 3: VVIP Plan' :
+          matched.plan === 'vip' ? 'Dimension 2: VIP Plan' :
+          'Dimension 1: Normal Plan'
+        ),
+        personalWhatsApp: matched.personalWhatsApp || matched.phoneNumber || matched.mobileNumber || '919470033984',
+        phoneNumber: matched.phoneNumber || matched.personalWhatsApp || matched.mobileNumber || '919470033984',
+        subject: matched.subject || (isTeacher ? 'Science & Technology' : undefined),
+        department: matched.department || (isTeacher ? 'Science' : undefined),
+        ...matched,
+        isTeacher: isTeacher,
+        isAdmin: isDevAdmin,
+        dimension: isTeacher ? 5 : isDevAdmin ? 4 : (matched.dimension || 1)
       };
       setFeedback('');
-      setLoggedInUser(studentUser);
+      setLoggedInUser(resolvedUser);
       setIsSuccess(true);
       return;
     }
@@ -173,7 +200,7 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
             </button>
           )}
           <div className="text-right hidden sm:block">
-            <div className="text-xs font-mono text-slate-300">4 Dimensions • Class 1–8</div>
+            <div className="text-xs font-mono text-slate-300">5 Dimensions • Class 1–8</div>
             <div className="text-[10px] text-emerald-400 font-semibold">● Portal Database Online</div>
           </div>
         </div>
@@ -435,10 +462,28 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
               <span>Dim 3 (VVIP):</span>
               <code className="font-mono font-bold text-purple-300">vvip_boss1</code>
             </button>
+
+            <span className="text-stone-500">•</span>
+
+            {/* Dimension 5: Faculty OS (Teacher) */}
+            <button
+              type="button"
+              onClick={() => {
+                setUserId('teacher1');
+                setPassword('Teach1@DAV2026');
+                setFeedback('');
+              }}
+              title="Click to fill Dimension 5 Faculty Teacher credentials"
+              className="px-2.5 py-1 rounded-lg bg-teal-500/20 hover:bg-teal-500/30 border border-teal-400/40 text-teal-200 font-medium transition cursor-pointer flex items-center gap-1"
+            >
+              <UserCheck className="w-3 h-3 text-teal-400" />
+              <span>Dim 5 (Faculty):</span>
+              <code className="font-mono font-bold text-teal-300">teacher1</code>
+            </button>
           </div>
 
           <div className="text-[11px] text-stone-400">
-            25 active accounts registered in database across 4 tiers.
+            25+ active accounts registered across 5 Dimensions (including Dimension 5: Faculty OS).
           </div>
         </div>
 

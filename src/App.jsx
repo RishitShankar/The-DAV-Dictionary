@@ -17,16 +17,63 @@ import { UploadPdfModal } from './components/UploadPdfModal';
 import { SectionOverview } from './components/SectionOverview';
 import { QuestionsAnswersSection } from './components/QuestionsAnswersSection';
 import { DonationSection } from './components/DonationSection';
+import { TeachersSection } from './components/TeachersSection';
 import { PurpleFooter } from './components/PurpleFooter';
-import { Award, Heart, Lock, Sparkles, ArrowRight } from 'lucide-react';
+import { 
+  Award, Heart, Lock, Sparkles, ArrowRight, Smartphone, Monitor, 
+  Home, BookOpen, Layers, User as UserIcon, ClipboardList, 
+  MessageSquareMore, Video, CheckSquare, UserCheck 
+} from 'lucide-react';
+import { BlackDogLogo } from './components/BlackDogLogo';
 
 export function App() {
   const [activeSection, setActiveSection] = useState(1);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
+  // 5th Dimension: Mobile Auto-Detection & Viewport Switcher
+  const [deviceDimension, setDeviceDimension] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      return isMobile ? 'mobile' : 'pc';
+    }
+    return 'pc';
+  });
+
+  useEffect(() => {
+    const handleAutoDetect = () => {
+      const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      setDeviceDimension(isMobile ? 'mobile' : 'pc');
+    };
+    window.addEventListener('resize', handleAutoDetect);
+    return () => window.removeEventListener('resize', handleAutoDetect);
+  }, []);
+
   // View mode: 'home' (Public Homepage) | 'login' (Blackboard Login Gatekeeper) | 'app' (Main Portal)
-  const [viewMode, setViewMode] = useState('home');
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('dav_user');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return null;
+  });
+
+  const [viewMode, setViewMode] = useState(() => {
+    try {
+      const saved = localStorage.getItem('dav_user');
+      if (saved) return 'app';
+    } catch (e) {}
+    return 'home';
+  });
+
+  const isTeacher = Boolean(
+    user?.dimension === 5 ||
+    user?.plan === 'teacher' ||
+    user?.isTeacher ||
+    (user?.role && user?.role.toLowerCase().includes('teacher')) ||
+    (user?.dimensionName && user?.dimensionName.toLowerCase().includes('faculty'))
+  );
+
+  const [teacherSubSection, setTeacherSubSection] = useState('homework');
 
   const [uploadedPdfs, setUploadedPdfs] = useState(() => {
     const saved = localStorage.getItem('dav_uploaded_pdfs');
@@ -65,6 +112,25 @@ export function App() {
   const handleLoginSuccess = (loggedInUser) => {
     setUser(loggedInUser);
     setViewMode('app');
+    const userIsTeacher = Boolean(
+      loggedInUser?.dimension === 5 ||
+      loggedInUser?.plan === 'teacher' ||
+      loggedInUser?.isTeacher ||
+      (loggedInUser?.role && loggedInUser?.role.toLowerCase().includes('teacher')) ||
+      (loggedInUser?.dimensionName && loggedInUser?.dimensionName.toLowerCase().includes('faculty'))
+    );
+    if (userIsTeacher) {
+      setActiveSection(5);
+    }
+  };
+
+  const handleSelectSection = (secId) => {
+    if (isTeacher) {
+      // Teachers only have access to Section 5 (which functions as Section 1 for them)
+      setActiveSection(5);
+      return;
+    }
+    setActiveSection(secId);
   };
 
   const handleLogout = () => {
@@ -146,8 +212,14 @@ export function App() {
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         activeSection={activeSection}
-        onSelectSection={(secId) => setActiveSection(secId)}
+        onSelectSection={handleSelectSection}
         user={user}
+        isTeacher={isTeacher}
+        teacherSubSection={teacherSubSection}
+        onSelectTeacherSubSection={(sub) => {
+          setTeacherSubSection(sub);
+          setIsSidebarOpen(false);
+        }}
         onOpenAdminProgram={() => setIsAdminProgramOpen(true)}
         onLogout={handleLogout}
       />
@@ -157,16 +229,44 @@ export function App() {
         activeSection={activeSection}
         onToggleSidebar={() => setIsSidebarOpen(prev => !prev)}
         user={user}
+        isTeacher={isTeacher}
+        teacherSubSection={teacherSubSection}
+        onSelectTeacherSubSection={(sub) => setTeacherSubSection(sub)}
+        deviceDimension={deviceDimension}
+        onToggleDevice={(dim) => setDeviceDimension(dim)}
         onOpenAuth={() => setIsAuthOpen(true)}
         onOpenAdminProgram={() => setIsAdminProgramOpen(true)}
         onOpenAI={() => setIsAIOpen(true)}
         onLogout={handleLogout}
       />
 
+      {/* 5th Dimension: Mobile Auto-Detection Indicator Bar */}
+      {deviceDimension === 'mobile' && (
+        <div className="bg-gradient-to-r from-red-900 via-amber-700 to-red-900 text-white text-[11px] font-bold py-1.5 px-4 flex items-center justify-between shadow-sm sticky top-[76px] z-30">
+          <span className="flex items-center gap-1.5">
+            <Smartphone className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+            <span>5th Dimension (Mobile Mode Active) • Auto-Optimized Touch Controls</span>
+          </span>
+          <button
+            onClick={() => setDeviceDimension('pc')}
+            className="text-[10px] underline font-bold text-amber-200 hover:text-white cursor-pointer"
+          >
+            Switch to PC Mode 🖥️
+          </button>
+        </div>
+      )}
+
       {/* Main Content Area */}
-      <main className="flex-1">
-        {activeSection === 1 ? (
-          <SectionOverview onSelectSection={(secId) => setActiveSection(secId)} />
+      <main className={`flex-1 ${deviceDimension === 'mobile' ? 'pb-24' : ''}`}>
+        {isTeacher ? (
+          <TeachersSection 
+            user={user} 
+            isTeacherOS={true}
+            initialSubSection={teacherSubSection}
+            onSubSectionChange={(sub) => setTeacherSubSection(sub)}
+          />
+        ) : activeSection === 1 ? (
+          <SectionOverview onSelectSection={handleSelectSection} />
         ) : activeSection === 2 ? (
           <>
             <Hero
@@ -190,6 +290,16 @@ export function App() {
             currentUser={user} 
             onOpenUpgradeModal={() => setIsPricingOpen(true)}
             onOpenAIWithQuestion={handleOpenAIWithQuestion}
+          />
+        ) : activeSection === 4 ? (
+          <ShankarAI 
+            isSectionView={true} 
+            user={user} 
+          />
+        ) : activeSection === 5 ? (
+          <TeachersSection 
+            user={user} 
+            isTeacherOS={false}
           />
         ) : activeSection === 8 ? (
           <DonationSection currentUser={user} />
@@ -243,6 +353,10 @@ export function App() {
         user={user}
         onLogin={(u) => setUser(u)}
         onLogout={handleLogout}
+        onGoToSection={(sec) => {
+          setActiveSection(sec);
+          setIsAuthOpen(false);
+        }}
       />
 
       <UploadPdfModal
@@ -283,6 +397,148 @@ export function App() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* 5th Dimension: Mobile Floating Bottom Navigation Dock */}
+      {deviceDimension === 'mobile' && (
+        <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 py-2 px-3 shadow-2xl flex items-center justify-around">
+          {isTeacher ? (
+            <>
+              <button
+                type="button"
+                onClick={() => setTeacherSubSection('homework')}
+                className={`flex flex-col items-center gap-1 transition-all ${
+                  teacherSubSection === 'homework' ? 'text-purple-600 scale-105 font-bold' : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <div className={`p-1.5 rounded-xl ${teacherSubSection === 'homework' ? 'bg-purple-100 text-purple-700' : ''}`}>
+                  <ClipboardList className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] tracking-tight">Homework</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setTeacherSubSection('doubts_chat')}
+                className={`flex flex-col items-center gap-1 transition-all ${
+                  teacherSubSection === 'doubts_chat' ? 'text-emerald-600 scale-105 font-bold' : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <div className={`p-1.5 rounded-xl ${teacherSubSection === 'doubts_chat' ? 'bg-emerald-100 text-emerald-700' : ''}`}>
+                  <MessageSquareMore className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] tracking-tight">Doubts Desk</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setTeacherSubSection('live_class')}
+                className={`flex flex-col items-center gap-1 transition-all ${
+                  teacherSubSection === 'live_class' ? 'text-rose-600 scale-105 font-bold' : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <div className={`p-1.5 rounded-xl ${teacherSubSection === 'live_class' ? 'bg-rose-100 text-rose-700' : ''}`}>
+                  <Video className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] tracking-tight">Live Classes</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setTeacherSubSection('tests')}
+                className={`flex flex-col items-center gap-1 transition-all ${
+                  teacherSubSection === 'tests' ? 'text-indigo-600 scale-105 font-bold' : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <div className={`p-1.5 rounded-xl ${teacherSubSection === 'tests' ? 'bg-indigo-100 text-indigo-700' : ''}`}>
+                  <CheckSquare className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] tracking-tight">Tests</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setTeacherSubSection('attendance')}
+                className={`flex flex-col items-center gap-1 transition-all ${
+                  teacherSubSection === 'attendance' ? 'text-amber-600 scale-105 font-bold' : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <div className={`p-1.5 rounded-xl ${teacherSubSection === 'attendance' ? 'bg-amber-100 text-amber-700' : ''}`}>
+                  <UserCheck className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] tracking-tight">Attendance</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => setActiveSection(1)}
+                className={`flex flex-col items-center gap-1 transition-all ${
+                  activeSection === 1 ? 'text-red-800 scale-105 font-bold' : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <div className={`p-1.5 rounded-xl ${activeSection === 1 ? 'bg-red-100 text-red-800' : ''}`}>
+                  <Home className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] tracking-tight">Overview</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveSection(2)}
+                className={`flex flex-col items-center gap-1 transition-all ${
+                  activeSection === 2 ? 'text-red-800 scale-105 font-bold' : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <div className={`p-1.5 rounded-xl ${activeSection === 2 ? 'bg-red-100 text-red-800' : ''}`}>
+                  <BookOpen className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] tracking-tight">Books</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveSection(3)}
+                className={`flex flex-col items-center gap-1 transition-all ${
+                  activeSection === 3 ? 'text-purple-800 scale-105 font-bold' : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <div className={`p-1.5 rounded-xl ${activeSection === 3 ? 'bg-purple-100 text-purple-800' : ''}`}>
+                  <Layers className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] tracking-tight">Q&amp;A Arcade</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setAiPrompt('');
+                  setIsAIOpen(true);
+                }}
+                className="flex flex-col items-center gap-1 transition-all text-amber-600 hover:text-amber-700 -mt-3"
+              >
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-orange-600 to-amber-500 text-white flex items-center justify-center shadow-lg shadow-orange-500/30 border-2 border-white">
+                  <BlackDogLogo className="w-5 h-5" bgClassName="bg-stone-950" />
+                </div>
+                <span className="text-[10px] font-black tracking-tight text-slate-800">AI Buddy</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveSection(9)}
+                className={`flex flex-col items-center gap-1 transition-all ${
+                  activeSection === 9 ? 'text-amber-700 scale-105 font-bold' : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <div className={`p-1.5 rounded-xl ${activeSection === 9 ? 'bg-amber-100 text-amber-700' : ''}`}>
+                  <UserIcon className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] tracking-tight">ID Vault</span>
+              </button>
+            </>
+          )}
+        </nav>
       )}
 
     </div>

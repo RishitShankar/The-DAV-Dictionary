@@ -1,25 +1,52 @@
 export const DAV_SUBJECTS = {
   8: [
     { 
-      id: 'eng8', 
-      name: 'English (3 Books)', 
-      tagline: 'Reader, Literature & Grammar Practice',
+      id: 'eng8_lit', 
+      name: 'English Literature (Class 8)', 
+      tagline: 'Stories of Wit, Courage, Classic Drama & Poetry',
       icon: 'BookOpen', 
       color: 'from-blue-600 to-indigo-700',
       books: [
-        { id: 'eng_reader', title: 'English Reader', type: 'Reader / Prose & Poetry', pdfUrl: '/books/Class 8/english-reader.pdf', size: '31 MB' },
-        { id: 'eng_lit', title: 'English Literature', type: 'Literature Reader', pdfUrl: '/books/Class 8/english-literature.pdf', size: '32.5 MB' },
+        { id: 'eng_lit', title: 'English Literature', type: 'Literature Reader', pdfUrl: '/books/Class 8/english-literature.pdf', size: '32.5 MB' }
+      ]
+    },
+    { 
+      id: 'eng8_reader', 
+      name: 'My English Reader (Class 8)', 
+      tagline: 'Theme Units, Reading Comprehension & Expression',
+      icon: 'BookOpen', 
+      color: 'from-indigo-600 to-blue-800',
+      books: [
+        { id: 'eng_reader', title: 'English Reader', type: 'Coursebook Reader', pdfUrl: '/books/Class 8/english-reader.pdf', size: '31 MB' }
+      ]
+    },
+    { 
+      id: 'eng8_prac', 
+      name: 'English Practice Book (Class 8)', 
+      tagline: 'Tenses, Active-Passive Voice, Reported Speech & Grammar',
+      icon: 'BookOpen', 
+      color: 'from-sky-600 to-cyan-700',
+      books: [
         { id: 'eng_prac', title: 'Practice Book', type: 'Grammar & Exercises', pdfUrl: '/books/Class 8/english-practice.pdf', size: '30.3 MB' }
       ]
     },
     { 
-      id: 'hin8', 
-      name: 'Hindi - हिन्दी (2 Books)', 
-      tagline: 'Gyan Sagar & Abhyas Sagar',
+      id: 'hin8_gs', 
+      name: 'Hindi - ज्ञान सागर (Gyan Sagar Class 8)', 
+      tagline: 'प्रेरक कहानियाँ, कविताएँ, दोहे एवं हिन्दी साहित्य',
       icon: 'Languages', 
       color: 'from-amber-600 to-orange-700',
       books: [
-        { id: 'hin_gyan', title: 'ज्ञान सागर (Gyan Sagar)', type: 'Literature / साहित्य', pdfUrl: '/books/Class 8/hindi-gyan-sagar.pdf', size: '37.9 MB' },
+        { id: 'hin_gyan', title: 'ज्ञान सागर (Gyan Sagar)', type: 'Literature / साहित्य', pdfUrl: '/books/Class 8/hindi-gyan-sagar.pdf', size: '37.9 MB' }
+      ]
+    },
+    { 
+      id: 'hin8_as', 
+      name: 'Hindi - अभ्यास सागर (Abhyas Sagar Class 8)', 
+      tagline: 'संधि, समास, मुहावरे, पत्र लेखन एवं व्याकरण अभ्यास',
+      icon: 'Languages', 
+      color: 'from-orange-600 to-red-700',
+      books: [
         { id: 'hin_abhyas', title: 'अभ्यास सागर (Abhyas Sagar)', type: 'Grammar Practice / व्याकरण अभ्यास', pdfUrl: '/books/Class 8/hindi-abhyas-sagar.pdf', size: '39.9 MB' }
       ]
     },
@@ -652,6 +679,16 @@ export const DAV_SUBJECTS = {
   ],
   7: [
     {
+      id: 'math7',
+      name: 'Secondary Mathematics (Class 7)',
+      tagline: 'Rational Numbers, Exponents, Algebraic Expressions, Triangles & Data',
+      icon: 'Calculator',
+      color: 'from-emerald-600 to-teal-700',
+      books: [
+        { id: 'math7_book', title: 'Secondary Mathematics (Class 7)', type: 'Complete Textbook', pdfUrl: '/books/Class 7/Secondary-Mathematics.pdf', size: '55.0 MB' }
+      ]
+    },
+    {
       id: 'sci7',
       name: 'Science - The Living World (STD 7)',
       tagline: 'Nutrition in Plants & Animals, Heat, Acids, Bases & Salts, Motion',
@@ -679,6 +716,16 @@ export const DAV_SUBJECTS = {
       color: 'from-amber-600 to-orange-700',
       books: [
         { id: 'hin7_gs_book', title: 'ज्ञान सागर (Hindi Gyan Sagar STD 7)', type: 'हिन्दी साहित्य पाठ्यपुस्तक', pdfUrl: '/books/Class 7/Hindi-Gyan-Sagar.pdf', size: '103.9 MB' }
+      ]
+    },
+    {
+      id: 'hin7_as',
+      name: 'Hindi - अभ्यास सागर (Abhyas Sagar STD 7)',
+      tagline: 'व्याकरण अभ्यास, संधि, उपसर्ग, प्रत्यय एवं वाक्य विचार',
+      icon: 'Languages',
+      color: 'from-orange-600 to-red-700',
+      books: [
+        { id: 'hin7_as_book', title: 'अभ्यास सागर (Hindi Abhyas Sagar STD 7)', type: 'व्याकरण अभ्यास पुस्तिका', pdfUrl: '/books/Class 7/Hindi-Abhyas-Sagar.pdf', size: '42.1 MB' }
       ]
     },
     {

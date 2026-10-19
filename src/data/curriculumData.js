@@ -13,6 +13,7 @@ export const DAV_CLASSES = [
   { id: '1', label: 'Class 1' },
   { id: 'UKG', label: 'UKG (Upper Kindergarten)' },
   { id: 'LKG', label: 'LKG (Lower Kindergarten)' },
+  { id: 'Nursery', label: 'Nursery (Early Childhood Foundation)' },
 ];
 
 export const DAV_SUBJECTS_BY_CLASS = {
@@ -107,6 +108,12 @@ export const DAV_SUBJECTS_BY_CLASS = {
     { id: 'maths', name: 'Fun With Maths', pdf: 'Fun-With-Maths.pdf' },
     { id: 'evs', name: 'Environmental Studies (EVS)', pdf: 'EVS.pdf' },
     { id: 'act', name: 'Integrated Activity Workbook', pdf: 'Integrated-Activity-Book.pdf' }
+  ],
+  'Nursery': [
+    { id: 'rhymes', name: 'Rhymes & Alphabet Playbook', pdf: 'Nursery-Rhymes.pdf' },
+    { id: 'numbers', name: 'Numbers & Shapes Coloring Book', pdf: 'Nursery-Numbers.pdf' },
+    { id: 'activity', name: 'Picture Book & Activity World', pdf: 'Nursery-Activity.pdf' },
+    { id: 'hindi_geet', name: 'Baal Geet & Chitraavali (बाल गीत)', pdf: 'Nursery-Baal-Geet.pdf' }
   ]
 };
 

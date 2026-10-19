@@ -33,4 +33,12 @@ dist-ssr
 *.tar.gz
 *.rar
 *.exe
+*.mp4
 extract_all_books.ps1
+toc_extracted/
+toc_images/
+check_curriculum.py
+extract_toc.py
+scratch/
+__pycache__/
+*.pyc

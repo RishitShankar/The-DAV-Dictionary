@@ -7,6 +7,7 @@ import {
   Bookmark, Paperclip, ChevronDown, ListChecks, HelpCircle,
   ArrowRight, ArrowLeft, RotateCcw
 } from 'lucide-react';
+import { ShankarAILogo } from './ShankarAILogo';
 import { BlackDogLogo } from './BlackDogLogo';
 import { askShankarAI, getSavedApiKey, saveApiKey } from '../services/geminiService';
 import { InteractiveQuiz } from './InteractiveQuiz';
@@ -109,7 +110,7 @@ function renderFormattedMessage(text, isUser) {
   );
 }
 
-export function ShankarAI({ isOpen, onClose, initialPrompt = '', user }) {
+export function ShankarAI({ isOpen, onClose, initialPrompt = '', user, isSectionView = false }) {
   // Modes: 'academics' | 'outer_world'
   const [activeMode, setActiveMode] = useState('academics');
 
@@ -279,28 +280,25 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
     handleSend(queryText, actionKey);
   };
 
-  if (!isOpen) return null;
+  if (!isOpen && !isSectionView) return null;
 
-  return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center ${isFullscreen ? 'p-0 w-screen h-screen' : 'p-3 sm:p-6'} bg-slate-950 overflow-hidden font-sans`}>
+  const shellContent = (
+    <div 
+      className={`w-full ${isSectionView ? 'max-w-6xl h-[86vh] rounded-3xl' : isFullscreen ? 'h-screen rounded-none' : 'max-w-6xl h-[94vh] rounded-3xl'} bg-slate-950 flex flex-col overflow-hidden border-2 border-orange-500/50 shadow-2xl transition-all duration-200 relative`}
+    >
       
-      {/* Full Screen Shankar AI Shell */}
-      <div 
-        className={`w-full ${isFullscreen ? 'h-screen rounded-none' : 'max-w-6xl h-[94vh] rounded-3xl'} bg-slate-950 flex flex-col overflow-hidden border border-orange-500/40 shadow-2xl transition-all duration-200 relative`}
-      >
+      {/* ========================================================================= */}
+      {/* TOP LEVEL NAVIGATION BAR                                                  */}
+      {/* ========================================================================= */}
+      <header className="bg-stone-900 border-b border-orange-500/40 px-3 sm:px-5 py-2.5 flex items-center justify-between text-white flex-wrap gap-3 shrink-0">
         
-        {/* ========================================================================= */}
-        {/* TOP LEVEL NAVIGATION BAR                                                  */}
-        {/* ========================================================================= */}
-        <header className="bg-stone-900 border-b border-orange-500/40 px-3 sm:px-5 py-2.5 flex items-center justify-between text-white flex-wrap gap-3 shrink-0">
-          
-          {/* Left: Branding & Mascot */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
-            <BlackDogLogo className="w-10 h-10 sm:w-11 sm:h-11" bgClassName="bg-stone-950 border-2 border-amber-400" />
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-black text-lg sm:text-xl text-white tracking-tight uppercase flex items-center gap-1.5">
-                  <span>Shankar AI</span>
+        {/* Left: Branding & Mascot */}
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          <ShankarAILogo className="w-10 h-10 sm:w-11 sm:h-11" bgClassName="bg-stone-950 border-2 border-amber-400" />
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-black text-lg sm:text-xl text-white tracking-tight uppercase flex items-center gap-1.5">
+                <span>Shankar AI</span>
                   <span className="text-amber-400 font-mono text-xs px-2 py-0.5 rounded-md bg-stone-950 border border-amber-400/40">
                     MASTER
                   </span>
@@ -383,13 +381,15 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
               {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
             </button>
 
-            <button
-              onClick={onClose}
-              className="p-1.5 sm:p-2 rounded-xl bg-stone-800 hover:bg-rose-900 text-stone-300 hover:text-white border border-stone-700 transition cursor-pointer"
-              title="Close Shankar AI"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            {!isSectionView && (
+              <button
+                onClick={onClose}
+                className="p-1.5 sm:p-2 rounded-xl bg-stone-800 hover:bg-rose-900 text-stone-300 hover:text-white border border-stone-700 transition cursor-pointer"
+                title="Close Shankar AI"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
           </div>
         </header>
 
@@ -581,7 +581,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
                   className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
                 >
                   {!isUser && (
-                    <BlackDogLogo className="w-9 h-9 shrink-0 mt-1" bgClassName="bg-stone-950 border border-amber-400" />
+                    <ShankarAILogo className="w-9 h-9 shrink-0 mt-1" bgClassName="bg-stone-950 border border-amber-400" />
                   )}
                   
                   <div
@@ -621,7 +621,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
 
             {loading && (
               <div className="flex gap-3 items-center">
-                <BlackDogLogo className="w-9 h-9 shrink-0 animate-pulse" bgClassName="bg-stone-950 border border-amber-400" />
+                <ShankarAILogo className="w-9 h-9 shrink-0 animate-pulse" bgClassName="bg-stone-950 border border-amber-400" />
                 <div className="bg-stone-50 p-4 rounded-2xl border border-slate-200 flex items-center gap-2.5 text-xs text-slate-700 shadow-xs">
                   <RefreshCw className="w-4 h-4 animate-spin text-orange-600" />
                   <span>
@@ -730,8 +730,8 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
               {/* STEP 0: SELECT MODE */}
               {wizardStep === 'select_mode' && (
                 <div className="space-y-6 text-center">
-                  <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-stone-950 shadow-lg">
-                    <BlackDogLogo className="w-10 h-10" bgClassName="bg-transparent" />
+                  <div className="w-16 h-16 mx-auto rounded-2xl bg-stone-950 border-2 border-amber-400 flex items-center justify-center text-stone-950 shadow-lg">
+                    <ShankarAILogo className="w-12 h-12" bgClassName="bg-transparent" />
                   </div>
 
                   <div>
@@ -978,8 +978,21 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
         )}
 
       </div>
-    </div>
-  );
-}
+    );
+
+    if (isSectionView) {
+      return (
+        <div className="w-full py-6 px-3 sm:px-6 bg-slate-950 flex flex-col items-center justify-center min-h-[calc(100vh-120px)] animate-fadeIn">
+          {shellContent}
+        </div>
+      );
+    }
+
+    return (
+      <div className={`fixed inset-0 z-50 flex items-center justify-center ${isFullscreen ? 'p-0 w-screen h-screen' : 'p-3 sm:p-6'} bg-slate-950/85 backdrop-blur-md overflow-hidden font-sans animate-fadeIn`}>
+        {shellContent}
+      </div>
+    );
+  }
 
 export default ShankarAI;

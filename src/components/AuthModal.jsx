@@ -3,8 +3,10 @@ import {
   X, User, Lock, Mail, Shield, CheckCircle, Database, Sparkles, 
   Key, ArrowRight, UserCheck, RefreshCw 
 } from 'lucide-react';
+import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
+import { saveCloudStudent } from '../services/supabaseClient';
 
-export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGuide }) {
+export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGuide, onGoToSection }) {
   const [isRegister, setIsRegister] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,6 +16,25 @@ export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGu
   const [role, setRole] = useState('Student');
 
   if (!isOpen) return null;
+
+  const currentUid = (user?.id || user?.studentId || 'rishibhai').toLowerCase();
+  const isMasterRishit = currentUid === 'rishibhai' || user?.isAdmin;
+
+  const savedProfile = (() => {
+    try {
+      const raw = localStorage.getItem(`dav_student_profile_${currentUid}`);
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
+    return null;
+  })();
+
+  const profilePhoto = savedProfile?.photoUrl || user?.photoUrl || (isMasterRishit ? '/rishit_shankar.jpg' : null);
+  const studentFullName = savedProfile?.fullName || user?.name || (isMasterRishit ? 'Rishit Shankar' : 'DAV Student');
+  const classDisplay = savedProfile?.classNum || user?.classNum || '8';
+  const sectionDisplay = savedProfile?.section || user?.section || 'D';
+  const rollDisplay = savedProfile?.rollNumber || (isMasterRishit ? '25' : 'N/A');
+  const admissionDisplay = savedProfile?.admissionNumber || (isMasterRishit ? 'ADM-8921-DAV' : `ADM-${currentUid.toUpperCase()}`);
+  const tierPlan = savedProfile?.tierPlan || user?.dimensionName || (user?.plan === 'vvip' ? 'Dimension 3: VVIP Plan' : user?.plan === 'vip' ? 'Dimension 2: VIP Plan' : isMasterRishit ? 'Dimension 4: Master Developer' : 'Dimension 1: Normal Plan');
 
   const generateStudentId = () => {
     const randomNum = Math.floor(1000 + Math.random() * 9000);
@@ -34,16 +55,36 @@ export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGu
   const handleSubmit = (e) => {
     e.preventDefault();
     const idToUse = generatedId || (isRegister ? generateStudentId() : 'DAV-2026-5542');
+    const isTeacher = role === 'Teacher' || role.toLowerCase().includes('teacher');
     
     const userData = {
-      name: name || (isRegister ? 'DAV Scholar' : 'Head Boy Aryan'),
-      email: email || 'student@davschool.edu.in',
+      id: idToUse,
+      name: name || (isTeacher ? 'Prof. DAV Faculty' : isRegister ? 'DAV Scholar' : 'Head Boy Aryan'),
+      email: email || (isTeacher ? 'faculty@davschool.edu.in' : 'student@davschool.edu.in'),
+      password: password || '12345678',
       studentId: idToUse,
       classNum: studentClass,
-      role: role,
-      plan: user?.plan || 'free',
+      role: isTeacher ? 'DAV Faculty Teacher' : role,
+      isTeacher: isTeacher,
+      plan: isTeacher ? 'teacher' : (user?.plan || 'normal'),
+      dimension: isTeacher ? 5 : 1,
+      dimensionName: isTeacher ? 'Dimension 5: Faculty OS' : 'Dimension 1: Normal Plan',
+      personalWhatsApp: '919470033984',
+      phoneNumber: '919470033984',
+      subject: isTeacher ? 'Curriculum Studies' : undefined,
+      department: isTeacher ? 'General Faculty' : undefined,
       joinedAt: new Date().toLocaleDateString()
     };
+
+    if (isRegister) {
+      try {
+        const stored = getRegisteredUsers();
+        const updated = [userData, ...stored.filter(u => u.id !== userData.id)];
+        saveRegisteredUsers(updated);
+        saveCloudStudent(userData).catch(() => {});
+        window.dispatchEvent(new CustomEvent('dav_faculty_updated'));
+      } catch (err) {}
+    }
 
     onLogin(userData);
     onClose();
@@ -78,47 +119,76 @@ export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGu
 
         {/* Logged In View */}
         {user ? (
-          <div className="p-6 space-y-5">
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-red-800 text-amber-300 font-extrabold text-xl flex items-center justify-center shadow-inner">
-                {user.name ? user.name[0].toUpperCase() : 'D'}
+          <div className="p-6 space-y-4">
+            {/* Real Student ID Card Display with DP */}
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-50 to-red-50/30 border border-slate-200 flex items-center gap-4 shadow-sm">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-red-800 to-amber-600 text-amber-200 font-extrabold text-2xl flex items-center justify-center shadow-md border-2 border-amber-400 overflow-hidden shrink-0">
+                {profilePhoto ? (
+                  <img 
+                    src={profilePhoto} 
+                    alt={studentFullName} 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span>{studentFullName ? studentFullName[0].toUpperCase() : 'D'}</span>
+                )}
               </div>
-              <div>
-                <div className="font-extrabold text-base text-slate-900">{user.name}</div>
-                <div className="text-xs font-mono font-bold text-red-800">ID: {user.studentId}</div>
-                <div className="text-xs text-slate-500 mt-0.5">Role: {user.role || 'DAV Student'} • Class {user.classNum || '8'}</div>
+              <div className="truncate">
+                <div className="font-extrabold text-base text-slate-900 truncate">{studentFullName}</div>
+                <div className="text-xs font-mono font-bold text-red-800">ID: {user.studentId || user.id || currentUid}</div>
+                <div className="text-[11px] text-slate-600 mt-0.5 font-medium">
+                  Class {classDisplay} • Sec {sectionDisplay} | Roll: {rollDisplay}
+                </div>
+                <div className="text-[10px] text-slate-500 font-mono">
+                  {admissionDisplay}
+                </div>
               </div>
             </div>
 
             <div className="space-y-2 text-xs">
-              <div className="flex justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
-                <span className="text-slate-500">Current Plan</span>
-                <span className="font-bold text-slate-800 uppercase">{user.plan || 'Free'} Tier</span>
+              <div className="flex justify-between items-center p-3 rounded-xl bg-slate-50 border border-slate-100">
+                <span className="text-slate-500">Current Plan &amp; Dimension</span>
+                <span className="font-bold text-slate-900 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200 text-[11px]">
+                  {tierPlan}
+                </span>
               </div>
-              <div className="flex justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
+              <div className="flex justify-between items-center p-3 rounded-xl bg-slate-50 border border-slate-100">
                 <span className="text-slate-500">Cloud Database Status</span>
-                <span className="font-bold text-emerald-600 flex items-center gap-1">
+                <span className="font-bold text-emerald-600 flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   Synced Locally + Cloud Ready
                 </span>
               </div>
             </div>
 
-            <div className="pt-2 flex gap-3">
+            {/* Direct Navigation to Section 9 Student ID Vault */}
+            <button
+              type="button"
+              onClick={() => {
+                if (onGoToSection) onGoToSection(9);
+                else onClose();
+              }}
+              className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-red-800 to-amber-600 hover:from-red-700 hover:to-amber-500 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md shadow-red-950/20 transition cursor-pointer"
+            >
+              <UserCheck className="w-4 h-4 text-amber-300" />
+              <span>Open Student ID Vault (Section 9) 🎓</span>
+            </button>
+
+            <div className="pt-1 flex gap-2">
               <button
                 onClick={onLogout}
-                className="flex-1 py-2.5 rounded-xl border border-red-200 text-red-700 hover:bg-red-50 text-xs font-bold transition"
+                className="flex-1 py-2 rounded-xl border border-red-200 text-red-700 hover:bg-red-50 text-xs font-bold transition cursor-pointer"
               >
                 Log Out
               </button>
               <button
                 onClick={() => {
                   onClose();
-                  onOpenDbGuide();
+                  onOpenDbGuide && onOpenDbGuide();
                 }}
-                className="flex-1 py-2.5 rounded-xl bg-slate-900 text-white hover:bg-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5"
+                className="flex-1 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <Database className="w-3.5 h-3.5" />
+                <Database className="w-3.5 h-3.5 text-amber-400" />
                 <span>Cloud DB Settings</span>
               </button>
             </div>

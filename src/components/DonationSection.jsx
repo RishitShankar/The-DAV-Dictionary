@@ -7,10 +7,12 @@ import {
 import { WhatsAppLogo } from './SocialLogos';
 import { DavInvoiceModal } from './DavInvoiceModal';
 import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
-import { getSupabaseClient } from '../services/supabaseClient';
+import { getSupabaseClient, saveCloudDonation, fetchCloudDonations } from '../services/supabaseClient';
 
 export function DonationSection({ currentUser }) {
   const [selectedUser, setSelectedUser] = useState(currentUser?.id || 'rishibhai');
+  const [donorName, setDonorName] = useState(currentUser?.name || 'Rishit Shankar');
+  const [donorPhone, setDonorPhone] = useState(currentUser?.personalWhatsApp || currentUser?.phoneNumber || '9470033984');
   const [donationAmount, setDonationAmount] = useState('5');
   const [paymentMode, setPaymentMode] = useState('upi'); // 'upi' | 'paytm' | 'cash' | 'card'
   const [paytmUrl, setPaytmUrl] = useState('https://paytm.me/');
@@ -26,6 +28,10 @@ export function DonationSection({ currentUser }) {
     setRegisteredUsers(list);
     if (currentUser?.id) {
       setSelectedUser(currentUser.id);
+      if (currentUser?.name) setDonorName(currentUser.name);
+      if (currentUser?.personalWhatsApp || currentUser?.phoneNumber) {
+        setDonorPhone(currentUser.personalWhatsApp || currentUser.phoneNumber);
+      }
     }
   }, [currentUser]);
 
@@ -36,6 +42,17 @@ export function DonationSection({ currentUser }) {
     plan: 'Normal Plan',
     classNum: '8'
   };
+
+  useEffect(() => {
+    if (activeUserData) {
+      if (activeUserData.name && activeUserData.name !== 'Rishit Shankar') {
+        setDonorName(activeUserData.name);
+      }
+      if (activeUserData.personalWhatsApp || activeUserData.phoneNumber) {
+        setDonorPhone(activeUserData.personalWhatsApp || activeUserData.phoneNumber);
+      }
+    }
+  }, [selectedUser]);
 
   // Parse existing paid amount (e.g., "15" or "₹15")
   const currentPaidNum = parseInt(String(activeUserData.paidAmount || '0').replace(/[^0-9]/g, ''), 10) || 0;
@@ -91,9 +108,10 @@ export function DonationSection({ currentUser }) {
         invoiceNumber: invoiceNum,
         date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
         time: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
-        studentName: activeUserData.name || selectedUser,
+        studentName: donorName || activeUserData.name || selectedUser,
         studentId: selectedUser,
         classNum: activeUserData.classNum || '8',
+        phone: donorPhone || activeUserData.personalWhatsApp || '',
         planName: activeUserData.dimensionName || activeUserData.plan || 'DAV Digital Portal Supporter',
         baseAmount: currentPaidNum,
         donationAmount: newDonationNum,
@@ -106,31 +124,20 @@ export function DonationSection({ currentUser }) {
         note: transactionNote || 'Special voluntary donation contributed to Rishit Shankar for DAV Dictionary server and development costs.'
       };
 
-      // 3. Save invoice in localStorage and Supabase Cloud
+      // 3. Save invoice in localStorage ('dav_invoices' and 'dav_cloud_donations') and Supabase Cloud
       try {
         const existingInvoices = JSON.parse(localStorage.getItem('dav_invoices') || '[]');
         existingInvoices.unshift(newInvoice);
         localStorage.setItem('dav_invoices', JSON.stringify(existingInvoices));
+
+        const existingDonations = JSON.parse(localStorage.getItem('dav_cloud_donations') || '[]');
+        existingDonations.unshift(newInvoice);
+        localStorage.setItem('dav_cloud_donations', JSON.stringify(existingDonations));
       } catch (err) {}
 
-      // Cloud storage sync
+      // Cloud storage sync to Supabase
       try {
-        const client = getSupabaseClient();
-        if (client) {
-          await client.from('dav_donations').insert([
-            {
-              invoice_number: invoiceNum,
-              user_id: selectedUser,
-              student_name: newInvoice.studentName,
-              base_amount: currentPaidNum,
-              donation_amount: newDonationNum,
-              total_amount: grandTotalAfterDonation,
-              payment_mode: newInvoice.paymentMode,
-              note: newInvoice.note,
-              created_at: new Date().toISOString()
-            }
-          ]);
-        }
+        await saveCloudDonation(newInvoice);
       } catch (cloudErr) {
         console.warn('Supabase donation record sync notice:', cloudErr);
       }
@@ -206,6 +213,35 @@ export function DonationSection({ currentUser }) {
                   </option>
                 ))}
               </select>
+            </div>
+
+            {/* Donor Profile Details: Pre-filled or Manual Entry */}
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+              <span className="text-[10px] uppercase font-black text-red-800 tracking-wider block">
+                Donor Profile Information (Pre-filled / Editable)
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div>
+                  <label className="block text-slate-700 font-semibold mb-1">Donor Full Name</label>
+                  <input
+                    type="text"
+                    value={donorName}
+                    onChange={(e) => setDonorName(e.target.value)}
+                    placeholder="Enter donor name"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-slate-800 font-semibold focus:outline-none focus:border-red-700"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-700 font-semibold mb-1">WhatsApp / Phone Number</label>
+                  <input
+                    type="tel"
+                    value={donorPhone}
+                    onChange={(e) => setDonorPhone(e.target.value)}
+                    placeholder="e.g. 9470033984"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-slate-800 font-mono font-semibold focus:outline-none focus:border-red-700"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Current Contribution vs New Donation Visual Breakdown */}

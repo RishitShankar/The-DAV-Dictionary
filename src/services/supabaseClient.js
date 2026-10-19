@@ -197,3 +197,103 @@ export async function loadCloudPdfAnnotation(userId, bookTitle, pageNumber) {
     return null;
   }
 }
+
+/**
+ * Fetch all verified donations from Supabase cloud
+ */
+export async function fetchCloudDonations() {
+  const client = getSupabaseClient();
+  if (!client) return null;
+  try {
+    const { data, error } = await client
+      .from('dav_donations')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) {
+      console.warn('Supabase fetchCloudDonations notice:', error.message);
+      return null;
+    }
+    return (data || []).map(row => ({
+      invoiceNumber: row.invoice_number,
+      userId: row.user_id,
+      studentName: row.student_name,
+      baseAmount: row.base_amount || 0,
+      donationAmount: row.donation_amount || 0,
+      totalAmount: row.total_amount || 0,
+      paymentMode: row.payment_mode || 'Instant UPI',
+      note: row.note || '',
+      transactionId: row.transaction_id || `TXN-${row.invoice_number}`,
+      date: row.created_at ? new Date(row.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recent'
+    }));
+  } catch (e) {
+    console.error('fetchCloudDonations failed:', e);
+    return null;
+  }
+}
+
+/**
+ * Save a verified donation to Supabase Cloud
+ */
+export async function saveCloudDonation(donation) {
+  const client = getSupabaseClient();
+  if (!client || !donation) return false;
+  try {
+    const row = {
+      invoice_number: donation.invoiceNumber,
+      user_id: donation.userId || donation.studentId || 'anonymous_donor',
+      student_name: donation.studentName || donation.donorName || 'Generous Donor',
+      base_amount: parseFloat(donation.baseAmount || 0),
+      donation_amount: parseFloat(donation.donationAmount || 0),
+      total_amount: parseFloat(donation.totalAmount || 0),
+      payment_mode: donation.paymentMode || 'Instant UPI',
+      note: donation.note || '',
+      transaction_id: donation.transactionId || `TXN-${Date.now().toString().slice(-8)}`,
+      created_at: new Date().toISOString()
+    };
+    const { error } = await client.from('dav_donations').upsert(row, { onConflict: 'invoice_number' });
+    if (error) {
+      console.warn('saveCloudDonation error:', error.message);
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error('saveCloudDonation exception:', e);
+    return false;
+  }
+}
+
+/**
+ * Save doubt chats to Supabase cloud
+ */
+export async function saveCloudDoubtChats(chats) {
+  const client = getSupabaseClient();
+  if (!client || !chats) return false;
+  try {
+    const row = {
+      id: 'active_doubt_vault',
+      chats_json: JSON.stringify(chats),
+      updated_at: new Date().toISOString()
+    };
+    const { error } = await client.from('dav_settings').upsert(row, { onConflict: 'id' });
+    if (error) return false;
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
+ * Fetch doubt chats from Supabase cloud
+ */
+export async function fetchCloudDoubtChats() {
+  const client = getSupabaseClient();
+  if (!client) return null;
+  try {
+    const { data, error } = await client.from('dav_settings').select('chats_json').eq('id', 'active_doubt_vault').single();
+    if (error || !data?.chats_json) return null;
+    return JSON.parse(data.chats_json);
+  } catch (e) {
+    return null;
+  }
+}
+

@@ -4,10 +4,28 @@ import {
   ArrowRight, ExternalLink, ChevronRight, RotateCcw, 
   Volume2, VolumeX, Award, ShieldCheck, Flame, Zap, 
   Search, Compass, Star, Brain, Play, Check, Layers,
-  X, ArrowLeft, Eye, BookMarked, Globe, Lightbulb
+  X, ArrowLeft, Eye, BookMarked, Globe, Lightbulb,
+  Calculator, Atom, Microscope, FlaskConical, Droplets,
+  Sun, Moon, TreePine, HeartHandshake, Languages,
+  Cpu, FileText, Download, Landmark, Scroll, ShieldAlert,
+  Palette, Shapes, Coins, Boxes, BarChart3, Binary,
+  AlertCircle
 } from 'lucide-react';
 import { DAV_SUBJECTS } from '../data/mockData';
-import { getSubjectChapters } from '../data/davChapters';
+import { getSubjectChapters, buildProviderUrls } from '../data/davChapters';
+
+// Map of all Lucide icons used across all subjects and chapters
+const ICON_MAP = {
+  HelpCircle, BookOpen, Sparkles, CheckCircle2, Lock, 
+  ArrowRight, ExternalLink, ChevronRight, RotateCcw, 
+  Volume2, VolumeX, Award, ShieldCheck, Flame, Zap, 
+  Search, Compass, Star, Brain, Play, Check, Layers,
+  X, ArrowLeft, Eye, BookMarked, Globe, Lightbulb,
+  Calculator, Atom, Microscope, FlaskConical, Droplets,
+  Sun, Moon, TreePine, HeartHandshake, Languages,
+  Cpu, FileText, Download, Landmark, Scroll, ShieldAlert,
+  Palette, Shapes, Coins, Boxes, BarChart3, Binary
+};
 
 export function QuestionsAnswersSection({ 
   currentUser, 
@@ -15,7 +33,6 @@ export function QuestionsAnswersSection({
   onOpenAIWithQuestion 
 }) {
   // Plan Selection: 'normal' | 'vip' | 'vvip'
-  // Initial default: user's account plan or 'vvip' for testing
   const initialPlan = (currentUser?.plan === 'vvip' || currentUser?.isAdmin) 
     ? 'vvip' 
     : (currentUser?.plan === 'vip' ? 'vip' : 'vvip');
@@ -23,13 +40,14 @@ export function QuestionsAnswersSection({
   const [activePlan, setActivePlan] = useState(initialPlan);
 
   // Pop-up Modal State:
-  // activeModal: null | 'level1_grade' | 'level2_subject' | 'level3_chapter' | 'level4_source'
+  // null | 'level1_grade' | 'level2_subject' | 'level2_subbook' | 'level3_chapter' | 'level4_source'
   const [activeModal, setActiveModal] = useState(null);
 
   // Selection states
   const [selectedClass, setSelectedClass] = useState(8);
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedChapter, setSelectedChapter] = useState(null);
+  const [subBookData, setSubBookData] = useState(null);
 
   // UI helpers
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -37,12 +55,12 @@ export function QuestionsAnswersSection({
   const [chapterSearch, setChapterSearch] = useState('');
   const [redirectToast, setRedirectToast] = useState(null);
 
-  // Plan capabilities
+  // Plan unlock rules
   const isNormalUnlocked = true;
   const isVipUnlocked = activePlan === 'vip' || activePlan === 'vvip' || currentUser?.isAdmin;
   const isVvipUnlocked = activePlan === 'vvip' || currentUser?.isAdmin;
 
-  // Synthesized game-like sound effects (No external audio files needed)
+  // Synthesized game-like sound effects (Web Audio API)
   const playSfx = (type = 'click') => {
     if (!soundEnabled) return;
     try {
@@ -55,11 +73,11 @@ export function QuestionsAnswersSection({
       if (type === 'select') {
         osc.type = 'sine';
         osc.frequency.setValueAtTime(520, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(780, audioCtx.currentTime + 0.12);
+        osc.frequency.exponentialRampToValueAtTime(780, audioCtx.currentTime + 0.1);
         gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.12);
+        osc.stop(audioCtx.currentTime + 0.1);
       } else if (type === 'level') {
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(440, audioCtx.currentTime);
@@ -69,47 +87,66 @@ export function QuestionsAnswersSection({
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
         osc.start();
         osc.stop(audioCtx.currentTime + 0.25);
-      } else if (type === 'win') {
+      } else if (type === 'chapter' || type === 'win') {
         osc.type = 'sine';
         osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
-        osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
-        osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.3); // C6
+        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08); // E5
+        osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.16); // G5
+        osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.24); // C6
         gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.45);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.38);
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.45);
+        osc.stop(audioCtx.currentTime + 0.38);
+      } else if (type === 'launch') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.2);
       } else if (type === 'pop') {
         osc.type = 'sine';
         osc.frequency.setValueAtTime(700, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(350, audioCtx.currentTime + 0.09);
+        osc.frequency.exponentialRampToValueAtTime(350, audioCtx.currentTime + 0.08);
         gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.09);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.09);
+        osc.stop(audioCtx.currentTime + 0.08);
       }
     } catch (e) {}
   };
 
-  // Grade cards config for Level 1 Pop-up
+  // Educational Voice Pronunciation of Chapter Title (Web Speech API)
+  const speakChapterTitle = (textToSpeak) => {
+    if (!soundEnabled || !('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.05;
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {}
+  };
+
+  // Grade cards config for Level 1 Pop-up (All classes from LKG to Class 8)
   const gradeLevels = [
-    { cls: 8, label: 'Class 8', badge: 'Board Topper Stage 🔥', color: 'from-rose-500 via-red-600 to-amber-600', emoji: '🔥', desc: 'All 20 Science Chapters, Math, SST & Hindi' },
-    { cls: 7, label: 'Class 7', badge: 'Senior Challenger ⚡', color: 'from-blue-600 via-indigo-600 to-purple-600', emoji: '⚡', desc: 'Pre-Board Concept Mastery & Exercises' },
+    { cls: 8, label: 'Class 8', badge: 'Board Topper Stage 🔥', color: 'from-rose-500 via-red-600 to-amber-600', emoji: '🔥', desc: 'All 20 Science Chapters, Math, SST, Hindi & Sanskrit' },
+    { cls: 7, label: 'Class 7', badge: 'Senior Challenger ⚡', color: 'from-blue-600 via-indigo-600 to-purple-600', emoji: '⚡', desc: 'Pre-Board Concept Mastery, Science, Math & SST' },
     { cls: 6, label: 'Class 6', badge: 'Middle School Champ 🏆', color: 'from-emerald-500 via-teal-600 to-cyan-600', emoji: '🏆', desc: 'Middle School Curriculum Q&A Solutions' },
-    { cls: 5, label: 'Class 5', badge: 'Primary Senior Star ⭐', color: 'from-amber-500 via-orange-600 to-red-600', emoji: '⭐', desc: 'My Living World, SST & Bhasha Madhuri' },
-    { cls: 4, label: 'Class 4', badge: 'Junior Whiz 🚀', color: 'from-cyan-500 via-blue-600 to-indigo-600', emoji: '🚀', desc: 'English Reader, Primary Math & EVS Solutions' },
-    { cls: 3, label: 'Class 3', badge: 'Curious Explorer 💡', color: 'from-purple-500 via-pink-600 to-rose-600', emoji: '💡', desc: 'Exercise Solutions & Story Notes' },
-    { cls: 2, label: 'Class 2', badge: 'Rising Star 🌱', color: 'from-teal-500 via-emerald-600 to-green-600', emoji: '🌱', desc: 'Primary Numeracy & Word Exercises' },
-    { cls: 1, label: 'Class 1', badge: 'Foundation Scout 🎯', color: 'from-yellow-500 via-amber-600 to-orange-600', emoji: '🎯', desc: 'Step-by-step Fun Learning Q&A' },
-    { cls: 'UKG', label: 'UKG', badge: 'Kindergarten Explorer 🎨', color: 'from-pink-500 via-rose-500 to-red-500', emoji: '🎨', desc: 'Bal Madhuri & Early Math Answers' },
-    { cls: 'LKG', label: 'LKG', badge: 'Little Champions 🧸', color: 'from-lime-500 via-green-600 to-emerald-600', emoji: '🧸', desc: 'Activity Workbook & Fun Phonics' }
+    { cls: 5, label: 'Class 5', badge: 'Primary Senior Star ⭐', color: 'from-amber-500 via-orange-600 to-red-600', emoji: '⭐', desc: 'My Living World, SST, Primary Math & Bhasha Madhuri' },
+    { cls: 4, label: 'Class 4', badge: 'Junior Whiz 🚀', color: 'from-cyan-500 via-blue-600 to-indigo-600', emoji: '🚀', desc: 'English Reader, Primary Math, Living World & SST' },
+    { cls: 3, label: 'Class 3', badge: 'Curious Explorer 💡', color: 'from-purple-500 via-pink-600 to-rose-600', emoji: '💡', desc: 'Living World Science, Math, EVS & Bhasha Madhuri' },
+    { cls: 2, label: 'Class 2', badge: 'Rising Star 🌱', color: 'from-teal-500 via-emerald-600 to-green-600', emoji: '🌱', desc: 'Primary Numeracy, English Reader & Living World' },
+    { cls: 1, label: 'Class 1', badge: 'Foundation Scout 🎯', color: 'from-yellow-500 via-amber-600 to-orange-600', emoji: '🎯', desc: 'Step-by-step Fun Learning Q&A & English Practice' },
+    { cls: 'UKG', label: 'UKG', badge: 'Kindergarten Explorer 🎨', color: 'from-pink-500 via-rose-500 to-red-500', emoji: '🎨', desc: 'Bal Madhuri, Math Numbers & Activity Workbook' },
+    { cls: 'LKG', label: 'LKG', badge: 'Little Champions 🧸', color: 'from-lime-500 via-green-600 to-emerald-600', emoji: '🧸', desc: 'Fun with English Phonics, Maths & EVS' }
   ];
 
   // Step 1: User selects a plan from the purple arcade hub
   const handleSelectPlan = (plan) => {
     playSfx('level');
     setActivePlan(plan);
-    // Directly open Pop-up Level 1: Grade Select as requested
     setActiveModal('level1_grade');
   };
 
@@ -119,33 +156,121 @@ export function QuestionsAnswersSection({
     setSelectedClass(cls);
     setSelectedSubject(null);
     setSelectedChapter(null);
+    setSubBookData(null);
     setSubjectSearch('');
-    // Open Pop-up Level 2: Subject Select
     setActiveModal('level2_subject');
   };
 
   // Step 3: User clicks a subject in Pop-up Level 2
   const handleSelectSubject = (subj) => {
     playSfx('select');
+
+    // Multi-book detection for Class 8 English
+    if (String(selectedClass) === '8' && (subj.id === 'group_eng8' || subj.id === 'eng8')) {
+      setSubBookData({
+        category: 'English',
+        title: 'Choose Your English Textbook (Class 8)',
+        subtitle: 'Select which official DAV textbook you want questions & answers for:',
+        icon: 'BookOpen',
+        books: [
+          {
+            id: 'eng8_lit',
+            name: 'English Literature (Class 8)',
+            tagline: 'Stories of Wit, Courage, Classic Drama & Poetry',
+            icon: 'BookOpen',
+            emoji: '📖',
+            badge: 'Literature Reader • 13 Units',
+            desc: 'Chapter 1 Three Questions, Granny\'s Tree Climbing, The Fun They Had, Father\'s Help, etc.'
+          },
+          {
+            id: 'eng8_reader',
+            name: 'My English Reader (Class 8)',
+            tagline: 'Theme Units, Reading Comprehension & Expression',
+            icon: 'BookOpen',
+            emoji: '📘',
+            badge: 'Theme Coursebook • Reading',
+            desc: 'Celebrations, Hobbies, Nature, Changing Times & Compassion Units'
+          },
+          {
+            id: 'eng8_prac',
+            name: 'English Practice Book (Class 8)',
+            tagline: 'Tenses, Active-Passive Voice, Reported Speech & Grammar',
+            icon: 'BookOpen',
+            emoji: '✍️',
+            badge: 'Grammar & Exercises • Worksheets',
+            desc: 'Tenses, Narration, Modals, Subject-Verb Agreement, Clauses, Linkers, Voice'
+          }
+        ]
+      });
+      setActiveModal('level2_subbook');
+      return;
+    }
+
+    // Multi-book detection for Class 8 Hindi
+    if (String(selectedClass) === '8' && (subj.id === 'group_hin8' || subj.id === 'hin8')) {
+      setSubBookData({
+        category: 'Hindi',
+        title: 'Choose Your Hindi Textbook (Class 8)',
+        subtitle: 'Select which official DAV Hindi textbook you want questions & answers for:',
+        icon: 'Languages',
+        books: [
+          {
+            id: 'hin8_gs',
+            name: 'ज्ञान सागर - Gyan Sagar (Class 8)',
+            tagline: 'प्रेरक कहानियाँ, कविताएँ, दोहे एवं हिन्दी साहित्य',
+            icon: 'Languages',
+            emoji: '📜',
+            badge: 'Literature / साहित्य • 20 पाठ',
+            desc: 'हम पंछी उन्मुक्त गगन के, असल धन, अच्छे पड़ोसी के गुण, दोहे, सूरदास के पद'
+          },
+          {
+            id: 'hin8_as',
+            name: 'अभ्यास सागर - Abhyas Sagar (Class 8)',
+            tagline: 'संधि, समास, मुहावरे, पत्र लेखन एवं व्याकरण अभ्यास',
+            icon: 'Languages',
+            emoji: '✍️',
+            badge: 'Grammar Practice / व्याकरण • 20 अभ्यास',
+            desc: 'अनुस्वार-अनुनासिक, उपसर्ग-प्रत्यय, सन्धि, समास, वाक्य-भेद, मुहावरे'
+          }
+        ]
+      });
+      setActiveModal('level2_subbook');
+      return;
+    }
+
+    // Direct selection
+    setSubBookData(null);
     setSelectedSubject(subj);
     setSelectedChapter(null);
     setChapterSearch('');
-    // Open Pop-up Level 3: Chapter Select
+    setActiveModal('level3_chapter');
+  };
+
+  // Step 3.5: User clicks a sub-book in Pop-up Level 2.5
+  const handleSelectSubBook = (book) => {
+    playSfx('chapter');
+    setSelectedSubject(book);
+    setSelectedChapter(null);
+    setChapterSearch('');
     setActiveModal('level3_chapter');
   };
 
   // Step 4: User clicks a chapter in Pop-up Level 3
   const handleSelectChapter = (chap) => {
-    playSfx('win');
+    playSfx('chapter');
     setSelectedChapter(chap);
-    // Open Pop-up Level 4: Source Website Select
+    speakChapterTitle(`Class ${selectedClass}, ${selectedSubject.name}, Chapter ${chap.number}: ${chap.title}`);
     setActiveModal('level4_source');
   };
 
-  // Step 5: User clicks a website option in Pop-up Level 4 -> Direct Redirect
+  // Step 5: User clicks a website option in Pop-up Level 4 -> Direct Launch
   const handleLaunchWebsite = (sourceKey, url) => {
-    playSfx('level');
-    setRedirectToast(`Redirecting to ${sourceKey.toUpperCase()}...`);
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    playSfx('launch');
+    const label = sourceKey.toUpperCase().replace('-', ' ');
+    setRedirectToast(`Launching ${label}...`);
     setTimeout(() => {
       setRedirectToast(null);
     }, 3000);
@@ -154,12 +279,64 @@ export function QuestionsAnswersSection({
 
   // Close modal back to arcade hub
   const handleCloseModal = () => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
     playSfx('pop');
     setActiveModal(null);
   };
 
-  // Get subjects for selected class
-  const availableSubjects = DAV_SUBJECTS[selectedClass] || [];
+  // Get subjects for selected class (with Class 8 multi-textbook groups)
+  const isClass8 = String(selectedClass) === '8';
+  const rawSubjects = DAV_SUBJECTS[selectedClass] || [];
+  
+  let availableSubjects = rawSubjects;
+  if (isClass8 && !subjectSearch.trim()) {
+    availableSubjects = [
+      {
+        id: 'group_eng8',
+        name: 'English (3 Official Textbooks)',
+        tagline: 'English Literature, My English Reader & English Practice Book',
+        icon: 'BookOpen',
+        badge: '3 Books Available 📚',
+        isGroup: true,
+        bookCount: 3
+      },
+      {
+        id: 'group_hin8',
+        name: 'Hindi - हिन्दी (2 Official Textbooks)',
+        tagline: 'ज्ञान सागर (Gyan Sagar) एवं अभ्यास सागर (Abhyas Sagar)',
+        icon: 'Languages',
+        badge: '2 Books Available 📖',
+        isGroup: true,
+        bookCount: 2
+      },
+      ...rawSubjects.filter(s => !s.id.startsWith('eng') && !s.id.startsWith('hin'))
+    ];
+  } else if (isClass8 && subjectSearch.trim()) {
+    availableSubjects = [
+      {
+        id: 'group_eng8',
+        name: 'English (3 Official Textbooks)',
+        tagline: 'English Literature, My English Reader & English Practice Book',
+        icon: 'BookOpen',
+        badge: '3 Books Available 📚',
+        isGroup: true,
+        bookCount: 3
+      },
+      {
+        id: 'group_hin8',
+        name: 'Hindi - हिन्दी (2 Official Textbooks)',
+        tagline: 'ज्ञान सागर (Gyan Sagar) एवं अभ्यास सागर (Abhyas Sagar)',
+        icon: 'Languages',
+        badge: '2 Books Available 📖',
+        isGroup: true,
+        bookCount: 2
+      },
+      ...rawSubjects
+    ];
+  }
+
   const filteredSubjects = availableSubjects.filter(s => 
     s.name.toLowerCase().includes(subjectSearch.toLowerCase()) ||
     (s.tagline && s.tagline.toLowerCase().includes(subjectSearch.toLowerCase()))
@@ -173,49 +350,25 @@ export function QuestionsAnswersSection({
   const filteredChapters = currentChapters.filter(c => 
     c.title.toLowerCase().includes(chapterSearch.toLowerCase()) ||
     `chapter ${c.number}`.includes(chapterSearch.toLowerCase()) ||
+    `unit ${c.number}`.includes(chapterSearch.toLowerCase()) ||
+    `पाठ ${c.number}`.includes(chapterSearch.toLowerCase()) ||
     (c.tagline && c.tagline.toLowerCase().includes(chapterSearch.toLowerCase()))
   );
 
   // Generate verified website URLs for the chosen chapter
-  const generateSourceUrls = () => {
-    if (!selectedSubject || !selectedChapter) return {};
-    
-    // Clean subject and chapter names
-    const cleanSub = selectedSubject.name.replace(/\(.*?\)/g, '').replace(/DAV/g, '').trim();
+  const sourceUrls = (selectedSubject && selectedChapter)
+    ? buildProviderUrls(selectedClass, selectedSubject, selectedChapter)
+    : {};
 
-    // 1. Solution Gyan: Prefer direct verified URL
-    let solutionGyan = selectedChapter.solutionGyanUrl;
-    if (!solutionGyan) {
-      solutionGyan = `https://solutiongyan.com/?s=DAV+Class+${selectedClass}+${encodeURIComponent(cleanSub)}+Chapter+${selectedChapter.number}`;
-    }
-
-    // 2. Learn Cram: Prefer direct verified URL
-    let learnCram = selectedChapter.learnCramUrl;
-    if (!learnCram) {
-      learnCram = `https://www.learncram.com/?s=DAV+Class+${selectedClass}+${encodeURIComponent(cleanSub)}+Chapter+${selectedChapter.number}`;
-    }
-
-    // 3. ncertbookspdf:
-    const ncertBookPdf = `https://ncertbookspdf.com/?s=DAV+Class+${selectedClass}+${encodeURIComponent(cleanSub)}+Chapter+${selectedChapter.number}`;
-
-    // Subject Hub URL on Solution Gyan
-    const solutionGyanHub = (selectedClass === 8 && selectedSubject.id === 'sci8')
-      ? 'https://solutiongyan.com/dav-class-8/dav-class-8-science/'
-      : (selectedClass === 8 && selectedSubject.id === 'sst8')
-      ? 'https://solutiongyan.com/dav-class-8-sst-book-solutions/'
-      : (selectedClass === 8 && selectedSubject.id === 'math8')
-      ? 'https://solutiongyan.com/dav-class-8-maths-book-solutions/'
-      : `https://solutiongyan.com/dav-class-${selectedClass}/`;
-
-    return {
-      solutionGyan,
-      learnCram,
-      ncertBookPdf,
-      solutionGyanHub
-    };
-  };
-
-  const sourceUrls = generateSourceUrls();
+  // Check if current subject is Hindi
+  const isHindiSubject = Boolean(
+    selectedSubject?.id?.startsWith('hin') ||
+    selectedSubject?.name?.toLowerCase().includes('hindi') ||
+    selectedSubject?.name?.includes('हिन्दी') ||
+    selectedSubject?.name?.includes('ज्ञान') ||
+    selectedSubject?.name?.includes('माधुरी') ||
+    selectedSubject?.name?.includes('अभ्यास')
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0c051e] via-[#1a0a38] to-[#250b44] text-white py-10 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden select-none">
@@ -279,7 +432,7 @@ export function QuestionsAnswersSection({
         <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-[#1d0b3e] via-[#2d115e] to-[#120629] border-2 border-purple-500/50 shadow-2xl relative overflow-hidden text-center space-y-6">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/30 text-purple-300 text-xs font-black uppercase tracking-widest border border-purple-400/40">
             <Sparkles className="w-4 h-4 text-amber-400" />
-            <span>Interactive Pop-Up Game Mode</span>
+            <span>Interactive Pop-Up Game Mode • Class LKG to Class 8</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight max-w-3xl mx-auto">
@@ -287,7 +440,7 @@ export function QuestionsAnswersSection({
           </h1>
 
           <p className="text-sm sm:text-base text-purple-200 max-w-2xl mx-auto font-medium">
-            Click on your subscription plan below to launch the **Level 1 Grade Pop-Up**. Step into the full DAV solved chapter repository!
+            Click on your subscription plan below to launch the **Level 1 Grade Pop-Up**. Step into 900+ DAV textbook solved chapters with verified links!
           </p>
 
           {/* 3 Interactive Plan Cards (Normal, VIP, VVIP) */}
@@ -376,7 +529,7 @@ export function QuestionsAnswersSection({
               onClick={() => handleSelectPlan('vvip')}
               className={`p-6 rounded-3xl border-2 transition-all transform hover:-translate-y-1.5 cursor-pointer relative overflow-hidden ${
                 activePlan === 'vvip'
-                  ? 'bg-gradient-to-b from-purple-900/90 to-purple-950 border-amber-400 shadow-2xl shadow-amber-500/30'
+                  ? 'bg-gradient-to-b from-purple-900/90 to-purple-950 border-amber-400 shadow-2xl shadow-amber-500/30 ring-2 ring-amber-400/50'
                   : 'bg-purple-950/50 border-purple-800/60 hover:border-purple-500'
               }`}
             >
@@ -433,13 +586,130 @@ export function QuestionsAnswersSection({
 
         </div>
 
+        {/* Featured Chapters Spotlight Carousel Deck */}
+        <div className="p-6 rounded-3xl bg-purple-950/40 border border-purple-800/60 backdrop-blur-md">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-400" />
+              <h3 className="font-black text-base text-white">Popular High-Yield Featured Chapters</h3>
+            </div>
+            <span className="text-xs text-purple-300">1-Click Launch Directly</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            {/* Ch 11 Class 8 Science The Human Eye */}
+            <div 
+              onClick={() => {
+                setSelectedClass(8);
+                const sub = (DAV_SUBJECTS[8] || []).find(s => s.id === 'sci8') || { id: 'sci8', name: 'DAV Science & Technology' };
+                setSelectedSubject(sub);
+                const chaps = getSubjectChapters(8, 'sci8', sub.name);
+                const ch11 = chaps.find(c => c.number === 11) || chaps[10];
+                handleSelectChapter(ch11);
+              }}
+              className="p-4 rounded-2xl bg-gradient-to-br from-amber-500/20 via-purple-950 to-purple-900 border-2 border-amber-400 hover:border-amber-300 transition transform hover:-translate-y-1 cursor-pointer shadow-lg shadow-amber-500/20 relative group overflow-hidden"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-400 text-slate-950">
+                  Class 8 • Ch 11
+                </span>
+                <span className="text-xs">👁️</span>
+              </div>
+              <h4 className="font-black text-sm text-white group-hover:text-amber-300 transition">The Human Eye</h4>
+              <p className="text-[11px] text-purple-200/80 mt-1 line-clamp-2">Direct verified Solution Gyan solution &amp; eye defect answers</p>
+              <div className="pt-2 mt-2 border-t border-purple-800/60 flex items-center justify-between text-xs font-bold text-amber-400">
+                <span>Open Solutions</span>
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
+              </div>
+            </div>
+
+            {/* Ch 1 Class 8 Science The Cell */}
+            <div 
+              onClick={() => {
+                setSelectedClass(8);
+                const sub = (DAV_SUBJECTS[8] || []).find(s => s.id === 'sci8') || { id: 'sci8', name: 'DAV Science & Technology' };
+                setSelectedSubject(sub);
+                const chaps = getSubjectChapters(8, 'sci8', sub.name);
+                handleSelectChapter(chaps[0]);
+              }}
+              className="p-4 rounded-2xl bg-purple-950/60 border border-purple-700/60 hover:border-purple-400 transition transform hover:-translate-y-1 cursor-pointer shadow-md group"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-purple-800 text-purple-200">
+                  Class 8 • Ch 1
+                </span>
+                <span className="text-xs">🔬</span>
+              </div>
+              <h4 className="font-black text-sm text-white group-hover:text-amber-300 transition">The Cell: Structure &amp; Functions</h4>
+              <p className="text-[11px] text-purple-200/80 mt-1 line-clamp-2">Organelles, cell wall, nucleus &amp; plant vs animal cells</p>
+              <div className="pt-2 mt-2 border-t border-purple-800/60 flex items-center justify-between text-xs font-bold text-purple-300 group-hover:text-amber-400">
+                <span>Open Solutions</span>
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
+              </div>
+            </div>
+
+            {/* Ch 6 Class 8 Maths Compound Interest */}
+            <div 
+              onClick={() => {
+                setSelectedClass(8);
+                const sub = (DAV_SUBJECTS[8] || []).find(s => s.id === 'math8') || { id: 'math8', name: 'DAV Secondary Mathematics' };
+                setSelectedSubject(sub);
+                const chaps = getSubjectChapters(8, 'math8', sub.name);
+                const ch6 = chaps.find(c => c.number === 6) || chaps[5];
+                handleSelectChapter(ch6);
+              }}
+              className="p-4 rounded-2xl bg-gradient-to-br from-emerald-500/20 via-purple-950 to-purple-900 border-2 border-emerald-400 hover:border-emerald-300 transition transform hover:-translate-y-1 cursor-pointer shadow-lg shadow-emerald-500/20 group"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-400 text-slate-950">
+                  Class 8 • Unit 6
+                </span>
+                <span className="text-xs">💰</span>
+              </div>
+              <h4 className="font-black text-sm text-white group-hover:text-amber-300 transition">Compound Interest</h4>
+              <p className="text-[11px] text-purple-200/80 mt-1 line-clamp-2">Direct Solution Gyan &amp; Learn Cram worksheet formulas</p>
+              <div className="pt-2 mt-2 border-t border-purple-800/60 flex items-center justify-between text-xs font-bold text-emerald-400">
+                <span>Open Solutions</span>
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
+              </div>
+            </div>
+
+            {/* Ch 1 Class 8 Hindi Hum Panchhi Unmukt Gagan Ke */}
+            <div 
+              onClick={() => {
+                setSelectedClass(8);
+                const sub = (DAV_SUBJECTS[8] || []).find(s => s.id === 'hin8') || { id: 'hin8', name: 'Hindi - ज्ञान सागर' };
+                setSelectedSubject(sub);
+                const chaps = getSubjectChapters(8, 'hin8', sub.name);
+                handleSelectChapter(chaps[0]);
+              }}
+              className="p-4 rounded-2xl bg-gradient-to-br from-amber-500/20 via-purple-950 to-purple-900 border-2 border-amber-400/80 hover:border-amber-300 transition transform hover:-translate-y-1 cursor-pointer shadow-md group"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-400 text-slate-950">
+                  Class 8 • पाठ 1
+                </span>
+                <span className="text-xs">📖</span>
+              </div>
+              <h4 className="font-black text-sm text-white group-hover:text-amber-300 transition">हम पंछी उन्मुक्त गगन के</h4>
+              <p className="text-[11px] text-purple-200/80 mt-1 line-clamp-2">A Guide to Hindi (onlinehindi.in) by Avinash Ranjan Gupta</p>
+              <div className="pt-2 mt-2 border-t border-purple-800/60 flex items-center justify-between text-xs font-bold text-amber-300">
+                <span>Open Solutions</span>
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
 
       {/* ========================================================================= */}
       {/* POP-UP MODAL 1: LEVEL 1 GRADE / CLASS SELECTION (Class LKG to Class 8)    */}
       {/* ========================================================================= */}
       {activeModal === 'level1_grade' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
           <div className="w-full max-w-4xl max-h-[90vh] bg-gradient-to-br from-[#190a36] via-[#240e4f] to-[#120524] border-2 border-purple-500/60 rounded-3xl shadow-2xl flex flex-col overflow-hidden relative">
             
             {/* Pop-Up Header */}
@@ -508,7 +778,7 @@ export function QuestionsAnswersSection({
               <button
                 type="button"
                 onClick={handleCloseModal}
-                className="px-4 py-2 rounded-xl bg-purple-800/60 hover:bg-purple-700 text-white font-bold transition"
+                className="px-4 py-2 rounded-xl bg-purple-800/60 hover:bg-purple-700 text-white font-bold transition cursor-pointer"
               >
                 Cancel
               </button>
@@ -522,7 +792,7 @@ export function QuestionsAnswersSection({
       {/* POP-UP MODAL 2: LEVEL 2 SUBJECT SELECTION                                */}
       {/* ========================================================================= */}
       {activeModal === 'level2_subject' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
           <div className="w-full max-w-4xl max-h-[90vh] bg-gradient-to-br from-[#190a36] via-[#240e4f] to-[#120524] border-2 border-purple-500/60 rounded-3xl shadow-2xl flex flex-col overflow-hidden relative">
             
             {/* Pop-Up Header */}
@@ -534,7 +804,7 @@ export function QuestionsAnswersSection({
                     playSfx('pop');
                     setActiveModal('level1_grade');
                   }}
-                  className="w-9 h-9 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-white flex items-center justify-center transition border border-purple-600"
+                  className="w-9 h-9 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-white flex items-center justify-center transition border border-purple-600 cursor-pointer"
                   title="Back to Grade Selection"
                 >
                   <ArrowLeft className="w-4 h-4" />
@@ -579,13 +849,18 @@ export function QuestionsAnswersSection({
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
                 {filteredSubjects.map((sub) => {
                   const isScience = sub.name.toLowerCase().includes('science');
+                  const isGroup = Boolean(sub.isGroup);
+                  const SubIcon = ICON_MAP[sub.icon] || BookOpen;
+                  const chapCount = isGroup ? 0 : getSubjectChapters(selectedClass, sub.id, sub.name).length;
                   return (
                     <button
                       key={sub.id}
                       type="button"
                       onClick={() => handleSelectSubject(sub)}
                       className={`p-4 rounded-2xl border-2 text-left transition transform hover:-translate-y-1 hover:scale-[1.02] cursor-pointer flex flex-col justify-between space-y-3 group ${
-                        isScience
+                        isGroup
+                          ? 'bg-gradient-to-br from-amber-500/20 via-purple-950/90 to-purple-900 border-amber-400 shadow-lg shadow-amber-500/10'
+                          : isScience
                           ? 'bg-gradient-to-br from-emerald-950/80 via-purple-950/80 to-purple-900/80 border-emerald-400 shadow-md shadow-emerald-500/10'
                           : 'bg-purple-950/40 border-purple-700/50 hover:border-purple-400 hover:bg-purple-900/60'
                       }`}
@@ -593,13 +868,15 @@ export function QuestionsAnswersSection({
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <span className="w-8 h-8 rounded-lg bg-purple-800 text-amber-300 flex items-center justify-center text-sm font-black">
-                            {isScience ? '🔬' : '📚'}
+                            <SubIcon className="w-4 h-4" />
                           </span>
-                          {isScience && (
-                            <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-400/20 text-emerald-300 border border-emerald-400/30">
-                              20 Chapters Ready 🔥
-                            </span>
-                          )}
+                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase border ${
+                            isGroup 
+                              ? 'bg-amber-400 text-slate-950 border-amber-300 animate-pulse'
+                              : 'bg-purple-800/80 text-amber-300 border-purple-700'
+                          }`}>
+                            {isGroup ? sub.badge : `${chapCount} Chapters Ready 🔥`}
+                          </span>
                         </div>
                         <h4 className="font-black text-sm text-white group-hover:text-amber-300 transition">
                           {sub.name}
@@ -610,7 +887,7 @@ export function QuestionsAnswersSection({
                       </div>
 
                       <div className="pt-2 border-t border-purple-800/60 flex items-center justify-between text-xs font-bold text-purple-300 group-hover:text-amber-400">
-                        <span>Select Subject</span>
+                        <span>{isGroup ? (sub.id === 'group_eng8' ? 'Pick English Book (3 Available) 📚' : 'Pick Hindi Book (2 Available) 📖') : 'Select Subject'}</span>
                         <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition" />
                       </div>
                     </button>
@@ -633,7 +910,7 @@ export function QuestionsAnswersSection({
                   playSfx('pop');
                   setActiveModal('level1_grade');
                 }}
-                className="inline-flex items-center gap-1.5 text-purple-300 hover:text-white font-bold"
+                className="inline-flex items-center gap-1.5 text-purple-300 hover:text-white font-bold cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Back to Grade Selection</span>
@@ -642,7 +919,7 @@ export function QuestionsAnswersSection({
               <button
                 type="button"
                 onClick={handleCloseModal}
-                className="px-4 py-2 rounded-xl bg-purple-800/60 hover:bg-purple-700 text-white font-bold transition"
+                className="px-4 py-2 rounded-xl bg-purple-800/60 hover:bg-purple-700 text-white font-bold transition cursor-pointer"
               >
                 Close
               </button>
@@ -653,10 +930,136 @@ export function QuestionsAnswersSection({
       )}
 
       {/* ========================================================================= */}
-      {/* POP-UP MODAL 3: LEVEL 3 CHAPTER SELECTION (All 20 Class 8 Science Chaps) */}
+      {/* POP-UP MODAL 2.5: LEVEL 2 SUB-BOOK SELECTION (English/Hindi Multi-Books) */}
+      {/* ========================================================================= */}
+      {activeModal === 'level2_subbook' && subBookData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
+          <div className="w-full max-w-4xl max-h-[90vh] bg-gradient-to-br from-[#190a36] via-[#240e4f] to-[#120524] border-2 border-amber-400/80 rounded-3xl shadow-2xl flex flex-col overflow-hidden relative">
+            
+            {/* Pop-Up Header */}
+            <div className="p-5 sm:p-6 bg-purple-950/90 border-b border-purple-800 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSfx('pop');
+                    setActiveModal('level2_subject');
+                  }}
+                  className="w-9 h-9 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-white flex items-center justify-center transition border border-purple-600 cursor-pointer"
+                  title="Back to Subject Selection"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </button>
+                <div>
+                  <div className="text-[11px] font-black uppercase text-amber-300 tracking-wider">
+                    {activePlan.toUpperCase()} Plan • Class {selectedClass} • Step 2.5 Sub-Book Selector
+                  </div>
+                  <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+                    <span>{subBookData.title}</span>
+                    <span>📚</span>
+                  </h2>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleCloseModal}
+                className="w-10 h-10 rounded-xl bg-purple-900/60 hover:bg-rose-600 text-purple-200 hover:text-white flex items-center justify-center transition border border-purple-700 cursor-pointer"
+                title="Close Pop-Up"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Pop-Up Body: Interactive Cards for each textbook */}
+            <div className="p-6 overflow-y-auto space-y-4">
+              <div className="p-4 rounded-2xl bg-purple-900/40 border border-purple-700/60 flex items-center gap-3">
+                <Sparkles className="w-5 h-5 text-amber-400 shrink-0" />
+                <p className="text-xs sm:text-sm text-purple-200">
+                  {subBookData.subtitle} Click on any textbook below to view all its chapters and solution sources!
+                </p>
+              </div>
+
+              <div className={`grid grid-cols-1 ${subBookData.books.length === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-3'} gap-4 pt-2`}>
+                {subBookData.books.map((b) => {
+                  const chapCount = getSubjectChapters(selectedClass, b.id, b.name).length;
+                  return (
+                    <button
+                      key={b.id}
+                      type="button"
+                      onClick={() => handleSelectSubBook(b)}
+                      className="p-5 rounded-2xl bg-gradient-to-br from-purple-950/80 via-purple-900/50 to-slate-900 border-2 border-purple-500/40 hover:border-amber-400 hover:bg-purple-900/70 transition transform hover:-translate-y-1.5 cursor-pointer flex flex-col justify-between text-left group shadow-xl"
+                    >
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-3xl group-hover:scale-125 transition transform">
+                            {b.emoji}
+                          </span>
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-purple-800 text-amber-300 border border-purple-600">
+                            {chapCount} Chapters Ready 🔥
+                          </span>
+                        </div>
+
+                        <div>
+                          <h4 className="font-black text-base text-white group-hover:text-amber-300 transition">
+                            {b.name}
+                          </h4>
+                          <span className="inline-block mt-1 px-2.5 py-0.5 rounded text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                            {b.badge}
+                          </span>
+                          <p className="text-xs text-purple-200/90 mt-2 font-medium">
+                            {b.tagline}
+                          </p>
+                          {b.desc && (
+                            <p className="text-[11px] text-slate-400 mt-1 line-clamp-2 italic">
+                              {b.desc}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="pt-3 mt-4 border-t border-purple-800/60 flex items-center justify-between text-xs font-black text-purple-300 group-hover:text-amber-400">
+                        <span>Select Book &amp; Chapters</span>
+                        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition" />
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Pop-Up Footer */}
+            <div className="p-4 bg-purple-950/60 border-t border-purple-800/80 flex items-center justify-between text-xs">
+              <button
+                type="button"
+                onClick={() => {
+                  playSfx('pop');
+                  setActiveModal('level2_subject');
+                }}
+                className="inline-flex items-center gap-1.5 text-purple-300 hover:text-white font-bold cursor-pointer"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back to Subject Selection</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleCloseModal}
+                className="px-4 py-2 rounded-xl bg-purple-800/60 hover:bg-purple-700 text-white font-bold transition cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* POP-UP MODAL 3: LEVEL 3 CHAPTER SELECTION (All Chapters with Emojis & Sfx) */}
       {/* ========================================================================= */}
       {activeModal === 'level3_chapter' && selectedSubject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
           <div className="w-full max-w-5xl max-h-[90vh] bg-gradient-to-br from-[#190a36] via-[#240e4f] to-[#120524] border-2 border-purple-500/60 rounded-3xl shadow-2xl flex flex-col overflow-hidden relative">
             
             {/* Pop-Up Header */}
@@ -666,10 +1069,14 @@ export function QuestionsAnswersSection({
                   type="button"
                   onClick={() => {
                     playSfx('pop');
-                    setActiveModal('level2_subject');
+                    if (subBookData) {
+                      setActiveModal('level2_subbook');
+                    } else {
+                      setActiveModal('level2_subject');
+                    }
                   }}
-                  className="w-9 h-9 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-white flex items-center justify-center transition border border-purple-600"
-                  title="Back to Subject Selection"
+                  className="w-9 h-9 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-white flex items-center justify-center transition border border-purple-600 cursor-pointer"
+                  title="Back"
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </button>
@@ -708,51 +1115,97 @@ export function QuestionsAnswersSection({
               </div>
             </div>
 
-            {/* Pop-Up Body: Grid of all Chapters */}
+            {/* Pop-Up Body: Grid of all Chapters with Graphic Animations */}
             <div className="p-6 overflow-y-auto space-y-3.5">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
                 {filteredChapters.map((chap) => {
-                  const isEyeChapter = chap.number === 11;
+                  const isEyeChapter = chap.number === 11 && (
+                    selectedSubject?.id === 'sci8' || 
+                    selectedSubject?.name?.toLowerCase().includes('science')
+                  );
+                  const ChapIcon = ICON_MAP[chap.icon] || BookOpen;
+
                   return (
                     <button
                       key={chap.number}
                       type="button"
                       onClick={() => handleSelectChapter(chap)}
-                      className={`p-4 rounded-2xl border-2 text-left transition transform hover:-translate-y-1 hover:scale-[1.02] cursor-pointer flex flex-col justify-between space-y-3 group ${
+                      className={`p-4 rounded-2xl border-2 text-left transition-all duration-200 transform hover:-translate-y-1.5 hover:scale-[1.02] cursor-pointer flex flex-col justify-between space-y-3 group relative overflow-hidden ${
                         isEyeChapter
-                          ? 'bg-gradient-to-br from-amber-500/20 via-purple-950 to-purple-900 border-amber-400 shadow-xl shadow-amber-500/20'
-                          : 'bg-purple-950/40 border-purple-700/50 hover:border-purple-400 hover:bg-purple-900/60'
+                          ? 'bg-gradient-to-br from-amber-500/25 via-purple-950 to-purple-900 border-amber-400 shadow-xl shadow-amber-500/25 ring-2 ring-amber-400/40'
+                          : 'bg-purple-950/45 border-purple-700/50 hover:border-purple-400 hover:bg-purple-900/60 shadow-md hover:shadow-purple-500/20'
                       }`}
                     >
+                      {/* Glow halo for featured chapters */}
+                      {isEyeChapter && (
+                        <div className="absolute -top-10 -right-10 w-28 h-28 bg-amber-400/20 rounded-full blur-xl pointer-events-none animate-pulse" />
+                      )}
+
                       <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${
-                            isEyeChapter 
-                              ? 'bg-amber-400 text-slate-950 shadow-sm' 
-                              : 'bg-purple-800 text-purple-200'
-                          }`}>
-                            Chapter {chap.number}
-                          </span>
-                          {isEyeChapter && (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-black text-amber-300">
-                              <Eye className="w-3.5 h-3.5" />
-                              <span>Featured</span>
+                        <div className="flex items-center justify-between mb-2.5">
+                          <div className="flex items-center gap-1.5">
+                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                              isEyeChapter 
+                                ? 'bg-amber-400 text-slate-950 shadow-sm' 
+                                : 'bg-purple-800 text-purple-200'
+                            }`}>
+                              Chapter {chap.number}
                             </span>
-                          )}
+                            <span className="text-base select-none">{chap.emoji || '📘'}</span>
+                          </div>
+
+                          <div className="flex items-center gap-1.5">
+                            {/* Audio Pronunciation Preview Button */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                playSfx('select');
+                                speakChapterTitle(`Class ${selectedClass}, ${selectedSubject.name}, Chapter ${chap.number}: ${chap.title}`);
+                              }}
+                              className="w-7 h-7 rounded-lg bg-purple-900/70 hover:bg-amber-400 hover:text-slate-950 text-purple-300 flex items-center justify-center transition border border-purple-700/70 cursor-pointer"
+                              title="Pronounce Chapter Aloud"
+                            >
+                              <Volume2 className="w-3.5 h-3.5" />
+                            </button>
+
+                            {isEyeChapter && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-black text-amber-300 bg-amber-950/70 border border-amber-500/50 px-2 py-0.5 rounded-md animate-pulse">
+                                <Eye className="w-3 h-3 text-amber-300" />
+                                <span>Featured</span>
+                              </span>
+                            )}
+                          </div>
                         </div>
 
-                        <h4 className="font-black text-sm text-white group-hover:text-amber-300 transition">
-                          {chap.title}
-                        </h4>
+                        <div className="flex items-start gap-2.5">
+                          <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${
+                            isEyeChapter 
+                              ? 'bg-amber-400 text-slate-950' 
+                              : 'bg-purple-900/80 text-amber-300 border border-purple-700/70'
+                          }`}>
+                            <ChapIcon className="w-4 h-4" />
+                          </div>
 
-                        <p className="text-[11px] text-purple-200/80 mt-1 line-clamp-2 leading-relaxed">
-                          {chap.tagline}
-                        </p>
+                          <div className="flex-1">
+                            <h4 className="font-black text-sm text-white group-hover:text-amber-300 transition leading-snug">
+                              {chap.title}
+                            </h4>
+                            <p className="text-[11px] text-purple-200/80 mt-1 line-clamp-2 leading-relaxed">
+                              {chap.tagline}
+                            </p>
+                          </div>
+                        </div>
                       </div>
 
                       <div className="pt-2 border-t border-purple-800/60 flex items-center justify-between text-xs font-bold text-purple-300 group-hover:text-amber-400">
-                        <span>View Solutions</span>
-                        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition" />
+                        <span className="text-[10px] font-bold text-purple-300/80 bg-purple-900/40 px-2 py-0.5 rounded border border-purple-800/60">
+                          {chap.badge || 'Core Exercise 🌟'}
+                        </span>
+                        <div className="inline-flex items-center gap-1">
+                          <span>View Solutions</span>
+                          <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
+                        </div>
                       </div>
                     </button>
                   );
@@ -772,18 +1225,22 @@ export function QuestionsAnswersSection({
                 type="button"
                 onClick={() => {
                   playSfx('pop');
-                  setActiveModal('level2_subject');
+                  if (subBookData) {
+                    setActiveModal('level2_subbook');
+                  } else {
+                    setActiveModal('level2_subject');
+                  }
                 }}
-                className="inline-flex items-center gap-1.5 text-purple-300 hover:text-white font-bold"
+                className="inline-flex items-center gap-1.5 text-purple-300 hover:text-white font-bold cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4" />
-                <span>Back to Subject Selection</span>
+                <span>{subBookData ? 'Back to Sub-Book Selection' : 'Back to Subject Selection'}</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleCloseModal}
-                className="px-4 py-2 rounded-xl bg-purple-800/60 hover:bg-purple-700 text-white font-bold transition"
+                className="px-4 py-2 rounded-xl bg-purple-800/60 hover:bg-purple-700 text-white font-bold transition cursor-pointer"
               >
                 Close
               </button>
@@ -806,10 +1263,13 @@ export function QuestionsAnswersSection({
                 <button
                   type="button"
                   onClick={() => {
+                    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+                      window.speechSynthesis.cancel();
+                    }
                     playSfx('pop');
                     setActiveModal('level3_chapter');
                   }}
-                  className="w-9 h-9 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-white flex items-center justify-center transition border border-purple-600"
+                  className="w-9 h-9 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-white flex items-center justify-center transition border border-purple-600 cursor-pointer"
                   title="Back to Chapter Selection"
                 >
                   <ArrowLeft className="w-4 h-4" />
@@ -866,165 +1326,361 @@ export function QuestionsAnswersSection({
             {/* Pop-Up Body: 3 Solution Website Cards */}
             <div className="p-6 overflow-y-auto space-y-5">
               <p className="text-xs sm:text-sm text-purple-200">
-                Choose from verified academic portals below. Clicking on any unlocked source will open the exact chapter solution page:
+                Choose from verified academic portals below. Clicking on any unlocked source will open the exact chapter solution:
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 
-                {/* 1. Website 1: Solution Gyan (UNLOCKED FOR ALL) */}
-                <div className="p-5 rounded-2xl bg-gradient-to-b from-emerald-950/60 to-purple-950/80 border-2 border-emerald-400/80 shadow-lg shadow-emerald-500/10 flex flex-col justify-between space-y-4">
-                  <div className="space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-400 text-slate-950">
-                        Site 1 • Normal Plan
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-[11px] font-black text-emerald-400">
-                        <CheckCircle2 className="w-4 h-4" />
-                        <span>UNLOCKED</span>
-                      </span>
-                    </div>
+              {/* Verification & Direct Landing Info */}
+              <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-xl bg-purple-900/40 border border-purple-700/60 text-xs">
+                <span className="text-purple-200">
+                  🎯 Guaranteed direct textbook solutions • 1-Click instant landing without search terms
+                </span>
+                <span className="font-bold text-amber-300">
+                  100% Direct Portal URLs
+                </span>
+              </div>
 
-                    <h4 className="font-black text-lg text-white">
-                      Solution Gyan
-                    </h4>
-                    <p className="text-xs text-purple-200/80 leading-relaxed">
-                      Primary verified DAV Board chapter solutions with step-by-step exercise answers, fill-in-the-blanks, true/false, and detailed explanations.
-                    </p>
-
-                    {selectedChapter.solutionGyanUrl && (
-                      <div className="pt-1">
-                        <span className="text-[10px] font-black text-emerald-300 bg-emerald-950/80 border border-emerald-500/50 px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5 shadow-sm">
-                          <Check className="w-3.5 h-3.5 text-emerald-400" />
-                          <span>Exact Direct Chapter Solution Page Verified!</span>
+              {isHindiSubject ? (
+                /* HINDI SUBJECTS: "A Guide to Hindi" (onlinehindi.in) is PRIMARY & UNLOCKED FOR ALL */
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  
+                  {/* Card 1: A Guide to Hindi (onlinehindi.in) - UNLOCKED FOR ALL */}
+                  <div className="p-5 rounded-2xl bg-gradient-to-b from-amber-950/70 via-purple-950/80 to-purple-900/80 border-2 border-amber-400 shadow-xl shadow-amber-500/20 flex flex-col justify-between space-y-4">
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-400 text-slate-950">
+                          Primary Source • Unlocked for All
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-[11px] font-black text-amber-400">
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span>UNLOCKED</span>
                         </span>
                       </div>
-                    )}
-                  </div>
 
-                  <div className="pt-2 space-y-2">
-                    <button
-                      type="button"
-                      onClick={() => handleLaunchWebsite('solutiongyan', sourceUrls.solutionGyan)}
-                      className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition cursor-pointer"
-                    >
-                      <span>Open Solution Gyan 🚀</span>
-                      <ExternalLink className="w-4 h-4" />
-                    </button>
+                      <h4 className="font-black text-lg text-white">
+                        A Guide to Hindi (OnlineHindi.in)
+                      </h4>
+                      <div className="text-[11px] font-bold text-amber-300">
+                        By Avinash Ranjan Gupta (Literary Scholar)
+                      </div>
+                      <p className="text-xs text-purple-200/90 leading-relaxed">
+                        Official solved Hindi textbook questions, शब्दार्थ (word meanings), भावार्थ (stanza explanations), कविता सारांश, and अभ्यास प्रश्नोत्तर.
+                      </p>
 
-                    {sourceUrls.solutionGyanHub && (
-                      <button
-                        type="button"
-                        onClick={() => handleLaunchWebsite('solutiongyan-hub', sourceUrls.solutionGyanHub)}
-                        className="w-full py-2 px-3 rounded-lg bg-purple-900/40 hover:bg-purple-800/60 text-purple-200 hover:text-white font-bold text-[10px] flex items-center justify-center gap-1 transition text-center border border-purple-700/60 cursor-pointer"
-                      >
-                        <Globe className="w-3 h-3 text-amber-300" />
-                        <span>Or Browse DAV Class {selectedClass} Subject Index</span>
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {/* 2. Website 2: Learn Cram (UNLOCKED FOR VIP & VVIP) */}
-                <div className={`p-5 rounded-2xl border-2 flex flex-col justify-between space-y-4 ${
-                  isVipUnlocked
-                    ? 'bg-gradient-to-b from-blue-950/60 to-purple-950/80 border-blue-400/80 shadow-lg shadow-blue-500/10'
-                    : 'bg-purple-950/40 border-purple-800/60 opacity-80'
-                }`}>
-                  <div className="space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-blue-400 text-slate-950">
-                        Site 2 • VIP Plan
-                      </span>
-                      <span className={`inline-flex items-center gap-1 text-[11px] font-black ${isVipUnlocked ? 'text-blue-400' : 'text-purple-400'}`}>
-                        {isVipUnlocked ? <CheckCircle2 className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
-                        <span>{isVipUnlocked ? 'UNLOCKED' : 'LOCKED (VIP)'}</span>
-                      </span>
+                      {sourceUrls.onlineHindiIsDirect && (
+                        <div className="pt-1">
+                          <span className="text-[10px] font-black text-amber-300 bg-amber-950/80 border border-amber-500/50 px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5 shadow-sm">
+                            <Check className="w-3.5 h-3.5 text-amber-400" />
+                            <span>Direct Chapter Solution Verified!</span>
+                          </span>
+                        </div>
+                      )}
                     </div>
 
-                    <h4 className="font-black text-lg text-white">
-                      Learn Cram
-                    </h4>
-                    <p className="text-xs text-purple-200/80 leading-relaxed">
-                      Alternative chapter question bank, revision notes, HOTS concept questions, and quick revision mind maps.
-                    </p>
-                  </div>
-
-                  <div className="pt-2">
-                    {isVipUnlocked ? (
+                    <div className="pt-2">
                       <button
                         type="button"
-                        onClick={() => handleLaunchWebsite('learncram', sourceUrls.learnCram)}
-                        className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition cursor-pointer"
+                        onClick={() => handleLaunchWebsite('onlinehindi', sourceUrls.onlineHindi)}
+                        className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-amber-500/30 transition cursor-pointer"
                       >
-                        <span>Open Learn Cram ⚡</span>
+                        <span>Open A Guide to Hindi 🚀</span>
                         <ExternalLink className="w-4 h-4" />
                       </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          handleCloseModal();
-                          onOpenUpgradeModal && onOpenUpgradeModal();
-                        }}
-                        className="w-full py-3 px-4 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-amber-300 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer border border-purple-700"
-                      >
-                        <Lock className="w-4 h-4" />
-                        <span>Unlock VIP 2nd Site</span>
-                      </button>
-                    )}
+                    </div>
                   </div>
-                </div>
 
-                {/* 3. Website 3: ncertbookpdf.com (UNLOCKED FOR VVIP) */}
-                <div className={`p-5 rounded-2xl border-2 flex flex-col justify-between space-y-4 ${
-                  isVvipUnlocked
-                    ? 'bg-gradient-to-b from-amber-950/60 to-purple-950/80 border-amber-400/80 shadow-lg shadow-amber-500/20'
-                    : 'bg-purple-950/40 border-purple-800/60 opacity-80'
-                }`}>
-                  <div className="space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-400 text-slate-950">
-                        Site 3 • VVIP Master
-                      </span>
-                      <span className={`inline-flex items-center gap-1 text-[11px] font-black ${isVvipUnlocked ? 'text-amber-400' : 'text-purple-400'}`}>
-                        {isVvipUnlocked ? <CheckCircle2 className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
-                        <span>{isVvipUnlocked ? 'UNLOCKED' : 'LOCKED (VVIP)'}</span>
-                      </span>
+                  {/* Card 2: Solution Gyan (UNLOCKED FOR ALL) */}
+                  <div className="p-5 rounded-2xl bg-gradient-to-b from-emerald-950/60 to-purple-950/80 border-2 border-emerald-400/80 shadow-lg shadow-emerald-500/10 flex flex-col justify-between space-y-4">
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-400 text-slate-950">
+                          Site 2 • Normal Plan
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-[11px] font-black text-emerald-400">
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span>UNLOCKED</span>
+                        </span>
+                      </div>
+
+                      <h4 className="font-black text-lg text-white">
+                        Solution Gyan
+                      </h4>
+                      <p className="text-xs text-purple-200/80 leading-relaxed">
+                        Step-by-step Hindi exercise answers, grammar solutions, fill in the blanks, and question answers.
+                      </p>
+
+                      {sourceUrls.solutionGyanIsDirect && (
+                        <div className="pt-1">
+                          <span className="text-[10px] font-black text-emerald-300 bg-emerald-950/80 border border-emerald-500/50 px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5 shadow-sm">
+                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>Direct Chapter Solution Verified!</span>
+                          </span>
+                        </div>
+                      )}
                     </div>
 
-                    <h4 className="font-black text-lg text-white">
-                      ncertbookpdf.com
-                    </h4>
-                    <p className="text-xs text-purple-200/80 leading-relaxed">
-                      Downloadable PDF guide solutions, blueprint answers, board sample papers, and solved answer keys.
-                    </p>
-                  </div>
-
-                  <div className="pt-2">
-                    {isVvipUnlocked ? (
+                    <div className="pt-2">
                       <button
                         type="button"
-                        onClick={() => handleLaunchWebsite('ncertbookpdf', sourceUrls.ncertBookPdf)}
-                        className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-orange-500/30 transition cursor-pointer"
+                        onClick={() => handleLaunchWebsite('solutiongyan', sourceUrls.solutionGyan)}
+                        className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition cursor-pointer"
                       >
-                        <span>Open ncertbookpdf 🌟</span>
+                        <span>Open Solution Gyan 🚀</span>
                         <ExternalLink className="w-4 h-4" />
                       </button>
-                    ) : (
+                    </div>
+                  </div>
+
+                  {/* Card 3: Learn Cram (UNLOCKED FOR VIP & VVIP) */}
+                  <div className={`p-5 rounded-2xl border-2 flex flex-col justify-between space-y-4 ${
+                    isVipUnlocked
+                      ? 'bg-gradient-to-b from-blue-950/60 to-purple-950/80 border-blue-400/80 shadow-lg shadow-blue-500/10'
+                      : 'bg-purple-950/40 border-purple-800/60 opacity-80'
+                  }`}>
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-blue-400 text-slate-950">
+                          Site 3 • VIP Plan
+                        </span>
+                        <span className={`inline-flex items-center gap-1 text-[11px] font-black ${isVipUnlocked ? 'text-blue-400' : 'text-purple-400'}`}>
+                          {isVipUnlocked ? <CheckCircle2 className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+                          <span>{isVipUnlocked ? 'UNLOCKED' : 'LOCKED (VIP)'}</span>
+                        </span>
+                      </div>
+
+                      <h4 className="font-black text-lg text-white">
+                        Learn Cram
+                      </h4>
+                      <p className="text-xs text-purple-200/80 leading-relaxed">
+                        Alternative Hindi solutions, chapter question bank, notes, and textbook model answers.
+                      </p>
+
+                      {sourceUrls.learnCramIsDirect && (
+                        <div className="pt-1">
+                          <span className="text-[10px] font-black text-blue-300 bg-blue-950/80 border border-blue-500/50 px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5 shadow-sm">
+                            <Check className="w-3.5 h-3.5 text-blue-400" />
+                            <span>Direct Solution Page Verified!</span>
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-2">
+                      {isVipUnlocked ? (
+                        <button
+                          type="button"
+                          onClick={() => handleLaunchWebsite('learncram', sourceUrls.learnCram)}
+                          className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition cursor-pointer"
+                        >
+                          <span>Open Learn Cram ⚡</span>
+                          <ExternalLink className="w-4 h-4" />
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleCloseModal();
+                            onOpenUpgradeModal && onOpenUpgradeModal();
+                          }}
+                          className="w-full py-3 px-4 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-amber-300 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer border border-purple-700"
+                        >
+                          <Lock className="w-4 h-4" />
+                          <span>Unlock VIP 2nd Site</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                </div>
+              ) : (
+                /* REGULAR SUBJECTS: Solution Gyan, Learn Cram, ncertbookpdf.com */
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  
+                  {/* 1. Website 1: Solution Gyan (UNLOCKED FOR ALL) */}
+                  <div className="p-5 rounded-2xl bg-gradient-to-b from-emerald-950/60 to-purple-950/80 border-2 border-emerald-400/80 shadow-lg shadow-emerald-500/10 flex flex-col justify-between space-y-4">
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-400 text-slate-950">
+                          Site 1 • Normal Plan
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-[11px] font-black text-emerald-400">
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span>UNLOCKED</span>
+                        </span>
+                      </div>
+
+                      <h4 className="font-black text-lg text-white">
+                        Solution Gyan
+                      </h4>
+                      <p className="text-xs text-purple-200/80 leading-relaxed">
+                        Primary verified DAV Board chapter solutions with step-by-step exercise answers, fill-in-the-blanks, true/false, and detailed explanations.
+                      </p>
+
+                      {sourceUrls.solutionGyanIsDirect && (
+                        <div className="pt-1">
+                          <span className="text-[10px] font-black text-emerald-300 bg-emerald-950/80 border border-emerald-500/50 px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5 shadow-sm">
+                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>Direct Chapter Solution Page Verified!</span>
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-2">
                       <button
                         type="button"
-                        onClick={() => {
-                          handleCloseModal();
-                          onOpenUpgradeModal && onOpenUpgradeModal();
-                        }}
-                        className="w-full py-3 px-4 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-amber-300 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer border border-purple-700"
+                        onClick={() => handleLaunchWebsite('solutiongyan', sourceUrls.solutionGyan)}
+                        className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition cursor-pointer"
                       >
-                        <Lock className="w-4 h-4" />
-                        <span>Unlock VVIP All 3 Sites</span>
+                        <span>Open Solution Gyan 🚀</span>
+                        <ExternalLink className="w-4 h-4" />
                       </button>
-                    )}
+                    </div>
                   </div>
+
+                  {/* 2. Website 2: Learn Cram (UNLOCKED FOR VIP & VVIP) */}
+                  <div className={`p-5 rounded-2xl border-2 flex flex-col justify-between space-y-4 ${
+                    isVipUnlocked
+                      ? 'bg-gradient-to-b from-blue-950/60 to-purple-950/80 border-blue-400/80 shadow-lg shadow-blue-500/10'
+                      : 'bg-purple-950/40 border-purple-800/60 opacity-80'
+                  }`}>
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-blue-400 text-slate-950">
+                          Site 2 • VIP Plan
+                        </span>
+                        <span className={`inline-flex items-center gap-1 text-[11px] font-black ${isVipUnlocked ? 'text-blue-400' : 'text-purple-400'}`}>
+                          {isVipUnlocked ? <CheckCircle2 className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+                          <span>{isVipUnlocked ? 'UNLOCKED' : 'LOCKED (VIP)'}</span>
+                        </span>
+                      </div>
+
+                      <h4 className="font-black text-lg text-white">
+                        Learn Cram
+                      </h4>
+                      <p className="text-xs text-purple-200/80 leading-relaxed">
+                        Alternative chapter question bank, revision notes, HOTS concept questions, and quick revision mind maps.
+                      </p>
+
+                      {sourceUrls.learnCramIsDirect && (
+                        <div className="pt-1">
+                          <span className="text-[10px] font-black text-blue-300 bg-blue-950/80 border border-blue-500/50 px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5 shadow-sm">
+                            <Check className="w-3.5 h-3.5 text-blue-400" />
+                            <span>Direct Learn Cram Solution Page Verified!</span>
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-2">
+                      {isVipUnlocked ? (
+                        <button
+                          type="button"
+                          onClick={() => handleLaunchWebsite('learncram', sourceUrls.learnCram)}
+                          className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition cursor-pointer"
+                        >
+                          <span>Open Learn Cram ⚡</span>
+                          <ExternalLink className="w-4 h-4" />
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleCloseModal();
+                            onOpenUpgradeModal && onOpenUpgradeModal();
+                          }}
+                          className="w-full py-3 px-4 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-amber-300 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer border border-purple-700"
+                        >
+                          <Lock className="w-4 h-4" />
+                          <span>Unlock VIP 2nd Site</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* 3. Website 3: ncertbookpdf.com (UNLOCKED FOR VVIP) */}
+                  <div className={`p-5 rounded-2xl border-2 flex flex-col justify-between space-y-4 ${
+                    isVvipUnlocked
+                      ? (sourceUrls.ncertIsDirect && sourceUrls.ncertBookPdf
+                          ? 'bg-gradient-to-b from-amber-950/60 to-purple-950/80 border-amber-400/80 shadow-lg shadow-amber-500/20'
+                          : 'bg-purple-950/30 border-purple-800/40 opacity-80')
+                      : 'bg-purple-950/40 border-purple-800/60 opacity-80'
+                  }`}>
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-400 text-slate-950">
+                          Site 3 • VVIP Master
+                        </span>
+                        <span className={`inline-flex items-center gap-1 text-[11px] font-black ${isVvipUnlocked ? 'text-amber-400' : 'text-purple-400'}`}>
+                          {isVvipUnlocked ? <CheckCircle2 className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+                          <span>{isVvipUnlocked ? 'UNLOCKED' : 'LOCKED (VVIP)'}</span>
+                        </span>
+                      </div>
+
+                      <h4 className="font-black text-lg text-white">
+                        ncertbookpdf.com
+                      </h4>
+                      <p className="text-xs text-purple-200/80 leading-relaxed">
+                        Downloadable PDF guide solutions, blueprint answers, board sample papers, and solved answer keys.
+                      </p>
+
+                      {sourceUrls.ncertIsDirect && sourceUrls.ncertBookPdf ? (
+                        <div className="pt-1">
+                          <span className="text-[10px] font-black text-amber-300 bg-amber-950/80 border border-amber-500/50 px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5 shadow-sm">
+                            <Check className="w-3.5 h-3.5 text-amber-400" />
+                            <span>Direct Academic Portal Verified!</span>
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="pt-1">
+                          <span className="text-[10px] font-bold text-amber-300/80 bg-stone-900/90 border border-amber-500/30 px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5 shadow-sm">
+                            <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
+                            <span>Not Available on ncertbookpdf for this chapter</span>
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-2">
+                      {isVvipUnlocked ? (
+                        sourceUrls.ncertIsDirect && sourceUrls.ncertBookPdf ? (
+                          <button
+                            type="button"
+                            onClick={() => handleLaunchWebsite('ncertbookpdf', sourceUrls.ncertBookPdf)}
+                            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-orange-500/30 transition cursor-pointer"
+                          >
+                            <span>Open ncertbookpdf 🌟</span>
+                            <ExternalLink className="w-4 h-4" />
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            disabled
+                            className="w-full py-3 px-4 rounded-xl bg-stone-900 text-stone-400 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-not-allowed border border-stone-800"
+                          >
+                            <FileText className="w-4 h-4 text-stone-500" />
+                            <span>Not Available on NCERT</span>
+                          </button>
+                        )
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleCloseModal();
+                            onOpenUpgradeModal && onOpenUpgradeModal();
+                          }}
+                          className="w-full py-3 px-4 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-amber-300 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer border border-purple-700"
+                        >
+                          <Lock className="w-4 h-4" />
+                          <span>Unlock VVIP All 3 Sites</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
                 </div>
+              )}
 
               </div>
             </div>
@@ -1034,10 +1690,13 @@ export function QuestionsAnswersSection({
               <button
                 type="button"
                 onClick={() => {
+                  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                  }
                   playSfx('pop');
                   setActiveModal('level3_chapter');
                 }}
-                className="inline-flex items-center gap-1.5 text-purple-300 hover:text-white font-bold"
+                className="inline-flex items-center gap-1.5 text-purple-300 hover:text-white font-bold cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Back to Chapter Selection</span>
@@ -1046,7 +1705,7 @@ export function QuestionsAnswersSection({
               <button
                 type="button"
                 onClick={handleCloseModal}
-                className="px-4 py-2 rounded-xl bg-purple-800/60 hover:bg-purple-700 text-white font-bold transition"
+                className="px-4 py-2 rounded-xl bg-purple-800/60 hover:bg-purple-700 text-white font-bold transition cursor-pointer"
               >
                 Done
               </button>

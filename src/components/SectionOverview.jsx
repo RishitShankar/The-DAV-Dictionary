@@ -65,16 +65,16 @@ export function SectionOverview({ onSelectSection }) {
     },
     {
       id: 5,
-      title: 'Section 5: Interactive Chapter Quizzes',
-      shortTitle: 'Self-Assessment',
+      title: 'Section 5: Dimension 5 Faculty Master OS (Teachers Portal)',
+      shortTitle: 'Faculty Master OS',
       icon: Award,
-      emoji: '🏆',
-      color: 'from-emerald-600 to-teal-700',
-      cardBg: 'from-emerald-500/10 via-teal-50/80 to-white',
-      borderHover: 'hover:border-emerald-500',
-      tag: 'Instant Score & Badges',
-      tagColor: 'bg-emerald-100 text-emerald-900 border-emerald-300',
-      description: 'Multiple-choice quizzes with automated grading, instant answer rationales, and performance scorecards to prepare thoroughly for school exams.'
+      emoji: '👨‍🏫',
+      color: 'from-purple-600 via-fuchsia-600 to-purple-800',
+      cardBg: 'from-purple-500/15 via-fuchsia-50/80 to-white',
+      borderHover: 'hover:border-purple-500',
+      tag: 'Dimension 5: Faculty OS',
+      tagColor: 'bg-purple-100 text-purple-950 border-purple-400 font-bold',
+      description: 'Exclusive 5th Dimension Faculty Operating System for Teachers. Features daily homework dispatch, WhatsApp doubt clearing, live online classes, test creation, Shankar AI lesson planner, and student weakness radar across Nursery to Class 8.'
     },
     {
       id: 6,
