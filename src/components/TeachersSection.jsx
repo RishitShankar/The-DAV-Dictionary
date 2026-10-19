@@ -106,6 +106,212 @@ _Sent via DAV Public School Portal_`;
   return `https://wa.me/${phone}?text=${encodeURIComponent(body)}`;
 };
 
+// =========================================================================
+// 5-PAGE AUTHENTIC ACADEMIC PDF PRESENTATION HANDBOOK METADATA
+// =========================================================================
+const PDF_PAGES_METADATA = {
+  homework: {
+    pageNumber: '01',
+    code: 'DAV-DIR-2026-HW01',
+    directiveName: 'DAILY HOMEWORK & CLASSWORK SYLLABUS DIRECTIVE',
+    tagline: 'Standardized Homework Distribution & Academic Task Monitoring Protocol',
+    badgeText: 'PAGE 1 • CURRICULUM SYLLABUS DISCIPLINE',
+    gradeScope: 'Classes: LKG to Class 8 (11 Academic Standards)',
+    sectionScope: 'Sections: A, B, C, D, E (5 Standardized Class Cohorts)',
+    overview: 'This academic handbook establishes the institutional protocol for daily homework and classwork dissemination across DAV Public School. Designed to cultivate daily study discipline, reinforce classroom concepts, and ensure seamless synchronization between faculty, students, and parents.',
+    corePillars: [
+      {
+        title: 'Curriculum-Aligned Tasks',
+        desc: 'Daily homework directly references prescribed DAV textbooks, chapters, exercises, and NCERT-aligned problem sets with specific page citations.'
+      },
+      {
+        title: 'Multi-Section Granularity',
+        desc: 'Independent assignment queues for each class from LKG to 8 across all 5 sections (A through E), accommodating specific teacher lesson plans.'
+      },
+      {
+        title: 'Submission & Diary Tracking',
+        desc: 'Clear submission deadlines (08:30 AM standard), notebook formatting guidelines, and parental verification sign-off protocols.'
+      }
+    ],
+    centralButtonText: '🚀 Open Full-Screen Daily Homework Hub',
+    centralButtonSub: 'Launch Interactive Class & Section Assignment Manager',
+    instructions: [
+      'Step 1: Click the central button above to launch the full-screen Daily Homework Hub.',
+      'Step 2: Select your academic grade from Nursery, LKG, UKG up to Class 8.',
+      'Step 3: Select your assigned section among Sections A, B, C, D, or E.',
+      'Step 4: Review active subject tasks, chapter references, submission deadlines, and faculty remarks.',
+      'Step 5 (Faculty Only): Use the "Assign New Homework" action to publish real-time tasks to students.'
+    ],
+    statPills: [
+      { label: 'Classes Covered', val: 'LKG to 8 (11 Grades)' },
+      { label: 'Sections Per Class', val: '5 Sections (A-E)' },
+      { label: 'Subjects Active', val: '8 Core Subjects' },
+      { label: 'Submission Window', val: 'Before 08:30 AM' }
+    ],
+    sealTitle: 'Approved by DAV Academic Oversight Directorate'
+  },
+  doubts_chat: {
+    pageNumber: '02',
+    code: 'DAV-DIR-2026-CHAT02',
+    directiveName: 'FACULTY CONSULTATION & WHATSAPP DOUBT DESK',
+    tagline: 'Real-Time Academic Consultation & 50+ Verified Faculty Interaction Protocol',
+    badgeText: 'PAGE 2 • REAL-TIME MENTORSHIP ECOSYSTEM',
+    gradeScope: 'Faculty Roster: 50+ Verified Subject Teachers & Heads of Department',
+    sectionScope: 'Channels: Sub-Second Synchronized Portal Chat & Official WhatsApp Link',
+    overview: 'This handbook defines the protocol for student-faculty academic consultation outside regular school hours. Eliminating educational bottlenecks, students can interact in real time with over 50 verified faculty members across all departments with sub-second message delivery and official WhatsApp integration.',
+    corePillars: [
+      {
+        title: '50+ Faculty Roster',
+        desc: 'Comprehensive directory spanning Science, Mathematics, Social Studies, English, Hindi, Sanskrit, Computer Science, and Primary wings.'
+      },
+      {
+        title: 'Sub-Second Cloud Sync',
+        desc: 'WebSocket and Supabase cloud persistence ensuring messages sent on mobile or PC arrive instantly on the recipient device with sound chimes.'
+      },
+      {
+        title: 'Official WhatsApp Bridge',
+        desc: 'Integrated one-click official WhatsApp messaging to +91 94700 33984 with pre-formatted academic inquiry payloads for rapid teacher response.'
+      }
+    ],
+    centralButtonText: '💬 Open Full-Screen Faculty WhatsApp Desk',
+    centralButtonSub: 'Launch Live 50+ Teachers Roster & Real-Time Doubt Chat Room',
+    instructions: [
+      'Step 1: Click the central button above to enter the full-screen WhatsApp Doubt Desk.',
+      'Step 2: Search or filter the 50+ teachers roster by subject department (Science, Math, SST, Languages, etc.).',
+      'Step 3: Click on any faculty member\'s card to open their dedicated academic chat channel.',
+      'Step 4: Type your specific textbook doubt or exercise question and send with sub-second delivery.',
+      'Step 5: Alternatively, click the green WhatsApp button to launch an official WhatsApp query directly on your phone.'
+    ],
+    statPills: [
+      { label: 'Active Faculty', val: '50+ Verified Teachers' },
+      { label: 'Departments', val: '9 Subject Wings' },
+      { label: 'Delivery Latency', val: '< 0.8 Seconds' },
+      { label: 'Official WhatsApp', val: '+91 94700 33984' }
+    ],
+    sealTitle: 'Supervised by Faculty Academic Coordination Cell'
+  },
+  live_class: {
+    pageNumber: '03',
+    code: 'DAV-DIR-2026-WEBRTC03',
+    directiveName: 'WEBRTC REAL ONLINE LIVE CLASSROOM PROTOCOL',
+    tagline: 'High-Definition Interactive WebRTC Streaming & Smart Board Virtual Lecture Hall',
+    badgeText: 'PAGE 3 • IN-WEBSITE DISTANCE LEARNING',
+    gradeScope: 'Broadcasting: Class LKG to Class 8 Live Lecture Streams',
+    sectionScope: 'Technology: WebRTC P2P In-Website Engine • 100% Free • Unlimited Duration',
+    overview: 'This document authorizes the implementation of real-time virtual classroom sessions embedded directly within the school portal. Utilizing enterprise WebRTC peer-to-peer technology, students attend live interactive video lectures with zero third-party downloads, zero time cutoffs, and integrated smart whiteboard tools.',
+    corePillars: [
+      {
+        title: '100% In-Website Video',
+        desc: 'Embedded video call engine operating directly on the portal page without requiring Zoom, Google Meet apps, or external login credentials.'
+      },
+      {
+        title: 'Zero Time Restrictions',
+        desc: 'Unrestricted session length allowing full 45-minute academic periods without the 5-minute demo interruptions found in trial services.'
+      },
+      {
+        title: 'Smart Whiteboard & Screen Share',
+        desc: 'Built-in interactive digital smartboard enabling teachers to sketch ray diagrams, write mathematical formulas, and share teaching presentations.'
+      }
+    ],
+    centralButtonText: '🎥 Open Full-Screen Live Video Classroom',
+    centralButtonSub: 'Launch WebRTC HD Video Room with Screen Sharing & Smart Whiteboard',
+    instructions: [
+      'Step 1: Click the central button above to launch the full-screen Live Video Classroom.',
+      'Step 2: Select your class standard (Class LKG to Class 8) to view ongoing live streams.',
+      'Step 3: Click "Join Live Class Now" to connect into the high-definition audio/video room.',
+      'Step 4: Toggle your microphone and camera using the bottom meeting toolbar.',
+      'Step 5: Switch between the live video feed and the interactive teacher smartboard as needed.'
+    ],
+    statPills: [
+      { label: 'Video Quality', val: '1080p HD WebRTC' },
+      { label: 'Session Duration', val: 'Unlimited (No Cutoff)' },
+      { label: 'Interactive Tools', val: 'Whiteboard + Screen' },
+      { label: 'App Requirement', val: 'Zero (Direct Browser)' }
+    ],
+    sealTitle: 'Accredited by DAV Digital Learning Board'
+  },
+  tests: {
+    pageNumber: '04',
+    code: 'DAV-DIR-2026-EXAM04',
+    directiveName: 'CONTINUOUS COMPREHENSIVE EVALUATION & TEST SUITE',
+    tagline: 'Standardized Curriculum Unit Examinations, Timer Simulation & Performance Analytics',
+    badgeText: 'PAGE 4 • FORMATIVE ASSESSMENT ARCHITECTURE',
+    gradeScope: 'Evaluation Scope: Class LKG to Class 8 • All Academic Disciplines',
+    sectionScope: 'Format: Timed Multiple-Choice, Numerical Analysis & Instant Scorecard',
+    overview: 'This academic handbook codifies the standards for online unit tests, formative quizzes, and periodic assessment simulators. Built according to DAV Education Board test blue-prints, students test conceptual mastery under timed exam conditions with instant automatic evaluation and detailed pedagogical explanations.',
+    corePillars: [
+      {
+        title: 'Synchronized Countdown Timer',
+        desc: 'Strict per-test countdown clock ensuring authentic exam pacing, time management discipline, and automated submission upon expiry.'
+      },
+      {
+        title: 'Instant Automated Evaluation',
+        desc: 'Immediate scorecard generation displaying raw marks, percentage scores, letter grades (A+, A, B, C), and performance band rankings.'
+      },
+      {
+        title: 'Pedagogical Explanations',
+        desc: 'In-depth solution rationale for every question, elucidating scientific principles, mathematical derivations, and key textbook facts.'
+      }
+    ],
+    centralButtonText: '📝 Open Full-Screen Online Test & Exam Simulator',
+    centralButtonSub: 'Launch Timed Exam Portal with Instant Evaluation & Solution Review',
+    instructions: [
+      'Step 1: Click the central button above to open the full-screen Online Test & Exam Suite.',
+      'Step 2: Choose your Class (LKG to 8) and Section (A to E) to load syllabus test papers.',
+      'Step 3: Select an available unit test and click "Attempt Test Now".',
+      'Step 4: Navigate questions using the numbered palette, select answers, and track remaining time.',
+      'Step 5: Click "Submit Test For Evaluation" to generate your comprehensive scorecard and solution key.'
+    ],
+    statPills: [
+      { label: 'Question Bank', val: 'DAV Board Syllabus' },
+      { label: 'Timer Control', val: '15 to 25 Minutes' },
+      { label: 'Scoring', val: 'Instant Auto-Grading' },
+      { label: 'Feedback', val: 'Step-by-Step Solutions' }
+    ],
+    sealTitle: 'Validated by DAV Examination Controller Cell'
+  },
+  attendance: {
+    pageNumber: '05',
+    code: 'DAV-DIR-2026-ATT05',
+    directiveName: 'INSTITUTIONAL DIGITAL ATTENDANCE REGISTRY',
+    tagline: 'Daily Student Roll Call, Attendance Verification & 75% Statutory Compliance Register',
+    badgeText: 'PAGE 5 • STATUTORY COMPLIANCE & ATTENDANCE',
+    gradeScope: 'Roll Roster: All Classes LKG to Class 8 (45 Students Per Section)',
+    sectionScope: 'Authorization: Student Read-Only Audit • Teacher Authorized Roll Marking',
+    overview: 'This handbook defines the statutory regulations governing daily attendance recording across all divisions of DAV Public School. Under Board regulations, maintaining a minimum of 75% cumulative attendance is a mandatory prerequisite for examination eligibility.',
+    corePillars: [
+      {
+        title: 'Board 75% Mandate',
+        desc: 'Strict enforcement of the 75% attendance criterion with automated attendance alerts for students falling below the mandatory threshold.'
+      },
+      {
+        title: 'Role-Based Security',
+        desc: 'Read-only verification mode for students and parents; cryptographic faculty-only authorization for marking and modifying student attendance.'
+      },
+      {
+        title: 'Tri-State Marking System',
+        desc: 'Instant toggle between Present (P), Absent (A), and Late (L) with one-click cloud synchronization and institutional date logging.'
+      }
+    ],
+    centralButtonText: '📊 Open Full-Screen Digital Attendance Register',
+    centralButtonSub: 'Launch Interactive Class Roster Register with Roll Call Controls',
+    instructions: [
+      'Step 1: Click the central button above to access the full-screen Digital Attendance Register.',
+      'Step 2: Filter by your target Class (LKG to 8) and Section (A to E).',
+      'Step 3: Students: Verify your name and daily attendance status (Present, Absent, Late).',
+      'Step 4: Teachers: Click P, A, or L next to each student\'s roll number to record presence.',
+      'Step 5: Teachers: Click "Save & Sync Register" to commit the daily attendance record to the cloud database.'
+    ],
+    statPills: [
+      { label: 'Class Scope', val: 'Class LKG to Class 8' },
+      { label: 'Sections', val: 'Sections A, B, C, D, E' },
+      { label: 'Statutory Rule', val: '75% Minimum Presence' },
+      { label: 'Status Types', val: 'Present / Absent / Late' }
+    ],
+    sealTitle: 'Certified by DAV Office of the Registrar & Attendance Board'
+  }
+};
+
 export function TeachersSection({ 
   user, 
   initialSubSection, 
@@ -126,7 +332,7 @@ export function TeachersSection({
     (user?.dimensionName && user?.dimensionName.toLowerCase().includes('faculty'))
   ));
 
-  // 4-Page Academic Presentation Configuration (+ 5th Attendance Register)
+  // 5-Page Academic Presentation Configuration
   const PRESENTATION_PAGES = [
     { id: 'homework', num: 1, title: 'Page 1: Daily Homework Hub', subtitle: 'Class LKG to 8 • Section A-E Syllabus assignments' },
     { id: 'doubts_chat', num: 2, title: 'Page 2: 50+ Faculty WhatsApp Doubt Desk', subtitle: 'Live Multi-Device Chatting & Manual Replies' },
@@ -138,6 +344,9 @@ export function TeachersSection({
   // Current Active Page among the 5 Graphical Animated Pages
   // 1: 'homework' | 2: 'doubts_chat' | 3: 'live_class' | 4: 'tests' | 5: 'attendance'
   const [activePage, setActivePage] = useState(initialSubSection || 'homework');
+
+  // Interactive Full Screen Mode: false = PDF Presentation Handbook Mode, true = Full Screen Interactive Tool
+  const [isFullScreenInteractive, setIsFullScreenInteractive] = useState(false);
 
   // Synchronize with parent sub-section changes
   useEffect(() => {
@@ -153,11 +362,18 @@ export function TeachersSection({
     }
   };
 
+  const handleSelectSectionPage = (pageId) => {
+    handlePageChange(pageId);
+    setIsFullScreenInteractive(false); // Returns to that specific page's PDF presentation view!
+    playSoundChime('sent');
+  };
+
   const currentPageIdx = Math.max(0, PRESENTATION_PAGES.findIndex(p => p.id === activePage));
 
   const handlePrevSlide = () => {
     if (currentPageIdx > 0) {
       handlePageChange(PRESENTATION_PAGES[currentPageIdx - 1].id);
+      setIsFullScreenInteractive(false);
       playSoundChime('sent');
     }
   };
@@ -165,6 +381,7 @@ export function TeachersSection({
   const handleNextSlide = () => {
     if (currentPageIdx < PRESENTATION_PAGES.length - 1) {
       handlePageChange(PRESENTATION_PAGES[currentPageIdx + 1].id);
+      setIsFullScreenInteractive(false);
       playSoundChime('sent');
     }
   };
@@ -1019,6 +1236,8 @@ export function TeachersSection({
     } catch (e) {}
   };
 
+  const currentMeta = PDF_PAGES_METADATA[activePage] || PDF_PAGES_METADATA.homework;
+
   return (
     <div className="w-full min-h-screen bg-slate-950 text-white font-sans selection:bg-teal-500 selection:text-slate-950 pb-16">
       
@@ -1144,7 +1363,7 @@ export function TeachersSection({
       </div>
 
       {/* ========================================================================= */}
-      {/* 4-PAGE PRESENTATION SLIDE CONTROLLER DECK                                 */}
+      {/* 5-PAGE PRESENTATION SLIDE CONTROLLER DECK                                 */}
       {/* ========================================================================= */}
       <div className="w-full px-4 md:px-8 pt-5 pb-1">
         <div className="w-full bg-gradient-to-r from-purple-950/90 via-slate-900 to-teal-950/90 border border-purple-500/50 rounded-2xl p-3.5 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -1164,7 +1383,7 @@ export function TeachersSection({
           <div className="flex flex-col items-center gap-1.5 text-center">
             <div className="flex items-center gap-2 flex-wrap justify-center">
               <span className="px-3 py-0.5 rounded-full bg-teal-400 text-slate-950 font-black text-[11px] uppercase font-mono shadow-sm">
-                Presentation Page {currentPageIdx + 1} of 4
+                Presentation Page {currentPageIdx + 1} of 5
               </span>
               <h2 className="text-sm font-black text-white">
                 {PRESENTATION_PAGES[currentPageIdx]?.title || 'Academic Page'}
@@ -1172,10 +1391,10 @@ export function TeachersSection({
             </div>
             {/* Slide Dots */}
             <div className="flex items-center gap-1.5">
-              {PRESENTATION_PAGES.slice(0, 4).map((p) => (
+              {PRESENTATION_PAGES.map((p) => (
                 <button
                   key={p.id}
-                  onClick={() => handlePageChange(p.id)}
+                  onClick={() => handleSelectSectionPage(p.id)}
                   title={p.title}
                   className={`h-2 rounded-full transition-all cursor-pointer ${
                     activePage === p.id 
@@ -1203,139 +1422,224 @@ export function TeachersSection({
       </div>
 
       {/* ========================================================================= */}
-      {/* 5-PAGE HORIZONTAL GRAPHICAL ANIMATED CAROUSEL / NAVIGATOR                */}
+      {/* 5-SECTION ILLUMINATED NAVIGATIONAL BUTTONS (CLICK LIGHTS UP ONLY ONE)      */}
       {/* ========================================================================= */}
       <div className="w-full px-4 md:px-8 py-5">
-        <div className="w-full bg-slate-950/80 border border-purple-800/80 rounded-3xl p-3 shadow-2xl backdrop-blur-xl">
+        <div className="w-full bg-slate-950/90 border-2 border-purple-800/80 rounded-3xl p-3.5 shadow-2xl backdrop-blur-xl">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             
             {/* Page 1: Daily Homework */}
             <button
-              onClick={() => handlePageChange('homework')}
-              className={`p-4 rounded-2xl border text-left transition transform duration-300 cursor-pointer relative overflow-hidden group ${
+              onClick={() => handleSelectSectionPage('homework')}
+              className={`p-4 rounded-2xl border text-left transition-all duration-300 cursor-pointer relative overflow-hidden group ${
                 activePage === 'homework'
-                  ? 'bg-gradient-to-br from-purple-900/80 via-slate-900 to-teal-950/70 border-teal-400 shadow-xl shadow-teal-500/20 scale-[1.02]'
-                  : 'bg-slate-900/60 border-purple-900/50 hover:border-purple-600 hover:bg-slate-900'
+                  ? 'bg-gradient-to-br from-purple-900 via-slate-900 to-teal-950 border-2 border-teal-300 shadow-2xl shadow-teal-400/50 scale-[1.03] ring-4 ring-teal-400/30'
+                  : 'bg-slate-900/70 border-purple-900/60 hover:border-purple-500 hover:bg-slate-900 opacity-75 hover:opacity-100'
               }`}
             >
+              {activePage === 'homework' && (
+                <span className="absolute top-2.5 right-2.5 flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-teal-300 shadow-md shadow-teal-400"></span>
+                </span>
+              )}
               <div className="flex items-center justify-between mb-2">
-                <span className="w-8 h-8 rounded-xl bg-purple-600/30 text-purple-300 flex items-center justify-center font-black text-xs border border-purple-500/40">
+                <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs border ${
+                  activePage === 'homework' 
+                    ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-slate-950 border-teal-200 shadow-md font-mono' 
+                    : 'bg-purple-900/40 text-purple-300 border-purple-700/50'
+                }`}>
                   01
                 </span>
                 <ClipboardList className={`w-5 h-5 ${activePage === 'homework' ? 'text-teal-400 animate-bounce' : 'text-purple-400'}`} />
               </div>
-              <h3 className="text-sm font-black text-white group-hover:text-teal-300 transition">
-                Daily Homework Hub
-              </h3>
-              <p className="text-[11px] text-purple-200/70 mt-1 line-clamp-2">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <h3 className={`text-sm font-black transition ${activePage === 'homework' ? 'text-white' : 'text-purple-200 group-hover:text-white'}`}>
+                  Daily Homework Hub
+                </h3>
+                {activePage === 'homework' && (
+                  <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-teal-400 text-slate-950 font-mono shadow-xs">
+                    💡 Active Page
+                  </span>
+                )}
+              </div>
+              <p className={`text-[11px] mt-1 line-clamp-2 ${activePage === 'homework' ? 'text-teal-200/90 font-medium' : 'text-purple-300/70'}`}>
                 Class LKG to 8 • Section A-E Syllabus assignments &amp; tasks
               </p>
               {activePage === 'homework' && (
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-teal-400" />
+                <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-purple-500 via-fuchsia-500 to-teal-400 shadow-md shadow-teal-400" />
               )}
             </button>
 
             {/* Page 2: Doubt Chat (50+ Teachers) */}
             <button
-              onClick={() => handlePageChange('doubts_chat')}
-              className={`p-4 rounded-2xl border text-left transition transform duration-300 cursor-pointer relative overflow-hidden group ${
+              onClick={() => handleSelectSectionPage('doubts_chat')}
+              className={`p-4 rounded-2xl border text-left transition-all duration-300 cursor-pointer relative overflow-hidden group ${
                 activePage === 'doubts_chat'
-                  ? 'bg-gradient-to-br from-purple-900/80 via-slate-900 to-teal-950/70 border-teal-400 shadow-xl shadow-teal-500/20 scale-[1.02]'
-                  : 'bg-slate-900/60 border-purple-900/50 hover:border-purple-600 hover:bg-slate-900'
+                  ? 'bg-gradient-to-br from-purple-900 via-slate-900 to-teal-950 border-2 border-teal-300 shadow-2xl shadow-teal-400/50 scale-[1.03] ring-4 ring-teal-400/30'
+                  : 'bg-slate-900/70 border-purple-900/60 hover:border-purple-500 hover:bg-slate-900 opacity-75 hover:opacity-100'
               }`}
             >
+              {activePage === 'doubts_chat' && (
+                <span className="absolute top-2.5 right-2.5 flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-teal-300 shadow-md shadow-teal-400"></span>
+                </span>
+              )}
               <div className="flex items-center justify-between mb-2">
-                <span className="w-8 h-8 rounded-xl bg-teal-500/30 text-teal-300 flex items-center justify-center font-black text-xs border border-teal-400/40">
+                <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs border ${
+                  activePage === 'doubts_chat' 
+                    ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-slate-950 border-teal-200 shadow-md font-mono' 
+                    : 'bg-purple-900/40 text-purple-300 border-purple-700/50'
+                }`}>
                   02
                 </span>
                 <MessageSquareMore className={`w-5 h-5 ${activePage === 'doubts_chat' ? 'text-teal-400 animate-bounce' : 'text-teal-400'}`} />
               </div>
-              <h3 className="text-sm font-black text-white group-hover:text-teal-300 transition">
-                Faculty WhatsApp Desk
-              </h3>
-              <p className="text-[11px] text-teal-200/70 mt-1 line-clamp-2">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <h3 className={`text-sm font-black transition ${activePage === 'doubts_chat' ? 'text-white' : 'text-purple-200 group-hover:text-white'}`}>
+                  Faculty WhatsApp Desk
+                </h3>
+                {activePage === 'doubts_chat' && (
+                  <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-teal-400 text-slate-950 font-mono shadow-xs">
+                    💡 Active Page
+                  </span>
+                )}
+              </div>
+              <p className={`text-[11px] mt-1 line-clamp-2 ${activePage === 'doubts_chat' ? 'text-teal-200/90 font-medium' : 'text-purple-300/70'}`}>
                 All {teachersList.length}+ Teachers Roster • Live Chatting &amp; Manual Replies
               </p>
               {activePage === 'doubts_chat' && (
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-400 to-purple-500" />
+                <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-400 via-fuchsia-500 to-purple-500 shadow-md shadow-teal-400" />
               )}
             </button>
 
             {/* Page 3: Real Online Live Class */}
             <button
-              onClick={() => handlePageChange('live_class')}
-              className={`p-4 rounded-2xl border text-left transition transform duration-300 cursor-pointer relative overflow-hidden group ${
+              onClick={() => handleSelectSectionPage('live_class')}
+              className={`p-4 rounded-2xl border text-left transition-all duration-300 cursor-pointer relative overflow-hidden group ${
                 activePage === 'live_class'
-                  ? 'bg-gradient-to-br from-purple-900/80 via-slate-900 to-teal-950/70 border-teal-400 shadow-xl shadow-teal-500/20 scale-[1.02]'
-                  : 'bg-slate-900/60 border-purple-900/50 hover:border-purple-600 hover:bg-slate-900'
+                  ? 'bg-gradient-to-br from-purple-900 via-slate-900 to-teal-950 border-2 border-teal-300 shadow-2xl shadow-teal-400/50 scale-[1.03] ring-4 ring-teal-400/30'
+                  : 'bg-slate-900/70 border-purple-900/60 hover:border-purple-500 hover:bg-slate-900 opacity-75 hover:opacity-100'
               }`}
             >
+              {activePage === 'live_class' && (
+                <span className="absolute top-2.5 right-2.5 flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-300 shadow-md shadow-rose-400"></span>
+                </span>
+              )}
               <div className="flex items-center justify-between mb-2">
-                <span className="w-8 h-8 rounded-xl bg-rose-500/30 text-rose-300 flex items-center justify-center font-black text-xs border border-rose-500/40">
+                <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs border ${
+                  activePage === 'live_class' 
+                    ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-slate-950 border-teal-200 shadow-md font-mono' 
+                    : 'bg-purple-900/40 text-purple-300 border-purple-700/50'
+                }`}>
                   03
                 </span>
                 <Video className={`w-5 h-5 ${activePage === 'live_class' ? 'text-rose-400 animate-pulse' : 'text-rose-400'}`} />
               </div>
-              <h3 className="text-sm font-black text-white group-hover:text-teal-300 transition">
-                Live Video Class (WebRTC)
-              </h3>
-              <p className="text-[11px] text-rose-200/70 mt-1 line-clamp-2">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <h3 className={`text-sm font-black transition ${activePage === 'live_class' ? 'text-white' : 'text-purple-200 group-hover:text-white'}`}>
+                  Live Video Class (WebRTC)
+                </h3>
+                {activePage === 'live_class' && (
+                  <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-teal-400 text-slate-950 font-mono shadow-xs">
+                    💡 Active Page
+                  </span>
+                )}
+              </div>
+              <p className={`text-[11px] mt-1 line-clamp-2 ${activePage === 'live_class' ? 'text-teal-200/90 font-medium' : 'text-purple-300/70'}`}>
                 100% In-Website Google Meet Style • Screen &amp; Whiteboard
               </p>
               {activePage === 'live_class' && (
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-rose-500 to-teal-400" />
+                <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-rose-500 via-fuchsia-500 to-teal-400 shadow-md shadow-teal-400" />
               )}
             </button>
 
             {/* Page 4: Test & Exam Suite */}
             <button
-              onClick={() => handlePageChange('tests')}
-              className={`p-4 rounded-2xl border text-left transition transform duration-300 cursor-pointer relative overflow-hidden group ${
+              onClick={() => handleSelectSectionPage('tests')}
+              className={`p-4 rounded-2xl border text-left transition-all duration-300 cursor-pointer relative overflow-hidden group ${
                 activePage === 'tests'
-                  ? 'bg-gradient-to-br from-purple-900/80 via-slate-900 to-teal-950/70 border-teal-400 shadow-xl shadow-teal-500/20 scale-[1.02]'
-                  : 'bg-slate-900/60 border-purple-900/50 hover:border-purple-600 hover:bg-slate-900'
+                  ? 'bg-gradient-to-br from-purple-900 via-slate-900 to-teal-950 border-2 border-teal-300 shadow-2xl shadow-teal-400/50 scale-[1.03] ring-4 ring-teal-400/30'
+                  : 'bg-slate-900/70 border-purple-900/60 hover:border-purple-500 hover:bg-slate-900 opacity-75 hover:opacity-100'
               }`}
             >
+              {activePage === 'tests' && (
+                <span className="absolute top-2.5 right-2.5 flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-300 shadow-md shadow-amber-400"></span>
+                </span>
+              )}
               <div className="flex items-center justify-between mb-2">
-                <span className="w-8 h-8 rounded-xl bg-amber-500/30 text-amber-300 flex items-center justify-center font-black text-xs border border-amber-500/40">
+                <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs border ${
+                  activePage === 'tests' 
+                    ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-slate-950 border-teal-200 shadow-md font-mono' 
+                    : 'bg-purple-900/40 text-purple-300 border-purple-700/50'
+                }`}>
                   04
                 </span>
                 <CheckSquare className={`w-5 h-5 ${activePage === 'tests' ? 'text-amber-400 animate-bounce' : 'text-amber-400'}`} />
               </div>
-              <h3 className="text-sm font-black text-white group-hover:text-teal-300 transition">
-                Online Test &amp; Exams
-              </h3>
-              <p className="text-[11px] text-amber-200/70 mt-1 line-clamp-2">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <h3 className={`text-sm font-black transition ${activePage === 'tests' ? 'text-white' : 'text-purple-200 group-hover:text-white'}`}>
+                  Online Test &amp; Exams
+                </h3>
+                {activePage === 'tests' && (
+                  <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-teal-400 text-slate-950 font-mono shadow-xs">
+                    💡 Active Page
+                  </span>
+                )}
+              </div>
+              <p className={`text-[11px] mt-1 line-clamp-2 ${activePage === 'tests' ? 'text-teal-200/90 font-medium' : 'text-purple-300/70'}`}>
                 Class &amp; Section wise Quiz Simulator • Instant Score Card
               </p>
               {activePage === 'tests' && (
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 to-teal-400" />
+                <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-400 via-fuchsia-500 to-teal-400 shadow-md shadow-teal-400" />
               )}
             </button>
 
             {/* Page 5: Digital Attendance */}
             <button
-              onClick={() => handlePageChange('attendance')}
-              className={`p-4 rounded-2xl border text-left transition transform duration-300 cursor-pointer relative overflow-hidden group ${
+              onClick={() => handleSelectSectionPage('attendance')}
+              className={`p-4 rounded-2xl border text-left transition-all duration-300 cursor-pointer relative overflow-hidden group ${
                 activePage === 'attendance'
-                  ? 'bg-gradient-to-br from-purple-900/80 via-slate-900 to-teal-950/70 border-teal-400 shadow-xl shadow-teal-500/20 scale-[1.02]'
-                  : 'bg-slate-900/60 border-purple-900/50 hover:border-purple-600 hover:bg-slate-900'
+                  ? 'bg-gradient-to-br from-purple-900 via-slate-900 to-teal-950 border-2 border-teal-300 shadow-2xl shadow-teal-400/50 scale-[1.03] ring-4 ring-teal-400/30'
+                  : 'bg-slate-900/70 border-purple-900/60 hover:border-purple-500 hover:bg-slate-900 opacity-75 hover:opacity-100'
               }`}
             >
+              {activePage === 'attendance' && (
+                <span className="absolute top-2.5 right-2.5 flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-300 shadow-md shadow-cyan-400"></span>
+                </span>
+              )}
               <div className="flex items-center justify-between mb-2">
-                <span className="w-8 h-8 rounded-xl bg-cyan-500/30 text-cyan-300 flex items-center justify-center font-black text-xs border border-cyan-500/40">
+                <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs border ${
+                  activePage === 'attendance' 
+                    ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-slate-950 border-teal-200 shadow-md font-mono' 
+                    : 'bg-purple-900/40 text-purple-300 border-purple-700/50'
+                }`}>
                   05
                 </span>
                 <UserCheck className={`w-5 h-5 ${activePage === 'attendance' ? 'text-cyan-400 animate-bounce' : 'text-cyan-400'}`} />
               </div>
-              <h3 className="text-sm font-black text-white group-hover:text-teal-300 transition">
-                Digital Attendance
-              </h3>
-              <p className="text-[11px] text-cyan-200/70 mt-1 line-clamp-2">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <h3 className={`text-sm font-black transition ${activePage === 'attendance' ? 'text-white' : 'text-purple-200 group-hover:text-white'}`}>
+                  Digital Attendance
+                </h3>
+                {activePage === 'attendance' && (
+                  <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-teal-400 text-slate-950 font-mono shadow-xs">
+                    💡 Active Page
+                  </span>
+                )}
+              </div>
+              <p className={`text-[11px] mt-1 line-clamp-2 ${activePage === 'attendance' ? 'text-teal-200/90 font-medium' : 'text-purple-300/70'}`}>
                 Students Watch Only • Teacher Interactive Roster Control
               </p>
               {activePage === 'attendance' && (
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 to-purple-500" />
+                <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-purple-500 shadow-md shadow-teal-400" />
               )}
             </button>
 
@@ -1344,14 +1648,227 @@ export function TeachersSection({
       </div>
 
       {/* ========================================================================= */}
-      {/* MAIN CONTENT AREA: FULL SCREEN CONTAINER FOR CURRENT PAGE                 */}
+      {/* MAIN CONTENT AREA: PDF PRESENTATION OR FULL-SCREEN INTERACTIVE MODE       */}
       {/* ========================================================================= */}
       <main className="w-full px-4 md:px-8">
 
-        {/* --------------------------------------------------------------------- */}
-        {/* PAGE 1: DAILY HOMEWORK & CLASSWORK MANAGEMENT                         */}
-        {/* --------------------------------------------------------------------- */}
-        {activePage === 'homework' && (
+        {!isFullScreenInteractive ? (
+          /* ===================================================================== */
+          /* 5-PAGE AUTHENTIC ACADEMIC PDF PRESENTATION HANDBOOK DOCUMENT VIEW     */
+          /* ===================================================================== */
+          <div className="w-full max-w-7xl mx-auto space-y-6">
+            <div className="w-full bg-slate-900/95 border-2 border-purple-500/60 rounded-3xl shadow-2xl overflow-hidden backdrop-blur-xl animate-fadeIn">
+              
+              {/* PDF Document Header Bar */}
+              <div className="bg-gradient-to-r from-purple-950 via-slate-950 to-teal-950 border-b-2 border-purple-500/50 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-600 via-fuchsia-600 to-teal-400 p-0.5 shadow-lg shadow-purple-600/30 flex items-center justify-center shrink-0">
+                    <div className="w-full h-full bg-slate-950 rounded-2xl flex items-center justify-center">
+                      <ShankarAILogo size={36} />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="px-2.5 py-0.5 rounded-full bg-purple-900/80 border border-purple-500/50 text-[10px] font-mono font-bold text-teal-300">
+                        DAV PUBLIC SCHOOL ACADEMIC HANDBOOK
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full bg-teal-500/20 border border-teal-400/50 text-[10px] font-mono font-black text-teal-300">
+                        DOCUMENT PAGE {currentMeta.pageNumber} OF 05
+                      </span>
+                    </div>
+                    <h2 className="text-xl md:text-2xl font-black text-white mt-1">
+                      {currentMeta.directiveName}
+                    </h2>
+                    <p className="text-xs text-purple-200/80 font-mono mt-0.5">
+                      Ref: {currentMeta.code} • Session 2026-2027 • Approved Institutional Handbook
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setIsFullScreenInteractive(true);
+                      playSoundChime('sent');
+                    }}
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-cyan-400 hover:from-teal-300 hover:to-cyan-300 text-slate-950 font-black text-xs flex items-center gap-2 cursor-pointer shadow-lg transition transform hover:scale-105 active:scale-95"
+                  >
+                    <Maximize2 className="w-3.5 h-3.5" />
+                    <span>Launch Full-Screen</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* PDF Document Body */}
+              <div className="p-6 md:p-10 space-y-8">
+                
+                {/* Scope and Directive Header */}
+                <div className="space-y-3 pb-6 border-b border-purple-800/60">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-900/60 border border-teal-400/40 text-xs font-mono font-bold text-teal-300">
+                    <Sparkles className="w-3.5 h-3.5 text-teal-300 animate-spin" />
+                    <span>{currentMeta.badgeText}</span>
+                  </div>
+
+                  <h3 className="text-2xl md:text-4xl font-black text-white tracking-tight">
+                    {currentMeta.tagline}
+                  </h3>
+
+                  <p className="text-sm md:text-base text-purple-200/90 leading-relaxed max-w-4xl">
+                    {currentMeta.overview}
+                  </p>
+
+                  <div className="flex items-center gap-3 flex-wrap pt-2 text-xs">
+                    <span className="px-3 py-1.5 rounded-xl bg-slate-950 border border-purple-700 text-purple-200 font-bold">
+                      🎓 {currentMeta.gradeScope}
+                    </span>
+                    <span className="px-3 py-1.5 rounded-xl bg-slate-950 border border-teal-700 text-teal-300 font-bold">
+                      🏫 {currentMeta.sectionScope}
+                    </span>
+                  </div>
+                </div>
+
+                {/* 3 Core Academic Pillars */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {currentMeta.corePillars.map((pillar, idx) => (
+                    <div key={idx} className="p-5 rounded-2xl bg-slate-950/80 border border-purple-800/70 space-y-2.5 shadow-lg">
+                      <div className="w-8 h-8 rounded-xl bg-purple-900/60 border border-teal-400/40 text-teal-300 flex items-center justify-center font-black text-xs font-mono">
+                        0{idx + 1}
+                      </div>
+                      <h4 className="text-sm font-black text-white">{pillar.title}</h4>
+                      <p className="text-xs text-purple-200/80 leading-relaxed">{pillar.desc}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* ===================================================================== */}
+                {/* MEDIUM BUTTON IN THE MEDIUM / CENTER OF THE PAGE                       */}
+                {/* ===================================================================== */}
+                <div className="my-8 py-8 px-6 bg-gradient-to-r from-purple-950/60 via-slate-950 to-teal-950/60 rounded-3xl border-2 border-dashed border-teal-400/70 text-center space-y-4 shadow-2xl">
+                  <div className="max-w-xl mx-auto space-y-1">
+                    <span className="inline-block px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 text-[11px] font-mono font-black uppercase tracking-wider border border-teal-500/40">
+                      ★ Central Full-Screen Interactive Launcher ★
+                    </span>
+                    <h4 className="text-lg md:text-xl font-black text-white pt-1">
+                      {currentMeta.centralButtonSub}
+                    </h4>
+                    <p className="text-xs text-purple-200/80">
+                      Click the medium button below to expand into the dedicated full-screen interactive mode with zero distractions
+                    </p>
+                  </div>
+
+                  <div>
+                    <button
+                      onClick={() => {
+                        setIsFullScreenInteractive(true);
+                        playSoundChime('sent');
+                      }}
+                      className="inline-flex items-center gap-3 px-8 md:px-12 py-4 md:py-5 rounded-2xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-teal-400 hover:from-purple-500 hover:to-teal-300 text-slate-950 font-black text-base md:text-lg shadow-2xl shadow-teal-400/40 transition transform hover:scale-105 active:scale-95 cursor-pointer border-2 border-teal-200"
+                    >
+                      <span>{currentMeta.centralButtonText}</span>
+                      <ArrowRight className="w-6 h-6 text-slate-950 animate-pulse" />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-center gap-2 text-[11px] text-teal-300 font-mono">
+                    <span>● Verified Full Screen Experience</span>
+                    <span>•</span>
+                    <span>Click any time to return to PDF presentation</span>
+                  </div>
+                </div>
+
+                {/* Operational SOP Guidelines */}
+                <div className="p-6 rounded-2xl bg-slate-950/60 border border-purple-900 space-y-3">
+                  <h4 className="text-xs font-black uppercase text-teal-300 tracking-wider flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-teal-400" />
+                    <span>Operational Standard Operating Procedure (SOP)</span>
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+                    {currentMeta.instructions.map((ins, i) => (
+                      <div key={i} className="p-3 rounded-xl bg-slate-900/80 border border-purple-950 text-xs text-purple-200/90 leading-relaxed">
+                        {ins}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Document Stats & Official Seal */}
+                <div className="pt-6 border-t border-purple-800/60 flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
+                  <div className="flex items-center gap-4 flex-wrap">
+                    {currentMeta.statPills.map((stat, i) => (
+                      <div key={i} className="px-3 py-1.5 rounded-xl bg-slate-950 border border-purple-900 flex items-center gap-2">
+                        <span className="text-purple-400 font-mono text-[10px] uppercase">{stat.label}:</span>
+                        <strong className="text-teal-300 font-mono">{stat.val}</strong>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center gap-2 text-right">
+                    <ShieldCheck className="w-5 h-5 text-teal-400 shrink-0" />
+                    <div className="text-[11px]">
+                      <span className="block font-black text-white">{currentMeta.sealTitle}</span>
+                      <span className="text-purple-400 font-mono text-[10px]">DAV Academic Directorate • Developed by Rishit Shankar</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* ===================================================================== */
+          /* FULL-SCREEN INTERACTIVE TOOLS WRAPPER                                  */
+          /* ===================================================================== */
+          <div className="w-full space-y-6 animate-fadeIn">
+            
+            {/* Sticky Top Bar: Return to PDF Presentation & Quick Tool Switcher */}
+            <div className="w-full bg-gradient-to-r from-purple-950 via-slate-950 to-teal-950 border-b-2 border-teal-400/80 px-4 md:px-8 py-3.5 flex items-center justify-between flex-wrap gap-3 shadow-2xl sticky top-0 z-40 rounded-2xl mb-4">
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => {
+                    setIsFullScreenInteractive(false);
+                    playSoundChime('sent');
+                  }}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-600 hover:to-indigo-600 text-white font-black text-xs flex items-center gap-2 shadow-lg shadow-purple-900/50 cursor-pointer border border-purple-400 transition transform active:scale-95"
+                >
+                  <ChevronLeft className="w-4 h-4 text-teal-300" />
+                  <span>⤌ Back to PDF Presentation Page {currentMeta.pageNumber}</span>
+                </button>
+
+                <div className="hidden sm:flex items-center gap-2">
+                  <span className="px-2.5 py-0.5 rounded-full bg-teal-400 text-slate-950 font-black text-[10px] font-mono">
+                    FULL-SCREEN INTERACTIVE MODE
+                  </span>
+                  <span className="text-xs font-black text-white">
+                    {PRESENTATION_PAGES.find(p => p.id === activePage)?.title}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5 overflow-x-auto">
+                <span className="text-[11px] text-purple-300 font-mono mr-1 hidden md:inline">Quick Switch:</span>
+                {PRESENTATION_PAGES.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => {
+                      handlePageChange(p.id);
+                      playSoundChime('sent');
+                    }}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition cursor-pointer border ${
+                      activePage === p.id
+                        ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-slate-950 font-black border-teal-200 shadow-md'
+                        : 'bg-slate-900/80 text-purple-300 border-purple-800 hover:text-white hover:bg-slate-800'
+                    }`}
+                  >
+                    Page 0{p.num}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* ----------------------------------------------------------------- */}
+            {/* PAGE 1: DAILY HOMEWORK & CLASSWORK MANAGEMENT                     */}
+            {/* ----------------------------------------------------------------- */}
+            {activePage === 'homework' && (
           <div className="w-full space-y-6 animate-fadeIn">
             
             {/* Gen Z Hero Animated Graphical Banner */}
@@ -3023,6 +3540,9 @@ export function TeachersSection({
                 </div>
               </div>
             )}
+
+          </div>
+        )}
 
           </div>
         )}
