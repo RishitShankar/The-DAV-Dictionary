@@ -442,6 +442,17 @@ export function TeachersSection({ user, initialSubSection, onSubSectionChange, i
   const [isLivePortalModalOpen, setIsLivePortalModalOpen] = useState(false);
   const [isInsideLiveRoom, setIsInsideLiveRoom] = useState(false);
   const [activeLiveSessionData, setActiveLiveSessionData] = useState(null);
+  const [copiedLiveLink, setCopiedLiveLink] = useState(false);
+
+  // Real WebRTC Live Room Link Generator for DAV School
+  const getLiveRoomUrl = (session, classNum) => {
+    const rawId = session?.id || 'live_stream';
+    const safeId = rawId.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const safeClass = (classNum || '8').replace(/[^a-zA-Z0-9_-]/g, '_');
+    const roomName = `DAV_School_Class_${safeClass}_${safeId}`;
+    const userName = encodeURIComponent(user?.name || (isFacultyRole ? 'DAV Faculty Teacher' : 'DAV Student'));
+    return `https://meet.jit.si/${roomName}#userInfo.displayName="${userName}"&config.prejoinPageEnabled=false&config.disableDeepLinking=true`;
+  };
 
   // Live Room Real Controls
   const [isMicMuted, setIsMicMuted] = useState(false);
@@ -2073,28 +2084,63 @@ export function TeachersSection({ user, initialSubSection, onSubSectionChange, i
               </div>
             )}
 
-            {/* FULL-SCREEN REAL WEBRTC IN-WEBSITE MEETING ROOM (GOOGLE MEET / ZOOM STYLE) */}
+            {/* FULL-SCREEN REAL WEBRTC IN-WEBSITE MEETING ROOM */}
             {isInsideLiveRoom && (
               <div className="fixed inset-0 z-50 bg-slate-950 flex flex-col animate-fadeIn select-none">
                 
                 {/* Meeting Top Bar */}
-                <div className="px-4 py-3 bg-slate-900/90 border-b border-purple-800 flex items-center justify-between text-white shrink-0">
+                <div className="px-4 py-3 bg-slate-900/95 border-b border-purple-800 flex items-center justify-between text-white shrink-0">
                   <div className="flex items-center gap-3">
                     <span className="px-2.5 py-1 rounded-full bg-rose-600 text-white font-black text-xs flex items-center gap-1.5 animate-pulse">
                       <span className="w-2 h-2 rounded-full bg-white" />
-                      <span>LIVE</span>
+                      <span>LIVE CLASS</span>
                     </span>
                     <div>
                       <h3 className="text-sm font-black text-white">
-                        {activeLiveSessionData?.topic || 'DAV Class 8-D Science • Chapter 11 Human Eye'}
+                        {activeLiveSessionData?.topic || `DAV Class ${selectedLiveClassNum} Live Lecture`}
                       </h3>
                       <p className="text-[10px] text-teal-300 font-mono">
-                        Educator: {activeLiveSessionData?.teacher || 'Mrs. Sunita Sharma'} • 100% WebRTC Video Call
+                        Educator: {activeLiveSessionData?.teacher || user?.name || 'Mrs. Sunita Sharma'} • Real-Time WebRTC Video Stream
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        const url = getLiveRoomUrl(activeLiveSessionData, selectedLiveClassNum);
+                        navigator.clipboard.writeText(url);
+                        setCopiedLiveLink(true);
+                        playSoundChime('sent');
+                        setTimeout(() => setCopiedLiveLink(false), 3000);
+                      }}
+                      className="px-3 py-1.5 rounded-xl border border-emerald-500/60 bg-emerald-950/60 text-emerald-300 hover:bg-emerald-900 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                      title="Copy meeting link to share with students"
+                    >
+                      {copiedLiveLink ? (
+                        <>
+                          <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>Copied Invite Link!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Share2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <span className="hidden sm:inline">Invite Link</span>
+                        </>
+                      )}
+                    </button>
+
+                    <a
+                      href={getLiveRoomUrl(activeLiveSessionData, selectedLiveClassNum)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 rounded-xl border border-blue-500/60 bg-blue-950/60 text-blue-300 hover:bg-blue-900 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                      title="Open in new browser tab or mobile app"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
+                      <span className="hidden sm:inline">New Tab</span>
+                    </a>
+
                     <button
                       onClick={() => setIsWhiteboardActive(!isWhiteboardActive)}
                       className={`px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
@@ -2102,262 +2148,58 @@ export function TeachersSection({ user, initialSubSection, onSubSectionChange, i
                       }`}
                     >
                       <PenTool className="w-3.5 h-3.5" />
-                      <span>Digital Whiteboard</span>
+                      <span>{isWhiteboardActive ? 'Video Room' : 'Whiteboard'}</span>
                     </button>
 
                     <button
-                      onClick={() => setIsMeetingChatOpen(!isMeetingChatOpen)}
-                      className={`px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
-                        isMeetingChatOpen ? 'bg-purple-600 text-white border-purple-400' : 'bg-slate-800 text-purple-200 border-purple-700'
-                      }`}
+                      onClick={() => {
+                        if (mediaStreamRef.current) {
+                          mediaStreamRef.current.getTracks().forEach(t => t.stop());
+                          mediaStreamRef.current = null;
+                        }
+                        setIsInsideLiveRoom(false);
+                        setIsWhiteboardActive(false);
+                        playSoundChime('alert');
+                      }}
+                      className="px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs flex items-center gap-1.5 shadow-md shadow-rose-600/30 cursor-pointer transition"
                     >
-                      <MessageSquare className="w-3.5 h-3.5" />
-                      <span>Meeting Chat</span>
+                      <PhoneOff className="w-3.5 h-3.5" />
+                      <span>Leave Class</span>
                     </button>
                   </div>
                 </div>
 
                 {/* Meeting Stage Area */}
-                <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
-                  
-                  {/* Left / Center Video Stage & Whiteboard */}
-                  <div className="flex-1 flex flex-col p-4 overflow-y-auto space-y-4">
-                    
-                    {/* Interactive Whiteboard Canvas Mode */}
-                    {isWhiteboardActive ? (
-                      <div className="flex-1 min-h-[450px] bg-slate-900 border-2 border-teal-400/80 rounded-3xl p-4 flex flex-col shadow-2xl space-y-3">
-                        <div className="flex items-center justify-between pb-2 border-b border-purple-800">
-                          <div className="flex items-center gap-2">
-                            <PenTool className="w-4 h-4 text-teal-300" />
-                            <h4 className="text-xs font-black text-white">Live Whiteboard: Ray Diagram Demonstrator</h4>
-                          </div>
-                          <span className="text-[10px] text-teal-300 font-mono">Interactive Drawing Console</span>
+                <div className="flex-1 flex flex-col overflow-hidden relative p-2 sm:p-4 bg-slate-950">
+                  {isWhiteboardActive ? (
+                    <div className="flex-1 min-h-[450px] bg-slate-900 border-2 border-teal-400/80 rounded-3xl p-4 flex flex-col shadow-2xl space-y-3">
+                      <div className="flex items-center justify-between pb-2 border-b border-purple-800">
+                        <div className="flex items-center gap-2">
+                          <PenTool className="w-4 h-4 text-teal-300" />
+                          <h4 className="text-xs font-black text-white">Live Whiteboard: Ray Diagram Demonstrator</h4>
                         </div>
-                        <div className="flex-1 bg-slate-950 rounded-2xl border border-purple-900 relative flex items-center justify-center overflow-hidden p-4">
-                          <div className="text-center space-y-3">
-                            <PenTool className="w-12 h-12 text-teal-400 mx-auto animate-bounce" />
-                            <h5 className="text-sm font-bold text-white">Teacher's Digital Smart Board Active</h5>
-                            <p className="text-xs text-purple-300 max-w-sm">
-                              Currently displaying: Convex Lens Refraction, Retina Image Inversion, and Myopia Diverging Concave Lens.
-                            </p>
-                          </div>
+                        <span className="text-[10px] text-teal-300 font-mono">Interactive Drawing Console</span>
+                      </div>
+                      <div className="flex-1 bg-slate-950 rounded-2xl border border-purple-900 relative flex items-center justify-center overflow-hidden p-4">
+                        <div className="text-center space-y-3">
+                          <PenTool className="w-12 h-12 text-teal-400 mx-auto animate-bounce" />
+                          <h5 className="text-sm font-bold text-white">Teacher's Digital Smart Board Active</h5>
+                          <p className="text-xs text-purple-300 max-w-sm">
+                            Draw ray diagrams, write math formulas, or annotate class diagrams live with your students.
+                          </p>
                         </div>
                       </div>
-                    ) : (
-                      /* Video Feeds Grid (Google Meet / Zoom Experience) */
-                      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 min-h-[450px]">
-                        
-                        {/* Main Teacher Tile */}
-                        <div className="md:col-span-2 relative rounded-3xl bg-slate-900 border-2 border-purple-500/50 overflow-hidden flex items-center justify-center shadow-2xl min-h-[300px]">
-                          <div className="absolute top-3 left-3 z-10 px-2.5 py-1 rounded-lg bg-slate-950/80 border border-purple-600 text-[11px] font-bold text-white flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
-                            <span>Faculty: {activeLiveSessionData?.teacher || 'Mrs. Sunita Sharma'}</span>
-                          </div>
-
-                          {/* Real Webcam feed of User if in Teacher mode, or Simulated Animated Faculty Lecture Feed */}
-                          {isFacultyRole && !isCameraOff ? (
-                            <video
-                              ref={localVideoRef}
-                              autoPlay
-                              playsInline
-                              muted
-                              className="w-full h-full object-cover transform -scale-x-100"
-                            />
-                          ) : (
-                            <div className="text-center space-y-3 p-6">
-                              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 via-fuchsia-500 to-teal-400 p-1 mx-auto shadow-xl">
-                                <div className="w-full h-full rounded-full bg-slate-950 flex items-center justify-center">
-                                  <GraduationCap className="w-10 h-10 text-teal-300" />
-                                </div>
-                              </div>
-                              <h4 className="text-base font-black text-white">
-                                {activeLiveSessionData?.teacher || 'Mrs. Sunita Sharma'}
-                              </h4>
-                              <p className="text-xs text-teal-300 font-mono">
-                                Speaking • Senior Science Faculty (Microphone Active)
-                              </p>
-                            </div>
-                          )}
-
-                          <div className="absolute bottom-3 right-3 px-2 py-0.5 rounded bg-slate-950/80 text-[10px] text-teal-300 font-mono">
-                            HD 1080p • 60 FPS
-                          </div>
-                        </div>
-
-                        {/* Student Self Camera Tile */}
-                        <div className="relative rounded-3xl bg-slate-900 border border-teal-500/50 overflow-hidden flex items-center justify-center min-h-[160px]">
-                          <div className="absolute top-2 left-2 z-10 px-2 py-0.5 rounded bg-slate-950/80 text-[10px] text-teal-300 font-bold">
-                            You ({user?.name || 'Saharsh Shankar'})
-                          </div>
-
-                          {!isFacultyRole && !isCameraOff ? (
-                            <video
-                              ref={localVideoRef}
-                              autoPlay
-                              playsInline
-                              muted
-                              className="w-full h-full object-cover transform -scale-x-100"
-                            />
-                          ) : (
-                            <div className="text-center p-3">
-                              <div className="w-12 h-12 rounded-full bg-teal-500/20 text-teal-300 flex items-center justify-center font-black mx-auto">
-                                {(user?.name || 'Saharsh').charAt(0)}
-                              </div>
-                              <span className="text-[11px] text-purple-300 font-bold mt-1 block">Camera Off</span>
-                            </div>
-                          )}
-
-                          {isHandRaised && (
-                            <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-[9px] flex items-center gap-1 animate-bounce">
-                              <Hand className="w-3 h-3" />
-                              <span>Hand Raised</span>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Peer Student Tile 1 */}
-                        <div className="relative rounded-3xl bg-slate-900 border border-purple-800/80 overflow-hidden flex items-center justify-center min-h-[160px]">
-                          <div className="absolute top-2 left-2 z-10 px-2 py-0.5 rounded bg-slate-950/80 text-[10px] text-purple-300">
-                            Aanya Sharma (Roll 2)
-                          </div>
-                          <div className="text-center p-3">
-                            <div className="w-12 h-12 rounded-full bg-purple-500/20 text-purple-300 flex items-center justify-center font-black mx-auto">
-                              AS
-                            </div>
-                            <span className="text-[11px] text-purple-400 font-mono mt-1 block">Listening</span>
-                          </div>
-                        </div>
-
-                        {/* Peer Student Tile 2 */}
-                        <div className="relative rounded-3xl bg-slate-900 border border-purple-800/80 overflow-hidden flex items-center justify-center min-h-[160px]">
-                          <div className="absolute top-2 left-2 z-10 px-2 py-0.5 rounded bg-slate-950/80 text-[10px] text-purple-300">
-                            Aditya Raj (Roll 3)
-                          </div>
-                          <div className="text-center p-3">
-                            <div className="w-12 h-12 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-black mx-auto">
-                              AR
-                            </div>
-                            <span className="text-[11px] text-purple-400 font-mono mt-1 block">Listening</span>
-                          </div>
-                        </div>
-
-                      </div>
-                    )}
-
-                  </div>
-
-                  {/* Right In-Meeting Chat Sidebar */}
-                  {isMeetingChatOpen && (
-                    <div className="w-full lg:w-80 bg-slate-900 border-l border-purple-800/80 flex flex-col shrink-0">
-                      <div className="p-3 bg-purple-950 border-b border-purple-800 flex items-center justify-between">
-                        <h4 className="text-xs font-black text-white flex items-center gap-1.5">
-                          <MessageSquare className="w-4 h-4 text-teal-300" />
-                          <span>In-Class Discussion Chat</span>
-                        </h4>
-                        <span className="text-[10px] text-teal-300 font-mono">Live</span>
-                      </div>
-
-                      <div className="flex-1 p-3 overflow-y-auto space-y-2.5 text-xs">
-                        {meetingChatList.map((m) => (
-                          <div key={m.id} className="p-2.5 rounded-xl bg-slate-950 border border-purple-900/60 space-y-1">
-                            <div className="flex items-center justify-between text-[10px]">
-                              <span className="font-bold text-teal-300">{m.sender}</span>
-                              <span className="text-purple-400 font-mono">{m.time}</span>
-                            </div>
-                            <p className="text-purple-100">{m.text}</p>
-                          </div>
-                        ))}
-                      </div>
-
-                      <form onSubmit={handleSendMeetingChat} className="p-2.5 bg-purple-950 border-t border-purple-800 flex items-center gap-1.5">
-                        <input
-                          type="text"
-                          value={meetingChatInput}
-                          onChange={(e) => setMeetingChatInput(e.target.value)}
-                          placeholder="Send message to teacher &amp; classmates..."
-                          className="flex-1 px-3 py-1.5 bg-slate-900 border border-purple-700 rounded-xl text-xs text-white placeholder-purple-400 focus:outline-none focus:border-teal-400"
-                        />
-                        <button type="submit" className="p-2 rounded-xl bg-teal-400 hover:bg-teal-300 text-slate-950 font-black cursor-pointer">
-                          <Send className="w-3.5 h-3.5" />
-                        </button>
-                      </form>
+                    </div>
+                  ) : (
+                    <div className="w-full h-full bg-slate-900 rounded-2xl overflow-hidden border border-purple-500/40 relative shadow-2xl flex flex-col">
+                      <iframe
+                        src={getLiveRoomUrl(activeLiveSessionData, selectedLiveClassNum)}
+                        allow="camera; microphone; display-capture; autoplay; clipboard-write; fullscreen"
+                        className="w-full flex-1 border-0"
+                        title="DAV Real Online Live Classroom"
+                      />
                     </div>
                   )}
-
-                </div>
-
-                {/* Meeting Bottom Action Bar (Zoom / Google Meet Style) */}
-                <div className="px-4 py-3 bg-slate-900/95 border-t border-purple-800 flex items-center justify-between flex-wrap gap-2 shrink-0">
-                  <div className="flex items-center gap-2">
-                    {/* Microphone Toggle */}
-                    <button
-                      onClick={toggleMicrophone}
-                      className={`p-3 rounded-2xl flex items-center gap-2 font-bold text-xs transition cursor-pointer ${
-                        isMicMuted
-                          ? 'bg-rose-600 hover:bg-rose-500 text-white shadow-lg'
-                          : 'bg-slate-800 hover:bg-slate-700 text-teal-300 border border-purple-700'
-                      }`}
-                    >
-                      {isMicMuted ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-                      <span className="hidden sm:inline">{isMicMuted ? 'Muted' : 'Mic Active'}</span>
-                    </button>
-
-                    {/* Camera Toggle */}
-                    <button
-                      onClick={toggleCamera}
-                      className={`p-3 rounded-2xl flex items-center gap-2 font-bold text-xs transition cursor-pointer ${
-                        isCameraOff
-                          ? 'bg-rose-600 hover:bg-rose-500 text-white shadow-lg'
-                          : 'bg-slate-800 hover:bg-slate-700 text-teal-300 border border-purple-700'
-                      }`}
-                    >
-                      {isCameraOff ? <VideoOff className="w-4 h-4" /> : <Video className="w-4 h-4" />}
-                      <span className="hidden sm:inline">{isCameraOff ? 'Camera Off' : 'Camera On'}</span>
-                    </button>
-
-                    {/* Screen Share */}
-                    <button
-                      onClick={toggleScreenShare}
-                      className={`p-3 rounded-2xl flex items-center gap-2 font-bold text-xs transition cursor-pointer ${
-                        isScreenSharingActive
-                          ? 'bg-teal-500 text-slate-950 font-black shadow-lg'
-                          : 'bg-slate-800 hover:bg-slate-700 text-purple-200 border border-purple-700'
-                      }`}
-                    >
-                      <ScreenShare className="w-4 h-4" />
-                      <span className="hidden md:inline">{isScreenSharingActive ? 'Sharing Screen' : 'Share Screen'}</span>
-                    </button>
-
-                    {/* Raise Hand */}
-                    <button
-                      onClick={handleToggleHandRaise}
-                      className={`p-3 rounded-2xl flex items-center gap-2 font-bold text-xs transition cursor-pointer ${
-                        isHandRaised
-                          ? 'bg-amber-500 text-slate-950 font-black shadow-lg animate-bounce'
-                          : 'bg-slate-800 hover:bg-slate-700 text-purple-200 border border-purple-700'
-                      }`}
-                    >
-                      <Hand className="w-4 h-4" />
-                      <span className="hidden md:inline">{isHandRaised ? 'Hand Raised' : 'Raise Hand'}</span>
-                    </button>
-                  </div>
-
-                  {/* Red Leave Call Button */}
-                  <button
-                    onClick={() => {
-                      if (mediaStreamRef.current) {
-                        mediaStreamRef.current.getTracks().forEach(t => t.stop());
-                        mediaStreamRef.current = null;
-                      }
-                      setIsInsideLiveRoom(false);
-                      setIsWhiteboardActive(false);
-                      playSoundChime('alert');
-                    }}
-                    className="px-6 py-3 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs flex items-center gap-2 shadow-xl shadow-rose-600/30 cursor-pointer transition transform active:scale-95"
-                  >
-                    <PhoneOff className="w-4 h-4" />
-                    <span>Leave Live Class</span>
-                  </button>
                 </div>
 
               </div>
