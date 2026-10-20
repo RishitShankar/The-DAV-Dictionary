@@ -1021,23 +1021,27 @@ export function TeachersSection({
       }
 
       // 2. Update user in dav_registered_users
-      const regRaw = localStorage.getItem('dav_registered_users');
-      if (regRaw) {
-        const users = JSON.parse(regRaw);
-        if (Array.isArray(users)) {
-          const idx = users.findIndex(u => 
-            (u.id && user?.id && u.id.toLowerCase() === user.id.toLowerCase()) ||
-            (u.name && user?.name && u.name.toLowerCase() === user.name.toLowerCase())
-          );
-          if (idx !== -1) {
-            users[idx].name = cleanName;
-            users[idx].subject = cleanSubject;
-            users[idx].department = cleanSubject;
-            users[idx].dp = cleanDp;
-            users[idx].avatar = cleanDp;
-            localStorage.setItem('dav_registered_users', JSON.stringify(users));
+      try {
+        const regRaw = localStorage.getItem('dav_registered_users');
+        if (regRaw) {
+          const users = JSON.parse(regRaw);
+          if (Array.isArray(users)) {
+            const idx = users.findIndex(u => 
+              (u.id && user?.id && u.id.toLowerCase() === user.id.toLowerCase()) ||
+              (u.name && user?.name && u.name.toLowerCase() === user.name.toLowerCase())
+            );
+            if (idx !== -1) {
+              users[idx].name = cleanName;
+              users[idx].subject = cleanSubject;
+              users[idx].department = cleanSubject;
+              users[idx].dp = cleanDp;
+              users[idx].avatar = cleanDp;
+              localStorage.setItem('dav_registered_users', JSON.stringify(users));
+            }
           }
         }
+      } catch (err) {
+        console.warn('Failed to parse dav_registered_users:', err);
       }
 
       // 3. Save to custom teachers store

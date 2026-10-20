@@ -19,6 +19,7 @@ import { QuestionsAnswersSection } from './components/QuestionsAnswersSection';
 import { DonationSection } from './components/DonationSection';
 import { TeachersSection } from './components/TeachersSection';
 import { PurpleFooter } from './components/PurpleFooter';
+import { SectionErrorBoundary } from './components/SectionErrorBoundary';
 import { 
   Award, Heart, Lock, Sparkles, ArrowRight, Smartphone, Monitor, 
   Home, BookOpen, Layers, User as UserIcon, ClipboardList, 
@@ -285,6 +286,11 @@ export function App() {
 
       {/* Main Content Area */}
       <main className={`flex-1 ${deviceDimension === 'mobile' ? 'pb-24' : ''}`}>
+        <SectionErrorBoundary
+          key={`section-boundary-${activeSection}`}
+          sectionName={`Section ${activeSection}`}
+          onGoToOverview={() => setActiveSection(1)}
+        >
         {(isTeacher && teacherSubDimension === 'teacher_only') ? (
           <TeachersSection 
             user={user} 
@@ -343,6 +349,7 @@ export function App() {
         ) : (
           <UntitledSection sectionNumber={activeSection} />
         )}
+        </SectionErrorBoundary>
       </main>
 
       {/* Official Purple Footer displayed ONLY on Section 9 & 10 as requested by the user */}

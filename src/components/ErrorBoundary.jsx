@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
+import { AlertTriangle, RefreshCw, Home, Trash2 } from 'lucide-react';
 
 export class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -15,46 +15,98 @@ export class ErrorBoundary extends React.Component {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
   }
 
-  handleReset = () => {
+  handleReload = () => {
     this.setState({ hasError: false, error: null });
+    try {
+      sessionStorage.clear();
+    } catch (e) {}
+    // Hard refresh avoiding cache
     window.location.reload();
+  };
+
+  handleResetState = () => {
+    // Try clearing error in React state directly without page reload
+    this.setState({ hasError: false, error: null });
+  };
+
+  handleCleanRecover = () => {
+    try {
+      localStorage.removeItem('dav_user');
+      localStorage.removeItem('dav_teacher_sub_dim');
+      sessionStorage.clear();
+    } catch (e) {}
+    this.setState({ hasError: false, error: null });
+    window.location.href = '/';
   };
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-6">
-          <div className="max-w-md w-full bg-stone-900 border border-orange-500/40 rounded-3xl p-6 text-center space-y-4 shadow-2xl">
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-rose-500/10 border border-rose-500/40 flex items-center justify-center text-rose-400">
-              <AlertTriangle className="w-7 h-7" />
+        <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-4 sm:p-6">
+          <div className="max-w-lg w-full bg-stone-900 border border-amber-500/40 rounded-3xl p-6 sm:p-8 text-center space-y-4 shadow-2xl">
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/40 flex items-center justify-center text-amber-400">
+              <AlertTriangle className="w-8 h-8" />
             </div>
-            <h2 className="text-xl font-black text-amber-300">
-              Something Needs Attention
+
+            <h2 className="text-xl sm:text-2xl font-black text-amber-300">
+              Portal Recovery Assistant
             </h2>
-            <p className="text-xs text-stone-300 leading-relaxed">
-              An unexpected render issue occurred. Click the button below to recover immediately.
+
+            <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
+              A temporary rendering glitch was caught. Choose one of the recovery actions below to continue smoothly.
             </p>
+
             {this.state.error?.message && (
-              <pre className="text-[11px] font-mono text-rose-300 bg-stone-950 p-3 rounded-xl overflow-x-auto text-left border border-rose-900/40">
-                {this.state.error.message}
-              </pre>
+              <div className="text-left bg-stone-950 p-3.5 rounded-xl border border-rose-900/50">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-rose-400 block mb-1">
+                  Glitch Diagnosis:
+                </span>
+                <pre className="text-[11px] font-mono text-rose-300 overflow-x-auto whitespace-pre-wrap break-all">
+                  {this.state.error.message}
+                </pre>
+              </div>
             )}
-            <div className="flex gap-2 justify-center pt-2 flex-wrap">
+
+            <div className="flex flex-col sm:flex-row gap-2.5 justify-center pt-2">
+              {/* Primary: Reload Page */}
               <button
-                onClick={this.handleReset}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-md hover:scale-105 transition"
+                type="button"
+                onClick={this.handleReload}
+                className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 font-black text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-lg hover:brightness-110 active:scale-95 transition"
               >
-                <RefreshCw className="w-3.5 h-3.5" />
+                <RefreshCw className="w-4 h-4" />
                 <span>Reload Portal</span>
               </button>
+
+              {/* Secondary: Try In-Place Recovery */}
               <button
-                onClick={() => {
-                  window.location.href = '/';
-                }}
-                className="px-4 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+                type="button"
+                onClick={this.handleResetState}
+                className="py-2.5 px-4 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer border border-stone-700 transition"
               >
-                <Home className="w-3.5 h-3.5" />
-                <span>Go to Homepage</span>
+                <span>Try Again</span>
+              </button>
+
+              {/* Tertiary: Clean Cache & Home */}
+              <button
+                type="button"
+                onClick={this.handleCleanRecover}
+                className="py-2.5 px-4 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer border border-rose-800/50 transition"
+                title="Clears corrupted session keys and returns cleanly to Homepage"
+              >
+                <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+                <span>Reset &amp; Homepage</span>
+              </button>
+            </div>
+
+            <div className="pt-2 text-[11px] text-stone-400 flex items-center justify-center gap-2">
+              <Home className="w-3.5 h-3.5 text-amber-400" />
+              <button
+                type="button"
+                onClick={this.handleCleanRecover}
+                className="underline hover:text-white cursor-pointer"
+              >
+                Return to Campus Gateway Homepage
               </button>
             </div>
           </div>
