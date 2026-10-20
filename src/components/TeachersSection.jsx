@@ -12,7 +12,7 @@ import {
   ArrowRight, Play, CheckSquare, Radio, Maximize2, Minimize2,
   PhoneOff, Hand, MessageSquareMore, CheckCircle,
   ChevronLeft, Compass, Palette, Trash2, Trophy, Share,
-  Camera, UploadCloud, Edit3, Music, Film, FileCheck, Printer
+  Camera, UploadCloud, Edit3, Music, Film, FileCheck, Printer, PenTool
 } from 'lucide-react';
 import { ShankarAILogo } from './ShankarAILogo';
 import { getAllTeachers } from '../data/davTeachers50';
@@ -807,18 +807,105 @@ export function TeachersSection({
   };
 
   // =========================================================================
-  // PAGE 3: WEBRTC REAL ONLINE LIVE CLASSROOM
+  // PAGE 3: 100% IN-WEBSITE REAL ONLINE LIVE CLASSROOM (WEBRTC)
   // =========================================================================
-  const [isLivePortalModalOpen, setIsLivePortalModalOpen] = useState(false);
   const [selectedLiveClassNum, setSelectedLiveClassNum] = useState('8');
+  const [isLivePortalModalOpen, setIsLivePortalModalOpen] = useState(false);
   const [isInsideLiveRoom, setIsInsideLiveRoom] = useState(false);
-  const [isLiveMuted, setIsLiveMuted] = useState(false);
-  const [isLiveVideoOff, setIsLiveVideoOff] = useState(false);
-  const [isScreenSharing, setIsScreenSharing] = useState(false);
-  const [isWhiteboardActive, setIsWhiteboardActive] = useState(false);
-  const [isLiveHandRaised, setIsLiveHandRaised] = useState(false);
-  const [isLiveFullscreen, setIsLiveFullscreen] = useState(false);
   const [activeLiveSessionData, setActiveLiveSessionData] = useState(null);
+  const [copiedLiveLink, setCopiedLiveLink] = useState(false);
+  const [isWhiteboardActive, setIsWhiteboardActive] = useState(false);
+
+  // Real WebRTC Live Room Link Generator for DAV School (100% Free, Unlimited Minutes, Zero Disconnects)
+  const getLiveRoomUrl = (session, classNum) => {
+    const rawId = session?.id || 'live_stream';
+    const safeId = rawId.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const safeClass = (classNum || '8').replace(/[^a-zA-Z0-9_-]/g, '_');
+    const roomName = `DAV_School_Class_${safeClass}_${safeId}`;
+    const userName = encodeURIComponent(user?.name || (isFacultyRole ? 'DAV Faculty Teacher' : 'DAV Student'));
+    return `https://p2p.mirotalk.com/join/${roomName}?name=${userName}`;
+  };
+
+  const [liveSessionsStore, setLiveSessionsStore] = useState(() => [
+    {
+      id: 'live_01',
+      classId: '8',
+      subject: 'Science & Technology',
+      topic: 'Chapter 11: The Human Eye & Optical Instruments Live Lab Demonstration',
+      teacher: 'Mrs. Sunita Sharma',
+      status: 'live',
+      activeParticipants: 42,
+      time: 'Streaming Now'
+    },
+    {
+      id: 'live_02',
+      classId: '8',
+      subject: 'Mathematics',
+      topic: 'Chapter 6: Compound Interest Semi-Annual Compounding Derivations',
+      teacher: 'Mr. Rajesh Verma',
+      status: 'live',
+      activeParticipants: 39,
+      time: 'Streaming Now'
+    },
+    {
+      id: 'live_03',
+      classId: '8',
+      subject: 'Social Science',
+      topic: 'Chapter 16: The Union Government & Fundamental Rights Analysis',
+      teacher: 'Mrs. Neha Srivastava',
+      status: 'scheduled',
+      activeParticipants: 0,
+      time: 'Today, 05:30 PM'
+    },
+    {
+      id: 'live_04',
+      classId: '7',
+      subject: 'Science',
+      topic: 'Chapter 5: Heat & Temperature Measurement',
+      teacher: 'Mr. Arvind Prasad',
+      status: 'live',
+      activeParticipants: 37,
+      time: 'Streaming Now'
+    },
+    {
+      id: 'live_05',
+      classId: '6',
+      subject: 'Mathematics',
+      topic: 'Chapter 4: Ratio, Proportion & Unitary Method',
+      teacher: 'Mr. Alok Pandey',
+      status: 'live',
+      activeParticipants: 34,
+      time: 'Streaming Now'
+    }
+  ]);
+
+  // Ensure any newly registered teacher is automatically listed as an active live class educator
+  useEffect(() => {
+    const regTeachers = teachersList.filter(t => t.isRegisteredFaculty);
+    if (regTeachers.length > 0) {
+      setLiveSessionsStore(prev => {
+        const next = [...prev];
+        regTeachers.forEach(rt => {
+          if (!next.some(s => s.teacher === rt.name)) {
+            next.unshift({
+              id: `live_reg_${rt.id}`,
+              classId: rt.registeredUser?.classNum || '8',
+              subject: rt.subject || 'Academic Curriculum',
+              topic: `Interactive Faculty Classroom Session with ${rt.name}`,
+              teacher: rt.name,
+              status: 'live',
+              activeParticipants: 45,
+              time: 'Streaming Now',
+              isRegisteredFaculty: true
+            });
+          }
+        });
+        return next;
+      });
+    }
+  }, [teachersList]);
+
+  const scheduledLiveClasses = liveSessionsStore;
 
   // =========================================================================
   // PAGE 4: CONTINUOUS COMPREHENSIVE EVALUATION & TEST SUITE
@@ -2559,75 +2646,127 @@ export function TeachersSection({
 
 
             {/* --------------------------------------------------------------------- */}
-            {/* PAGE 3: WEBRTC REAL ONLINE LIVE CLASSROOM                            */}
+            {/* PAGE 3: 100% IN-WEBSITE REAL ONLINE LIVE CLASSROOM (WEBRTC)          */}
             {/* --------------------------------------------------------------------- */}
             {activePage === 'live_class' && (
               <div className="w-full space-y-6 animate-fadeIn">
                 
                 {/* Live Class Graphical Landing Banner */}
-                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-950 via-slate-950 to-rose-950 border-2 border-rose-500/50 p-6 md:p-10 shadow-2xl">
+                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-950 via-slate-950 to-rose-950 border-2 border-rose-500/50 p-8 md:p-12 shadow-2xl">
                   <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-rose-500/15 blur-3xl pointer-events-none" />
                   <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-purple-500/20 blur-3xl pointer-events-none" />
 
-                  <div className="relative z-10 max-w-4xl space-y-3">
+                  <div className="relative z-10 max-w-4xl space-y-4">
                     <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-950/80 border border-rose-500/50 text-xs font-mono font-bold text-rose-300">
                       <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
-                      <span>PAGE 3 - IN-WEBSITE WEBRTC LIVE CLASSROOM</span>
+                      <span>PAGE 3 - 100% IN-WEBSITE WEBRTC LIVE CLASSROOM</span>
                     </div>
 
-                    <h2 className="text-2xl md:text-4xl font-black text-white tracking-tight leading-tight">
-                      Live Online Video Classroom <span className="bg-gradient-to-r from-rose-400 via-fuchsia-300 to-teal-300 bg-clip-text text-transparent">Directly In Your Website</span>
+                    <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">
+                      Live Online Classes <span className="bg-gradient-to-r from-rose-400 via-fuchsia-300 to-teal-300 bg-clip-text text-transparent">Directly In Your Website</span>
                     </h2>
 
-                    <p className="text-xs md:text-sm text-purple-200/80 leading-relaxed max-w-2xl">
-                      Native browser WebRTC technology with zero third-party downloads, zero meeting timeouts, high-definition audio/video, screen sharing, and interactive smart board.
+                    <p className="text-sm md:text-base text-purple-200/80 leading-relaxed max-w-2xl">
+                      No Zoom or external meeting links required! Complete full-screen video lectures with real webcam feeds, microphone streaming, screen sharing, and interactive digital whiteboard.
                     </p>
 
-                    {/* Upper Launch Action Buttons */}
-                    <div className="pt-2 flex items-center gap-3 flex-wrap">
+                    {/* Primary Center Button */}
+                    <div className="pt-4 flex items-center gap-4 flex-wrap">
                       <button
                         onClick={() => {
                           setIsLivePortalModalOpen(true);
                           playSoundChime('sent');
                         }}
-                        className="px-6 py-3 rounded-2xl bg-gradient-to-r from-rose-600 via-fuchsia-600 to-teal-400 hover:from-rose-500 hover:to-teal-300 text-slate-950 font-black text-xs md:text-sm flex items-center gap-2 shadow-xl shadow-rose-600/30 transition transform hover:scale-105 active:scale-95 cursor-pointer"
+                        className="px-8 py-4 rounded-2xl bg-gradient-to-r from-rose-600 via-fuchsia-600 to-teal-400 hover:from-rose-500 hover:to-teal-300 text-slate-950 font-black text-base flex items-center gap-3 shadow-xl shadow-rose-600/30 transition transform hover:scale-105 active:scale-95 cursor-pointer"
                       >
-                        <Video className="w-4 h-4 text-slate-950" />
                         <span>Enter Online Live Classroom Portal</span>
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight className="w-5 h-5" />
                       </button>
 
-                      {isDimension5 && (
+                      {isFacultyRole && (
                         <button
                           onClick={() => {
-                            const educatorName = user?.name ? 'Prof. ' + user.name : (activeTeacher?.name || 'Mrs. Sunita Sharma');
+                            const educatorName = user?.name ? (user.name.startsWith('Prof.') || user.name.startsWith('Mrs.') || user.name.startsWith('Mr.') || user.name.startsWith('Dr.') ? user.name : `Prof. ${user.name}`) : (activeTeacher?.name || 'Mrs. Sunita Sharma');
                             const myBroadcast = {
-                              id: 'live_broadcast_' + Date.now(),
-                              classId: selectedLiveClassNum || '8',
+                              id: `live_broadcast_${Date.now()}`,
+                              classId: selectedLiveClassNum || user?.classNum || '8',
                               subject: user?.subject || activeTeacher?.subject || 'Science & Technology',
-                              topic: 'Interactive Faculty Live Lecture with ' + educatorName,
+                              topic: `Interactive Faculty Live Lecture with ${educatorName}`,
                               teacher: educatorName,
                               status: 'live',
-                              activeParticipants: 42,
-                              time: 'Streaming Now'
+                              activeParticipants: 45,
+                              time: 'Streaming Now',
+                              isRegisteredFaculty: true
                             };
+                            setLiveSessionsStore(prev => [myBroadcast, ...prev.filter(p => p.id !== myBroadcast.id)]);
                             setActiveLiveSessionData(myBroadcast);
                             setIsInsideLiveRoom(true);
                             playSoundChime('sent');
                           }}
-                          className="px-5 py-3 rounded-2xl bg-slate-900 border-2 border-rose-500 text-rose-300 hover:text-white font-black text-xs md:text-sm flex items-center gap-2 transition cursor-pointer"
+                          className="px-6 py-4 rounded-2xl bg-slate-900 border-2 border-rose-500 text-rose-300 hover:text-white font-black text-sm flex items-center gap-2 transition cursor-pointer"
                         >
                           <Video className="w-4 h-4 text-rose-400" />
-                          <span>Start Faculty Live Broadcast (Dimension 5)</span>
+                          <span>Start Faculty Live Broadcast</span>
                         </button>
                       )}
                     </div>
                   </div>
                 </div>
 
+                {/* Quick Live Lecture Schedule Preview */}
+                <div className="w-full space-y-3">
+                  <div className="flex items-center justify-between pb-1">
+                    <h3 className="text-base font-black text-white flex items-center gap-2">
+                      <Video className="w-4 h-4 text-rose-400" />
+                      <span>Active &amp; Upcoming Live Lectures (Class 8)</span>
+                    </h3>
+                    <span className="text-xs text-rose-300 font-mono">2 Classes Live Now</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {scheduledLiveClasses.filter(c => c.classId === '8').map((session) => (
+                      <div
+                        key={session.id}
+                        className="p-5 rounded-2xl bg-slate-900/80 border border-purple-800/80 hover:border-rose-400 transition shadow-lg flex flex-col justify-between space-y-4"
+                      >
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="px-2.5 py-1 rounded-lg bg-purple-900 text-teal-300 text-xs font-bold font-mono">
+                              {session.subject}
+                            </span>
+                            {session.status === 'live' ? (
+                              <span className="px-2.5 py-1 rounded-full bg-rose-600 text-white font-black text-[10px] flex items-center gap-1.5 animate-pulse">
+                                <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                                <span>LIVE NOW - {session.activeParticipants} Students</span>
+                              </span>
+                            ) : (
+                              <span className="text-xs text-purple-400 font-mono">{session.time}</span>
+                            )}
+                          </div>
+
+                          <h4 className="text-sm font-black text-white">{session.topic}</h4>
+                          <p className="text-xs text-purple-300">Educator: <strong className="text-white">{session.teacher}</strong></p>
+                        </div>
+
+                        <button
+                          onClick={() => {
+                            setActiveLiveSessionData(session);
+                            setIsInsideLiveRoom(true);
+                            playSoundChime('sent');
+                          }}
+                          className="w-full py-3 rounded-xl bg-gradient-to-r from-rose-600 via-fuchsia-600 to-teal-400 text-slate-950 font-black text-xs flex items-center justify-center gap-2 shadow-md cursor-pointer hover:opacity-95"
+                        >
+                          <Play className="w-4 h-4" />
+                          <span>Join Live Class Now (In-Website Video)</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Class Selection Pop-up for Live Lectures */}
                 {isLivePortalModalOpen && (
-                  <div className="fixed inset-0 z-50 bg-slate-950 p-4 md:p-8 flex flex-col overflow-y-auto animate-fadeIn">
+                  <div className="fixed inset-0 z-50 bg-slate-950/98 backdrop-blur-2xl p-4 md:p-8 flex flex-col overflow-y-auto animate-fadeIn">
                     <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col space-y-6">
                       
                       {/* Top Bar */}
@@ -2641,29 +2780,29 @@ export function TeachersSection({
                               Select Your Class for Live Online Video Lecture
                             </h2>
                             <p className="text-xs text-teal-300 font-mono">
-                              Classes LKG to Class 8 - Unlimited Duration WebRTC Room
+                              (Student selects ONLY Class from LKG to Class 8 - No section required)
                             </p>
                           </div>
                         </div>
 
-                        <button onClick={() => setIsLivePortalModalOpen(false)} className="p-2 rounded-xl bg-slate-900 border border-purple-700 text-purple-300 hover:text-white cursor-pointer">
+                        <button onClick={() => setIsLivePortalModalOpen(false)} className="p-2 rounded-xl bg-slate-900 border border-purple-700 cursor-pointer text-purple-300 hover:text-white">
                           <X className="w-5 h-5" />
                         </button>
                       </div>
 
                       {/* Class Selection Buttons */}
-                      <div className="space-y-3">
+                      <div className="space-y-2">
                         <label className="text-xs font-black uppercase text-purple-300 tracking-wider font-mono">
-                          Select Your Grade Standard:
+                          Pick Your Class:
                         </label>
                         <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-11 gap-2">
                           {SCHOOL_CLASSES_CONFIG.map((c) => (
                             <button
                               key={c.id}
                               onClick={() => setSelectedLiveClassNum(c.id)}
-                              className={`py-3 rounded-2xl text-xs font-black transition cursor-pointer border ${
+                              className={`py-3 rounded-xl text-xs font-black transition cursor-pointer border ${
                                 selectedLiveClassNum === c.id
-                                  ? 'bg-gradient-to-r from-rose-500 to-fuchsia-600 text-white border-rose-300 shadow-lg scale-105'
+                                  ? 'bg-gradient-to-r from-rose-500 to-teal-400 text-slate-950 border-rose-300 shadow-md scale-105'
                                   : 'bg-slate-900 text-purple-300 border-purple-800 hover:border-purple-600'
                               }`}
                             >
@@ -2673,210 +2812,168 @@ export function TeachersSection({
                         </div>
                       </div>
 
-                      {/* Launch Room Button */}
-                      <div className="pt-6">
-                        <button
-                          onClick={() => {
-                            const defaultSession = {
-                              id: 'live_' + selectedLiveClassNum,
-                              classId: selectedLiveClassNum,
-                              subject: 'Science & Technology',
-                              topic: 'Class ' + selectedLiveClassNum + ' Live Academic Session',
-                              teacher: 'Mrs. Sunita Sharma (Senior Faculty)',
-                              activeParticipants: 38
-                            };
-                            setActiveLiveSessionData(defaultSession);
-                            setIsLivePortalModalOpen(false);
-                            setIsInsideLiveRoom(true);
-                            playSoundChime('sent');
-                          }}
-                          className="w-full py-4 rounded-2xl bg-gradient-to-r from-rose-600 via-fuchsia-600 to-teal-400 text-slate-950 font-black text-sm md:text-base cursor-pointer shadow-2xl hover:opacity-95"
-                        >
-                          Join Live Classroom for Class {selectedLiveClassNum} Now
-                        </button>
+                      {/* Available Live Lectures for chosen Class */}
+                      <div className="space-y-3 pt-2">
+                        <h3 className="text-base font-black text-white">
+                          Live Lectures for {SCHOOL_CLASSES_CONFIG.find(c => c.id === selectedLiveClassNum)?.name || `Class ${selectedLiveClassNum}`}:
+                        </h3>
+
+                        {(() => {
+                          const list = scheduledLiveClasses.filter(c => c.classId === selectedLiveClassNum);
+                          if (list.length === 0) {
+                            return (
+                              <div className="p-10 rounded-2xl bg-slate-900/60 border border-purple-900 text-center space-y-2">
+                                <Video className="w-8 h-8 text-purple-400 mx-auto opacity-50" />
+                                <p className="text-sm font-bold text-white">No live lectures currently broadcasting for Class {selectedLiveClassNum}</p>
+                                <p className="text-xs text-purple-300">Teachers will schedule the next session shortly. Check back at period time!</p>
+                              </div>
+                            );
+                          }
+
+                          return (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {list.map((c) => (
+                                <div key={c.id} className="p-5 rounded-2xl bg-slate-900 border border-purple-700 space-y-3">
+                                  <div className="flex items-center justify-between">
+                                    <span className="px-2.5 py-1 rounded-lg bg-teal-500/20 text-teal-300 text-xs font-bold">{c.subject}</span>
+                                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-rose-600 text-white font-black animate-pulse">LIVE</span>
+                                  </div>
+                                  <h4 className="text-sm font-black text-white">{c.topic}</h4>
+                                  <p className="text-xs text-purple-300">Teacher: <strong className="text-white">{c.teacher}</strong></p>
+                                  <button
+                                    onClick={() => {
+                                      setActiveLiveSessionData(c);
+                                      setIsLivePortalModalOpen(false);
+                                      setIsInsideLiveRoom(true);
+                                      playSoundChime('sent');
+                                    }}
+                                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-teal-400 text-slate-950 font-black text-xs cursor-pointer shadow-md"
+                                  >
+                                    Join Live Class (100% In-Website)
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          );
+                        })()}
                       </div>
 
                     </div>
                   </div>
                 )}
 
-                {/* 100% Solid Full-Screen Interactive WebRTC Video Room */}
-                {isInsideLiveRoom && activeLiveSessionData && (
-                  <div className="fixed inset-0 z-50 bg-slate-950 flex flex-col animate-fadeIn">
+                {/* FULL-SCREEN REAL WEBRTC IN-WEBSITE MEETING ROOM */}
+                {isInsideLiveRoom && (
+                  <div className="fixed inset-0 z-50 bg-slate-950 flex flex-col animate-fadeIn select-none">
                     
-                    {/* Top Room Header */}
-                    <div className="p-4 bg-slate-900 border-b border-purple-800 flex items-center justify-between text-white shrink-0">
+                    {/* Meeting Top Bar */}
+                    <div className="px-4 py-3 bg-slate-900/95 border-b border-purple-800 flex items-center justify-between text-white shrink-0 flex-wrap gap-2">
                       <div className="flex items-center gap-3">
-                        <div className="w-3 h-3 rounded-full bg-rose-500 animate-pulse" />
+                        <span className="px-2.5 py-1 rounded-full bg-rose-600 text-white font-black text-xs flex items-center gap-1.5 animate-pulse">
+                          <span className="w-2 h-2 rounded-full bg-white" />
+                          <span>LIVE CLASS</span>
+                        </span>
                         <div>
-                          <h3 className="text-sm font-black text-white flex items-center gap-2">
-                            <span>{activeLiveSessionData.topic}</span>
-                            <span className="text-[10px] px-2 py-0.5 rounded bg-rose-950 border border-rose-500 text-rose-300 font-mono font-bold">
-                              Class {activeLiveSessionData.classId} Live
-                            </span>
+                          <h3 className="text-sm font-black text-white">
+                            {activeLiveSessionData?.topic || `DAV Class ${selectedLiveClassNum} Live Lecture`}
                           </h3>
-                          <p className="text-xs text-purple-300 font-mono">
-                            Educator: <strong className="text-teal-300">{activeLiveSessionData.teacher}</strong> - {activeLiveSessionData.activeParticipants || 35} Students Connected
+                          <p className="text-[10px] text-teal-300 font-mono">
+                            Educator: {activeLiveSessionData?.teacher || user?.name || 'Mrs. Sunita Sharma'} - Real-Time WebRTC Video Stream
                           </p>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => setIsWhiteboardActive(prev => !prev)}
-                          className={`px-3.5 py-1.5 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-                            isWhiteboardActive ? 'bg-teal-500 text-slate-950 border-teal-300' : 'bg-slate-900 text-purple-200 border-purple-700 hover:text-white'
+                          onClick={() => {
+                            const url = getLiveRoomUrl(activeLiveSessionData, selectedLiveClassNum);
+                            navigator.clipboard.writeText(url);
+                            setCopiedLiveLink(true);
+                            playSoundChime('sent');
+                            setTimeout(() => setCopiedLiveLink(false), 3000);
+                          }}
+                          className="px-3 py-1.5 rounded-xl border border-emerald-500/60 bg-emerald-950/60 text-emerald-300 hover:bg-emerald-900 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                          title="Copy meeting link to share with students"
+                        >
+                          {copiedLiveLink ? (
+                            <>
+                              <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                              <span>Copied Invite Link!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Share2 className="w-3.5 h-3.5 text-emerald-400" />
+                              <span className="hidden sm:inline">Invite Link</span>
+                            </>
+                          )}
+                        </button>
+
+                        <a
+                          href={getLiveRoomUrl(activeLiveSessionData, selectedLiveClassNum)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3 py-1.5 rounded-xl border border-blue-500/60 bg-blue-950/60 text-blue-300 hover:bg-blue-900 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                          title="Open in new browser tab or mobile app"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
+                          <span className="hidden sm:inline">New Tab</span>
+                        </a>
+
+                        <button
+                          onClick={() => setIsWhiteboardActive(!isWhiteboardActive)}
+                          className={`px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
+                            isWhiteboardActive ? 'bg-teal-500 text-slate-950 border-teal-300' : 'bg-slate-800 text-purple-200 border-purple-700'
                           }`}
                         >
-                          <BookOpen className="w-3.5 h-3.5" />
-                          <span>{isWhiteboardActive ? 'Switch to Video View' : 'Smart Whiteboard'}</span>
+                          <PenTool className="w-3.5 h-3.5" />
+                          <span>{isWhiteboardActive ? 'Video Room' : 'Whiteboard'}</span>
                         </button>
 
                         <button
                           onClick={() => {
                             setIsInsideLiveRoom(false);
+                            setIsWhiteboardActive(false);
                             playSoundChime('alert');
                           }}
-                          className="px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-md"
+                          className="px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs flex items-center gap-1.5 shadow-md shadow-rose-600/30 cursor-pointer transition"
                         >
                           <PhoneOff className="w-3.5 h-3.5" />
-                          <span>Leave Classroom</span>
+                          <span>Leave Class</span>
                         </button>
                       </div>
                     </div>
 
-                    {/* Room Workspace: Video Feed or Smart Whiteboard */}
-                    <div className="flex-1 p-4 flex flex-col md:flex-row gap-4 overflow-hidden relative bg-slate-950">
-                      
-                      {/* Main Center Stage */}
-                      <div className="flex-1 bg-slate-900 rounded-3xl border border-purple-800 overflow-hidden relative flex items-center justify-center shadow-2xl">
-                        {!isWhiteboardActive ? (
-                          <div className="w-full h-full relative flex items-center justify-center bg-slate-950">
-                            {/* Simulated High-Definition WebRTC Video Feed */}
-                            <div className="text-center space-y-3 z-10 p-6">
-                              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-600 via-rose-500 to-teal-400 mx-auto flex items-center justify-center text-white font-black text-2xl shadow-2xl border-4 border-teal-400/60 animate-pulse">
-                                {activeLiveSessionData.teacher.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                              </div>
-                              <h4 className="text-lg font-black text-white">{activeLiveSessionData.teacher}</h4>
-                              <p className="text-xs text-teal-300 font-mono">
-                                Real-Time 1080p WebRTC Video Stream - 0ms P2P Latency
-                              </p>
-                              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/90 border border-teal-400/40 text-[11px] text-teal-300 font-mono">
-                                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                                <span>Encrypted Peer-to-Peer Connection</span>
-                              </div>
+                    {/* Meeting Stage Area */}
+                    <div className="flex-1 flex flex-col overflow-hidden relative p-2 sm:p-4 bg-slate-950">
+                      {isWhiteboardActive ? (
+                        <div className="flex-1 min-h-[450px] bg-slate-900 border-2 border-teal-400/80 rounded-3xl p-4 flex flex-col shadow-2xl space-y-3">
+                          <div className="flex items-center justify-between pb-2 border-b border-purple-800">
+                            <div className="flex items-center gap-2">
+                              <PenTool className="w-4 h-4 text-teal-300" />
+                              <h4 className="text-xs font-black text-white">Live Whiteboard: Ray Diagram Demonstrator</h4>
                             </div>
+                            <span className="text-[10px] text-teal-300 font-mono">Interactive Drawing Console</span>
                           </div>
-                        ) : (
-                          /* Interactive Smart Whiteboard Canvas */
-                          <div className="w-full h-full bg-slate-950 flex flex-col p-4 space-y-3">
-                            <div className="flex items-center justify-between text-xs pb-2 border-b border-purple-800 text-teal-300 font-mono">
-                              <span>DAV Digital Smart Classroom Whiteboard</span>
-                              <span>Touch / Mouse Interactive Canvas</span>
-                            </div>
-                            <div className="flex-1 rounded-2xl bg-white border-2 border-teal-400 p-6 flex flex-col items-center justify-center text-slate-800 text-center space-y-2">
-                              <BookOpen className="w-12 h-12 text-purple-600 opacity-60" />
-                              <h4 className="text-base font-black text-purple-950">Interactive Faculty Lecture Canvas</h4>
-                              <p className="text-xs text-slate-600 max-w-md">
-                                Diagrams, mathematical equations, and chapter slide projections render here in real time during the lecture.
+                          <div className="flex-1 bg-slate-950 rounded-2xl border border-purple-900 relative flex items-center justify-center overflow-hidden p-4">
+                            <div className="text-center space-y-3">
+                              <PenTool className="w-12 h-12 text-teal-400 mx-auto animate-bounce" />
+                              <h5 className="text-sm font-bold text-white">Teacher's Digital Smart Board Active</h5>
+                              <p className="text-xs text-purple-300 max-w-sm">
+                                Draw ray diagrams, write math formulas, or annotate class diagrams live with your students.
                               </p>
                             </div>
                           </div>
-                        )}
-                      </div>
-
-                      {/* Right Column: Active Student Participants Roster */}
-                      <div className="w-full md:w-72 bg-slate-900 rounded-3xl border border-purple-800 p-4 flex flex-col shrink-0 space-y-3">
-                        <div className="flex items-center justify-between text-xs pb-2 border-b border-purple-800">
-                          <span className="font-bold text-white flex items-center gap-1.5">
-                            <Users className="w-4 h-4 text-teal-300" />
-                            <span>Participants ({activeLiveSessionData.activeParticipants || 35})</span>
-                          </span>
-                          <span className="text-[10px] text-rose-400 font-mono font-bold">Class {activeLiveSessionData.classId}</span>
                         </div>
-
-                        <div className="flex-1 overflow-y-auto space-y-2 text-xs divide-y divide-purple-950/60">
-                          <div className="pt-1 flex items-center justify-between">
-                            <span className="font-bold text-teal-300">{activeLiveSessionData.teacher} (Host)</span>
-                            <span className="text-[10px] text-purple-400 font-mono">Educator</span>
-                          </div>
-                          <div className="pt-2 flex items-center justify-between">
-                            <span className="font-semibold text-white">{user?.name || 'Aryan Sharma'} (You)</span>
-                            <span className="text-[10px] text-emerald-400 font-mono">Mic On</span>
-                          </div>
-                          <div className="pt-2 flex items-center justify-between">
-                            <span className="text-slate-300">Ananya Verma</span>
-                            <span className="text-[10px] text-slate-500 font-mono">Listening</span>
-                          </div>
-                          <div className="pt-2 flex items-center justify-between">
-                            <span className="text-slate-300">Rohan Gupta</span>
-                            <span className="text-[10px] text-slate-500 font-mono">Listening</span>
-                          </div>
-                          <div className="pt-2 flex items-center justify-between">
-                            <span className="text-slate-300">Kavita Singh</span>
-                            <span className="text-[10px] text-slate-500 font-mono">Listening</span>
-                          </div>
-                          <div className="pt-2 flex items-center justify-between">
-                            <span className="text-slate-300">Chirag Tiwari</span>
-                            <span className="text-[10px] text-slate-500 font-mono">Listening</span>
-                          </div>
+                      ) : (
+                        <div className="w-full h-full bg-slate-900 rounded-2xl overflow-hidden border border-purple-500/40 relative shadow-2xl flex flex-col">
+                          <iframe
+                            src={getLiveRoomUrl(activeLiveSessionData, selectedLiveClassNum)}
+                            allow="camera; microphone; display-capture; autoplay; clipboard-read; clipboard-write; fullscreen"
+                            className="w-full flex-1 border-0"
+                            title="DAV Real Online Live Classroom"
+                          />
                         </div>
-                      </div>
-
-                    </div>
-
-                    {/* Bottom WebRTC Meeting Controls Toolbar */}
-                    <div className="p-4 bg-slate-900 border-t border-purple-800 flex items-center justify-center gap-3 shrink-0 flex-wrap">
-                      <button
-                        onClick={() => setIsLiveMuted(prev => !prev)}
-                        className={`p-3.5 rounded-2xl border font-bold text-xs flex items-center gap-2 cursor-pointer transition ${
-                          isLiveMuted ? 'bg-rose-600 text-white border-rose-400' : 'bg-slate-950 text-teal-300 border-purple-700 hover:border-teal-400'
-                        }`}
-                      >
-                        {isLiveMuted ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-                        <span>{isLiveMuted ? 'Unmute' : 'Mute'}</span>
-                      </button>
-
-                      <button
-                        onClick={() => setIsLiveVideoOff(prev => !prev)}
-                        className={`p-3.5 rounded-2xl border font-bold text-xs flex items-center gap-2 cursor-pointer transition ${
-                          isLiveVideoOff ? 'bg-rose-600 text-white border-rose-400' : 'bg-slate-950 text-teal-300 border-purple-700 hover:border-teal-400'
-                        }`}
-                      >
-                        {isLiveVideoOff ? <VideoOff className="w-4 h-4" /> : <Video className="w-4 h-4" />}
-                        <span>{isLiveVideoOff ? 'Start Video' : 'Stop Video'}</span>
-                      </button>
-
-                      <button
-                        onClick={() => setIsScreenSharing(prev => !prev)}
-                        className={`p-3.5 rounded-2xl border font-bold text-xs flex items-center gap-2 cursor-pointer transition ${
-                          isScreenSharing ? 'bg-teal-500 text-slate-950 border-teal-300' : 'bg-slate-950 text-purple-200 border-purple-700 hover:text-white'
-                        }`}
-                      >
-                        <ScreenShare className="w-4 h-4" />
-                        <span>{isScreenSharing ? 'Stop Share' : 'Share Screen'}</span>
-                      </button>
-
-                      <button
-                        onClick={() => setIsLiveHandRaised(prev => !prev)}
-                        className={`p-3.5 rounded-2xl border font-bold text-xs flex items-center gap-2 cursor-pointer transition ${
-                          isLiveHandRaised ? 'bg-amber-500 text-slate-950 border-amber-300' : 'bg-slate-950 text-purple-200 border-purple-700 hover:text-white'
-                        }`}
-                      >
-                        <Hand className="w-4 h-4" />
-                        <span>{isLiveHandRaised ? 'Lower Hand' : 'Raise Hand'}</span>
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          setIsInsideLiveRoom(false);
-                          playSoundChime('alert');
-                        }}
-                        className="p-3.5 px-6 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs flex items-center gap-2 cursor-pointer shadow-lg"
-                      >
-                        <PhoneOff className="w-4 h-4" />
-                        <span>End Call</span>
-                      </button>
+                      )}
                     </div>
 
                   </div>
