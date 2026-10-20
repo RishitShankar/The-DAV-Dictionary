@@ -142,7 +142,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   const [aiLoading, setAiLoading] = useState(false);
 
   // Viewer Mode: 'reading' (Native Fast In-Modal PDF Reader) | 'gdrive' (Google Drive Live Cloud PDF Editor)
-  const [viewerMode, setViewerMode] = useState(book.initialMode === 'gdrive' ? 'gdrive' : 'reading');
+  const [viewerMode, setViewerMode] = useState(book.initialMode === 'gdrive' ? 'gdrive' : book.initialMode === 'annotator' ? 'annotator' : 'stream');
 
   // Custom Google Drive Link support
   const storageKeyGDrive = `dav_gdrive_custom_${book.title}`;
@@ -307,6 +307,10 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
       setCurrentPage(Math.max(1, book.page || 1));
       if (book.initialMode === 'gdrive') {
         setViewerMode('gdrive');
+      } else if (book.initialMode === 'annotator') {
+        setViewerMode('annotator');
+      } else {
+        setViewerMode('stream');
       }
     }
   }, [book]);
@@ -317,7 +321,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     let loadingTask = null;
 
     async function initPdf() {
-      if (!rawSource) {
+      if (!rawSource || viewerMode !== 'annotator') {
         setIsLoadingPdf(false);
         return;
       }
@@ -373,7 +377,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
         try { loadingTask.destroy(); } catch (e) {}
       }
     };
-  }, [resolvedPdfUrl, rawSource]);
+  }, [resolvedPdfUrl, rawSource, viewerMode]);
 
   // Calculate physical page number (clamped within PDF range)
   const physicalPage = useMemo(() => {
@@ -386,7 +390,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     let isCancelled = false;
 
     async function renderPage() {
-      if (!pdfDoc || !pdfCanvasRef.current || viewerMode !== 'reading') return;
+      if (!pdfDoc || !pdfCanvasRef.current || viewerMode !== 'annotator') return;
       setIsRenderingPage(true);
 
       try {
@@ -772,14 +776,19 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
               </span>
             </div>
             <p className="text-[10px] text-orange-200/80 truncate">
-              {viewerMode === 'gdrive' ? (
+              {viewerMode === 'stream' ? (
+                <span className="text-emerald-400 font-semibold flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  Instant Cloud Stream • Continuous Vertical Scroll
+                </span>
+              ) : viewerMode === 'gdrive' ? (
                 <span className="text-blue-300 font-semibold flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
                   Google Drive Live PDF Editor
                 </span>
               ) : (
                 <span>
-                  In-Browser Reader • <strong className="text-amber-300 font-mono">Page {currentPage} of {maxBookPages}</strong>
+                  Interactive Canvas Annotator • <strong className="text-amber-300 font-mono">Page {currentPage} of {maxBookPages}</strong>
                   {totalPages > 0 && <span className="text-stone-400 ml-1 font-mono text-[9px]">(PDF p.{physicalPage}/{totalPages})</span>}
                 </span>
               )}
@@ -788,7 +797,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
         </div>
 
         {/* Center Page Nav & Jump Controls (Reading Mode) */}
-        {viewerMode === 'reading' && (
+        {viewerMode !== 'gdrive' && (
           <div className="flex items-center gap-1.5 sm:gap-2 bg-stone-950 border border-orange-500/40 rounded-xl px-2.5 py-1 text-xs">
             {/* Prev Page */}
             <button
@@ -902,20 +911,37 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
         {/* Right Action Bar */}
         <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Mode Switcher */}
+          {/* Mode Switcher: Stream & Scroll (Default) | Neon Highlighter & Draw | Google Drive */}
           <div className="flex items-center bg-stone-950 p-1 rounded-xl border border-stone-700 text-xs">
             <button
               type="button"
-              onClick={() => setViewerMode('reading')}
+              onClick={() => setViewerMode('stream')}
               className={`px-2.5 sm:px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition cursor-pointer ${
-                viewerMode === 'reading'
+                viewerMode === 'stream'
                   ? 'bg-amber-500 text-stone-950 font-black shadow-md'
                   : 'text-stone-300 hover:text-white hover:bg-stone-800'
               }`}
-              title="Fast In-Browser DAV Live Reader"
+              title="Instant Continuous Cloud Stream with Smooth Scroll (Zero Waiting Time)"
             >
               <BookOpen className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">DAV Reader</span>
+              <span>Stream &amp; Scroll</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setViewerMode('annotator');
+                setAnnotationTool('highlighter');
+              }}
+              className={`px-2.5 sm:px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition cursor-pointer ${
+                viewerMode === 'annotator'
+                  ? 'bg-purple-600 text-white font-black shadow-md shadow-purple-500/30'
+                  : 'text-stone-300 hover:text-white hover:bg-stone-800'
+              }`}
+              title="Interactive Canvas Drawing & Neon Highlighter"
+            >
+              <PenTool className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Neon Highlighter &amp; Draw</span>
             </button>
 
             <button
@@ -929,7 +955,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
               title="Open Google Drive Cloud PDF Editor"
             >
               <GoogleDriveIcon className="w-3.5 h-3.5" />
-              <span>Google Drive</span>
+              <span className="hidden sm:inline">Google Drive</span>
             </button>
           </div>
 
@@ -973,7 +999,45 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
       </header>
 
-      {/* Sub-Header: Drawing & Annotation Suite + Zoom Controls */}
+      {/* Sub-Header in Stream Mode: Instant Cloud Stream banner & quick switch */}
+      {viewerMode === 'stream' && (
+        <div className="bg-stone-900/95 border-b border-stone-800 px-3 py-1.5 flex items-center justify-between flex-wrap gap-2 text-xs text-white z-30 shadow-md">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+            <span className="text-emerald-300 font-bold text-xs flex items-center gap-1.5">
+              <span>⚡ Continuous Vertical Scroll Active</span>
+              <span className="text-stone-400 font-normal hidden sm:inline">• Scroll naturally with mouse wheel or trackpad through all {maxBookPages} pages without waiting</span>
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <a
+              href={resolvedPdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white border border-stone-700 text-[11px] font-bold flex items-center gap-1.5 transition cursor-pointer"
+              title="Open stream in dedicated browser tab"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden md:inline">Open Fullpage Tab</span>
+            </a>
+            <button
+              type="button"
+              onClick={() => {
+                setViewerMode('annotator');
+                setAnnotationTool('highlighter');
+              }}
+              className="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-purple-900 text-purple-300 hover:text-white border border-purple-500/30 text-[11px] font-bold flex items-center gap-1.5 transition cursor-pointer"
+            >
+              <PenTool className="w-3.5 h-3.5" />
+              <span>Need to Highlight or Draw? Open Neon Annotator</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Sub-Header in Annotator Mode: Drawing & Annotation Suite + Zoom Controls */}
+      {viewerMode === 'annotator' && (
       <div className="bg-stone-900/90 border-b border-stone-800 px-3 py-1.5 flex items-center justify-between flex-wrap gap-2 text-xs text-white z-30 shadow-md">
         
         {/* Drawing Tools */}
@@ -1144,13 +1208,15 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
       </div>
 
+      )}
+
       {/* Main Workspace Split */}
       <div className="flex-1 flex overflow-hidden bg-stone-950 relative">
         
-        {/* Left: PDF Reader Canvas Container */}
+        {/* Left: PDF Reader Container */}
         <div 
           ref={containerRef}
-          className="flex-1 h-full bg-stone-950 flex flex-col items-center justify-start overflow-y-auto overflow-x-auto p-4 relative select-none"
+          className="flex-1 h-full bg-stone-950 flex flex-col items-center justify-start overflow-hidden relative select-none"
         >
           {/* Toast Notification */}
           {annotationToast && (
@@ -1160,13 +1226,26 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
             </div>
           )}
 
-          {/* Google Drive Live Editor Mode */}
-          {viewerMode === 'gdrive' ? (
+          {/* 1. INSTANT CONTINUOUS CLOUD STREAM & SCROLL MODE (DEFAULT - 0 WAITING TIME!) */}
+          {viewerMode === 'stream' && (
+            <div className="w-full h-full flex flex-col bg-stone-900 rounded-xl overflow-hidden border border-stone-800 shadow-2xl relative">
+              <iframe
+                key={`stream-${effectivePdfSource}`}
+                src={`${resolvedPdfUrl}#page=${currentPage}&toolbar=1&navpanes=0`}
+                title={`${book.title} - Textbook Continuous Stream`}
+                className="w-full flex-1 border-none bg-stone-900 block"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              />
+            </div>
+          )}
+
+          {/* 2. GOOGLE DRIVE LIVE EDITOR MODE */}
+          {viewerMode === 'gdrive' && (
             <div className="w-full h-full flex flex-col bg-stone-900 rounded-xl overflow-hidden border border-stone-800">
               <div className="p-2 bg-stone-900 border-b border-stone-800 flex items-center justify-between text-xs">
                 <span className="text-stone-300 flex items-center gap-1.5 font-bold">
                   <GoogleDriveIcon className="w-4 h-4" />
-                  Google Cloud Live Document Viewer & Annotator
+                  Google Cloud Live Document Viewer &amp; Annotator
                 </span>
                 <a
                   href={gdriveDirectUrl}
@@ -1187,30 +1266,36 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                 allowFullScreen
               />
             </div>
-          ) : (
-            /* Standard DAV In-Modal Canvas Reader */
-            <>
-              {/* PDF Document Loading Spinner */}
+          )}
+
+          {/* 3. INTERACTIVE CANVAS ANNOTATOR & NEON HIGHLIGHTER MODE */}
+          {viewerMode === 'annotator' && (
+            <div 
+              className="w-full h-full flex flex-col items-center justify-start overflow-y-auto overflow-x-auto p-4 relative select-none"
+              onWheel={(e) => {
+                if (isRenderingPage) return;
+                if (e.deltaY > 50) handleNextPage();
+                else if (e.deltaY < -50) handlePrevPage();
+              }}
+            >
+              {/* PDF Document Loading Spinner for Canvas */}
               {isLoadingPdf && (
                 <div className="my-auto flex flex-col items-center justify-center p-8 text-center bg-stone-900/60 rounded-2xl border border-stone-800 shadow-2xl backdrop-blur-md max-w-sm">
                   <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-4">
                     <RefreshCw className="w-7 h-7 text-amber-400 animate-spin" />
                   </div>
                   <h3 className="text-stone-100 font-bold text-sm mb-1">
-                    Opening {book.title}
+                    Loading Canvas for {book.title}
                   </h3>
                   <p className="text-stone-400 text-xs mb-4">
-                    Streaming textbook pages directly in your browser without downloading...
+                    Initializing Neon Highlighter &amp; Annotation engine...
                   </p>
                   <div className="w-full h-2 bg-stone-800 rounded-full overflow-hidden border border-stone-700">
                     <div 
-                      className="h-full bg-gradient-to-r from-amber-500 to-amber-300 transition-all duration-300 rounded-full"
+                      className="h-full bg-gradient-to-r from-purple-500 to-amber-300 transition-all duration-300 rounded-full"
                       style={{ width: `${Math.max(15, loadingProgress)}%` }}
                     />
                   </div>
-                  <span className="text-stone-400 font-mono text-[11px] mt-2">
-                    {loadingProgress > 0 ? `${loadingProgress}% streamed` : 'Connecting to DAV CDN...'}
-                  </span>
                 </div>
               )}
 
@@ -1221,18 +1306,18 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                     !
                   </div>
                   <h4 className="text-stone-100 font-bold text-sm mb-1">
-                    Unable to stream pages directly
+                    Unable to load canvas
                   </h4>
                   <p className="text-stone-400 text-xs mb-4">
                     {pdfError}
                   </p>
                   <button
                     type="button"
-                    onClick={() => setViewerMode('gdrive')}
-                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                    onClick={() => setViewerMode('stream')}
+                    className="px-4 py-2 rounded-xl bg-amber-500 text-stone-950 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
                   >
-                    <GoogleDriveIcon className="w-4 h-4" />
-                    <span>Open in Google Drive Viewer</span>
+                    <BookOpen className="w-4 h-4" />
+                    <span>Return to Continuous Stream</span>
                   </button>
                 </div>
               )}
@@ -1248,13 +1333,10 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                     minHeight: '400px'
                   }}
                 >
-                  {/* PDF.js Vector Rendering Canvas */}
                   <canvas
                     ref={pdfCanvasRef}
                     className="block select-none pointer-events-none bg-white"
                   />
-
-                  {/* Interactive Drawing Canvas Overlay */}
                   <canvas
                     ref={canvasRef}
                     className="absolute inset-0 z-20 block"
@@ -1289,21 +1371,20 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                   className="fixed left-4 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-stone-950/80 hover:bg-amber-500 hover:text-stone-950 text-stone-300 border border-stone-700/80 shadow-2xl transition backdrop-blur-md cursor-pointer group"
                   title={`Go back to Page ${currentPage - 1}`}
                 >
-                  <ChevronLeft className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <ChevronLeft className="w-5 h-5 transition transform group-hover:-translate-x-0.5" />
                 </button>
               )}
-
               {currentPage < maxBookPages && (
                 <button
                   type="button"
                   onClick={handleNextPage}
-                  className="fixed right-4 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-stone-950/80 hover:bg-amber-500 hover:text-stone-950 text-stone-300 border border-stone-700/80 shadow-2xl transition backdrop-blur-md cursor-pointer group"
+                  className="fixed left-[calc(100%-24rem)] lg:left-auto lg:right-[390px] top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-stone-950/80 hover:bg-amber-500 hover:text-stone-950 text-stone-300 border border-stone-700/80 shadow-2xl transition backdrop-blur-md cursor-pointer group"
                   title={`Go forward to Page ${currentPage + 1}`}
                 >
-                  <ChevronRight className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <ChevronRight className="w-5 h-5 transition transform group-hover:translate-x-0.5" />
                 </button>
               )}
-            </>
+            </div>
           )}
 
         </div>
