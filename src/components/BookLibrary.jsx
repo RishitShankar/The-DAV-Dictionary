@@ -5,6 +5,7 @@ import {
   Compass, Cpu, FileText, Download, Eye, Upload, ChevronRight, Lock, 
   CheckCircle2, Search, ExternalLink, HelpCircle, Brain, BookMarked, Trash2
 } from 'lucide-react';
+import { GoogleDriveIcon } from './GoogleDriveIcon';
 
 const ICON_MAP = {
   BookOpen,
@@ -148,6 +149,22 @@ export function BookLibrary({
                   </button>
 
                   <button
+                    onClick={() => onOpenPdfReader({
+                      title: up.name,
+                      subject: up.subject || 'School Subject',
+                      classNum: selectedClass,
+                      pdfUrl: up.data,
+                      fileData: up.data,
+                      summary: `Custom uploaded textbook material for Class ${selectedClass}.`,
+                      initialMode: 'gdrive'
+                    })}
+                    className="p-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 transition cursor-pointer"
+                    title="Open in Google Drive Live Cloud Editor"
+                  >
+                    <GoogleDriveIcon className="w-3.5 h-3.5" />
+                  </button>
+
+                  <button
                     type="button"
                     onClick={() => {
                       if (window.confirm(`Are you sure you want to remove and delete "${up.name}" from your school library?`)) {
@@ -282,15 +299,30 @@ export function BookLibrary({
                     pdfUrl: currentBook?.pdfUrl,
                     summary: `Official DAV Board textbook for ${currentBook?.title || sub.name}.`
                   })}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-red-800 hover:bg-red-900 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition"
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-red-800 hover:bg-red-900 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition cursor-pointer"
                 >
                   <Eye className="w-3.5 h-3.5 text-amber-300" />
                   <span>Open PDF Book</span>
                 </button>
 
                 <button
+                  onClick={() => onOpenPdfReader({
+                    title: currentBook?.title || sub.name,
+                    subject: sub.name,
+                    classNum: selectedClass,
+                    pdfUrl: currentBook?.pdfUrl,
+                    summary: `Official DAV Board textbook for ${currentBook?.title || sub.name}.`,
+                    initialMode: 'gdrive'
+                  })}
+                  className="p-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 transition cursor-pointer"
+                  title="Open in Google Drive Live Cloud PDF Editor & Annotator"
+                >
+                  <GoogleDriveIcon className="w-4 h-4" />
+                </button>
+
+                <button
                   onClick={() => onOpenAIWithQuestion(`Explain the key concepts and chapters in DAV Class 8 ${currentBook?.title || sub.name}`)}
-                  className="p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 transition"
+                  className="p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 transition cursor-pointer"
                   title="Ask Shankar AI about this book"
                 >
                   <Brain className="w-4 h-4 text-amber-700" />
