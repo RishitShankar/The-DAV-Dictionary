@@ -138,26 +138,68 @@ export function PublicHomepage({ onGoToLogin }) {
       </header>
 
       {/* =========================================================================
-          HERO SECTION
+          HERO SECTION (LIVELY ANIMATIONS & DYNAMIC ORBS)
       ========================================================================= */}
       <section className="relative overflow-hidden pt-16 pb-24 lg:pt-24 lg:pb-32">
-        {/* Subtle Background Glows */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-amber-600/15 via-orange-600/10 to-red-600/10 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute top-10 right-10 w-96 h-96 bg-blue-600/10 rounded-full blur-[130px] pointer-events-none" />
+        {/* Dynamic Glowing Mesh Orbs & Animated Auroras */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-amber-600/25 via-orange-600/20 to-rose-600/15 rounded-full blur-[130px] pointer-events-none animate-pulse-aura" />
+        <div className="absolute top-10 right-10 w-96 h-96 bg-cyan-600/15 rounded-full blur-[140px] pointer-events-none animate-float-reverse" />
+        <div className="absolute bottom-10 left-10 w-96 h-96 bg-purple-600/15 rounded-full blur-[140px] pointer-events-none animate-float-gentle" />
+
+        {/* Floating Badges for Visual Depth */}
+        <div className="hidden lg:flex absolute left-6 xl:left-14 top-1/3 -translate-y-1/2 p-3.5 rounded-2xl bg-stone-900/85 backdrop-blur-md border border-amber-500/30 shadow-2xl items-center gap-3 animate-float-gentle pointer-events-none z-20">
+          <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-black">
+            <BookOpen className="w-5 h-5 text-amber-400" />
+          </div>
+          <div className="text-left">
+            <div className="text-xs font-black text-white">70 Full Textbooks</div>
+            <div className="text-[10px] text-amber-300/80">LKG to Class 8 Streaming</div>
+          </div>
+        </div>
+
+        <div className="hidden lg:flex absolute right-6 xl:right-14 top-1/4 p-3.5 rounded-2xl bg-stone-900/85 backdrop-blur-md border border-cyan-500/30 shadow-2xl items-center gap-3 animate-float-reverse pointer-events-none z-20">
+          <div className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-black">
+            <Brain className="w-5 h-5 text-cyan-400" />
+          </div>
+          <div className="text-left">
+            <div className="text-xs font-black text-white">Shankar AI Tutor</div>
+            <div className="text-[10px] text-cyan-300/80">24/7 Smart Curriculum AI</div>
+          </div>
+        </div>
+
+        <div className="hidden xl:flex absolute left-14 bottom-16 p-3 rounded-2xl bg-stone-900/85 backdrop-blur-md border border-emerald-500/30 shadow-2xl items-center gap-2.5 animate-float-reverse pointer-events-none z-20">
+          <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 flex items-center justify-center">
+            <Sparkles className="w-4 h-4 text-emerald-400" />
+          </div>
+          <div className="text-left">
+            <div className="text-[11px] font-black text-white">Interactive Quizzes</div>
+            <div className="text-[9px] text-emerald-300/80">Instant Chapter Auto-Grading</div>
+          </div>
+        </div>
+
+        <div className="hidden xl:flex absolute right-14 bottom-16 p-3 rounded-2xl bg-stone-900/85 backdrop-blur-md border border-purple-500/30 shadow-2xl items-center gap-2.5 animate-float-gentle pointer-events-none z-20">
+          <div className="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-300 flex items-center justify-center">
+            <Highlighter className="w-4 h-4 text-purple-400" />
+          </div>
+          <div className="text-left">
+            <div className="text-[11px] font-black text-white">PDF Smart Highlighter</div>
+            <div className="text-[9px] text-purple-300/80">Cyber Neon &amp; Cloud Sync</div>
+          </div>
+        </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           
-          {/* Pill Badge */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-stone-900/90 border border-amber-500/30 text-amber-300 text-xs font-bold mb-8 shadow-inner">
-            <School className="w-3.5 h-3.5 text-amber-400" />
+          {/* Pill Badge with Pulsing Glow */}
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-stone-900/90 border border-amber-500/40 text-amber-300 text-xs font-bold mb-8 shadow-lg shadow-amber-500/10 hover:border-amber-400 transition transform hover:scale-105">
+            <School className="w-3.5 h-3.5 text-amber-400 animate-bounce" />
             <span>DAV Public School Khabra • Official Academic Platform</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
           </div>
 
-          {/* Main Title */}
+          {/* Main Title with Animated Shimmering Gradient */}
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white max-w-5xl mx-auto leading-[1.12]">
             The Smart Digital Library &amp;{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-400 to-rose-400 animate-text-gradient font-black drop-shadow-sm">
               DAV Curriculum AI
             </span>
           </h1>
@@ -167,42 +209,44 @@ export function PublicHomepage({ onGoToLogin }) {
             Welcome to the premier academic repository for DAVians. Access all <strong>70 verified textbooks</strong> from LKG to Class 8, solve complex doubts with <strong>Shankar AI</strong>, practice chapter quizzes, and draw directly inside your books.
           </p>
 
-          {/* Primary Action Buttons */}
+          {/* Primary Action Buttons with Light Sweep Shimmer */}
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
             <button
               onClick={onGoToLogin}
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 font-black text-sm shadow-xl shadow-orange-500/25 hover:shadow-orange-500/40 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3 cursor-pointer"
+              className="relative overflow-hidden w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 font-black text-sm shadow-xl shadow-orange-500/30 hover:shadow-orange-500/50 transition-all transform hover:-translate-y-1 hover:scale-105 active:scale-95 flex items-center justify-center gap-3 cursor-pointer group"
             >
-              <UserCheck className="w-5 h-5 text-stone-950" />
-              <span>Register Now / Student Login</span>
-              <ArrowRight className="w-4 h-4 text-stone-950" />
+              {/* Animated Light Sweep Shimmer */}
+              <div className="absolute inset-0 w-1/2 h-full bg-white/30 skew-x-12 animate-shimmer-sweep pointer-events-none" />
+              <UserCheck className="w-5 h-5 text-stone-950 relative z-10" />
+              <span className="relative z-10">Register Now / Student Login</span>
+              <ArrowRight className="w-4 h-4 text-stone-950 relative z-10 group-hover:translate-x-1 transition-transform" />
             </button>
 
             <a
               href="#curriculum"
-              className="w-full sm:w-auto px-7 py-4 rounded-2xl bg-stone-900/90 hover:bg-stone-800 border border-stone-700 text-stone-200 hover:text-white font-bold text-sm transition-all flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-7 py-4 rounded-2xl bg-stone-900/90 hover:bg-stone-800 border border-stone-700 hover:border-amber-500/40 text-stone-200 hover:text-white font-bold text-sm transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 shadow-lg"
             >
               <Library className="w-4 h-4 text-amber-400" />
               <span>Explore 70 Textbooks</span>
             </a>
           </div>
 
-          {/* Statistics Bar */}
+          {/* Animated Statistics Bar with Hover Scaling */}
           <div className="mt-16 pt-12 border-t border-stone-800/80 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            <div className="p-4 rounded-2xl bg-stone-900/50 border border-stone-800">
-              <div className="text-3xl sm:text-4xl font-black text-amber-400">70+</div>
+            <div className="p-4 rounded-2xl bg-stone-900/50 border border-stone-800 hover:border-amber-500/50 hover:bg-stone-900/80 hover:scale-105 transition-all duration-300 shadow-lg group">
+              <div className="text-3xl sm:text-4xl font-black text-amber-400 group-hover:scale-110 transition-transform">70+</div>
               <div className="text-xs text-stone-400 font-semibold mt-1">DAV Textbooks</div>
             </div>
-            <div className="p-4 rounded-2xl bg-stone-900/50 border border-stone-800">
-              <div className="text-3xl sm:text-4xl font-black text-orange-400">LKG–8</div>
+            <div className="p-4 rounded-2xl bg-stone-900/50 border border-stone-800 hover:border-orange-500/50 hover:bg-stone-900/80 hover:scale-105 transition-all duration-300 shadow-lg group">
+              <div className="text-3xl sm:text-4xl font-black text-orange-400 group-hover:scale-110 transition-transform">LKG–8</div>
               <div className="text-xs text-stone-400 font-semibold mt-1">Complete Grades</div>
             </div>
-            <div className="p-4 rounded-2xl bg-stone-900/50 border border-stone-800">
-              <div className="text-3xl sm:text-4xl font-black text-emerald-400">24/7</div>
+            <div className="p-4 rounded-2xl bg-stone-900/50 border border-stone-800 hover:border-emerald-500/50 hover:bg-stone-900/80 hover:scale-105 transition-all duration-300 shadow-lg group">
+              <div className="text-3xl sm:text-4xl font-black text-emerald-400 group-hover:scale-110 transition-transform">24/7</div>
               <div className="text-xs text-stone-400 font-semibold mt-1">Shankar AI Tutor</div>
             </div>
-            <div className="p-4 rounded-2xl bg-stone-900/50 border border-stone-800">
-              <div className="text-3xl sm:text-4xl font-black text-cyan-400">100%</div>
+            <div className="p-4 rounded-2xl bg-stone-900/50 border border-stone-800 hover:border-cyan-500/50 hover:bg-stone-900/80 hover:scale-105 transition-all duration-300 shadow-lg group">
+              <div className="text-3xl sm:text-4xl font-black text-cyan-400 group-hover:scale-110 transition-transform">100%</div>
               <div className="text-xs text-stone-400 font-semibold mt-1">Free for Students</div>
             </div>
           </div>

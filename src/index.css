@@ -105,3 +105,95 @@
   animation: screenShake 0.7s cubic-bezier(.36,.07,.19,.97) both;
 }
 
+
+
+/* Custom Visible Scrollbar for Faculty/Student Chat */
+.chat-scroll-container::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+.chat-scroll-container::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.8) !important;
+  border-radius: 8px !important;
+}
+.chat-scroll-container::-webkit-scrollbar-thumb {
+  background: #a855f7 !important;
+  border-radius: 8px !important;
+  border: 2px solid rgba(15, 23, 42, 0.9) !important;
+}
+.chat-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #c084fc !important;
+}
+
+
+/* Homepage Ambient & Interactive Animations */
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+}
+
+@keyframes floatReverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(10px) rotate(-1.5deg);
+  }
+}
+
+@keyframes pulseAura {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes shimmerSweep {
+  0% {
+    transform: translateX(-150%);
+  }
+  100% {
+    transform: translateX(150%);
+  }
+}
+
+@keyframes textGradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-float-gentle {
+  animation: floatGentle 5s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: floatReverse 6s ease-in-out infinite;
+}
+
+.animate-pulse-aura {
+  animation: pulseAura 4s ease-in-out infinite;
+}
+
+.animate-shimmer-sweep {
+  animation: shimmerSweep 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-text-gradient {
+  background-size: 200% auto;
+  animation: textGradientShift 4s ease-in-out infinite;
+}

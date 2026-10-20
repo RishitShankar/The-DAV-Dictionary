@@ -811,6 +811,16 @@ export function TeachersSection({
   }, [user]);
 
   // Chat Conversations Map (Local + Supabase Cloud synced)
+    const chatMessagesEndRef = useRef(null);
+  const [showChatScrollDown, setShowChatScrollDown] = useState(false);
+
+  // Auto-scroll chat to bottom on new messages or contact switch
+  useEffect(() => {
+    if (activePage === 'doubts_chat' || activePage === 2) {
+      chatMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [teacherChatsMap, activeContact, activePage]);
+
   const [teacherChatsMap, setTeacherChatsMap] = useState(() => {
     try {
       const stored = localStorage.getItem(TEACHER_CHATS_STORAGE_KEY);
@@ -1741,16 +1751,20 @@ export function TeachersSection({
     } catch (e) {}
   };
 
-  // Add / Enroll Real Student Handler
-  const handleEnrollStudent = (classNum, sec, rollNum, studentName) => {
-    if (!studentName.trim()) return;
-    const roll = Number(rollNum) || 1;
+  // Add / Enroll Real Student Handler (Attendance & Examination Ledger)
+  const handleEnrollStudent = (classNum, sec, rollNum, studentName, maxMarks = 100) => {
+    if (!studentName || !studentName.trim()) return;
+    const roll = Math.max(1, Number(rollNum) || 1);
     const name = studentName.trim();
+    const customMax = Math.max(5, Number(maxMarks) || 100);
 
-    // 1. Update Attendance
+    // 1. Update Attendance store for this class and section
     const aKey = classNum + '-' + sec;
     const aExisting = attendanceStore[aKey] || getInitialRosterForClass(classNum, sec);
-    const aUpdated = [...aExisting.filter(s => s.roll !== roll), { roll, name, status: 'present' }].sort((a, b) => a.roll - b.roll);
+    const aUpdated = [
+      ...aExisting.filter(s => Number(s.roll) !== roll),
+      { roll, name, status: 'present', maxMarks: customMax }
+    ].sort((a, b) => a.roll - b.roll);
     const updatedAttStore = { ...attendanceStore, [aKey]: aUpdated };
     setAttendanceStore(updatedAttStore);
     try {
@@ -1762,10 +1776,10 @@ export function TeachersSection({
     const nextMarksStore = { ...marksLedgerStore };
     terms.forEach(t => {
       const mKey = classNum + '-' + sec + '-' + t;
-      const mExisting = nextMarksStore[mKey] || [];
-      const mUpdated = [...mExisting.filter(s => s.roll !== roll), {
-        roll,
-        name,
+      const mExisting = nextMarksStore[mKey] || getInitialRosterForClass(classNum, sec).map(s => ({
+        roll: s.roll,
+        name: s.name,
+        maxMarks: customMax,
         marks: {
           math: null,
           science: null,
@@ -1778,7 +1792,29 @@ export function TeachersSection({
           drawing: null,
           gk: null
         }
-      }].sort((a, b) => a.roll - b.roll);
+      }));
+      const existingStudent = mExisting.find(s => Number(s.roll) === roll);
+      const existingMarks = existingStudent ? existingStudent.marks : {
+        math: null,
+        science: null,
+        sst: null,
+        english: null,
+        hindi: null,
+        sanskrit: null,
+        computer: null,
+        ns: null,
+        drawing: null,
+        gk: null
+      };
+      const mUpdated = [
+        ...mExisting.filter(s => Number(s.roll) !== roll),
+        {
+          roll,
+          name,
+          maxMarks: customMax,
+          marks: existingMarks
+        }
+      ].sort((a, b) => a.roll - b.roll);
       nextMarksStore[mKey] = mUpdated;
     });
 
@@ -1787,6 +1823,8 @@ export function TeachersSection({
       localStorage.setItem(MARKS_LEDGER_STORAGE_KEY, JSON.stringify(nextMarksStore));
     } catch (e) {}
 
+    setAttToast('Student ' + name + ' (Roll #' + roll + ') successfully enrolled in Class ' + classNum + '-' + sec + '!');
+    setMarksToast('Student ' + name + ' (Roll #' + roll + ') registered with Total Marks Out Of ' + customMax + '!');
     playSoundChime('delivered');
   };
 
@@ -1832,8 +1870,12 @@ export function TeachersSection({
 
   // Enroll Student Modal State
   const [showEnrollModal, setShowEnrollModal] = useState(false);
+  const [enrollModalContext, setEnrollModalContext] = useState('attendance'); // 'attendance' | 'marks'
+  const [enrollTargetClass, setEnrollTargetClass] = useState('8');
+  const [enrollTargetSection, setEnrollTargetSection] = useState('D');
   const [enrollStudentRoll, setEnrollStudentRoll] = useState('');
   const [enrollStudentName, setEnrollStudentName] = useState('');
+  const [enrollStudentMaxMarks, setEnrollStudentMaxMarks] = useState('100');
 
   // Max Marks per Subject Configuration (Default 100 per subject, editable by teacher)
   const [marksMaxConfig, setMarksMaxConfig] = useState(() => {
@@ -1925,10 +1967,11 @@ export function TeachersSection({
     }));
   })();
 
-  // Update a Student's subject mark (allows empty/null)
+  // Update a Student's subject mark (allows empty/null, respects custom student maxMarks)
   const handleUpdateStudentMark = (roll, subjectKey, value) => {
     if (!isFacultyRole) return;
-    const maxAllowed = marksMaxConfig[subjectKey] || 100;
+    const currentStudent = currentMarksRoster.find(s => s.roll === roll);
+    const maxAllowed = currentStudent?.maxMarks ? Math.max(5, Number(currentStudent.maxMarks)) : (marksMaxConfig[subjectKey] || 100);
     const numVal = value === '' ? null : Math.min(maxAllowed, Math.max(0, Number(value) || 0));
 
     const updatedRoster = currentMarksRoster.map(s => {
@@ -2007,19 +2050,21 @@ export function TeachersSection({
   // Compute aggregates for a student row
   const computeRowAggregates = (student) => {
     let totalObtained = 0;
-    let totalMax = 0;
+    let attemptedMax = 0;
     let filledCount = 0;
+    const studentMaxMarks = Math.max(5, Number(student.maxMarks) || 100);
 
     DAV_SUBJECTS_10.forEach(sub => {
-      const maxForSub = marksMaxConfig[sub.key] || 100;
-      if (student.marks && student.marks[sub.key] !== null && student.marks[sub.key] !== undefined) {
+      const maxForSub = student.maxMarks ? studentMaxMarks : (marksMaxConfig[sub.key] || 100);
+      if (student.marks && student.marks[sub.key] !== null && student.marks[sub.key] !== undefined && student.marks[sub.key] !== '') {
         totalObtained += Number(student.marks[sub.key]);
-        totalMax += maxForSub;
+        attemptedMax += maxForSub;
         filledCount++;
       }
     });
 
-    const percentage = totalMax > 0 ? ((totalObtained / totalMax) * 100).toFixed(1) : '-';
+    const totalMaxPossible = student.maxMarks ? (studentMaxMarks * DAV_SUBJECTS_10.length) : DAV_SUBJECTS_10.reduce((acc, sub) => acc + (marksMaxConfig[sub.key] || 100), 0);
+    const percentage = attemptedMax > 0 ? ((totalObtained / attemptedMax) * 100).toFixed(1) : '-';
 
     // Section rank among currentMarksRoster
     const sortedSection = [...currentMarksRoster].sort((a, b) => {
@@ -2031,15 +2076,18 @@ export function TeachersSection({
     const sRankIdx = sortedSection.findIndex(s => s.roll === student.roll);
     const sectionRank = sRankIdx !== -1 ? (sRankIdx + 1) : '-';
 
-    const uId = `${selectedMarksSection}_${student.roll}_${student.name}`;
+    const uId = selectedMarksSection + '_' + student.roll + '_' + student.name;
     const overallRank = overallClassRankMap[uId] || '-';
 
     return {
       totalObtained: filledCount > 0 ? totalObtained : '-',
-      totalMax: filledCount > 0 ? totalMax : '-',
-      percentage: percentage !== '-' ? `${percentage}%` : '-',
-      sectionRank: `#${sectionRank}`,
-      overallRank: `#${overallRank}`
+      totalMax: filledCount > 0 ? attemptedMax : totalMaxPossible,
+      fullMax: totalMaxPossible,
+      filledCount,
+      percentage: percentage !== '-' ? (percentage + '%') : '-',
+      sectionRank: (sectionRank !== '-' ? '#' + sectionRank : '-'),
+      overallRank: (overallRank !== '-' ? '#' + overallRank : '-'),
+      studentMax: studentMaxMarks
     };
   };
 
@@ -2924,7 +2972,7 @@ export function TeachersSection({
                   </div>
 
                   {/* Right Column: Chat Stream & Message Input (Width 8/12 on desktop) */}
-                  <div className={`sm:col-span-8 lg:col-span-8 flex flex-col h-full bg-slate-950 ${
+                  <div className={`sm:col-span-8 lg:col-span-8 relative flex flex-col h-full min-h-0 overflow-hidden bg-slate-950 ${
                     mobileChatTab === 'chat' ? 'flex' : 'hidden sm:flex'
                   }`}>
                     
@@ -2983,7 +3031,12 @@ export function TeachersSection({
 
                     {/* Messages Body with Custom Wallpaper */}
                     <div
-                      className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-3 scrollbar-thin"
+                      onScroll={(e) => {
+                        const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+                        const isNearBottom = scrollHeight - scrollTop - clientHeight < 120;
+                        setShowChatScrollDown(!isNearBottom);
+                      }}
+                      className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-3 pb-10 chat-scroll-container"
                       style={
                         chatWallpaper.startsWith('data:') || chatWallpaper.startsWith('http')
                           ? {
@@ -3073,8 +3126,21 @@ export function TeachersSection({
                           );
                         })
                       )}
-                      <div ref={messagesEndRef} />
+                      <div ref={chatMessagesEndRef} className="h-4 w-full" />
                     </div>
+
+                    {/* Floating Scroll to Bottom Button */}
+                    {showChatScrollDown && (
+                      <button
+                        type="button"
+                        onClick={() => chatMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                        className="absolute bottom-24 right-6 z-30 px-3.5 py-2 rounded-full bg-teal-400 hover:bg-teal-300 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-2xl transition cursor-pointer animate-bounce border-2 border-slate-950"
+                        title="Scroll down to latest messages"
+                      >
+                        <ChevronDown className="w-4 h-4" />
+                        <span>Latest Messages</span>
+                      </button>
+                    )}
 
                     {/* Pending Media Preview */}
                     {pendingMedia && (
@@ -4283,6 +4349,75 @@ export function TeachersSection({
                                       </label>
                                     ))}
                                   </div>
+
+                                  {/* Attach Diagram / Image for MCQ */}
+                                  <div className="pt-2 border-t border-purple-800/60 flex items-center justify-between flex-wrap gap-2">
+                                    <div className="flex items-center gap-2">
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        id={`mcq-diagram-file-${q.id || qIdx}`}
+                                        className="hidden"
+                                        onChange={(e) => {
+                                          const file = e.target.files?.[0];
+                                          if (file) {
+                                            const reader = new FileReader();
+                                            reader.onload = (ev) => {
+                                              const dataUrl = ev.target.result;
+                                              setNewTestQuestions(prev => prev.map((item, idx) => 
+                                                idx === qIdx ? { ...item, diagramUrl: dataUrl } : item
+                                              ));
+                                            };
+                                            reader.readAsDataURL(file);
+                                          }
+                                        }}
+                                      />
+                                      <label
+                                        htmlFor={`mcq-diagram-file-${q.id || qIdx}`}
+                                        className="px-3 py-1.5 rounded-xl bg-purple-900/80 hover:bg-purple-800 border border-teal-400 text-teal-300 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition"
+                                      >
+                                        <Paperclip className="w-3.5 h-3.5" />
+                                        <span>{q.diagramUrl ? 'Change Diagram' : 'Attach Diagram / Image'}</span>
+                                      </label>
+
+                                      {q.diagramUrl && (
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            setNewTestQuestions(prev => prev.map((item, idx) => 
+                                              idx === qIdx ? { ...item, diagramUrl: '' } : item
+                                            ));
+                                          }}
+                                          className="px-2 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900 border border-rose-700 text-rose-300 font-bold text-[11px] flex items-center gap-1 cursor-pointer"
+                                          title="Remove Attached Diagram"
+                                        >
+                                          <X className="w-3 h-3" />
+                                          <span>Remove</span>
+                                        </button>
+                                      )}
+                                    </div>
+
+                                    {q.diagramUrl && (
+                                      <span className="text-[11px] font-mono font-bold text-teal-300 flex items-center gap-1">
+                                        <CheckCircle2 className="w-3.5 h-3.5 text-teal-400" />
+                                        <span>Diagram Attached</span>
+                                      </span>
+                                    )}
+                                  </div>
+
+                                  {/* Diagram Preview Thumbnail */}
+                                  {q.diagramUrl && (
+                                    <div className="p-2 bg-slate-950 rounded-xl border border-purple-800 text-center">
+                                      <img
+                                        src={q.diagramUrl}
+                                        alt="Question Diagram Preview"
+                                        className="max-h-48 max-w-full mx-auto object-contain rounded-lg border border-purple-700 shadow-md"
+                                      />
+                                      <p className="text-[10px] text-purple-400 font-mono mt-1">
+                                        Question Diagram / Visual Figure
+                                      </p>
+                                    </div>
+                                  )}
                                 </div>
                               )}
                             </div>
@@ -4397,6 +4532,19 @@ export function TeachersSection({
                                   ) : (
                                     /* MCQ Options */
                                     <div className="space-y-2 pt-2">
+                                      {/* Attached Diagram / Figure for MCQ Question */}
+                                      {q.diagramUrl && (
+                                        <div className="my-3 p-3 bg-slate-950 rounded-2xl border border-teal-500/40 text-center shadow-xl max-w-lg mx-auto">
+                                          <img
+                                            src={q.diagramUrl}
+                                            alt="Question Figure Diagram"
+                                            className="max-h-64 max-w-full mx-auto object-contain rounded-xl border border-purple-800 shadow-md"
+                                          />
+                                          <p className="text-[10px] font-mono text-teal-300 mt-1.5 flex items-center justify-center gap-1">
+                                            <span>Refer to the above figure / diagram to answer</span>
+                                          </p>
+                                        </div>
+                                      )}
                                       {q.options.map((opt, oIdx) => {
                                         const letter = String.fromCharCode(65 + oIdx);
                                         const isSelected = examAnswers[q.id] === letter;
@@ -4547,8 +4695,13 @@ export function TeachersSection({
                       {isDimension5 && (
                         <button
                           onClick={() => {
-                            setEnrollStudentRoll(String(currentAttRoster.length + 1));
+                            setEnrollModalContext('attendance');
+                            setEnrollTargetClass(selectedAttClass);
+                            setEnrollTargetSection(selectedAttSection);
+                            const currentRoster = attendanceStore[selectedAttClass + '-' + selectedAttSection] || getInitialRosterForClass(selectedAttClass, selectedAttSection);
+                            setEnrollStudentRoll(String(currentRoster.length + 1));
                             setEnrollStudentName('');
+                            setEnrollStudentMaxMarks('100');
                             setShowEnrollModal(true);
                             playSoundChime('sent');
                           }}
@@ -4584,12 +4737,17 @@ export function TeachersSection({
                         <>
                           <button
                             onClick={() => {
-                              setEnrollStudentRoll(String(currentAttRoster.length + 1));
+                              setEnrollModalContext('attendance');
+                              setEnrollTargetClass(selectedAttClass);
+                              setEnrollTargetSection(selectedAttSection);
+                              const currentRoster = attendanceStore[selectedAttClass + '-' + selectedAttSection] || getInitialRosterForClass(selectedAttClass, selectedAttSection);
+                              setEnrollStudentRoll(String(currentRoster.length + 1));
                               setEnrollStudentName('');
+                              setEnrollStudentMaxMarks('100');
                               setShowEnrollModal(true);
                               playSoundChime('sent');
                             }}
-                            className="px-4 py-2 rounded-xl bg-purple-900 border border-teal-400 text-teal-300 font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+                            className="px-4 py-2 rounded-xl bg-purple-900 border border-teal-400 text-teal-300 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-md hover:scale-105 transition"
                           >
                             <Plus className="w-3.5 h-3.5" />
                             <span>Add Student</span>
@@ -4869,8 +5027,13 @@ export function TeachersSection({
                         <>
                           <button
                             onClick={() => {
-                              setEnrollStudentRoll(String(currentMarksRoster.length + 1));
+                              setEnrollModalContext('marks');
+                              setEnrollTargetClass(selectedMarksClass);
+                              setEnrollTargetSection(selectedMarksSection);
+                              const currentRoster = currentMarksRoster || [];
+                              setEnrollStudentRoll(String(currentRoster.length + 1));
                               setEnrollStudentName('');
+                              setEnrollStudentMaxMarks('100');
                               setShowEnrollModal(true);
                               playSoundChime('sent');
                             }}
@@ -4993,7 +5156,14 @@ export function TeachersSection({
                                   #{s.roll}
                                 </td>
                                 <td className="p-3 font-bold text-white sticky left-12 bg-slate-900 z-10">
-                                  {s.name}
+                                  <div className="flex items-center gap-2">
+                                    <span>{s.name}</span>
+                                    {s.maxMarks && (
+                                      <span className="text-[10px] px-1.5 py-0.5 rounded font-mono font-bold bg-teal-500/15 text-teal-300 border border-teal-500/30">
+                                        /{s.maxMarks}
+                                      </span>
+                                    )}
+                                  </div>
                                 </td>
                                 
                                 {/* 10 DAV Subjects Inputs/Outputs */}
@@ -5007,11 +5177,12 @@ export function TeachersSection({
                                         <input
                                           type="number"
                                           min={0}
-                                          max={maxForSub}
+                                          max={s.maxMarks ? Number(s.maxMarks) : maxForSub}
                                           value={markVal !== null && markVal !== undefined ? markVal : ''}
                                           placeholder="-"
                                           onChange={(e) => handleUpdateStudentMark(s.roll, sub.key, e.target.value)}
                                           className="w-14 p-1.5 rounded-lg bg-slate-950 border border-purple-700 text-center font-mono font-bold text-white text-xs focus:border-teal-400"
+                                          title={`Max marks: ${s.maxMarks ? Number(s.maxMarks) : maxForSub}`}
                                         />
                                       ) : (
                                         <span className="font-mono text-purple-200 font-bold px-1.5 py-1">
@@ -5242,27 +5413,34 @@ export function TeachersSection({
                       <div className="flex items-center justify-between pb-3 border-b border-purple-800">
                         <div className="flex items-center gap-2">
                           <Plus className="w-5 h-5 text-teal-300" />
-                          <h3 className="text-base font-black text-white">Enroll Real Student</h3>
+                          <h3 className="text-base font-black text-white">
+                            {enrollModalContext === 'attendance' ? 'Enroll Student into Attendance' : 'Enroll Student into Marks Ledger'}
+                          </h3>
                         </div>
                         <button onClick={() => setShowEnrollModal(false)} className="text-purple-300 hover:text-white cursor-pointer">
                           <X className="w-5 h-5" />
                         </button>
                       </div>
 
-                      <div className="text-xs text-purple-300">
-                        Enroll a student into <strong className="text-teal-300">Class {selectedMarksClass} - Section {selectedMarksSection}</strong> roster:
+                      <div className="text-xs text-purple-300 flex items-center justify-between bg-slate-950/60 p-2.5 rounded-xl border border-purple-800/60">
+                        <span>Target Class Cohort:</span>
+                        <strong className="text-teal-300 font-mono text-sm">Class {enrollTargetClass} - Section {enrollTargetSection}</strong>
                       </div>
 
                       <form
                         onSubmit={(e) => {
                           e.preventDefault();
-                          handleEnrollStudent(selectedMarksClass, selectedMarksSection, enrollStudentRoll, enrollStudentName);
+                          handleEnrollStudent(enrollTargetClass, enrollTargetSection, enrollStudentRoll, enrollStudentName, enrollStudentMaxMarks);
                           setShowEnrollModal(false);
                         }}
                         className="space-y-4 text-xs"
                       >
+                        {/* 1. Roll Number */}
                         <div className="space-y-1">
-                          <label className="font-bold text-purple-300">Roll Number:</label>
+                          <label className="font-bold text-purple-300 flex items-center justify-between">
+                            <span>Roll Number:</span>
+                            <span className="text-[10px] text-teal-400 font-mono">Unique roll index</span>
+                          </label>
                           <input
                             type="number"
                             min={1}
@@ -5274,6 +5452,7 @@ export function TeachersSection({
                           />
                         </div>
 
+                        {/* 2. Student Full Name */}
                         <div className="space-y-1">
                           <label className="font-bold text-purple-300">Student Full Name:</label>
                           <input
@@ -5286,19 +5465,58 @@ export function TeachersSection({
                           />
                         </div>
 
+                        {/* 3. Total Marks Out Of (Customizable, e.g. 20, 25, 40, 50, 80, 100) */}
+                        <div className="space-y-1.5">
+                          <label className="font-bold text-purple-300 flex items-center justify-between">
+                            <span>Total Marks Out Of:</span>
+                            <span className="text-[10px] text-teal-300 font-mono">Custom Max Marks</span>
+                          </label>
+                          <input
+                            type="number"
+                            min={5}
+                            max={500}
+                            required
+                            value={enrollStudentMaxMarks}
+                            onChange={(e) => setEnrollStudentMaxMarks(e.target.value)}
+                            className="w-full p-2.5 rounded-xl bg-slate-950 border border-purple-700 text-white font-mono font-bold focus:border-teal-400 focus:outline-none"
+                            placeholder="e.g. 20, 50, 80, 100"
+                          />
+                          <div className="flex items-center gap-1.5 pt-1 flex-wrap">
+                            <span className="text-[10px] text-slate-400 font-medium">Quick Presets:</span>
+                            {[20, 25, 40, 50, 80, 100].map((preset) => (
+                              <button
+                                key={preset}
+                                type="button"
+                                onClick={() => setEnrollStudentMaxMarks(String(preset))}
+                                className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold transition cursor-pointer ${
+                                  Number(enrollStudentMaxMarks) === preset
+                                    ? 'bg-teal-400 text-slate-950 shadow'
+                                    : 'bg-purple-950/80 text-purple-300 hover:text-white border border-purple-800'
+                                }`}
+                              >
+                                /{preset}
+                              </button>
+                            ))}
+                          </div>
+                          <p className="text-[10px] text-purple-400 leading-tight">
+                            Set custom maximum marks per subject for this student (e.g. /20 for Weekly Tests, /50 for Term Tests, or /100 for Annual Board Finals).
+                          </p>
+                        </div>
+
                         <div className="pt-2 flex items-center justify-end gap-2">
                           <button
                             type="button"
                             onClick={() => setShowEnrollModal(false)}
-                            className="px-4 py-2 rounded-xl bg-slate-800 text-purple-300 font-bold cursor-pointer"
+                            className="px-4 py-2 rounded-xl bg-slate-800 text-purple-300 font-bold cursor-pointer hover:bg-slate-700 transition"
                           >
                             Cancel
                           </button>
                           <button
                             type="submit"
-                            className="px-6 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 text-slate-950 font-black cursor-pointer shadow-lg hover:scale-105 transition"
+                            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-400 via-cyan-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-slate-950 font-black cursor-pointer shadow-lg hover:scale-105 transition flex items-center gap-2"
                           >
-                            Enroll to Class Roster
+                            <UserCheck className="w-4 h-4 text-slate-950" />
+                            <span>Confirm &amp; Enroll Student</span>
                           </button>
                         </div>
                       </form>
