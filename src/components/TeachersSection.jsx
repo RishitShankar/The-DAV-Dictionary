@@ -350,7 +350,7 @@ const PDF_PAGES_METADATA = {
         desc: 'Students can review their individual term marks, view faculty remarks, and download or print official printable report cards.'
       }
     ],
-    centralButtonText: 'Open Student Examination Marks Ledger',
+    centralButtonText: 'Open Student Examination Marks Leaderboard',
     centralButtonSub: 'View & Manage Student Report Cards, Terms & Grades',
     instructions: [
       'Step 1: Click the central button above to launch the Student Marks & Report Ledger.',
@@ -401,7 +401,7 @@ export function TeachersSection({
     { id: 'live_class', num: 3, title: 'Page 3: WebRTC Real Online Live Classroom', subtitle: 'P2P HD Video - Unlimited Duration - Smart Whiteboard' },
     { id: 'tests', num: 4, title: 'Page 4: Online Test & Exam Suite', subtitle: 'CBT Simulator - Palette Matrix - Auto-Graded' },
     { id: 'attendance', num: 5, title: 'Page 5: Digital Attendance Register', subtitle: '75% Statutory Compliance - Daily Rolls' },
-    { id: 'marks_ledger', num: 6, title: 'Page 6: Student Marks & Examination Ledger', subtitle: 'Term Assessments - Auto-Grades - Report Cards' }
+    { id: 'marks_ledger', num: 6, title: 'Page 6: Student Marks & Examination Leaderboard', subtitle: 'Term Assessments - Auto-Grades - Report Cards' }
   ];
 
   // Current Active Page among the 6 Graphical Animated Pages
@@ -479,6 +479,31 @@ export function TeachersSection({
     };
   }, [user]);
 
+  // Helper to extract real enrolled students from localStorage registered database
+  const getInitialRosterForClass = (classNum, sec) => {
+    try {
+      const raw = localStorage.getItem('dav_registered_users');
+      if (raw) {
+        const users = JSON.parse(raw);
+        if (Array.isArray(users)) {
+          const matching = users.filter(u => 
+            !u.isTeacher && u.dimension !== 4 && u.dimension !== 5 &&
+            String(u.classNum || '8') === String(classNum) &&
+            (!u.section || String(u.section).toUpperCase() === String(sec).toUpperCase())
+          );
+          if (matching.length > 0) {
+            return matching.map((u, idx) => ({
+              roll: idx + 1,
+              name: u.name || u.id,
+              status: 'present'
+            }));
+          }
+        }
+      }
+    } catch (e) {}
+    return [];
+  };
+
   // =========================================================================
   // PAGE 1: DAILY HOMEWORK & CLASSWORK MANAGEMENT
   // =========================================================================
@@ -495,44 +520,7 @@ export function TeachersSection({
         if (Array.isArray(parsed)) return parsed;
       }
     } catch (e) {}
-    return [
-      {
-        id: 'hw_seed_01',
-        classId: '8',
-        section: 'D',
-        subject: 'Science & Technology',
-        chapter: 'Chapter 11: The Human Eye & Optical Dispersion',
-        title: 'Ray Diagram of Human Eye & Myopia Correction Lenses',
-        desc: 'Draw neat labelled ray diagrams in practical notebook. Explain why concave lens is used for myopia correction with focal length formula.',
-        dueDate: 'Tomorrow, 08:30 AM',
-        teacher: 'Mrs. Sunita Sharma (HOD Science)',
-        createdAt: 'Today, 10:15 AM'
-      },
-      {
-        id: 'hw_seed_02',
-        classId: '8',
-        section: 'D',
-        subject: 'Mathematics',
-        chapter: 'Chapter 6: Compound Interest',
-        title: 'Worksheet 6.2 Semi-Annual & Annual Compounding Problems',
-        desc: 'Solve Questions 1 to 8 showing step-by-step substitution into A = P(1 + r/200)^2n for half-yearly compounding.',
-        dueDate: '21 Oct 2026, 09:00 AM',
-        teacher: 'Mr. Rajesh Verma (Senior Math Faculty)',
-        createdAt: 'Today, 11:30 AM'
-      },
-      {
-        id: 'hw_seed_03',
-        classId: '8',
-        section: 'D',
-        subject: 'Social Science',
-        chapter: 'Chapter 16: Our Constitution',
-        title: 'Preamble Core Philosophy & Fundamental Rights Chart',
-        desc: 'Create comparative summary table between Fundamental Rights and Directive Principles in SST homework register.',
-        dueDate: '22 Oct 2026, 08:30 AM',
-        teacher: 'Mrs. Neha Srivastava',
-        createdAt: 'Yesterday, 02:00 PM'
-      }
-    ];
+    return [];
   });
 
   const [showAssignHwModal, setShowAssignHwModal] = useState(false);
@@ -681,7 +669,7 @@ export function TeachersSection({
     const currentTeacher = activeTeacher;
     const isSenderStudent = chatRole === 'student';
     const senderName = isSenderStudent 
-      ? (user?.name || 'Aryan Sharma') 
+      ? (user?.name || user?.id || 'DAV Student') 
       : (user?.name || currentTeacher.name);
     const senderClassSec = isSenderStudent 
       ? (user?.studentClass ? 'Class ' + user.studentClass + '-D' : 'Class 8-D')
@@ -711,7 +699,6 @@ export function TeachersSection({
     setPendingMedia(null);
     setIsMessageDelivering(true);
 
-    // Auto simulated delivery and teacher read receipt
     setTimeout(() => {
       setIsMessageDelivering(false);
       playSoundChime('delivered');
@@ -916,7 +903,7 @@ export function TeachersSection({
 
   // Teacher Test Creator State (Dimension 5 Only)
   const [showCreateTestModal, setShowCreateTestModal] = useState(false);
-  const [testFormatChoice, setTestFormatChoice] = useState('mcq'); // 'mcq' | 'subjective' | 'combined'
+  const [testFormatChoice, setTestFormatChoice] = useState('mcq');
   const [newTestClass, setNewTestClass] = useState('8');
   const [newTestSections, setNewTestSections] = useState(['A', 'B', 'C', 'D', 'E']);
   const [newTestSubject, setNewTestSubject] = useState('Science & Technology');
@@ -1137,8 +1124,8 @@ export function TeachersSection({
   const [isTakingExam, setIsTakingExam] = useState(false);
   const [activeExamData, setActiveExamData] = useState(null);
   const [examCurrentQIdx, setExamCurrentQIdx] = useState(0);
-  const [examAnswers, setExamAnswers] = useState({}); // qId -> optionLetter ('A'|'B'|'C'|'D')
-  const [examPaletteStatus, setExamPaletteStatus] = useState({}); // qId -> 'unvisited' | 'not_attempted' | 'answered' | 'review'
+  const [examAnswers, setExamAnswers] = useState({});
+  const [examPaletteStatus, setExamPaletteStatus] = useState({});
   const [examTimeRemaining, setExamTimeRemaining] = useState(1800);
   const [examSubmitted, setExamSubmitted] = useState(false);
   const [examResultScore, setExamResultScore] = useState(null);
@@ -1207,7 +1194,6 @@ export function TeachersSection({
   const handleJumpToQuestion = (qIndex) => {
     if (!activeExamData) return;
     const currentQ = activeExamData.questions[examCurrentQIdx];
-    // If current was unvisited, mark not_attempted
     setExamPaletteStatus(prev => {
       if (prev[currentQ.id] === 'unvisited') {
         return { ...prev, [currentQ.id]: 'not_attempted' };
@@ -1226,7 +1212,7 @@ export function TeachersSection({
     playSoundChime('sent');
   };
 
-  // Submit CBT Exam and Auto-Grade
+  // Submit CBT Exam and Auto-Grade (Zero fake leaderboard entries)
   const handleSubmitExam = () => {
     if (!activeExamData) return;
     let correctCount = 0;
@@ -1242,6 +1228,8 @@ export function TeachersSection({
     const percentage = Math.round((correctCount / totalQuestions) * 100);
     const cbse = calculateCbseGrade(percentage);
 
+    const candidateRealName = user?.name || user?.id || 'Student Candidate';
+
     const result = {
       correctCount,
       totalQuestions,
@@ -1250,7 +1238,7 @@ export function TeachersSection({
       percentage,
       grade: cbse.grade,
       remarks: cbse.remarks,
-      studentName: user?.name || 'Aryan Sharma',
+      studentName: candidateRealName,
       timeSpentMinutes: Math.round((activeExamData.durationMinutes * 60 - examTimeRemaining) / 60)
     };
 
@@ -1258,19 +1246,42 @@ export function TeachersSection({
     setExamSubmitted(true);
     playSoundChime('delivered');
 
-    // Generate dynamic mock leaderboard with current student
-    const leaderboard = [
-      { rank: 1, name: 'Ananya Verma', score: activeExamData.totalMarks, time: '14 mins', badge: 'Gold' },
-      { rank: 2, name: (user?.name || 'Aryan Sharma') + ' (You)', score: totalScoreObtained, time: result.timeSpentMinutes + ' mins', badge: percentage >= 80 ? 'Silver' : 'Participant', isCurrent: true },
-      { rank: 3, name: 'Rohan Gupta', score: Math.round(activeExamData.totalMarks * 0.85), time: '19 mins', badge: 'Bronze' },
-      { rank: 4, name: 'Kavita Singh', score: Math.round(activeExamData.totalMarks * 0.75), time: '22 mins', badge: 'Merit' },
-      { rank: 5, name: 'Aditya Raj', score: Math.round(activeExamData.totalMarks * 0.65), time: '25 mins', badge: 'Merit' }
-    ].sort((a, b) => b.score - a.score).map((item, index) => ({ ...item, rank: index + 1 }));
+    // Read real persistent results
+    let existingResults = [];
+    try {
+      const storedResults = localStorage.getItem(TEST_RESULTS_STORAGE_KEY);
+      if (storedResults) {
+        existingResults = JSON.parse(storedResults);
+        if (!Array.isArray(existingResults)) existingResults = [];
+      }
+    } catch (e) {}
 
-    setExamLeaderboard(leaderboard);
+    const myAttempt = {
+      testId: activeExamData.id,
+      name: candidateRealName,
+      score: totalScoreObtained,
+      time: result.timeSpentMinutes + ' mins',
+      timestamp: Date.now(),
+      isCurrent: true
+    };
+
+    const updatedResults = [myAttempt, ...existingResults];
+    try {
+      localStorage.setItem(TEST_RESULTS_STORAGE_KEY, JSON.stringify(updatedResults));
+    } catch (e) {}
+
+    const realRankings = updatedResults
+      .filter(r => r.testId === activeExamData.id)
+      .sort((a, b) => b.score - a.score)
+      .map((item, index) => ({
+        ...item,
+        rank: index + 1,
+        badge: item.score >= (activeExamData.totalMarks * 0.9) ? 'Gold' : item.score >= (activeExamData.totalMarks * 0.75) ? 'Silver' : 'Merit'
+      }));
+
+    setExamLeaderboard(realRankings);
   };
 
-  // Format MM:SS
   const formatTimerClock = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -1293,34 +1304,11 @@ export function TeachersSection({
         if (typeof parsed === 'object' && parsed !== null) return parsed;
       }
     } catch (e) {}
-
-    const seedRoster = {};
-    SCHOOL_CLASSES_CONFIG.forEach(c => {
-      c.sections.forEach(s => {
-        const key = c.id + '-' + s;
-        seedRoster[key] = [
-          { roll: 1, name: 'Aarav Kumar', status: 'present' },
-          { roll: 2, name: 'Ananya Verma', status: 'present' },
-          { roll: 3, name: 'Aryan Sharma', status: 'present' },
-          { roll: 4, name: 'Bhavna Jha', status: 'present' },
-          { roll: 5, name: 'Chirag Tiwari', status: 'absent' },
-          { roll: 6, name: 'Divyansh Roy', status: 'present' },
-          { roll: 7, name: 'Esha Mukherjee', status: 'present' },
-          { roll: 8, name: 'Farhan Ali', status: 'late' },
-          { roll: 9, name: 'Gaurav Pathak', status: 'present' },
-          { roll: 10, name: 'Ishita Sen', status: 'present' }
-        ];
-      });
-    });
-    return seedRoster;
+    return {};
   });
 
   const currentAttKey = selectedAttClass + '-' + selectedAttSection;
-  const currentAttRoster = attendanceStore[currentAttKey] || [
-    { roll: 1, name: 'Aarav Kumar', status: 'present' },
-    { roll: 2, name: 'Aryan Sharma', status: 'present' },
-    { roll: 3, name: 'Ananya Verma', status: 'present' }
-  ];
+  const currentAttRoster = attendanceStore[currentAttKey] || getInitialRosterForClass(selectedAttClass, selectedAttSection);
 
   const handleUpdateStudentAttendance = (roll, newStatus) => {
     if (!isFacultyRole) return;
@@ -1345,6 +1333,73 @@ export function TeachersSection({
     } catch (e) {}
   };
 
+  // Add / Enroll Real Student Handler
+  const handleEnrollStudent = (classNum, sec, rollNum, studentName) => {
+    if (!studentName.trim()) return;
+    const roll = Number(rollNum) || 1;
+    const name = studentName.trim();
+
+    // 1. Update Attendance
+    const aKey = classNum + '-' + sec;
+    const aExisting = attendanceStore[aKey] || getInitialRosterForClass(classNum, sec);
+    const aUpdated = [...aExisting.filter(s => s.roll !== roll), { roll, name, status: 'present' }].sort((a, b) => a.roll - b.roll);
+    const updatedAttStore = { ...attendanceStore, [aKey]: aUpdated };
+    setAttendanceStore(updatedAttStore);
+    try {
+      localStorage.setItem(ATTENDANCE_STORAGE_KEY, JSON.stringify(updatedAttStore));
+    } catch (e) {}
+
+    // 2. Update Marks Ledger for all terms in that class
+    const terms = classNum === '8' ? EXAM_TERMS_CONFIG.class8 : EXAM_TERMS_CONFIG.lowerClasses;
+    const nextMarksStore = { ...marksLedgerStore };
+    terms.forEach(t => {
+      const mKey = classNum + '-' + sec + '-' + t;
+      const mExisting = nextMarksStore[mKey] || [];
+      const mUpdated = [...mExisting.filter(s => s.roll !== roll), {
+        roll,
+        name,
+        marks: { english: 0, hindi: 0, maths: 0, science: 0, sst: 0, sanskrit: 0, computer: 0 }
+      }].sort((a, b) => a.roll - b.roll);
+      nextMarksStore[mKey] = mUpdated;
+    });
+
+    setMarksLedgerStore(nextMarksStore);
+    try {
+      localStorage.setItem(MARKS_LEDGER_STORAGE_KEY, JSON.stringify(nextMarksStore));
+    } catch (e) {}
+
+    playSoundChime('delivered');
+  };
+
+  const handleRemoveStudent = (classNum, sec, roll) => {
+    if (!isDimension5) return;
+    // 1. Remove from attendance
+    const aKey = classNum + '-' + sec;
+    const aExisting = attendanceStore[aKey] || [];
+    const aUpdated = aExisting.filter(s => s.roll !== roll);
+    const updatedAttStore = { ...attendanceStore, [aKey]: aUpdated };
+    setAttendanceStore(updatedAttStore);
+    try {
+      localStorage.setItem(ATTENDANCE_STORAGE_KEY, JSON.stringify(updatedAttStore));
+    } catch (e) {}
+
+    // 2. Remove from marks ledger
+    const terms = classNum === '8' ? EXAM_TERMS_CONFIG.class8 : EXAM_TERMS_CONFIG.lowerClasses;
+    const nextMarksStore = { ...marksLedgerStore };
+    terms.forEach(t => {
+      const mKey = classNum + '-' + sec + '-' + t;
+      if (nextMarksStore[mKey]) {
+        nextMarksStore[mKey] = nextMarksStore[mKey].filter(s => s.roll !== roll);
+      }
+    });
+    setMarksLedgerStore(nextMarksStore);
+    try {
+      localStorage.setItem(MARKS_LEDGER_STORAGE_KEY, JSON.stringify(nextMarksStore));
+    } catch (e) {}
+
+    playSoundChime('sent');
+  };
+
   // =========================================================================
   // PAGE 6: STUDENT MARKS & EXAMINATION LEDGER
   // =========================================================================
@@ -1356,11 +1411,16 @@ export function TeachersSection({
   const [showReportCardModal, setShowReportCardModal] = useState(false);
   const [selectedReportStudent, setSelectedReportStudent] = useState(null);
 
+  // Enroll Student Modal State
+  const [showEnrollModal, setShowEnrollModal] = useState(false);
+  const [enrollStudentRoll, setEnrollStudentRoll] = useState('');
+  const [enrollStudentName, setEnrollStudentName] = useState('');
+
   const availableTerms = selectedMarksClass === '8' 
     ? EXAM_TERMS_CONFIG.class8 
     : EXAM_TERMS_CONFIG.lowerClasses;
 
-  // Initial Marks Database for Class 8-D
+  // Marks Database
   const [marksLedgerStore, setMarksLedgerStore] = useState(() => {
     try {
       const stored = localStorage.getItem(MARKS_LEDGER_STORAGE_KEY);
@@ -1369,27 +1429,26 @@ export function TeachersSection({
         if (typeof parsed === 'object' && parsed !== null) return parsed;
       }
     } catch (e) {}
-
-    const seedMarks = {};
-    const key = '8-D-First Periodic Test (PT-1)';
-    seedMarks[key] = [
-      { roll: 1, name: 'Aarav Kumar', marks: { english: 88, hindi: 85, maths: 92, science: 90, sst: 86, sanskrit: 89, computer: 95 } },
-      { roll: 2, name: 'Ananya Verma', marks: { english: 95, hindi: 92, maths: 98, science: 96, sst: 94, sanskrit: 95, computer: 99 } },
-      { roll: 3, name: 'Aryan Sharma', marks: { english: 91, hindi: 89, maths: 94, science: 95, sst: 90, sanskrit: 88, computer: 96 } },
-      { roll: 4, name: 'Bhavna Jha', marks: { english: 82, hindi: 80, maths: 78, science: 84, sst: 81, sanskrit: 85, computer: 90 } },
-      { roll: 5, name: 'Chirag Tiwari', marks: { english: 75, hindi: 72, maths: 68, science: 74, sst: 70, sanskrit: 76, computer: 82 } },
-      { roll: 6, name: 'Divyansh Roy', marks: { english: 89, hindi: 84, maths: 91, science: 88, sst: 85, sanskrit: 87, computer: 92 } },
-      { roll: 7, name: 'Esha Mukherjee', marks: { english: 94, hindi: 90, maths: 96, science: 93, sst: 92, sanskrit: 91, computer: 97 } }
-    ];
-    return seedMarks;
+    return {};
   });
 
   const currentMarksKey = selectedMarksClass + '-' + selectedMarksSection + '-' + selectedMarksTerm;
-  const currentMarksRoster = marksLedgerStore[currentMarksKey] || [
-    { roll: 1, name: 'Aarav Kumar', marks: { english: 85, hindi: 80, maths: 88, science: 86, sst: 82, sanskrit: 84, computer: 90 } },
-    { roll: 2, name: 'Ananya Verma', marks: { english: 94, hindi: 92, maths: 98, science: 95, sst: 93, sanskrit: 94, computer: 98 } },
-    { roll: 3, name: 'Aryan Sharma', marks: { english: 90, hindi: 88, maths: 92, science: 94, sst: 89, sanskrit: 86, computer: 95 } }
-  ];
+  const currentMarksRoster = marksLedgerStore[currentMarksKey] || (() => {
+    const aKey = selectedMarksClass + '-' + selectedMarksSection;
+    const aRoster = attendanceStore[aKey];
+    if (Array.isArray(aRoster) && aRoster.length > 0) {
+      return aRoster.map(s => ({
+        roll: s.roll,
+        name: s.name,
+        marks: { english: 0, hindi: 0, maths: 0, science: 0, sst: 0, sanskrit: 0, computer: 0 }
+      }));
+    }
+    return getInitialRosterForClass(selectedMarksClass, selectedMarksSection).map(s => ({
+      roll: s.roll,
+      name: s.name,
+      marks: { english: 0, hindi: 0, maths: 0, science: 0, sst: 0, sanskrit: 0, computer: 0 }
+    }));
+  })();
 
   // Update a Student's subject mark
   const handleUpdateStudentMark = (roll, subjectKey, value) => {
@@ -1430,7 +1489,7 @@ export function TeachersSection({
   };
 
   // Compute total, percentage, grade for a student marks record
-  const computeStudentAggregates = (marksObj) => {
+  const computeStudentAggregates = (marksObj = {}) => {
     const subjects = ['english', 'hindi', 'maths', 'science', 'sst', 'sanskrit', 'computer'];
     let total = 0;
     subjects.forEach(sub => {
@@ -2371,7 +2430,7 @@ export function TeachersSection({
                             <div className="text-[10px] font-bold px-1 mb-0.5 flex items-center gap-1">
                               {isStudent ? (
                                 <>
-                                  <span className="text-teal-300">{msg.senderName || user?.name || 'Aryan Sharma'}</span>
+                                  <span className="text-teal-300">{msg.senderName || user?.name || user?.id || 'DAV Student'}</span>
                                   <span className="text-purple-300 font-normal">({msg.senderClassSec || 'Class 8-D'})</span>
                                 </>
                               ) : (
@@ -3481,7 +3540,7 @@ export function TeachersSection({
                           </span>
                         </h3>
                         <p className="text-xs text-purple-300 font-mono">
-                          Candidate: <strong className="text-teal-300">{user?.name || 'Aryan Sharma'}</strong> (Class {activeExamData.classId}-{selectedTestSection})
+                          Candidate: <strong className="text-teal-300">{user?.name || user?.id || 'Student Candidate'}</strong> (Class {activeExamData.classId}-{selectedTestSection})
                         </p>
                       </div>
 
@@ -3827,7 +3886,7 @@ export function TeachersSection({
             {activePage === 'attendance' && (
               <div className="w-full space-y-6 animate-fadeIn">
                 
-                {/* Gen Z Hero Animated Graphical Banner */}
+                {/* Hero Animated Graphical Banner */}
                 <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-950 via-slate-950 to-cyan-950 border-2 border-cyan-500/50 p-6 md:p-10 shadow-2xl">
                   <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-cyan-500/15 blur-3xl pointer-events-none" />
                   <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-purple-500/20 blur-3xl pointer-events-none" />
@@ -3858,6 +3917,21 @@ export function TeachersSection({
                         <span>Filter Class &amp; Section Roster</span>
                         <ArrowRight className="w-4 h-4" />
                       </button>
+
+                      {isDimension5 && (
+                        <button
+                          onClick={() => {
+                            setEnrollStudentRoll(String(currentAttRoster.length + 1));
+                            setEnrollStudentName('');
+                            setShowEnrollModal(true);
+                            playSoundChime('sent');
+                          }}
+                          className="px-6 py-3 rounded-2xl bg-purple-900 border-2 border-teal-400 text-teal-300 hover:text-white font-black text-xs md:text-sm flex items-center gap-2 transition cursor-pointer shadow-xl hover:scale-105"
+                        >
+                          <Plus className="w-4 h-4 text-teal-300" />
+                          <span>Enroll Student into Class {selectedAttClass}-{selectedAttSection}</span>
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -3879,14 +3953,30 @@ export function TeachersSection({
                       </div>
                     </div>
 
-                    {isDimension5 && (
-                      <button
-                        onClick={handleSaveAttendance}
-                        className="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-teal-400 text-slate-950 font-black text-xs cursor-pointer shadow-md hover:scale-105 transition"
-                      >
-                        Save &amp; Sync Register (Dimension 5)
-                      </button>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {isDimension5 && (
+                        <>
+                          <button
+                            onClick={() => {
+                              setEnrollStudentRoll(String(currentAttRoster.length + 1));
+                              setEnrollStudentName('');
+                              setShowEnrollModal(true);
+                              playSoundChime('sent');
+                            }}
+                            className="px-4 py-2 rounded-xl bg-purple-900 border border-teal-400 text-teal-300 font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>Add Student</span>
+                          </button>
+                          <button
+                            onClick={handleSaveAttendance}
+                            className="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-teal-400 text-slate-950 font-black text-xs cursor-pointer shadow-md hover:scale-105 transition"
+                          >
+                            Save &amp; Sync Register
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
 
                   {attToast && (
@@ -3897,73 +3987,96 @@ export function TeachersSection({
 
                   {/* Roster Table */}
                   <div className="w-full rounded-2xl bg-slate-900 border border-purple-800 overflow-hidden">
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left text-xs">
-                        <thead className="bg-purple-950/80 text-[10px] text-teal-300 uppercase font-mono border-b border-purple-800">
-                          <tr>
-                            <th className="p-3">Roll</th>
-                            <th className="p-3">Student Full Name</th>
-                            <th className="p-3">Attendance Status</th>
-                            <th className="p-3 text-right">Actions / Verification</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-purple-950/80">
-                          {currentAttRoster.map((s) => (
-                            <tr key={s.roll} className="hover:bg-purple-950/30 transition">
-                              <td className="p-3 font-mono font-bold text-teal-400">#{s.roll}</td>
-                              <td className="p-3 font-bold text-white">{s.name}</td>
-                              <td className="p-3">
-                                {s.status === 'present' ? (
-                                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold">
-                                    Present
-                                  </span>
-                                ) : s.status === 'absent' ? (
-                                  <span className="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[10px] font-bold">
-                                    Absent
-                                  </span>
-                                ) : (
-                                  <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-bold">
-                                    Late
-                                  </span>
-                                )}
-                              </td>
-                              <td className="p-3 text-right">
-                                {isDimension5 ? (
-                                  <div className="inline-flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-purple-800">
-                                    <button
-                                      onClick={() => handleUpdateStudentAttendance(s.roll, 'present')}
-                                      className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition cursor-pointer ${
-                                        s.status === 'present' ? 'bg-emerald-500 text-slate-950 font-black' : 'text-purple-300 hover:text-white'
-                                      }`}
-                                    >
-                                      P
-                                    </button>
-                                    <button
-                                      onClick={() => handleUpdateStudentAttendance(s.roll, 'absent')}
-                                      className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition cursor-pointer ${
-                                        s.status === 'absent' ? 'bg-rose-500 text-white font-black' : 'text-purple-300 hover:text-white'
-                                      }`}
-                                    >
-                                      A
-                                    </button>
-                                    <button
-                                      onClick={() => handleUpdateStudentAttendance(s.roll, 'late')}
-                                      className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition cursor-pointer ${
-                                        s.status === 'late' ? 'bg-amber-500 text-slate-950 font-black' : 'text-purple-300 hover:text-white'
-                                      }`}
-                                    >
-                                      L
-                                    </button>
-                                  </div>
-                                ) : (
-                                  <span className="text-[10px] text-purple-400 font-mono">Verified Daily</span>
-                                )}
-                              </td>
+                    {currentAttRoster.length === 0 ? (
+                      <div className="p-12 text-center space-y-3">
+                        <Users className="w-12 h-12 text-purple-400 mx-auto opacity-50" />
+                        <h4 className="text-sm font-bold text-white">
+                          No students enrolled yet for Class {selectedAttClass} - Section {selectedAttSection}
+                        </h4>
+                        <p className="text-xs text-purple-300 max-w-md mx-auto">
+                          {isDimension5 
+                            ? "As a Dimension 5 Faculty member, click 'Enroll Student' above to register real students into this class cohort."
+                            : "Your teacher has not enrolled students into this section roster yet."}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs">
+                          <thead className="bg-purple-950/80 text-[10px] text-teal-300 uppercase font-mono border-b border-purple-800">
+                            <tr>
+                              <th className="p-3">Roll</th>
+                              <th className="p-3">Student Full Name</th>
+                              <th className="p-3">Attendance Status</th>
+                              <th className="p-3 text-right">Actions / Verification</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                          </thead>
+                          <tbody className="divide-y divide-purple-950/80">
+                            {currentAttRoster.map((s) => (
+                              <tr key={s.roll} className="hover:bg-purple-950/30 transition">
+                                <td className="p-3 font-mono font-bold text-teal-400">#{s.roll}</td>
+                                <td className="p-3 font-bold text-white">{s.name}</td>
+                                <td className="p-3">
+                                  {s.status === 'present' ? (
+                                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold">
+                                      Present
+                                    </span>
+                                  ) : s.status === 'absent' ? (
+                                    <span className="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[10px] font-bold">
+                                      Absent
+                                    </span>
+                                  ) : (
+                                    <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-bold">
+                                      Late
+                                    </span>
+                                  )}
+                                </td>
+                                <td className="p-3 text-right">
+                                  {isDimension5 ? (
+                                    <div className="inline-flex items-center gap-2">
+                                      <div className="inline-flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-purple-800">
+                                        <button
+                                          onClick={() => handleUpdateStudentAttendance(s.roll, 'present')}
+                                          className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition cursor-pointer ${
+                                            s.status === 'present' ? 'bg-emerald-500 text-slate-950 font-black' : 'text-purple-300 hover:text-white'
+                                          }`}
+                                        >
+                                          P
+                                        </button>
+                                        <button
+                                          onClick={() => handleUpdateStudentAttendance(s.roll, 'absent')}
+                                          className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition cursor-pointer ${
+                                            s.status === 'absent' ? 'bg-rose-500 text-white font-black' : 'text-purple-300 hover:text-white'
+                                          }`}
+                                        >
+                                          A
+                                        </button>
+                                        <button
+                                          onClick={() => handleUpdateStudentAttendance(s.roll, 'late')}
+                                          className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition cursor-pointer ${
+                                            s.status === 'late' ? 'bg-amber-500 text-slate-950 font-black' : 'text-purple-300 hover:text-white'
+                                          }`}
+                                        >
+                                          L
+                                        </button>
+                                      </div>
+                                      <button
+                                        onClick={() => handleRemoveStudent(selectedAttClass, selectedAttSection, s.roll)}
+                                        title="Remove student"
+                                        className="p-1 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 cursor-pointer"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <span className="text-[10px] text-purple-400 font-mono">Verified Daily</span>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -4053,7 +4166,7 @@ export function TeachersSection({
             )}
 
             {/* --------------------------------------------------------------------- */}
-            {/* PAGE 6: STUDENT MARKS & EXAMINATION LEDGER                            */}
+            {/* PAGE 6: STUDENT MARKS & EXAMINATION LEADERBOARD                       */}
             {/* --------------------------------------------------------------------- */}
             {activePage === 'marks_ledger' && (
               <div className="w-full space-y-6 animate-fadeIn">
@@ -4066,11 +4179,11 @@ export function TeachersSection({
                   <div className="relative z-10 max-w-4xl space-y-3">
                     <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-950/80 border border-indigo-500/50 text-xs font-mono font-bold text-indigo-300">
                       <Award className="w-3.5 h-3.5 text-indigo-300" />
-                      <span>PAGE 6 - ACADEMIC PERFORMANCE &amp; EXAMINATION MARKS LEDGER</span>
+                      <span>PAGE 6 - ACADEMIC PERFORMANCE &amp; EXAMINATION MARKS LEADERBOARD</span>
                     </div>
 
                     <h2 className="text-2xl md:text-4xl font-black text-white tracking-tight leading-tight">
-                      Examination Marks <span className="bg-gradient-to-r from-indigo-300 via-fuchsia-300 to-teal-300 bg-clip-text text-transparent">Ledger &amp; Report Cards</span>
+                      Examination Marks <span className="bg-gradient-to-r from-indigo-300 via-fuchsia-300 to-teal-300 bg-clip-text text-transparent">Leaderboard &amp; Report Cards</span>
                     </h2>
 
                     <p className="text-xs md:text-sm text-purple-200/80 leading-relaxed max-w-2xl">
@@ -4091,13 +4204,28 @@ export function TeachersSection({
                       </button>
 
                       {isDimension5 && (
-                        <button
-                          onClick={handleSaveMarksLedger}
-                          className="px-6 py-3 rounded-2xl bg-slate-900 border-2 border-indigo-400 text-indigo-300 hover:text-white font-black text-xs md:text-sm flex items-center gap-2 transition cursor-pointer shadow-lg"
-                        >
-                          <FileCheck className="w-4 h-4 text-indigo-300" />
-                          <span>Save Marks Ledger (Dimension 5)</span>
-                        </button>
+                        <>
+                          <button
+                            onClick={() => {
+                              setEnrollStudentRoll(String(currentMarksRoster.length + 1));
+                              setEnrollStudentName('');
+                              setShowEnrollModal(true);
+                              playSoundChime('sent');
+                            }}
+                            className="px-6 py-3 rounded-2xl bg-purple-900 border-2 border-teal-400 text-teal-300 hover:text-white font-black text-xs md:text-sm flex items-center gap-2 transition cursor-pointer shadow-lg hover:scale-105"
+                          >
+                            <Plus className="w-4 h-4 text-teal-300" />
+                            <span>Enroll Student</span>
+                          </button>
+
+                          <button
+                            onClick={handleSaveMarksLedger}
+                            className="px-6 py-3 rounded-2xl bg-slate-900 border-2 border-indigo-400 text-indigo-300 hover:text-white font-black text-xs md:text-sm flex items-center gap-2 transition cursor-pointer shadow-lg"
+                          >
+                            <FileCheck className="w-4 h-4 text-indigo-300" />
+                            <span>Save Marks Ledger (Dimension 5)</span>
+                          </button>
+                        </>
                       )}
                     </div>
                   </div>
@@ -4151,88 +4279,181 @@ export function TeachersSection({
 
                 {/* Marks Ledger Table */}
                 <div className="w-full rounded-2xl bg-slate-900 border border-purple-800 overflow-hidden shadow-2xl">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs">
-                      <thead className="bg-purple-950/80 text-[10px] text-teal-300 uppercase font-mono border-b border-purple-800">
-                        <tr>
-                          <th className="p-3">Roll</th>
-                          <th className="p-3">Student Name</th>
-                          <th className="p-3">English</th>
-                          <th className="p-3">Hindi</th>
-                          <th className="p-3">Maths</th>
-                          <th className="p-3">Science</th>
-                          <th className="p-3">SST</th>
-                          <th className="p-3">Sanskrit</th>
-                          <th className="p-3">Computer</th>
-                          <th className="p-3">Total (700)</th>
-                          <th className="p-3">Percentage</th>
-                          <th className="p-3">Grade</th>
-                          <th className="p-3 text-right">Report Card</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-purple-950/80">
-                        {currentMarksRoster.map((s) => {
-                          const agg = computeStudentAggregates(s.marks);
+                  {currentMarksRoster.length === 0 ? (
+                    <div className="p-12 text-center space-y-3">
+                      <Award className="w-12 h-12 text-purple-400 mx-auto opacity-50" />
+                      <h4 className="text-sm font-bold text-white">
+                        No students enrolled yet for Class {selectedMarksClass} - Section {selectedMarksSection} ({selectedMarksTerm})
+                      </h4>
+                      <p className="text-xs text-purple-300 max-w-md mx-auto">
+                        {isDimension5 
+                          ? "As a Dimension 5 Faculty member, click 'Enroll Student' above to add real students and enter their evaluation marks."
+                          : "Marks for this examination term have not been published by your teachers yet."}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-purple-950/80 text-[10px] text-teal-300 uppercase font-mono border-b border-purple-800">
+                          <tr>
+                            <th className="p-3">Roll</th>
+                            <th className="p-3">Student Name</th>
+                            <th className="p-3">English</th>
+                            <th className="p-3">Hindi</th>
+                            <th className="p-3">Maths</th>
+                            <th className="p-3">Science</th>
+                            <th className="p-3">SST</th>
+                            <th className="p-3">Sanskrit</th>
+                            <th className="p-3">Computer</th>
+                            <th className="p-3">Total (700)</th>
+                            <th className="p-3">Percentage</th>
+                            <th className="p-3">Grade</th>
+                            <th className="p-3 text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-purple-950/80">
+                          {currentMarksRoster.map((s) => {
+                            const agg = computeStudentAggregates(s.marks);
 
-                          return (
-                            <tr key={s.roll} className="hover:bg-purple-950/30 transition">
-                              <td className="p-3 font-mono font-bold text-teal-400">#{s.roll}</td>
-                              <td className="p-3 font-bold text-white whitespace-nowrap">{s.name}</td>
-                              
-                              {/* 7 Subjects */}
-                              {['english', 'hindi', 'maths', 'science', 'sst', 'sanskrit', 'computer'].map((subKey) => (
-                                <td key={subKey} className="p-2">
-                                  {isDimension5 ? (
-                                    <input
-                                      type="number"
-                                      min={0}
-                                      max={100}
-                                      value={s.marks[subKey] !== undefined ? s.marks[subKey] : 0}
-                                      onChange={(e) => handleUpdateStudentMark(s.roll, subKey, e.target.value)}
-                                      className="w-14 p-1.5 rounded-lg bg-slate-950 border border-purple-700 text-center font-mono font-bold text-white text-xs focus:border-teal-400"
-                                    />
-                                  ) : (
-                                    <span className="font-mono text-purple-200 font-bold px-1.5 py-1">
-                                      {s.marks[subKey] || 0}
-                                    </span>
-                                  )}
+                            return (
+                              <tr key={s.roll} className="hover:bg-purple-950/30 transition">
+                                <td className="p-3 font-mono font-bold text-teal-400">#{s.roll}</td>
+                                <td className="p-3 font-bold text-white whitespace-nowrap">{s.name}</td>
+                                
+                                {/* 7 Subjects */}
+                                {['english', 'hindi', 'maths', 'science', 'sst', 'sanskrit', 'computer'].map((subKey) => (
+                                  <td key={subKey} className="p-2">
+                                    {isDimension5 ? (
+                                      <input
+                                        type="number"
+                                        min={0}
+                                        max={100}
+                                        value={s.marks?.[subKey] !== undefined ? s.marks[subKey] : 0}
+                                        onChange={(e) => handleUpdateStudentMark(s.roll, subKey, e.target.value)}
+                                        className="w-14 p-1.5 rounded-lg bg-slate-950 border border-purple-700 text-center font-mono font-bold text-white text-xs focus:border-teal-400"
+                                      />
+                                    ) : (
+                                      <span className="font-mono text-purple-200 font-bold px-1.5 py-1">
+                                        {s.marks?.[subKey] || 0}
+                                      </span>
+                                    )}
+                                  </td>
+                                ))}
+
+                                {/* Aggregates */}
+                                <td className="p-3 font-mono font-bold text-teal-300 whitespace-nowrap">
+                                  {agg.total} / 700
                                 </td>
-                              ))}
+                                <td className="p-3 font-mono font-bold text-cyan-300">
+                                  {agg.percentage}%
+                                </td>
+                                <td className="p-3">
+                                  <span className={`px-2 py-0.5 rounded-md font-mono text-[10px] font-black border ${agg.color}`}>
+                                    {agg.grade}
+                                  </span>
+                                </td>
 
-                              {/* Aggregates */}
-                              <td className="p-3 font-mono font-bold text-teal-300 whitespace-nowrap">
-                                {agg.total} / 700
-                              </td>
-                              <td className="p-3 font-mono font-bold text-cyan-300">
-                                {agg.percentage}%
-                              </td>
-                              <td className="p-3">
-                                <span className={`px-2 py-0.5 rounded-md font-mono text-[10px] font-black border ${agg.color}`}>
-                                  {agg.grade}
-                                </span>
-                              </td>
-
-                              {/* Report Card Action */}
-                              <td className="p-3 text-right">
-                                <button
-                                  onClick={() => {
-                                    setSelectedReportStudent({ ...s, aggregates: agg });
-                                    setShowReportCardModal(true);
-                                    playSoundChime('sent');
-                                  }}
-                                  className="px-3 py-1 rounded-xl bg-purple-900/60 hover:bg-purple-800 border border-purple-600 text-purple-200 hover:text-white text-[11px] font-bold flex items-center gap-1 ml-auto cursor-pointer"
-                                >
-                                  <Printer className="w-3 h-3 text-teal-300" />
-                                  <span>Report Card</span>
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
+                                {/* Report Card Action & Delete */}
+                                <td className="p-3 text-right">
+                                  <div className="inline-flex items-center gap-1.5">
+                                    <button
+                                      onClick={() => {
+                                        setSelectedReportStudent({ ...s, aggregates: agg });
+                                        setShowReportCardModal(true);
+                                        playSoundChime('sent');
+                                      }}
+                                      className="px-2.5 py-1 rounded-xl bg-purple-900/60 hover:bg-purple-800 border border-purple-600 text-purple-200 hover:text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer"
+                                    >
+                                      <Printer className="w-3 h-3 text-teal-300" />
+                                      <span>Report</span>
+                                    </button>
+                                    {isDimension5 && (
+                                      <button
+                                        onClick={() => handleRemoveStudent(selectedMarksClass, selectedMarksSection, s.roll)}
+                                        title="Remove student from roster"
+                                        className="p-1 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 cursor-pointer"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
+
+                {/* Enroll Real Student Modal (Dimension 5 Only) */}
+                {showEnrollModal && isDimension5 && (
+                  <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md p-4 flex items-center justify-center animate-fadeIn">
+                    <div className="w-full max-w-md bg-purple-950/95 border-2 border-teal-400/80 rounded-3xl p-6 shadow-2xl space-y-4 text-xs">
+                      <div className="flex items-center justify-between pb-3 border-b border-purple-800">
+                        <h3 className="text-base font-black text-white flex items-center gap-2">
+                          <Plus className="w-4 h-4 text-teal-300" />
+                          <span>Enroll Student (Class {selectedMarksClass}-{selectedMarksSection})</span>
+                        </h3>
+                        <button onClick={() => setShowEnrollModal(false)} className="text-purple-300 hover:text-white cursor-pointer">
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          handleEnrollStudent(selectedMarksClass, selectedMarksSection, enrollStudentRoll, enrollStudentName);
+                          setShowEnrollModal(false);
+                          setEnrollStudentName('');
+                        }}
+                        className="space-y-3"
+                      >
+                        <div>
+                          <label className="block text-[11px] font-bold text-teal-300 uppercase mb-1">Roll Number</label>
+                          <input
+                            type="number"
+                            min={1}
+                            value={enrollStudentRoll}
+                            onChange={(e) => setEnrollStudentRoll(e.target.value)}
+                            placeholder="e.g. 1"
+                            className="w-full bg-slate-900 border border-purple-600 rounded-xl p-2.5 text-white font-mono"
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-teal-300 uppercase mb-1">Student Full Name</label>
+                          <input
+                            type="text"
+                            value={enrollStudentName}
+                            onChange={(e) => setEnrollStudentName(e.target.value)}
+                            placeholder="Enter real student full name..."
+                            className="w-full bg-slate-900 border border-purple-600 rounded-xl p-2.5 text-white"
+                            required
+                          />
+                        </div>
+
+                        <div className="flex items-center justify-end gap-2 pt-2 border-t border-purple-800">
+                          <button
+                            type="button"
+                            onClick={() => setShowEnrollModal(false)}
+                            className="px-4 py-2 rounded-xl bg-slate-800 text-purple-200 font-bold"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            className="px-5 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 font-black shadow-md cursor-pointer hover:scale-105"
+                          >
+                            Enroll into Class Roster
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                )}
 
                 {/* Marks Filter Modal */}
                 {isMarksModalOpen && (
@@ -4249,7 +4470,7 @@ export function TeachersSection({
                               Select Academic Standard, Section &amp; Term
                             </h2>
                             <p className="text-xs text-indigo-300 font-mono">
-                              Examination Marks Ledger Navigation
+                              Examination Marks Leaderboard Navigation
                             </p>
                           </div>
                         </div>
@@ -4330,7 +4551,7 @@ export function TeachersSection({
                           onClick={() => setIsMarksModalOpen(false)}
                           className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-600 to-teal-400 text-slate-950 font-black text-sm cursor-pointer shadow-xl hover:opacity-95"
                         >
-                          Open Marks Ledger for Class {selectedMarksClass} - Section {selectedMarksSection}
+                          Open Marks Leaderboard for Class {selectedMarksClass} - Section {selectedMarksSection}
                         </button>
                       </div>
 
@@ -4388,13 +4609,13 @@ export function TeachersSection({
                           </thead>
                           <tbody className="divide-y divide-purple-100">
                             {[
-                              { label: 'English Literature & Grammar', val: selectedReportStudent.marks.english },
-                              { label: 'Hindi (Gyan Sagar & Abhyas)', val: selectedReportStudent.marks.hindi },
-                              { label: 'Mathematics', val: selectedReportStudent.marks.maths },
-                              { label: 'Science & Technology', val: selectedReportStudent.marks.science },
-                              { label: 'Social Science', val: selectedReportStudent.marks.sst },
-                              { label: 'Sanskrit', val: selectedReportStudent.marks.sanskrit },
-                              { label: 'Computer Science', val: selectedReportStudent.marks.computer }
+                              { label: 'English Literature & Grammar', val: selectedReportStudent.marks?.english },
+                              { label: 'Hindi (Gyan Sagar & Abhyas)', val: selectedReportStudent.marks?.hindi },
+                              { label: 'Mathematics', val: selectedReportStudent.marks?.maths },
+                              { label: 'Science & Technology', val: selectedReportStudent.marks?.science },
+                              { label: 'Social Science', val: selectedReportStudent.marks?.sst },
+                              { label: 'Sanskrit', val: selectedReportStudent.marks?.sanskrit },
+                              { label: 'Computer Science', val: selectedReportStudent.marks?.computer }
                             ].map((row, idx) => {
                               const g = calculateCbseGrade(row.val || 0);
                               return (
@@ -4414,15 +4635,15 @@ export function TeachersSection({
                       <div className="grid grid-cols-3 gap-3 text-center bg-purple-950 text-white p-4 rounded-2xl">
                         <div>
                           <span className="text-[10px] uppercase font-mono text-purple-300 block">Total Marks</span>
-                          <span className="text-base font-black text-teal-300">{selectedReportStudent.aggregates.total} / 700</span>
+                          <span className="text-base font-black text-teal-300">{selectedReportStudent.aggregates?.total || 0} / 700</span>
                         </div>
                         <div>
                           <span className="text-[10px] uppercase font-mono text-purple-300 block">Overall Percentage</span>
-                          <span className="text-base font-black text-cyan-300">{selectedReportStudent.aggregates.percentage}%</span>
+                          <span className="text-base font-black text-cyan-300">{selectedReportStudent.aggregates?.percentage || 0}%</span>
                         </div>
                         <div>
                           <span className="text-[10px] uppercase font-mono text-purple-300 block">CBSE Grade</span>
-                          <span className="text-base font-black text-amber-300">{selectedReportStudent.aggregates.grade}</span>
+                          <span className="text-base font-black text-amber-300">{selectedReportStudent.aggregates?.grade || 'E'}</span>
                         </div>
                       </div>
 

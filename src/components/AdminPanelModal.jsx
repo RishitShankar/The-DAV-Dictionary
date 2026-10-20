@@ -697,7 +697,7 @@ _With heartfelt gratitude from the entire DAV student community!_`;
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Aarav Sharma"
+                    placeholder="Enter student full name"
                     value={studentName}
                     onChange={(e) => setStudentName(e.target.value)}
                     className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
