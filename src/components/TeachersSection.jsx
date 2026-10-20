@@ -811,16 +811,6 @@ export function TeachersSection({
   }, [user]);
 
   // Chat Conversations Map (Local + Supabase Cloud synced)
-    const chatMessagesEndRef = useRef(null);
-  const [showChatScrollDown, setShowChatScrollDown] = useState(false);
-
-  // Auto-scroll chat to bottom on new messages or contact switch
-  useEffect(() => {
-    if (activePage === 'doubts_chat' || activePage === 2) {
-      chatMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [teacherChatsMap, activeContact, activePage]);
-
   const [teacherChatsMap, setTeacherChatsMap] = useState(() => {
     try {
       const stored = localStorage.getItem(TEACHER_CHATS_STORAGE_KEY);
@@ -838,6 +828,18 @@ export function TeachersSection({
       localStorage.setItem(TEACHER_CHATS_STORAGE_KEY, JSON.stringify(updated));
     } catch (e) {}
   };
+
+  const activeContact = chatContactsList.find(c => c.id === activeContactId) || chatContactsList[0] || null;
+
+  const chatMessagesEndRef = useRef(null);
+  const [showChatScrollDown, setShowChatScrollDown] = useState(false);
+
+  // Auto-scroll chat to bottom on new messages or contact switch (safe after activeContact & teacherChatsMap initialization)
+  useEffect(() => {
+    if (activePage === 'doubts_chat' || activePage === 2) {
+      chatMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [teacherChatsMap, activeContactId, activePage]);
 
   // Canonical Symmetric Channel Key Generators
   const getConversationChannelKey = (uA, uB) => {
@@ -880,8 +882,6 @@ export function TeachersSection({
     }
     return [];
   };
-
-  const activeContact = chatContactsList.find(c => c.id === activeContactId) || chatContactsList[0] || null;
 
   const handleSelectContact = (contactId) => {
     setActiveContactId(contactId);
