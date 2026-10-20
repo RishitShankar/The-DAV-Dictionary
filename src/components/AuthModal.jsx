@@ -14,6 +14,8 @@ export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGu
   const [studentClass, setStudentClass] = useState('8');
   const [generatedId, setGeneratedId] = useState('');
   const [role, setRole] = useState('Student');
+  const [teacherSubject, setTeacherSubject] = useState('Science & Biology');
+  const [teacherDp, setTeacherDp] = useState('');
 
   if (!isOpen) return null;
 
@@ -71,8 +73,18 @@ export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGu
       dimensionName: isTeacher ? 'Dimension 5: Faculty OS' : 'Dimension 1: Normal Plan',
       personalWhatsApp: '919470033984',
       phoneNumber: '919470033984',
-      subject: isTeacher ? 'Curriculum Studies' : undefined,
-      department: isTeacher ? 'General Faculty' : undefined,
+      subject: isTeacher ? teacherSubject : undefined,
+      department: isTeacher ? (
+        teacherSubject.toLowerCase().includes('scien') ? 'Science' :
+        teacherSubject.toLowerCase().includes('math') ? 'Mathematics' :
+        teacherSubject.toLowerCase().includes('social') ? 'Social Science' :
+        teacherSubject.toLowerCase().includes('hindi') ? 'Hindi' :
+        teacherSubject.toLowerCase().includes('eng') ? 'English' :
+        teacherSubject.toLowerCase().includes('sanskrit') ? 'Sanskrit' :
+        teacherSubject.toLowerCase().includes('comp') ? 'Computer Science' : 'Science'
+      ) : undefined,
+      dp: isTeacher && teacherDp ? teacherDp : (user?.dp || null),
+      avatar: isTeacher && teacherDp ? teacherDp : (user?.avatar || null),
       joinedAt: new Date().toLocaleDateString()
     };
 
@@ -264,6 +276,61 @@ export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGu
                       <option value="Head Girl">Head Girl</option>
                       <option value="Teacher">Teacher / Faculty</option>
                     </select>
+                  </div>
+                </div>
+              )}
+
+              {isRegister && role === 'Teacher' && (
+                <div className="p-3 rounded-2xl bg-purple-50 border border-purple-200 space-y-2.5">
+                  <div>
+                    <label className="block text-xs font-bold text-purple-950 mb-1">Teaching Subject (Dimension 5)</label>
+                    <select
+                      value={teacherSubject}
+                      onChange={(e) => setTeacherSubject(e.target.value)}
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-purple-300 bg-white font-semibold text-purple-900"
+                    >
+                      <option value="Science & Biology">Science & Biology</option>
+                      <option value="Mathematics">Mathematics</option>
+                      <option value="Social Science">Social Science</option>
+                      <option value="English">English</option>
+                      <option value="Hindi">Hindi</option>
+                      <option value="Sanskrit">Sanskrit</option>
+                      <option value="Computer Science">Computer Science</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-purple-950 mb-1">Profile Picture (DP)</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        id="auth-teacher-dp-upload"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (ev) => {
+                              setTeacherDp(ev.target.result);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                      <label
+                        htmlFor="auth-teacher-dp-upload"
+                        className="px-3 py-1.5 rounded-lg bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold cursor-pointer transition shadow-xs"
+                      >
+                        {teacherDp ? 'Change Photo (DP)' : 'Upload Your Photo (DP)'}
+                      </label>
+                      {teacherDp && (
+                        <div className="flex items-center gap-1.5">
+                          <img src={teacherDp} alt="DP Preview" className="w-7 h-7 rounded-full object-cover border border-purple-400" />
+                          <span className="text-[10px] text-emerald-700 font-bold">DP Selected</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
