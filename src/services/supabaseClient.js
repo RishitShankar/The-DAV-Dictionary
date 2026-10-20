@@ -303,7 +303,7 @@ export async function fetchCloudDoubtChats() {
       .from('dav_pdf_annotations')
       .select('canvas_data, updated_at')
       .eq('id', FACULTY_DOUBT_VAULT_UUID)
-      .single();
+      .maybeSingle();
     if (error || !data?.canvas_data) return null;
     return JSON.parse(data.canvas_data);
   } catch (e) {
@@ -349,3 +349,91 @@ export function subscribeCloudDoubtChats(onUpdate) {
   }
 }
 
+
+
+export const LIVE_BROADCASTS_VAULT_UUID = '00000000-0000-0000-0000-000000000002';
+
+/**
+ * Save active live broadcasts to Supabase cloud across PC & Mobile
+ */
+export async function saveCloudLiveBroadcasts(broadcasts) {
+  const client = getSupabaseClient();
+  if (!client || !broadcasts) return false;
+  try {
+    const row = {
+      id: LIVE_BROADCASTS_VAULT_UUID,
+      user_id: 'global_live_broadcasts_hub',
+      book_title: 'LIVE_BROADCASTS_STORE',
+      page_number: 1,
+      canvas_data: JSON.stringify(broadcasts),
+      notes: [],
+      updated_at: new Date().toISOString()
+    };
+    const { error } = await client.from('dav_pdf_annotations').upsert(row, { onConflict: 'id' });
+    if (error) {
+      console.warn('saveCloudLiveBroadcasts error:', error.message);
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error('saveCloudLiveBroadcasts exception:', e);
+    return false;
+  }
+}
+
+/**
+ * Fetch active live broadcasts from Supabase cloud
+ */
+export async function fetchCloudLiveBroadcasts() {
+  const client = getSupabaseClient();
+  if (!client) return null;
+  try {
+    const { data, error } = await client
+      .from('dav_pdf_annotations')
+      .select('canvas_data, updated_at')
+      .eq('id', LIVE_BROADCASTS_VAULT_UUID)
+      .maybeSingle();
+    if (error || !data?.canvas_data) return null;
+    return JSON.parse(data.canvas_data);
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Real-time subscription to live broadcasts across all devices
+ */
+export function subscribeCloudLiveBroadcasts(onUpdate) {
+  const client = getSupabaseClient();
+  if (!client || !onUpdate) return () => {};
+  try {
+    const channel = client
+      .channel('public:dav_live_broadcasts')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'dav_pdf_annotations',
+          filter: `id=eq.${LIVE_BROADCASTS_VAULT_UUID}`
+        },
+        (payload) => {
+          if (payload.new && payload.new.canvas_data) {
+            try {
+              const parsed = JSON.parse(payload.new.canvas_data);
+              onUpdate(parsed);
+            } catch (err) {}
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      try {
+        client.removeChannel(channel);
+      } catch (err) {}
+    };
+  } catch (err) {
+    return () => {};
+  }
+}

@@ -16,7 +16,8 @@ import {
 } from 'lucide-react';
 import { ShankarAILogo } from './ShankarAILogo';
 import { getAllTeachers } from '../data/davTeachers50';
-import { saveCloudDoubtChats, fetchCloudDoubtChats, subscribeCloudDoubtChats } from '../services/supabaseClient';
+import { getRegisteredUsers, DEFAULT_TEACHER_ACCOUNT, MASTER_DEVELOPER_ACCOUNT } from '../data/preloadedUsers';
+import { saveCloudDoubtChats, fetchCloudDoubtChats, subscribeCloudDoubtChats, saveCloudLiveBroadcasts, fetchCloudLiveBroadcasts, subscribeCloudLiveBroadcasts, fetchCloudStudents } from '../services/supabaseClient';
 
 // Complete DAV School Class and Section Configuration
 const SCHOOL_CLASSES_CONFIG = [
@@ -529,66 +530,17 @@ export function TeachersSection({
   // Never show self.
   const [chatContactsList, setChatContactsList] = useState(() => {
     try {
-      const raw = localStorage.getItem('dav_registered_users');
-      const allUsers = raw ? JSON.parse(raw) : [];
-      if (!Array.isArray(allUsers)) return [];
+      let raw = localStorage.getItem('dav_registered_users');
+      let allUsers = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(allUsers) || allUsers.length === 0) {
+        allUsers = typeof getRegisteredUsers === 'function' ? getRegisteredUsers() : [MASTER_DEVELOPER_ACCOUNT, DEFAULT_TEACHER_ACCOUNT];
+      }
 
       const currentId = user?.id?.toLowerCase();
       const currentName = user?.name?.toLowerCase();
 
       if (isDimension5) {
         // Teacher sees registered students
-        return allUsers
-          .filter(u => {
-            const isT = u.dimension === 5 || u.isTeacher || (u.role && u.role.toLowerCase().includes('teacher'));
-            const isSelf = (u.id && currentId && u.id.toLowerCase() === currentId) || (u.name && currentName && u.name.toLowerCase() === currentName);
-            return !isT && !isSelf;
-          })
-          .map((u, idx) => ({
-            id: u.id || `std_${idx}`,
-            name: u.name || u.id || `Student ${idx + 1}`,
-            subtitle: `Class ${u.classNum || '8'}-${u.section || 'D'} Student`,
-            role: 'DAV Student',
-            dp: u.dp || u.avatar || null,
-            status: 'Online',
-            type: 'student',
-            classNum: u.classNum || '8',
-            section: u.section || 'D'
-          }));
-      } else {
-        // Student sees registered teachers
-        return allUsers
-          .filter(u => {
-            const isT = u.dimension === 5 || u.isTeacher || (u.role && u.role.toLowerCase().includes('teacher'));
-            const isSelf = (u.id && currentId && u.id.toLowerCase() === currentId) || (u.name && currentName && u.name.toLowerCase() === currentName);
-            return isT && !isSelf;
-          })
-          .map((u, idx) => ({
-            id: u.id || `tch_${idx}`,
-            name: (u.name && (u.name.startsWith('Prof.') || u.name.startsWith('Dr.') || u.name.startsWith('Mr.') || u.name.startsWith('Mrs.'))) ? u.name : `Prof. ${u.name || 'Faculty Member'}`,
-            subtitle: u.subject || 'Faculty Teacher',
-            role: 'Verified DAV Faculty (Dimension 5)',
-            dp: u.dp || u.avatar || null,
-            status: 'Online',
-            type: 'teacher',
-            subject: u.subject || 'Science & Technology'
-          }));
-      }
-    } catch (e) {
-      return [];
-    }
-  });
-
-  const refreshChatContacts = () => {
-    try {
-      const raw = localStorage.getItem('dav_registered_users');
-      const allUsers = raw ? JSON.parse(raw) : [];
-      if (!Array.isArray(allUsers)) return;
-
-      const currentId = user?.id?.toLowerCase();
-      const currentName = user?.name?.toLowerCase();
-
-      if (isDimension5) {
         const students = allUsers
           .filter(u => {
             const isT = u.dimension === 5 || u.isTeacher || (u.role && u.role.toLowerCase().includes('teacher'));
@@ -606,8 +558,22 @@ export function TeachersSection({
             classNum: u.classNum || '8',
             section: u.section || 'D'
           }));
-        setChatContactsList(students);
+        if (students.length === 0 && MASTER_DEVELOPER_ACCOUNT) {
+          students.push({
+            id: MASTER_DEVELOPER_ACCOUNT.id,
+            name: MASTER_DEVELOPER_ACCOUNT.name,
+            subtitle: `Class ${MASTER_DEVELOPER_ACCOUNT.classNum || '8'}-D Student`,
+            role: 'DAV Student',
+            dp: null,
+            status: 'Online',
+            type: 'student',
+            classNum: '8',
+            section: 'D'
+          });
+        }
+        return students;
       } else {
+        // Student sees registered teachers
         const teachers = allUsers
           .filter(u => {
             const isT = u.dimension === 5 || u.isTeacher || (u.role && u.role.toLowerCase().includes('teacher'));
@@ -624,114 +590,141 @@ export function TeachersSection({
             type: 'teacher',
             subject: u.subject || 'Science & Technology'
           }));
+        if (teachers.length === 0 && DEFAULT_TEACHER_ACCOUNT) {
+          teachers.push({
+            id: DEFAULT_TEACHER_ACCOUNT.id,
+            name: DEFAULT_TEACHER_ACCOUNT.name,
+            subtitle: DEFAULT_TEACHER_ACCOUNT.subject || 'Faculty Teacher',
+            role: 'Verified DAV Faculty (Dimension 5)',
+            dp: null,
+            status: 'Online',
+            type: 'teacher',
+            subject: DEFAULT_TEACHER_ACCOUNT.subject || 'Science & Technology'
+          });
+        }
+        return teachers;
+      }
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const refreshChatContacts = () => {
+    try {
+      let raw = localStorage.getItem('dav_registered_users');
+      let allUsers = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(allUsers) || allUsers.length === 0) {
+        allUsers = typeof getRegisteredUsers === 'function' ? getRegisteredUsers() : [];
+      }
+
+      const currentId = user?.id?.toLowerCase();
+      const currentName = user?.name?.toLowerCase();
+
+      if (isDimension5) {
+        let students = allUsers
+          .filter(u => {
+            const isT = u.dimension === 5 || u.isTeacher || (u.role && u.role.toLowerCase().includes('teacher'));
+            const isSelf = (u.id && currentId && u.id.toLowerCase() === currentId) || (u.name && currentName && u.name.toLowerCase() === currentName);
+            return !isT && !isSelf;
+          })
+          .map((u, idx) => ({
+            id: u.id || `std_${idx}`,
+            name: u.name || u.id || `Student ${idx + 1}`,
+            subtitle: `Class ${u.classNum || '8'}-${u.section || 'D'} Student`,
+            role: 'DAV Student',
+            dp: u.dp || u.avatar || null,
+            status: 'Online',
+            type: 'student',
+            classNum: u.classNum || '8',
+            section: u.section || 'D'
+          }));
+        if (students.length === 0 && MASTER_DEVELOPER_ACCOUNT) {
+          students.push({
+            id: MASTER_DEVELOPER_ACCOUNT.id,
+            name: MASTER_DEVELOPER_ACCOUNT.name,
+            subtitle: `Class ${MASTER_DEVELOPER_ACCOUNT.classNum || '8'}-D Student`,
+            role: 'DAV Student',
+            dp: null,
+            status: 'Online',
+            type: 'student',
+            classNum: '8',
+            section: 'D'
+          });
+        }
+        setChatContactsList(students);
+      } else {
+        let teachers = allUsers
+          .filter(u => {
+            const isT = u.dimension === 5 || u.isTeacher || (u.role && u.role.toLowerCase().includes('teacher'));
+            const isSelf = (u.id && currentId && u.id.toLowerCase() === currentId) || (u.name && currentName && u.name.toLowerCase() === currentName);
+            return isT && !isSelf;
+          })
+          .map((u, idx) => ({
+            id: u.id || `tch_${idx}`,
+            name: (u.name && (u.name.startsWith('Prof.') || u.name.startsWith('Dr.') || u.name.startsWith('Mr.') || u.name.startsWith('Mrs.'))) ? u.name : `Prof. ${u.name || 'Faculty Member'}`,
+            subtitle: u.subject || 'Faculty Teacher',
+            role: 'Verified DAV Faculty (Dimension 5)',
+            dp: u.dp || u.avatar || null,
+            status: 'Online',
+            type: 'teacher',
+            subject: u.subject || 'Science & Technology'
+          }));
+        if (teachers.length === 0 && DEFAULT_TEACHER_ACCOUNT) {
+          teachers.push({
+            id: DEFAULT_TEACHER_ACCOUNT.id,
+            name: DEFAULT_TEACHER_ACCOUNT.name,
+            subtitle: DEFAULT_TEACHER_ACCOUNT.subject || 'Faculty Teacher',
+            role: 'Verified DAV Faculty (Dimension 5)',
+            dp: null,
+            status: 'Online',
+            type: 'teacher',
+            subject: DEFAULT_TEACHER_ACCOUNT.subject || 'Science & Technology'
+          });
+        }
         setChatContactsList(teachers);
       }
     } catch (e) {}
   };
 
+  // Sync users with Supabase Cloud on mount
   useEffect(() => {
-    refreshChatContacts();
-    window.addEventListener('storage', refreshChatContacts);
-    window.addEventListener('dav_faculty_updated', refreshChatContacts);
-    window.addEventListener('dav_user_updated', refreshChatContacts);
-    return () => {
-      window.removeEventListener('storage', refreshChatContacts);
-      window.removeEventListener('dav_faculty_updated', refreshChatContacts);
-      window.removeEventListener('dav_user_updated', refreshChatContacts);
-    };
-  }, [user, isDimension5]);
-
-  // Helper to extract real enrolled students from localStorage registered database
-  const getInitialRosterForClass = (classNum, sec) => {
-    try {
-      const raw = localStorage.getItem('dav_registered_users');
-      if (raw) {
-        const users = JSON.parse(raw);
-        if (Array.isArray(users)) {
-          const matching = users.filter(u => 
-            !u.isTeacher && u.dimension !== 4 && u.dimension !== 5 &&
-            String(u.classNum || '8') === String(classNum) &&
-            (!u.section || String(u.section).toUpperCase() === String(sec).toUpperCase())
-          );
-          if (matching.length > 0) {
-            return matching.map((u, idx) => ({
-              roll: idx + 1,
-              name: u.name || u.id,
-              status: 'present'
-            }));
-          }
+    if (typeof fetchCloudStudents === 'function') {
+      fetchCloudStudents().then(cloudUsers => {
+        if (cloudUsers && cloudUsers.length > 0) {
+          try {
+            const raw = localStorage.getItem('dav_registered_users');
+            const local = raw ? JSON.parse(raw) : [];
+            const mergedMap = new Map();
+            (Array.isArray(local) ? local : []).forEach(u => {
+              if (u && u.id) mergedMap.set(String(u.id).toLowerCase(), u);
+            });
+            cloudUsers.forEach(cu => {
+              if (cu && cu.id) {
+                const k = String(cu.id).toLowerCase();
+                mergedMap.set(k, { ...(mergedMap.get(k) || {}), ...cu });
+              }
+            });
+            const mergedList = Array.from(mergedMap.values());
+            localStorage.setItem('dav_registered_users', JSON.stringify(mergedList));
+            refreshChatContacts();
+          } catch (e) {}
         }
-      }
-    } catch (e) {}
-    return [];
-  };
-
-  // =========================================================================
-  // PAGE 1: DAILY HOMEWORK & CLASSWORK MANAGEMENT
-  // =========================================================================
-  const [isHwModalOpen, setIsHwModalOpen] = useState(false);
-  const [selectedHwClass, setSelectedHwClass] = useState('8');
-  const [selectedHwSection, setSelectedHwSection] = useState('D');
-  const [hwFilterSubject, setHwFilterSubject] = useState('all');
-
-  const [homeworkStore, setHomeworkStore] = useState(() => {
-    try {
-      const stored = localStorage.getItem(HOMEWORK_STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) return parsed;
-      }
-    } catch (e) {}
-    return [];
-  });
-
-  const [showAssignHwModal, setShowAssignHwModal] = useState(false);
-  const [newHwClass, setNewHwClass] = useState('8');
-  const [newHwSection, setNewHwSection] = useState('D');
-  const [newHwSubject, setNewHwSubject] = useState('Science & Technology');
-  const [newHwTeacher, setNewHwTeacher] = useState(() => {
-    if (user?.name) {
-      return (user.name.startsWith('Prof.') || user.name.startsWith('Mrs.') || user.name.startsWith('Mr.') || user.name.startsWith('Dr.')) ? user.name : 'Prof. ' + user.name;
+      }).catch(() => {});
     }
-    return 'Prof. Hira Beta (Dimension 5)';
-  });
-  const [newHwChapter, setNewHwChapter] = useState('');
-  const [newHwTitle, setNewHwTitle] = useState('');
-  const [newHwDesc, setNewHwDesc] = useState('');
-  const [newHwDueDate, setNewHwDueDate] = useState('Tomorrow, 08:30 AM');
+  }, []);
 
-  const persistHomework = (updated) => {
-    setHomeworkStore(updated);
-    try {
-      localStorage.setItem(HOMEWORK_STORAGE_KEY, JSON.stringify(updated));
-    } catch (e) {}
-  };
-
-  const handleCreateHomework = (e) => {
-    e.preventDefault();
-    if (!newHwTitle.trim() || !newHwDesc.trim()) return;
-
-    const newHw = {
-      id: 'hw_' + Date.now(),
-      classId: newHwClass,
-      section: newHwSection,
-      subject: newHwSubject,
-      chapter: newHwChapter.trim() || 'General Curriculum Unit',
-      title: newHwTitle.trim(),
-      desc: newHwDesc.trim(),
-      dueDate: newHwDueDate.trim() || 'Next Class Period',
-      teacher: newHwTeacher || user?.name || 'DAV Subject Faculty',
-      createdAt: 'Just Now'
+  // Listen to custom events for profile and contact updates
+  useEffect(() => {
+    const handleUpdate = () => refreshChatContacts();
+    window.addEventListener('dav_faculty_updated', handleUpdate);
+    window.addEventListener('dav_user_updated', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+    return () => {
+      window.removeEventListener('dav_faculty_updated', handleUpdate);
+      window.removeEventListener('dav_user_updated', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
     };
-
-    const updated = [newHw, ...homeworkStore];
-    persistHomework(updated);
-    playSoundChime('sent');
-    setShowAssignHwModal(false);
-    setNewHwTitle('');
-    setNewHwChapter('');
-    setNewHwDesc('');
-  };
+  }, []);
 
   // =========================================================================
   // PAGE 2: FACULTY ACADEMIC DIRECT DESK (CHAT & CONSULTATION)
@@ -753,7 +746,9 @@ export function TeachersSection({
   const messagesEndRef = useRef(null);
 
   // Mobile Chat Tab: 'roster' | 'chat'
-  const [mobileChatTab, setMobileChatTab] = useState('roster');
+  const [mobileChatTab, setMobileChatTab] = useState(() => {
+    return window.innerWidth < 640 ? 'roster' : 'chat';
+  });
 
   // Media Attachment State: null or { type: 'image'|'audio'|'video', dataUrl, name }
   const [pendingMedia, setPendingMedia] = useState(null);
@@ -789,7 +784,7 @@ export function TeachersSection({
     }
   }, [user]);
 
-  // Chat Conversations Map
+  // Chat Conversations Map (Local + Supabase Cloud synced)
   const [teacherChatsMap, setTeacherChatsMap] = useState(() => {
     try {
       const stored = localStorage.getItem(TEACHER_CHATS_STORAGE_KEY);
@@ -808,6 +803,48 @@ export function TeachersSection({
     } catch (e) {}
   };
 
+  // Canonical Symmetric Channel Key Generators
+  const getConversationChannelKey = (uA, uB) => {
+    const idA = String(uA?.id || uA || '').toLowerCase().trim();
+    const idB = String(uB?.id || uB || '').toLowerCase().trim();
+    if (!idA && !idB) return 'general_chat';
+    if (!idA) return idB;
+    if (!idB) return idA;
+    return [idA, idB].sort().join('__');
+  };
+
+  const getNameChannelKey = (nameA, nameB) => {
+    const clean = (n) => String(n || '').toLowerCase().replace(/^(prof\.|dr\.|mr\.|mrs\.)\s*/i, '').trim();
+    const cA = clean(nameA);
+    const cB = clean(nameB);
+    if (!cA && !cB) return '';
+    return [cA, cB].sort().join('__');
+  };
+
+  // Safe Multi-Key Message Lookup for foolproof cross-device delivery
+  const getMessagesForContact = (contact) => {
+    if (!contact) return [];
+    const chKey = getConversationChannelKey(user?.id, contact.id);
+    const nameKey = getNameChannelKey(user?.name, contact.name);
+
+    if (teacherChatsMap[chKey] && Array.isArray(teacherChatsMap[chKey]) && teacherChatsMap[chKey].length > 0) {
+      return teacherChatsMap[chKey];
+    }
+    if (nameKey && teacherChatsMap[nameKey] && Array.isArray(teacherChatsMap[nameKey]) && teacherChatsMap[nameKey].length > 0) {
+      return teacherChatsMap[nameKey];
+    }
+    if (teacherChatsMap[contact.id] && Array.isArray(teacherChatsMap[contact.id]) && teacherChatsMap[contact.id].length > 0) {
+      return teacherChatsMap[contact.id];
+    }
+    if (contact.name && teacherChatsMap[contact.name] && Array.isArray(teacherChatsMap[contact.name]) && teacherChatsMap[contact.name].length > 0) {
+      return teacherChatsMap[contact.name];
+    }
+    if (user?.id && teacherChatsMap[user.id] && Array.isArray(teacherChatsMap[user.id]) && teacherChatsMap[user.id].length > 0) {
+      return teacherChatsMap[user.id];
+    }
+    return [];
+  };
+
   const activeContact = chatContactsList.find(c => c.id === activeContactId) || chatContactsList[0] || null;
 
   const handleSelectContact = (contactId) => {
@@ -816,8 +853,8 @@ export function TeachersSection({
     playSoundChime('sent');
   };
 
-  // Send Message Handler
-  const handleSendMessage = () => {
+  // Send Message Handler with Immediate Supabase Cloud Push
+  const handleSendMessage = async () => {
     if (!chatInputText.trim() && !pendingMedia) return;
     if (!activeContact) return;
 
@@ -830,65 +867,78 @@ export function TeachersSection({
     const newMsg = {
       id: Date.now(),
       sender: senderRole,
+      senderUserId: user?.id || (isDimension5 ? 'teacher' : 'student'),
       senderName: senderName,
       senderClassSec: senderClassSec,
       text: chatInputText.trim(),
       media: pendingMedia ? { ...pendingMedia } : null,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      status: 'sent'
+      status: 'delivered'
     };
 
-    const currentChatList = teacherChatsMap[activeContact.id] || [];
-    const updatedChatList = [...currentChatList, newMsg];
+    const chKey = getConversationChannelKey(user?.id, activeContact.id);
+    const nameKey = getNameChannelKey(user?.name, activeContact.name);
+    const currentList = getMessagesForContact(activeContact);
+    const updatedList = [...currentList, newMsg];
+
     const updatedMap = {
       ...teacherChatsMap,
-      [activeContact.id]: updatedChatList
+      [chKey]: updatedList,
+      [activeContact.id]: updatedList
     };
+    if (nameKey) {
+      updatedMap[nameKey] = updatedList;
+    }
 
     persistChats(updatedMap);
-    playSoundChime('sent');
     setChatInputText('');
     setPendingMedia(null);
-    setIsMessageDelivering(true);
+    playSoundChime('sent');
 
-    setTimeout(() => {
-      setIsMessageDelivering(false);
-      playSoundChime('delivered');
-      const deliveredMap = {
-        ...updatedMap,
-        [activeContact.id]: updatedChatList.map(m => m.id === newMsg.id ? { ...m, status: 'delivered' } : m)
-      };
-      persistChats(deliveredMap);
-    }, 600);
+    try {
+      await saveCloudDoubtChats(updatedMap);
+    } catch (e) {
+      console.warn('saveCloudDoubtChats failed:', e);
+    }
   };
 
   // Instant AI Conceptual Answer Handler
-  const handleInstantAIAnswer = () => {
+  const handleInstantAIAnswer = async () => {
     if (!activeContact) return;
-    setIsMessageDelivering(true);
     playSoundChime('sent');
 
-    setTimeout(() => {
-      const aiReply = {
-        id: Date.now() + 1,
-        sender: 'teacher',
-        senderName: activeContact.name,
-        senderClassSec: activeContact.subtitle || 'DAV Academic Advisory',
-        text: 'Greetings! Based on the prescribed DAV CBSE Curriculum, here is the verified conceptual explanation: Please review textbook chapter exercises carefully, ensure formulas are written with proper units, and apply step-by-step reasoning. Feel free to ask any specific follow-up query!',
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        status: 'delivered',
-        isAiAssisted: true
-      };
+    const aiReply = {
+      id: Date.now() + 1,
+      sender: 'teacher',
+      senderUserId: activeContact.id || 'ai_faculty',
+      senderName: activeContact.name,
+      senderClassSec: activeContact.subtitle || 'DAV Academic Advisory',
+      text: 'Greetings! Based on the prescribed DAV CBSE Curriculum, here is the verified conceptual explanation: Please review textbook chapter exercises carefully, ensure formulas are written with proper units, and apply step-by-step reasoning. Feel free to ask any specific follow-up query!',
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      status: 'delivered',
+      isAiAssisted: true
+    };
 
-      const currentChatList = teacherChatsMap[activeContact.id] || [];
-      const updatedMap = {
-        ...teacherChatsMap,
-        [activeContact.id]: [...currentChatList, aiReply]
-      };
-      persistChats(updatedMap);
-      setIsMessageDelivering(false);
-      playSoundChime('received');
-    }, 900);
+    const chKey = getConversationChannelKey(user?.id, activeContact.id);
+    const nameKey = getNameChannelKey(user?.name, activeContact.name);
+    const currentList = getMessagesForContact(activeContact);
+    const updatedList = [...currentList, aiReply];
+
+    const updatedMap = {
+      ...teacherChatsMap,
+      [chKey]: updatedList,
+      [activeContact.id]: updatedList
+    };
+    if (nameKey) {
+      updatedMap[nameKey] = updatedList;
+    }
+
+    persistChats(updatedMap);
+    playSoundChime('received');
+
+    try {
+      await saveCloudDoubtChats(updatedMap);
+    } catch (e) {}
   };
 
   // Universal Media Upload via Single Pin Icon
@@ -996,17 +1046,17 @@ export function TeachersSection({
   const [copiedLiveLink, setCopiedLiveLink] = useState(false);
   const [isWhiteboardActive, setIsWhiteboardActive] = useState(false);
 
-  // Real WebRTC Live Room Link Generator for DAV School
+  // WebRTC Live Room Link Generator: Uses session.classId & session.id so all join the same room
   const getLiveRoomUrl = (session, classNum) => {
     const rawId = session?.id || 'live_stream';
     const safeId = rawId.replace(/[^a-zA-Z0-9_-]/g, '_');
-    const safeClass = (classNum || '8').replace(/[^a-zA-Z0-9_-]/g, '_');
+    const safeClass = (session?.classId || classNum || '8').replace(/[^a-zA-Z0-9_-]/g, '_');
     const roomName = `DAV_School_Class_${safeClass}_${safeId}`;
-    const userName = encodeURIComponent(user?.name || (isFacultyRole ? 'DAV Faculty Teacher' : 'DAV Student'));
+    const userName = encodeURIComponent(user?.name || (isDimension5 ? 'DAV Faculty Teacher' : 'DAV Student'));
     return `https://p2p.mirotalk.com/join/${roomName}?name=${userName}`;
   };
 
-  // Live broadcasts store: completely real, no mock cards
+  // Live broadcasts store: completely real, no mock cards (Local + Supabase Cloud synced)
   const [liveSessionsStore, setLiveSessionsStore] = useState(() => {
     try {
       const stored = localStorage.getItem(LIVE_BROADCASTS_STORAGE_KEY);
@@ -1025,23 +1075,156 @@ export function TeachersSection({
     } catch (e) {}
   };
 
-  const handleStartFacultyBroadcast = () => {
+  // Start Faculty Broadcast (STRICTLY Dimension 5 Only)
+  const handleStartFacultyBroadcast = async () => {
+    const educatorName = user?.name ? (user.name.startsWith('Prof.') || user.name.startsWith('Mrs.') || user.name.startsWith('Mr.') || user.name.startsWith('Dr.') ? user.name : `Prof. ${user.name}`) : 'Verified DAV Faculty';
     const session = {
-      id: 'live_' + Date.now(),
-      classId: selectedLiveClassNum,
-      subject: user?.subject || 'Interactive Curriculum',
-      topic: `Class ${selectedLiveClassNum} Live Interactive Period with ${user?.name || 'Faculty'}`,
-      teacher: user?.name || 'Verified DAV Faculty',
+      id: 'live_broadcast_' + Date.now(),
+      classId: selectedLiveClassNum || user?.classNum || '8',
+      subject: user?.subject || 'Science & Technology',
+      topic: `Class ${selectedLiveClassNum || user?.classNum || '8'} Faculty Live Lecture with ${educatorName}`,
+      teacher: educatorName,
       status: 'live',
       activeParticipants: 1,
-      time: 'Streaming Now'
+      time: 'Streaming Now',
+      isRegisteredFaculty: true,
+      startedAt: new Date().toISOString()
     };
-    const updated = [session, ...liveSessionsStore.filter(s => s.classId !== selectedLiveClassNum)];
-    persistLiveSessions(updated);
+    const updated = [session, ...liveSessionsStore.filter(s => s.id !== session.id)];
+    setLiveSessionsStore(updated);
+    try {
+      localStorage.setItem(LIVE_BROADCASTS_STORAGE_KEY, JSON.stringify(updated));
+      await saveCloudLiveBroadcasts(updated);
+    } catch (e) {}
     setActiveLiveSessionData(session);
     setIsInsideLiveRoom(true);
+    playSoundChime('sent');
+  };
+
+  // End Faculty Broadcast (Removes from Cloud & Local across all devices)
+  const handleEndFacultyBroadcast = async (sessionId) => {
+    const targetId = sessionId || activeLiveSessionData?.id;
+    const remaining = liveSessionsStore.filter(s => s.id !== targetId);
+    setLiveSessionsStore(remaining);
+    try {
+      localStorage.setItem(LIVE_BROADCASTS_STORAGE_KEY, JSON.stringify(remaining));
+      await saveCloudLiveBroadcasts(remaining);
+    } catch (e) {}
+    setIsInsideLiveRoom(false);
+    setActiveLiveSessionData(null);
     playSoundChime('delivered');
   };
+
+  // Realtime Supabase Cloud Synchronization for Doubt Chats and Live Broadcasts
+  useEffect(() => {
+    let isSubscribed = true;
+
+    // 1. Initial Fetch Doubt Chats
+    if (typeof fetchCloudDoubtChats === 'function') {
+      fetchCloudDoubtChats().then(cloudChats => {
+        if (!isSubscribed) return;
+        if (cloudChats && typeof cloudChats === 'object') {
+          setTeacherChatsMap(prev => {
+            const merged = { ...prev, ...cloudChats };
+            try {
+              localStorage.setItem(TEACHER_CHATS_STORAGE_KEY, JSON.stringify(merged));
+            } catch (e) {}
+            return merged;
+          });
+        }
+      }).catch(() => {});
+    }
+
+    // 2. Initial Fetch Live Broadcasts
+    if (typeof fetchCloudLiveBroadcasts === 'function') {
+      fetchCloudLiveBroadcasts().then(cloudBroadcasts => {
+        if (!isSubscribed) return;
+        if (Array.isArray(cloudBroadcasts)) {
+          setLiveSessionsStore(cloudBroadcasts);
+          try {
+            localStorage.setItem(LIVE_BROADCASTS_STORAGE_KEY, JSON.stringify(cloudBroadcasts));
+          } catch (e) {}
+        }
+      }).catch(() => {});
+    }
+
+    // 3. Realtime WebSocket Subscription for Doubt Chats
+    let unsubChats = null;
+    if (typeof subscribeCloudDoubtChats === 'function') {
+      unsubChats = subscribeCloudDoubtChats((cloudChats) => {
+        if (!isSubscribed) return;
+        if (cloudChats && typeof cloudChats === 'object') {
+          setTeacherChatsMap(prev => {
+            const merged = { ...prev, ...cloudChats };
+            try {
+              localStorage.setItem(TEACHER_CHATS_STORAGE_KEY, JSON.stringify(merged));
+            } catch (e) {}
+            return merged;
+          });
+          playSoundChime('received');
+        }
+      });
+    }
+
+    // 4. Realtime WebSocket Subscription for Live Broadcasts
+    let unsubBroadcasts = null;
+    if (typeof subscribeCloudLiveBroadcasts === 'function') {
+      unsubBroadcasts = subscribeCloudLiveBroadcasts((cloudBroadcasts) => {
+        if (!isSubscribed) return;
+        if (Array.isArray(cloudBroadcasts)) {
+          setLiveSessionsStore(cloudBroadcasts);
+          try {
+            localStorage.setItem(LIVE_BROADCASTS_STORAGE_KEY, JSON.stringify(cloudBroadcasts));
+          } catch (e) {}
+        }
+      });
+    }
+
+    // 5. High-Reliability Fallback Polling (Every 2.5s for seamless multi-device phone/PC sync)
+    const pollTimer = setInterval(() => {
+      if (typeof fetchCloudDoubtChats === 'function') {
+        fetchCloudDoubtChats().then(cloudChats => {
+          if (!isSubscribed) return;
+          if (cloudChats && typeof cloudChats === 'object') {
+            setTeacherChatsMap(prev => {
+              if (JSON.stringify(prev) !== JSON.stringify({ ...prev, ...cloudChats })) {
+                const merged = { ...prev, ...cloudChats };
+                try {
+                  localStorage.setItem(TEACHER_CHATS_STORAGE_KEY, JSON.stringify(merged));
+                } catch (e) {}
+                return merged;
+              }
+              return prev;
+            });
+          }
+        }).catch(() => {});
+      }
+
+      if (typeof fetchCloudLiveBroadcasts === 'function') {
+        fetchCloudLiveBroadcasts().then(cloudBroadcasts => {
+          if (!isSubscribed) return;
+          if (Array.isArray(cloudBroadcasts)) {
+            setLiveSessionsStore(prev => {
+              if (JSON.stringify(prev) !== JSON.stringify(cloudBroadcasts)) {
+                try {
+                  localStorage.setItem(LIVE_BROADCASTS_STORAGE_KEY, JSON.stringify(cloudBroadcasts));
+                } catch (e) {}
+                return cloudBroadcasts;
+              }
+              return prev;
+            });
+          }
+        }).catch(() => {});
+      }
+    }, 2500);
+
+    return () => {
+      isSubscribed = false;
+      if (typeof unsubChats === 'function') unsubChats();
+      if (typeof unsubBroadcasts === 'function') unsubBroadcasts();
+      clearInterval(pollTimer);
+    };
+  }, []);
 
   // =========================================================================
   // PAGE 4: CONTINUOUS COMPREHENSIVE EVALUATION & TEST SUITE
@@ -2397,7 +2580,7 @@ export function TeachersSection({
                       <MessageSquare className="w-5 h-5 text-teal-300" />
                       <span>{isDimension5 ? 'Faculty Direct Desk - Student Consultation Directory' : 'Faculty Academic Direct Desk - Verified Teachers Directory'}</span>
                     </h2>
-                    <p className="text-xs text-purple-200/90 mt-0.5">
+                    <p className="hidden sm:block text-xs text-purple-200/90 mt-0.5">
                       {isDimension5 ? 'Direct messaging with enrolled students - Rich media support - Sub-second delivery' : 'Direct academic doubt clearance with verified faculty - Rich media support'}
                     </p>
                   </div>
@@ -2555,7 +2738,7 @@ export function TeachersSection({
                 </div>
 
                 {/* Main Chat Workspace Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 h-[720px] rounded-3xl overflow-hidden border border-purple-800 bg-slate-950 shadow-2xl">
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-0 sm:gap-4 h-[76vh] min-h-[480px] max-h-[720px] sm:h-[720px] rounded-3xl overflow-hidden border border-purple-800 bg-slate-950 shadow-2xl">
                   
                   {/* Left Column: Contacts Directory (Width 4/12 on desktop) */}
                   <div className={`sm:col-span-4 lg:col-span-4 bg-purple-950/40 border-r border-purple-800 flex flex-col h-full ${
@@ -2607,7 +2790,7 @@ export function TeachersSection({
                           })
                           .map((contact) => {
                             const isSelected = activeContact?.id === contact.id;
-                            const msgs = teacherChatsMap[contact.id] || [];
+                            const msgs = typeof getMessagesForContact === 'function' ? getMessagesForContact(contact) : (teacherChatsMap[contact.id] || []);
                             const lastMsg = msgs[msgs.length - 1];
 
                             return (
@@ -2668,9 +2851,11 @@ export function TeachersSection({
                         <div className="flex items-center gap-3">
                           <button
                             onClick={() => setMobileChatTab('roster')}
-                            className="p-1 rounded-lg text-purple-300 hover:text-white sm:hidden cursor-pointer"
+                            className="px-2.5 py-1.5 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-teal-300 sm:hidden cursor-pointer shrink-0 flex items-center gap-1 text-xs font-bold shadow-sm"
+                            title="Back to contacts list"
                           >
-                            <ChevronLeft className="w-5 h-5" />
+                            <ChevronLeft className="w-4 h-4" />
+                            <span>Contacts</span>
                           </button>
                           
                           {activeContact.dp ? (
@@ -2715,7 +2900,7 @@ export function TeachersSection({
 
                     {/* Messages Body with Custom Wallpaper */}
                     <div
-                      className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin"
+                      className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-3 scrollbar-thin"
                       style={
                         chatWallpaper.startsWith('data:') || chatWallpaper.startsWith('http')
                           ? {
@@ -2732,7 +2917,7 @@ export function TeachersSection({
                           : { background: '#020617' }
                       }
                     >
-                      {activeContact && (!teacherChatsMap[activeContact.id] || teacherChatsMap[activeContact.id].length === 0) ? (
+                      {activeContact && (typeof getMessagesForContact === 'function' ? getMessagesForContact(activeContact).length === 0 : (!teacherChatsMap[activeContact.id] || teacherChatsMap[activeContact.id].length === 0)) ? (
                         <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-2 text-purple-300">
                           <MessageSquare className="w-10 h-10 text-teal-400 opacity-60" />
                           <h4 className="text-sm font-bold text-white">Start Direct Consultation</h4>
@@ -2741,8 +2926,12 @@ export function TeachersSection({
                           </p>
                         </div>
                       ) : (
-                        (teacherChatsMap[activeContact?.id] || []).map((msg) => {
-                          const isMe = isDimension5 ? msg.sender === 'teacher' : msg.sender === 'student';
+                        (typeof getMessagesForContact === 'function' ? getMessagesForContact(activeContact) : (teacherChatsMap[activeContact?.id] || [])).map((msg) => {
+                          const isMe = Boolean(
+                            (msg.senderUserId && user?.id && String(msg.senderUserId).toLowerCase() === String(user.id).toLowerCase()) ||
+                            (msg.senderName && user?.name && String(msg.senderName).toLowerCase() === String(user.name).toLowerCase()) ||
+                            (isDimension5 ? msg.sender === 'teacher' : msg.sender === 'student')
+                          );
 
                           return (
                             <div
@@ -2822,7 +3011,7 @@ export function TeachersSection({
                     )}
 
                     {/* Chat Input Bar with SINGLE PIN ICON */}
-                    <div className="p-3 bg-purple-950/95 border-t border-purple-800 space-y-2 shrink-0">
+                    <div className="p-2.5 sm:p-3 bg-purple-950/95 border-t border-purple-800 space-y-2 shrink-0 sticky bottom-0 z-20">
                       <div className="flex items-center gap-2">
                         
                         {/* Single Paperclip Pin Icon */}
@@ -3022,26 +3211,12 @@ export function TeachersSection({
                         <ArrowRight className="w-5 h-5" />
                       </button>
 
-                      {isFacultyRole && (
+                      {isDimension5 && (
                         <button
                           onClick={() => {
-                            const educatorName = user?.name ? (user.name.startsWith('Prof.') || user.name.startsWith('Mrs.') || user.name.startsWith('Mr.') || user.name.startsWith('Dr.') ? user.name : `Prof. ${user.name}`) : (activeTeacher?.name || 'Mrs. Sunita Sharma');
-                            const myBroadcast = {
-                              id: `live_broadcast_${Date.now()}`,
-                              classId: selectedLiveClassNum || user?.classNum || '8',
-                              subject: user?.subject || activeTeacher?.subject || 'Science & Technology',
-                              topic: `Interactive Faculty Live Lecture with ${educatorName}`,
-                              teacher: educatorName,
-                              status: 'live',
-                              activeParticipants: 45,
-                              time: 'Streaming Now',
-                              isRegisteredFaculty: true
-                            };
-                            const updatedBroadcasts = [myBroadcast, ...liveSessionsStore.filter(p => p.id !== myBroadcast.id)];
-                            persistLiveSessions(updatedBroadcasts);
-                            setActiveLiveSessionData(myBroadcast);
-                            setIsInsideLiveRoom(true);
-                            playSoundChime('sent');
+                            if (typeof handleStartFacultyBroadcast === 'function') {
+                              handleStartFacultyBroadcast();
+                            }
                           }}
                           className="px-6 py-4 rounded-2xl bg-slate-900 border-2 border-rose-500 text-rose-300 hover:text-white font-black text-sm flex items-center gap-2 transition cursor-pointer"
                         >
@@ -3053,6 +3228,49 @@ export function TeachersSection({
                   </div>
                 </div>
 
+                
+                {/* Real-Time Live Broadcast Pulsing Alert (Prominently displayed for all students) */}
+                {scheduledLiveClasses.some(c => c.status === 'live') && (
+                  <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-rose-950 via-purple-950 to-slate-950 border-2 border-rose-500 shadow-2xl flex items-center justify-between flex-wrap gap-4 animate-pulse">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-12 h-12 rounded-2xl bg-rose-600/30 border border-rose-400 flex items-center justify-center text-rose-400 shrink-0">
+                        <Video className="w-6 h-6 animate-pulse" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="px-2.5 py-0.5 rounded-full bg-rose-600 text-white font-black text-[10px] tracking-wider uppercase">
+                            🔴 STREAMING LIVE NOW
+                          </span>
+                          <span className="text-xs font-mono text-teal-300 font-bold">
+                            Class {scheduledLiveClasses.find(c => c.status === 'live')?.classId || '8'}
+                          </span>
+                        </div>
+                        <h3 className="text-base sm:text-lg font-black text-white mt-1">
+                          {scheduledLiveClasses.find(c => c.status === 'live')?.topic || 'Faculty Live Interactive Lecture'}
+                        </h3>
+                        <p className="text-xs text-rose-200">
+                          Educator: <strong className="text-white">{scheduledLiveClasses.find(c => c.status === 'live')?.teacher}</strong> ({scheduledLiveClasses.find(c => c.status === 'live')?.subject})
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        const target = scheduledLiveClasses.find(c => c.status === 'live');
+                        if (target) {
+                          setActiveLiveSessionData(target);
+                          setIsInsideLiveRoom(true);
+                          playSoundChime('sent');
+                        }
+                      }}
+                      className="px-6 py-3 rounded-2xl bg-gradient-to-r from-rose-500 via-fuchsia-500 to-teal-400 hover:from-rose-400 hover:to-teal-300 text-slate-950 font-black text-xs sm:text-sm flex items-center gap-2 shadow-xl cursor-pointer hover:scale-105 transition transform"
+                    >
+                      <Play className="w-4 h-4 fill-slate-950" />
+                      <span>Join Live Class Now (Instant Video)</span>
+                    </button>
+                  </div>
+                )}
+
                 {/* Quick Live Lecture Schedule Preview */}
                 <div className="w-full space-y-3">
                   <div className="flex items-center justify-between pb-1">
@@ -3060,11 +3278,33 @@ export function TeachersSection({
                       <Video className="w-4 h-4 text-rose-400" />
                       <span>Active &amp; Upcoming Live Lectures (Class 8)</span>
                     </h3>
-                    <span className="text-xs text-rose-300 font-mono">2 Classes Live Now</span>
+                    <span className="text-xs text-rose-300 font-mono">{scheduledLiveClasses.filter(c => c.status === "live").length} Classes Live Now</span>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {scheduledLiveClasses.filter(c => c.classId === selectedLiveClassNum).map((session) => (
+                    {(() => {
+                      const liveNow = scheduledLiveClasses.filter(c => c.status === 'live');
+                      const classSpecific = scheduledLiveClasses.filter(c => String(c.classId) === String(selectedLiveClassNum) && c.status !== 'live');
+                      const seen = new Set();
+                      const displayedList = [];
+                      [...liveNow, ...classSpecific].forEach(s => {
+                        if (!seen.has(s.id)) {
+                          seen.add(s.id);
+                          displayedList.push(s);
+                        }
+                      });
+
+                      if (displayedList.length === 0) {
+                        return (
+                          <div className="col-span-full p-8 rounded-2xl bg-slate-900/60 border border-purple-900/60 text-center space-y-2">
+                            <Video className="w-8 h-8 text-rose-400 mx-auto opacity-50" />
+                            <p className="text-sm font-bold text-white">No active lectures right now for Class {selectedLiveClassNum}.</p>
+                            <p className="text-xs text-purple-300">When your teacher starts a live class, it will instantly appear here across all devices.</p>
+                          </div>
+                        );
+                      }
+
+                      return displayedList.map((session) => (
                       <div
                         key={session.id}
                         className="p-5 rounded-2xl bg-slate-900/80 border border-purple-800/80 hover:border-rose-400 transition shadow-lg flex flex-col justify-between space-y-4"
@@ -3100,7 +3340,8 @@ export function TeachersSection({
                           <span>Join Live Class Now (In-Website Video)</span>
                         </button>
                       </div>
-                    ))}
+                    ));
+                    })()}
                   </div>
                 </div>
 
@@ -3269,17 +3510,36 @@ export function TeachersSection({
                           <span>{isWhiteboardActive ? 'Video Room' : 'Whiteboard'}</span>
                         </button>
 
-                        <button
-                          onClick={() => {
-                            setIsInsideLiveRoom(false);
-                            setIsWhiteboardActive(false);
-                            playSoundChime('alert');
-                          }}
-                          className="px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs flex items-center gap-1.5 shadow-md shadow-rose-600/30 cursor-pointer transition"
-                        >
-                          <PhoneOff className="w-3.5 h-3.5" />
-                          <span>Leave Class</span>
-                        </button>
+                        {isDimension5 ? (
+                          <button
+                            onClick={() => {
+                              if (typeof handleEndFacultyBroadcast === 'function') {
+                                handleEndFacultyBroadcast(activeLiveSessionData?.id);
+                              } else {
+                                setIsInsideLiveRoom(false);
+                              }
+                              setIsWhiteboardActive(false);
+                              playSoundChime('alert');
+                            }}
+                            className="px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs flex items-center gap-1.5 shadow-md shadow-rose-600/30 cursor-pointer transition"
+                            title="End and remove live stream across all devices"
+                          >
+                            <PhoneOff className="w-3.5 h-3.5" />
+                            <span>End Faculty Broadcast</span>
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              setIsInsideLiveRoom(false);
+                              setIsWhiteboardActive(false);
+                              playSoundChime('alert');
+                            }}
+                            className="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-black text-xs flex items-center gap-1.5 shadow-md cursor-pointer transition border border-purple-700"
+                          >
+                            <PhoneOff className="w-3.5 h-3.5 text-rose-400" />
+                            <span>Leave Class</span>
+                          </button>
+                        )}
                       </div>
                     </div>
 
