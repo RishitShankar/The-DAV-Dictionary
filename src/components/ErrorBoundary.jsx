@@ -39,13 +39,22 @@ export class ErrorBoundary extends React.Component {
                 {this.state.error.message}
               </pre>
             )}
-            <div className="flex gap-2 justify-center pt-2">
+            <div className="flex gap-2 justify-center pt-2 flex-wrap">
               <button
                 onClick={this.handleReset}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-md"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-md hover:scale-105 transition"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 <span>Reload Portal</span>
+              </button>
+              <button
+                onClick={() => {
+                  window.location.href = '/';
+                }}
+                className="px-4 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+              >
+                <Home className="w-3.5 h-3.5" />
+                <span>Go to Homepage</span>
               </button>
             </div>
           </div>
