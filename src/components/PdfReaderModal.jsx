@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   X, Download, BookOpen, Sparkles, 
   Send, Navigation, RefreshCw, ChevronRight, ChevronLeft,
-  ExternalLink, FileText, Check, Link, Globe
+  ExternalLink, FileText, Check, Link, Globe,
+  PenTool, Highlighter, Eraser, Save, Trash2, MousePointer
 } from 'lucide-react';
 import { BlackDogLogo } from './BlackDogLogo';
 import { GoogleDriveIcon } from './GoogleDriveIcon';
 import { askShankarAI } from '../services/geminiService';
+import { saveCloudPdfAnnotation, loadCloudPdfAnnotation } from '../services/supabaseClient';
 
 // DAV Chapter-to-Page Index Guide for automatic AI navigation
 const DAV_PAGE_INDEX = {
@@ -155,6 +157,210 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   });
   const [copiedNotification, setCopiedNotification] = useState(false);
 
+  // GitHub Media CDN Fallback: Guarantees full binary PDFs are served without 133-byte Git LFS pointer failures
+  const GITHUB_MEDIA_BASE = 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public';
+
+  const resolvePdfUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('data:') || url.startsWith('blob:')) return url;
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+
+    const cleanPath = url.startsWith('/') ? url : `/${url}`;
+    
+    // When running on Vercel, production, or HTTPS, route /books/ to GitHub Media CDN
+    const isVercelOrProduction = typeof window !== 'undefined' && (
+      window.location.hostname.includes('vercel.app') || 
+      window.location.hostname.includes('dav-dictionary') ||
+      window.location.protocol === 'https:'
+    );
+
+    if (isVercelOrProduction && cleanPath.startsWith('/books/')) {
+      return `${GITHUB_MEDIA_BASE}${encodeURI(cleanPath)}`;
+    }
+
+    return encodeURI(cleanPath);
+  };
+
+  // Interactive Annotation & Drawing Canvas State
+  const canvasRef = useRef(null);
+  const isDrawingRef = useRef(false);
+  const lastPosRef = useRef({ x: 0, y: 0 });
+
+  const [annotationTool, setAnnotationTool] = useState('none'); // 'none' | 'pen' | 'highlighter' | 'eraser'
+  const [penColor, setPenColor] = useState('#ef4444');
+  const [penWidth, setPenWidth] = useState(3);
+  const [highlightColor, setHighlightColor] = useState('#fde047');
+  const [hasUnsavedAnnotations, setHasUnsavedAnnotations] = useState(false);
+  const [isSavingAnnotations, setIsSavingAnnotations] = useState(false);
+  const [annotationToast, setAnnotationToast] = useState(null);
+
+  // Auto-resize canvas to match parent container
+  useEffect(() => {
+    const handleResize = () => {
+      if (!canvasRef.current || !containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const canvas = canvasRef.current;
+      if (canvas.width !== rect.width || canvas.height !== rect.height) {
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx.drawImage(canvas, 0, 0);
+
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(tempCanvas, 0, 0, rect.width, rect.height);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Restore saved drawing annotations whenever book or currentPage changes
+  useEffect(() => {
+    if (!canvasRef.current || !book) return;
+    const canvas = canvasRef.current;
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      canvas.width = rect.width || 800;
+      canvas.height = rect.height || 600;
+    }
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    setHasUnsavedAnnotations(false);
+
+    // 1. Try loading from localStorage
+    const key = `dav_pdf_canvas_${book.title || 'book'}_p${currentPage}`;
+    const localData = localStorage.getItem(key);
+    if (localData) {
+      const img = new Image();
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      };
+      img.src = localData;
+    }
+
+    // 2. Also try loading from Supabase Cloud
+    if (typeof loadCloudPdfAnnotation === 'function') {
+      loadCloudPdfAnnotation(currentUser?.id, book.title, currentPage).then(cloudData => {
+        if (cloudData && cloudData.canvas_data) {
+          const img = new Image();
+          img.onload = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            try {
+              localStorage.setItem(key, cloudData.canvas_data);
+            } catch (e) {}
+          };
+          img.src = cloudData.canvas_data;
+        }
+      }).catch(() => {});
+    }
+  }, [book?.title, currentPage, currentUser?.id]);
+
+  // Pointer event handlers for drawing
+  const getCanvasPos = (e) => {
+    if (!canvasRef.current) return { x: 0, y: 0 };
+    const rect = canvasRef.current.getBoundingClientRect();
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    };
+  };
+
+  const handlePointerDown = (e) => {
+    if (annotationTool === 'none') return;
+    isDrawingRef.current = true;
+    lastPosRef.current = getCanvasPos(e);
+    setHasUnsavedAnnotations(true);
+  };
+
+  const handlePointerMove = (e) => {
+    if (!isDrawingRef.current || annotationTool === 'none' || !canvasRef.current) return;
+    const ctx = canvasRef.current.getContext('2d');
+    const currentPos = getCanvasPos(e);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(lastPosRef.current.x, lastPosRef.current.y);
+    ctx.lineTo(currentPos.x, currentPos.y);
+
+    if (annotationTool === 'pen') {
+      ctx.globalAlpha = 1.0;
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = penColor;
+      ctx.lineWidth = penWidth;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+    } else if (annotationTool === 'highlighter') {
+      ctx.globalAlpha = 0.35;
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = highlightColor;
+      ctx.lineWidth = 18;
+      ctx.lineCap = 'square';
+      ctx.stroke();
+    } else if (annotationTool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = 24;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    }
+
+    ctx.restore();
+    lastPosRef.current = currentPos;
+  };
+
+  const handlePointerUp = () => {
+    isDrawingRef.current = false;
+  };
+
+  // Save Annotations Permanently (to both localStorage and Supabase Cloud)
+  const handleSaveAnnotations = async () => {
+    if (!canvasRef.current || !book) return;
+    setIsSavingAnnotations(true);
+    try {
+      const dataUrl = canvasRef.current.toDataURL('image/png');
+      const key = `dav_pdf_canvas_${book.title || 'book'}_p${currentPage}`;
+      localStorage.setItem(key, dataUrl);
+
+      // Save to Supabase Cloud
+      if (typeof saveCloudPdfAnnotation === 'function') {
+        await saveCloudPdfAnnotation(currentUser?.id, book.title, currentPage, dataUrl);
+      }
+
+      setHasUnsavedAnnotations(false);
+      setAnnotationToast('✓ Annotations Saved! Will persist even after refreshing.');
+      setTimeout(() => setAnnotationToast(null), 3500);
+    } catch (err) {
+      console.warn('Save annotations failed:', err);
+    } finally {
+      setIsSavingAnnotations(false);
+    }
+  };
+
+  // Clear Annotations on Current Page
+  const handleClearAnnotations = async () => {
+    if (!canvasRef.current || !book) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const key = `dav_pdf_canvas_${book.title || 'book'}_p${currentPage}`;
+    localStorage.removeItem(key);
+
+    if (typeof saveCloudPdfAnnotation === 'function') {
+      await saveCloudPdfAnnotation(currentUser?.id, book.title, currentPage, null);
+    }
+
+    setHasUnsavedAnnotations(false);
+    setAnnotationToast('Annotations cleared for this page.');
+    setTimeout(() => setAnnotationToast(null), 2500);
+  };
+
   const containerRef = useRef(null);
   const iframeRef = useRef(null);
 
@@ -174,9 +380,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
   const hasRealPdf = Boolean(book.pdfUrl || book.fileData);
   const rawSource = book.pdfUrl || book.fileData || '';
-  const pdfBaseSource = (rawSource.startsWith('data:') || rawSource.startsWith('blob:'))
-    ? rawSource
-    : encodeURI(rawSource);
+  const pdfBaseSource = resolvePdfUrl(rawSource);
 
   // Offset of +2 pages so book page 1 maps to PDF file page 3 (accounting for cover + preface)
   const pdfPhysicalPage = currentPage + 2;
@@ -194,12 +398,13 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   // Helper to construct absolute URL for Google Docs Viewer
   const getAbsolutePdfUrl = (url) => {
     if (!url) return '';
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    const resolved = resolvePdfUrl(url);
+    if (resolved.startsWith('http://') || resolved.startsWith('https://')) return resolved;
     if (typeof window !== 'undefined') {
       const base = window.location.origin;
-      return `${base}${url.startsWith('/') ? '' : '/'}${url}`;
+      return `${base}${resolved.startsWith('/') ? '' : '/'}${resolved}`;
     }
-    return url;
+    return resolved;
   };
 
   const effectivePdfSource = activeDriveUrl.trim() || rawSource;
@@ -605,6 +810,112 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
       {/* GOOGLE DRIVE LIVE EDITOR CONTROL BAR (When in 'gdrive' mode) */}
       {viewerMode === 'gdrive' && (
         <div className="bg-stone-900 border-b border-blue-500/40 px-3 py-2 flex items-center justify-between flex-wrap gap-2 text-xs text-white z-40 shadow-xl">
+          {/* Annotation Toolbar: Cursor, Pen, Highlighter, Eraser, Clear, Save */}
+          <div className="flex items-center gap-1.5 bg-stone-950 p-1 rounded-xl border border-stone-700 text-xs flex-wrap">
+            <button
+              type="button"
+              onClick={() => setAnnotationTool('none')}
+              className={`px-2 py-1 rounded-lg font-bold flex items-center gap-1 text-[11px] transition cursor-pointer ${
+                annotationTool === 'none' ? 'bg-stone-700 text-white shadow-sm' : 'text-stone-400 hover:text-white'
+              }`}
+              title="Cursor / Scroll Mode"
+            >
+              <MousePointer className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Cursor</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setAnnotationTool('pen')}
+              className={`px-2.5 py-1 rounded-lg font-bold flex items-center gap-1 text-[11px] transition cursor-pointer ${
+                annotationTool === 'pen' ? 'bg-blue-600 text-white shadow-md' : 'text-stone-400 hover:text-white'
+              }`}
+              title="Draw with Pen Tool"
+            >
+              <PenTool className="w-3.5 h-3.5" />
+              <span>Pen</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setAnnotationTool('highlighter')}
+              className={`px-2.5 py-1 rounded-lg font-bold flex items-center gap-1 text-[11px] transition cursor-pointer ${
+                annotationTool === 'highlighter' ? 'bg-amber-500 text-stone-950 shadow-md font-black' : 'text-stone-400 hover:text-white'
+              }`}
+              title="Highlight Text with Highlighter"
+            >
+              <Highlighter className="w-3.5 h-3.5" />
+              <span>Highlight</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setAnnotationTool('eraser')}
+              className={`px-2 py-1 rounded-lg font-bold flex items-center gap-1 text-[11px] transition cursor-pointer ${
+                annotationTool === 'eraser' ? 'bg-rose-600 text-white shadow-md' : 'text-stone-400 hover:text-white'
+              }`}
+              title="Erase Drawings"
+            >
+              <Eraser className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Eraser</span>
+            </button>
+
+            {/* Pen Color Palette */}
+            {annotationTool === 'pen' && (
+              <div className="flex items-center gap-1 pl-1 border-l border-stone-800">
+                {['#ef4444', '#3b82f6', '#10b981', '#a855f7', '#ffffff', '#eab308'].map(c => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => setPenColor(c)}
+                    className={`w-3.5 h-3.5 rounded-full border cursor-pointer ${penColor === c ? 'scale-125 border-white ring-1 ring-white' : 'border-transparent'}`}
+                    style={{ backgroundColor: c }}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Highlighter Color Palette */}
+            {annotationTool === 'highlighter' && (
+              <div className="flex items-center gap-1 pl-1 border-l border-stone-800">
+                {['#fde047', '#86efac', '#67e8f9', '#f472b6'].map(c => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => setHighlightColor(c)}
+                    className={`w-3.5 h-3.5 rounded-full border cursor-pointer ${highlightColor === c ? 'scale-125 border-white ring-1 ring-white' : 'border-transparent'}`}
+                    style={{ backgroundColor: c }}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Clear All on Page */}
+            <button
+              type="button"
+              onClick={handleClearAnnotations}
+              className="p-1 rounded-lg text-stone-400 hover:text-rose-400 transition cursor-pointer"
+              title="Clear All Annotations on This Page"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+
+            {/* SAVE ANNOTATIONS BUTTON */}
+            <button
+              type="button"
+              onClick={handleSaveAnnotations}
+              disabled={isSavingAnnotations}
+              className={`px-3 py-1 rounded-lg font-black text-[11px] flex items-center gap-1.5 transition shadow-lg cursor-pointer ${
+                hasUnsavedAnnotations
+                  ? 'bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 animate-pulse'
+                  : 'bg-emerald-700/90 hover:bg-emerald-600 text-white'
+              }`}
+              title="Save Annotations Permanently (Local & Supabase Cloud)"
+            >
+              <Save className="w-3.5 h-3.5" />
+              <span>{isSavingAnnotations ? 'Saving...' : 'Save Annotations'}</span>
+            </button>
+          </div>
           <div className="flex items-center gap-2.5 flex-wrap">
             <div className="flex items-center gap-1.5 bg-blue-950/80 border border-blue-500/50 px-2.5 py-1 rounded-lg">
               <GoogleDriveIcon className="w-4 h-4" />
@@ -692,6 +1003,29 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
           
           {hasRealPdf || activeDriveUrl ? (
             <div className="relative w-full h-full overflow-hidden">
+              
+              {/* Interactive Pen & Highlighter Drawing Canvas Overlay */}
+              <canvas
+                ref={canvasRef}
+                className="absolute inset-0 z-30 w-full h-full block"
+                style={{
+                  pointerEvents: annotationTool === 'none' ? 'none' : 'auto',
+                  cursor: annotationTool === 'pen' ? 'crosshair' : annotationTool === 'highlighter' ? 'text' : annotationTool === 'eraser' ? 'cell' : 'default',
+                  touchAction: annotationTool === 'none' ? 'auto' : 'none'
+                }}
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerCancel={handlePointerUp}
+              />
+
+              {/* Toast Notification */}
+              {annotationToast && (
+                <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-2xl bg-emerald-600 text-white font-bold text-xs shadow-2xl flex items-center gap-2 animate-fadeIn pointer-events-none">
+                  <Check className="w-4 h-4" />
+                  <span>{annotationToast}</span>
+                </div>
+              )}
               
               {/* GOOGLE DRIVE LIVE VIEWER & EDITOR IFRAME */}
               {viewerMode === 'gdrive' ? (

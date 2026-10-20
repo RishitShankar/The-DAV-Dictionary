@@ -1073,6 +1073,76 @@ export function TeachersSection({
   const [isWhiteboardActive, setIsWhiteboardActive] = useState(false);
   const iframeLoadCountRef = useRef(0);
 
+  // Live broadcasts store: completely real, no mock cards (Local + Supabase Cloud synced)
+  // MUST be declared before any useEffect hooks that reference it!
+  const [liveSessionsStore, setLiveSessionsStore] = useState(() => {
+    try {
+      const stored = localStorage.getItem(LIVE_BROADCASTS_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {}
+    return [];
+  });
+
+  const persistLiveSessions = (updated) => {
+    setLiveSessionsStore(updated);
+    try {
+      localStorage.setItem(LIVE_BROADCASTS_STORAGE_KEY, JSON.stringify(updated));
+    } catch (e) {}
+  };
+
+  // WebRTC Live Room Link Generator: Uses session.classId & session.id so all join the same room
+  const getLiveRoomUrl = (session, classNum) => {
+    const rawId = session?.id || 'live_stream';
+    const safeId = rawId.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const safeClass = (session?.classId || classNum || '8').replace(/[^a-zA-Z0-9_-]/g, '_');
+    const roomName = `DAV_School_Class_${safeClass}_${safeId}`;
+    const userName = encodeURIComponent(user?.name || (isDimension5 ? 'DAV Faculty Teacher' : 'DAV Student'));
+    return `https://p2p.mirotalk.com/join/${roomName}?name=${userName}`;
+  };
+
+  // Start Faculty Broadcast (STRICTLY Dimension 5 Only)
+  const handleStartFacultyBroadcast = async () => {
+    const educatorName = user?.name ? (user.name.startsWith('Prof.') || user.name.startsWith('Mrs.') || user.name.startsWith('Mr.') || user.name.startsWith('Dr.') ? user.name : `Prof. ${user.name}`) : 'Verified DAV Faculty';
+    const session = {
+      id: 'live_broadcast_' + Date.now(),
+      classId: selectedLiveClassNum || user?.classNum || '8',
+      subject: user?.subject || 'Science & Technology',
+      topic: `Class ${selectedLiveClassNum || user?.classNum || '8'} Faculty Live Lecture with ${educatorName}`,
+      teacher: educatorName,
+      status: 'live',
+      activeParticipants: 1,
+      time: 'Streaming Now',
+      isRegisteredFaculty: true,
+      startedAt: new Date().toISOString()
+    };
+    const updated = [session, ...liveSessionsStore.filter(s => s.id !== session.id)];
+    setLiveSessionsStore(updated);
+    try {
+      localStorage.setItem(LIVE_BROADCASTS_STORAGE_KEY, JSON.stringify(updated));
+      await saveCloudLiveBroadcasts(updated);
+    } catch (e) {}
+    setActiveLiveSessionData(session);
+    setIsInsideLiveRoom(true);
+    playSoundChime('sent');
+  };
+
+  // End Faculty Broadcast (Removes from Cloud & Local across all devices)
+  const handleEndFacultyBroadcast = async (sessionId) => {
+    const targetId = sessionId || activeLiveSessionData?.id;
+    const remaining = liveSessionsStore.filter(s => s.id !== targetId);
+    setLiveSessionsStore(remaining);
+    try {
+      localStorage.setItem(LIVE_BROADCASTS_STORAGE_KEY, JSON.stringify(remaining));
+      await saveCloudLiveBroadcasts(remaining);
+    } catch (e) {}
+    setIsInsideLiveRoom(false);
+    setActiveLiveSessionData(null);
+    playSoundChime('delivered');
+  };
+
   // Reset load count when entering meeting
   useEffect(() => {
     if (isInsideLiveRoom) {
@@ -1083,7 +1153,7 @@ export function TeachersSection({
   // Auto-close meeting room for students if teacher ends the live broadcast in cloud
   useEffect(() => {
     if (isInsideLiveRoom && activeLiveSessionData && !isDimension5) {
-      const isStillLive = liveSessionsStore.some(
+      const isStillLive = (liveSessionsStore || []).some(
         s => s.id === activeLiveSessionData.id && s.status === 'live'
       );
       if (!isStillLive) {
@@ -1127,75 +1197,6 @@ export function TeachersSection({
     window.addEventListener('message', handleMirotalkEvent);
     return () => window.removeEventListener('message', handleMirotalkEvent);
   }, [isInsideLiveRoom, activeLiveSessionData, isDimension5]);
-
-  // WebRTC Live Room Link Generator: Uses session.classId & session.id so all join the same room
-  const getLiveRoomUrl = (session, classNum) => {
-    const rawId = session?.id || 'live_stream';
-    const safeId = rawId.replace(/[^a-zA-Z0-9_-]/g, '_');
-    const safeClass = (session?.classId || classNum || '8').replace(/[^a-zA-Z0-9_-]/g, '_');
-    const roomName = `DAV_School_Class_${safeClass}_${safeId}`;
-    const userName = encodeURIComponent(user?.name || (isDimension5 ? 'DAV Faculty Teacher' : 'DAV Student'));
-    return `https://p2p.mirotalk.com/join/${roomName}?name=${userName}`;
-  };
-
-  // Live broadcasts store: completely real, no mock cards (Local + Supabase Cloud synced)
-  const [liveSessionsStore, setLiveSessionsStore] = useState(() => {
-    try {
-      const stored = localStorage.getItem(LIVE_BROADCASTS_STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) return parsed;
-      }
-    } catch (e) {}
-    return [];
-  });
-
-  const persistLiveSessions = (updated) => {
-    setLiveSessionsStore(updated);
-    try {
-      localStorage.setItem(LIVE_BROADCASTS_STORAGE_KEY, JSON.stringify(updated));
-    } catch (e) {}
-  };
-
-  // Start Faculty Broadcast (STRICTLY Dimension 5 Only)
-  const handleStartFacultyBroadcast = async () => {
-    const educatorName = user?.name ? (user.name.startsWith('Prof.') || user.name.startsWith('Mrs.') || user.name.startsWith('Mr.') || user.name.startsWith('Dr.') ? user.name : `Prof. ${user.name}`) : 'Verified DAV Faculty';
-    const session = {
-      id: 'live_broadcast_' + Date.now(),
-      classId: selectedLiveClassNum || user?.classNum || '8',
-      subject: user?.subject || 'Science & Technology',
-      topic: `Class ${selectedLiveClassNum || user?.classNum || '8'} Faculty Live Lecture with ${educatorName}`,
-      teacher: educatorName,
-      status: 'live',
-      activeParticipants: 1,
-      time: 'Streaming Now',
-      isRegisteredFaculty: true,
-      startedAt: new Date().toISOString()
-    };
-    const updated = [session, ...liveSessionsStore.filter(s => s.id !== session.id)];
-    setLiveSessionsStore(updated);
-    try {
-      localStorage.setItem(LIVE_BROADCASTS_STORAGE_KEY, JSON.stringify(updated));
-      await saveCloudLiveBroadcasts(updated);
-    } catch (e) {}
-    setActiveLiveSessionData(session);
-    setIsInsideLiveRoom(true);
-    playSoundChime('sent');
-  };
-
-  // End Faculty Broadcast (Removes from Cloud & Local across all devices)
-  const handleEndFacultyBroadcast = async (sessionId) => {
-    const targetId = sessionId || activeLiveSessionData?.id;
-    const remaining = liveSessionsStore.filter(s => s.id !== targetId);
-    setLiveSessionsStore(remaining);
-    try {
-      localStorage.setItem(LIVE_BROADCASTS_STORAGE_KEY, JSON.stringify(remaining));
-      await saveCloudLiveBroadcasts(remaining);
-    } catch (e) {}
-    setIsInsideLiveRoom(false);
-    setActiveLiveSessionData(null);
-    playSoundChime('delivered');
-  };
 
   // Realtime Supabase Cloud Synchronization for Doubt Chats and Live Broadcasts
   useEffect(() => {
