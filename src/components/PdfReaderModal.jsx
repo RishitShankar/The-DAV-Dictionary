@@ -231,11 +231,8 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
   // Offset of +2 pages so book page 1 maps to PDF file page 3 (accounting for cover + preface)
   const pdfPhysicalPage = currentPage + 2;
-  // When in editor mode, lock view cleanly to Fit and disable scrollbars so drawings stay attached
-  // When in reading mode, allow full-width FitH, native scrollbars, and smooth reading
-  const pdfSourceWithPage = isEditorActive
-    ? `${pdfBaseSource}#page=${pdfPhysicalPage}&view=Fit&toolbar=0&navpanes=0&scrollbar=0`
-    : `${pdfBaseSource}#page=${pdfPhysicalPage}&view=FitH&toolbar=1&navpanes=0&scrollbar=1`;
+  // Always lock view cleanly to Fit and disable internal scrollbars so drawings stay attached 1:1 to their page
+  const pdfSourceWithPage = `${pdfBaseSource}#page=${pdfPhysicalPage}&view=Fit&toolbar=0&navpanes=0&scrollbar=0`;
 
   // Storage keys for page-specific canvas and notes
   const storageKeyNotes = `dav_pdf_notes_${book.title}_p${currentPage}`;
@@ -271,6 +268,12 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
       saveCanvasData(currentPage);
       setUndoStack([]);
       setRedoStack([]);
+      // Clear canvas immediately so current page drawing never leaks onto previous page!
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
       setCurrentPage(prev => Math.max(1, prev - 1));
     }
   };
@@ -279,6 +282,12 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     saveCanvasData(currentPage);
     setUndoStack([]);
     setRedoStack([]);
+    // Clear canvas immediately so current page drawing never leaks onto next page!
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
     setCurrentPage(prev => prev + 1);
   };
 
@@ -298,11 +307,8 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentPage, isEditorActive]);
 
-  // Wheel listener to flip pages cleanly when in Annotation Mode
+  // Wheel listener to flip pages cleanly
   const handlePageWheel = (e) => {
-    // In normal reading mode, let native PDF iframe handle scrolling freely
-    if (!isEditorActive) return;
-
     // If user is actively drawing a stroke with pen/highlighter, do not flip page mid-stroke
     if (isDrawingRef.current) return;
 
@@ -312,25 +318,25 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     e.stopPropagation?.();
 
     const now = Date.now();
-    if (now - lastWheelTimeRef.current < 350) return;
+    if (now - lastWheelTimeRef.current < 400) return;
 
     wheelAccumulatorRef.current += e.deltaY;
 
-    if (wheelAccumulatorRef.current > 25) {
+    if (wheelAccumulatorRef.current > 20) {
       wheelAccumulatorRef.current = 0;
       lastWheelTimeRef.current = now;
       handleNextPage();
-    } else if (wheelAccumulatorRef.current < -25) {
+    } else if (wheelAccumulatorRef.current < -20) {
       wheelAccumulatorRef.current = 0;
       lastWheelTimeRef.current = now;
       handlePrevPage();
     }
   };
 
-  // Native non-passive wheel listener on container only when in Annotation Mode
+  // Native non-passive wheel listener on container to cleanly flip pages
   useEffect(() => {
     const container = containerRef.current;
-    if (!container || !isEditorActive) return;
+    if (!container) return;
 
     const onWheelNative = (e) => {
       handlePageWheel(e);
@@ -479,6 +485,12 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     if (!isNaN(p) && p > 0) {
       // Save existing page drawing before navigating
       saveCanvasData(currentPage);
+      // Clear canvas immediately so old page drawing never leaks
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
       setCurrentPage(p);
       setTeleportInput('');
       setAiMessages(prev => [
@@ -1274,15 +1286,13 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                 </div>
               )}
 
-              {/* PDF Viewer Iframe with Dynamic Key to guarantee instant navigation on page change */}
+              {/* PDF Viewer Iframe with clean page key that never remounts or jumps zoom when editing */}
               <iframe
-                key={`${book.title || 'pdf-viewer'}-page-${currentPage}-${isEditorActive ? 'edit' : 'read'}`}
+                key={`${book.title || 'pdf-viewer'}-page-${currentPage}`}
                 ref={iframeRef}
                 src={pdfSourceWithPage}
                 title={book.title}
-                className={`w-full h-full border-none bg-white block select-none ${
-                  isEditorActive ? 'pointer-events-none' : 'pointer-events-auto'
-                }`}
+                className="w-full h-full border-none bg-white block select-none pointer-events-none"
               />
 
               {/* Floating Page Flip Controls (Left & Right) */}
