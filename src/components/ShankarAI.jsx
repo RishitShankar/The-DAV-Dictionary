@@ -4,7 +4,7 @@ import {
   Check, X, BookOpen, MessageSquare, Maximize2, Minimize2, 
   Globe, Compass, CheckCircle2, ShieldCheck, Flame, Info,
   GraduationCap, FileText, CheckSquare, Layers, Award,
-  Bookmark, Paperclip, ChevronDown, ListChecks, HelpCircle,
+  Bookmark, Paperclip, Mic, MicOff, Image as ImageIcon, ChevronDown, ListChecks, HelpCircle,
   ArrowRight, ArrowLeft, RotateCcw
 } from 'lucide-react';
 import { ShankarAILogo } from './ShankarAILogo';
@@ -146,6 +146,10 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
   ]);
 
   const [input, setInput] = useState('');
+  const [isListening, setIsListening] = useState(false);
+  const [pendingMedia, setPendingMedia] = useState(null);
+  const fileInputRef = useRef(null);
+  const recognitionRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [apiKey, setApiKey] = useState('');
   const [showKeyConfig, setShowKeyConfig] = useState(false);
@@ -207,6 +211,76 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
     }, 1200);
   };
 
+  // Web Speech API Voice Transcription Handler
+  const handleToggleVoice = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('Speech recognition is not supported in this browser. Please use Google Chrome or Edge.');
+      return;
+    }
+
+    if (isListening) {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      setIsListening(false);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-IN';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+
+      recognition.onstart = () => {
+        setIsListening(true);
+      };
+
+      recognition.onresult = (event) => {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
+        if (transcript.trim()) {
+          setInput(prev => {
+            const clean = prev.trim();
+            return clean ? `${clean} ${transcript.trim()}` : transcript.trim();
+          });
+        }
+      };
+
+      recognition.onerror = () => {
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } catch (err) {
+      setIsListening(false);
+    }
+  };
+
+  // Media Attachment Handler
+  const handleMediaAttach = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setPendingMedia({
+        name: file.name,
+        type: file.type.startsWith('image/') ? 'image' : 'document',
+        dataUrl: ev.target.result
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSend = async (textToSend, actionType = null) => {
     const question = textToSend || input;
     if (!question.trim() || loading) return;
@@ -214,9 +288,19 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
     // Close quiz if user sends a question
     setShowQuiz(false);
 
-    const userMsg = { role: 'user', text: question };
+    const attached = pendingMedia;
+    const userMsg = { 
+      role: 'user', 
+      text: question,
+      media: attached ? { ...attached } : null
+    };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
+    setPendingMedia(null);
+    if (isListening && recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    }
     setLoading(true);
 
     try {
@@ -674,6 +758,24 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
             )}
           </div>
 
+          {/* Pending Media Attachment Chip */}
+          {pendingMedia && (
+            <div className="max-w-5xl mx-auto mb-2 px-3 py-1.5 rounded-xl bg-orange-950/80 border border-orange-500/50 flex items-center justify-between text-xs text-amber-300 animate-fadeIn">
+              <div className="flex items-center gap-2">
+                <Paperclip className="w-3.5 h-3.5 text-amber-400" />
+                <span className="font-bold">{pendingMedia.name}</span>
+                <span className="text-[10px] uppercase font-mono text-orange-200">({pendingMedia.type})</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPendingMedia(null)}
+                className="text-orange-300 hover:text-white cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -681,10 +783,45 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
             }}
             className="flex items-center gap-2 max-w-5xl mx-auto"
           >
+            {/* Hidden file input */}
+            <input
+              type="file"
+              accept="image/*,.pdf,.doc,.docx"
+              ref={fileInputRef}
+              className="hidden"
+              onChange={handleMediaAttach}
+            />
+
+            {/* Media Attachment Pin Icon */}
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              title="Attach Homework Photo, Question Paper or Document"
+              className="p-3 rounded-xl bg-stone-900 border border-orange-500/40 hover:border-amber-400 text-orange-300 hover:text-amber-400 transition cursor-pointer shrink-0"
+            >
+              <Paperclip className="w-4 h-4" />
+            </button>
+
+            {/* Voice Transcription Mic Button */}
+            <button
+              type="button"
+              onClick={handleToggleVoice}
+              title={isListening ? "Listening... Click to stop" : "Speak your question (Voice Transcription)"}
+              className={`p-3 rounded-xl border transition cursor-pointer shrink-0 ${
+                isListening
+                  ? "bg-rose-600 border-rose-400 text-white animate-pulse shadow-lg shadow-rose-600/40"
+                  : "bg-stone-900 border-orange-500/40 hover:border-amber-400 text-orange-300 hover:text-amber-400"
+              }`}
+            >
+              {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+            </button>
+
             <input
               type="text"
               placeholder={
-                activeMode === 'academics'
+                isListening
+                  ? "🎙️ Listening... Speak your question now..."
+                  : activeMode === 'academics'
                   ? `Ask anything from Class ${selectedClass} ${currentSubjectObj?.name || 'SST'} Ch ${selectedChapter} (e.g. Question D.1, middle page concepts, 5-mark notes)...`
                   : 'Ask Shankar AI anything about outer world, geopolitics, space, weather, coding, chess...'
               }
@@ -694,7 +831,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
             />
             <button
               type="submit"
-              disabled={!input.trim() || loading}
+              disabled={(!input.trim() && !pendingMedia) || loading}
               className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-stone-950 font-black text-sm transition flex items-center gap-1.5 disabled:opacity-50 shadow-md cursor-pointer shrink-0"
             >
               <Send className="w-4 h-4" />
