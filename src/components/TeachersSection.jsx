@@ -524,6 +524,32 @@ export function TeachersSection({
     return () => window.removeEventListener('keydown', handleKeyNav);
   }, [activePage, currentPageIdx]);
 
+  // Helper to extract real enrolled students from localStorage registered database
+  const getInitialRosterForClass = (classNum, sec) => {
+    try {
+      let raw = localStorage.getItem('dav_registered_users');
+      let users = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(users) || users.length === 0) {
+        users = typeof getRegisteredUsers === 'function' ? getRegisteredUsers() : [];
+      }
+      if (Array.isArray(users)) {
+        const matching = users.filter(u => 
+          !u.isTeacher && u.dimension !== 5 &&
+          String(u.classNum || '8') === String(classNum) &&
+          (!u.section || String(u.section).toUpperCase() === String(sec).toUpperCase())
+        );
+        if (matching.length > 0) {
+          return matching.map((u, idx) => ({
+            roll: idx + 1,
+            name: u.name || u.id,
+            status: 'present'
+          }));
+        }
+      }
+    } catch (e) {}
+    return [];
+  };
+
   // Dynamic directory of chat contacts based on user role:
   // If student (Dim 1-4): show registered Dimension 5 teachers.
   // If teacher (Dim 5): show registered Dimension 1-4 students.
