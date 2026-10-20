@@ -1071,6 +1071,62 @@ export function TeachersSection({
   const [activeLiveSessionData, setActiveLiveSessionData] = useState(null);
   const [copiedLiveLink, setCopiedLiveLink] = useState(false);
   const [isWhiteboardActive, setIsWhiteboardActive] = useState(false);
+  const iframeLoadCountRef = useRef(0);
+
+  // Reset load count when entering meeting
+  useEffect(() => {
+    if (isInsideLiveRoom) {
+      iframeLoadCountRef.current = 0;
+    }
+  }, [isInsideLiveRoom, activeLiveSessionData]);
+
+  // Auto-close meeting room for students if teacher ends the live broadcast in cloud
+  useEffect(() => {
+    if (isInsideLiveRoom && activeLiveSessionData && !isDimension5) {
+      const isStillLive = liveSessionsStore.some(
+        s => s.id === activeLiveSessionData.id && s.status === 'live'
+      );
+      if (!isStillLive) {
+        setIsInsideLiveRoom(false);
+        setActiveLiveSessionData(null);
+        setIsWhiteboardActive(false);
+        playSoundChime('alert');
+      }
+    }
+  }, [liveSessionsStore, isInsideLiveRoom, activeLiveSessionData, isDimension5]);
+
+  // Listen for MiroTalk postMessage events to auto-close if user clicks leave inside iframe
+  useEffect(() => {
+    const handleMirotalkEvent = (e) => {
+      try {
+        const data = e.data;
+        const str = typeof data === 'string' ? data.toLowerCase() : JSON.stringify(data).toLowerCase();
+        if (
+          str.includes('leave') || 
+          str.includes('hangup') || 
+          str.includes('exit') || 
+          str.includes('disconnected') ||
+          str.includes('end_call') ||
+          str.includes('room_closed')
+        ) {
+          if (isDimension5) {
+            if (typeof handleEndFacultyBroadcast === 'function') {
+              handleEndFacultyBroadcast(activeLiveSessionData?.id);
+            } else {
+              setIsInsideLiveRoom(false);
+              setActiveLiveSessionData(null);
+            }
+          } else {
+            setIsInsideLiveRoom(false);
+            setActiveLiveSessionData(null);
+          }
+          setIsWhiteboardActive(false);
+        }
+      } catch (err) {}
+    };
+    window.addEventListener('message', handleMirotalkEvent);
+    return () => window.removeEventListener('message', handleMirotalkEvent);
+  }, [isInsideLiveRoom, activeLiveSessionData, isDimension5]);
 
   // WebRTC Live Room Link Generator: Uses session.classId & session.id so all join the same room
   const getLiveRoomUrl = (session, classNum) => {
@@ -3597,6 +3653,26 @@ export function TeachersSection({
                             allow="camera; microphone; display-capture; autoplay; clipboard-read; clipboard-write; fullscreen"
                             className="w-full flex-1 border-0"
                             title="DAV Real Online Live Classroom"
+                            onLoad={() => {
+                              iframeLoadCountRef.current = (iframeLoadCountRef.current || 0) + 1;
+                              if (iframeLoadCountRef.current > 1) {
+                                // Meeting ended or MiroTalk redirected to landing page!
+                                // Instantly close meeting room modal so landing page is NEVER displayed!
+                                if (isDimension5) {
+                                  if (typeof handleEndFacultyBroadcast === 'function') {
+                                    handleEndFacultyBroadcast(activeLiveSessionData?.id);
+                                  } else {
+                                    setIsInsideLiveRoom(false);
+                                    setActiveLiveSessionData(null);
+                                  }
+                                } else {
+                                  setIsInsideLiveRoom(false);
+                                  setActiveLiveSessionData(null);
+                                }
+                                setIsWhiteboardActive(false);
+                                playSoundChime('alert');
+                              }
+                            }}
                           />
                         </div>
                       )}
