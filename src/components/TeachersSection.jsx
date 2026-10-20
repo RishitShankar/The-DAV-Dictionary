@@ -1777,6 +1777,13 @@ export function TeachersSection({
     };
   };
 
+  // Aliases for compatibility across sub-pages
+  const scheduledLiveClasses = liveSessionsStore || [];
+  const teachersList = chatContactsList.filter(c => c.type === 'teacher').length > 0
+    ? chatContactsList.filter(c => c.type === 'teacher')
+    : (user?.name ? [{ id: 'tch_me', name: (user.name.startsWith('Prof.') || user.name.startsWith('Dr.') || user.name.startsWith('Mr.') || user.name.startsWith('Mrs.')) ? user.name : 'Prof. ' + user.name, subject: user?.subject || 'Science & Technology' }] : []);
+  const activeTeacher = teachersList.find(t => t.id === activeContactId) || teachersList[0] || { name: user?.name || 'Verified DAV Faculty', subject: user?.subject || 'Science & Technology' };
+
   const currentMeta = PDF_PAGES_METADATA[activePage] || PDF_PAGES_METADATA.homework;
 
 
