@@ -8,10 +8,18 @@ import { lookupTextbookDatabase, DAV_CLASS_8_SYLLABUS_INDEX, DAV_TEXTBOOK_DATABA
 const STORAGE_KEY = 'shankar_ai_api_key';
 
 export function getSavedApiKey() {
-  if (typeof localStorage !== 'undefined') {
-    return localStorage.getItem(STORAGE_KEY) || '';
+  let localKey = '';
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localKey = localStorage.getItem(STORAGE_KEY) || '';
+    }
+  } catch (e) {}
+  if (localKey && localKey.trim()) return localKey.trim();
+
+  if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GEMINI_API_KEY) {
+    return import.meta.env.VITE_GEMINI_API_KEY.trim();
   }
-  return (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GEMINI_API_KEY) || '';
+  return '';
 }
 
 export function saveApiKey(key) {
@@ -140,8 +148,8 @@ You are the definitive authority on the official D.A.V. Public School curriculum
 /**
  * Query live Google Cloud Generative Language API
  */
-async function queryLiveGemini(apiKey, systemPrompt, userPrompt, targetModel = 'gemini-3.5-flash', maxTokens = 2000) {
-  const modelsToTry = [targetModel, 'gemini-3.5-flash-lite', 'gemini-3.5-flash'];
+async function queryLiveGemini(apiKey, systemPrompt, userPrompt, targetModel = 'gemini-3.5-flash-lite', maxTokens = 2000) {
+  const modelsToTry = [targetModel, 'gemini-3.5-flash-lite', 'gemini-3-flash-preview', 'gemini-3.8-flash'];
   const uniqueModels = [...new Set(modelsToTry)];
 
   for (const model of uniqueModels) {
@@ -395,7 +403,7 @@ ${textbookMatch.topics.map(t => `* **${t.heading}:** ${t.content.slice(0, 160)}.
 
   // 2. LIVE CLOUD GENERATION with 4-Tier Dimension Configuration
   if (apiKey) {
-    let targetModel = 'gemini-3.5-flash';
+    let targetModel = 'gemini-3.5-flash-lite';
     let maxTokens = 1800;
     let dimensionInstruction = '';
     let footerTag = '';
@@ -408,19 +416,19 @@ ${textbookMatch.topics.map(t => `* **${t.heading}:** ${t.content.slice(0, 160)}.
       footerTag = `\n\n*(⚡ Normal Plan: Concise notes. Upgrade to VIP or VVIP for full 5-mark model answers & middle-of-page analysis!)*`;
     } else if (dimension === 2) {
       // Dimension 2: VIP Plan
-      targetModel = 'gemini-3.5-flash';
+      targetModel = 'gemini-3.5-flash-lite';
       maxTokens = 1200;
       dimensionInstruction = `You are serving a VIP PLAN (Dimension 2) student. Provide detailed explanations, comprehensive points, exam tips, and key formulas.`;
       footerTag = `\n\n*(⭐ VIP Plan: Enhanced detailed study notes & exam formulas.)*`;
     } else if (dimension === 3) {
       // Dimension 3: VVIP Plan
-      targetModel = 'gemini-3.5-flash';
+      targetModel = 'gemini-3.5-flash-lite';
       maxTokens = 2200;
       dimensionInstruction = `You are serving a VVIP ULTRA (Dimension 3) student. Provide exhaustive, comprehensive 5-mark model answers, middle-of-page concepts, historical/scientific background, step-by-step reasoning, and exam scoring secrets by Head Boy Rishit Shankar.`;
       footerTag = `\n\n*(👑 VVIP Ultra Pass: Full 5-Mark DAV Model Answer & Deep Syllabus Mastery.)*`;
     } else if (dimension === 4) {
       // Dimension 4: Master Developer
-      targetModel = 'gemini-3.5-flash';
+      targetModel = 'gemini-3.5-flash-lite';
       maxTokens = 4096;
       dimensionInstruction = `You are serving the CREATOR & MASTER DEVELOPER, Head Boy Rishit Shankar. Provide maximum analytical depth, unconstrained intelligence, exact syllabus cross-referencing, and architectural precision.`;
       footerTag = `\n\n*(💎 Dev Master Dimension: Unrestricted Neural Generation & Database Direct Feed.)*`;
@@ -739,6 +747,92 @@ Welcome to **The DAV Dictionary**! I am your personal academic and global intell
 * **El Niño:** Abnormal warming of sea surface temperatures in the central/eastern equatorial Pacific, typically associated with weaker Indian monsoon rainfall and drought risk.
 * **La Niña:** Cooling of equatorial Pacific waters, generally favoring abundant, well-distributed monsoon precipitation in India.
 * **Indian Ocean Dipole (IOD):** A positive IOD buffers India against deficient rain by bringing moisture-rich winds.`
+    };
+  }
+
+  // 6b. National & Governance Offline Knowledge Routers
+  if (lowerQ.includes('pm of india') || lowerQ.includes('prime minister of india') || lowerQ.includes('who is pm') || lowerQ.includes('who is the pm') || lowerQ.includes('narendra modi') || lowerQ.includes('who is prime minister')) {
+    return {
+      source: 'shankar-geo-core',
+      isTextbookGrounded: false,
+      chapterInfo: 'Indian Civics & Governance • Head of Government',
+      modelName: getTierBadge(dimension),
+      text: `🇮🇳 **Prime Minister of India (भारत के प्रधान मंत्री)**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### 👤 Current Incumbent: **Shri Narendra Damodardas Modi (नरेंद्र मोदी)**
+* **Office:** 14th Prime Minister of the Republic of India (Serving since 26 May 2014; re-elected in 2019 and 2024).
+* **Constitutional Position:** 
+  - Under **Article 74 & 75 of the Indian Constitution**, the Prime Minister is the **Head of Government** (de facto executive), while the President is the constitutional Head of State (de jure executive).
+  - Leads the Union Council of Ministers and advises the President on all major executive and legislative affairs.
+* **Constituency:** Varanasi, Uttar Pradesh (Member of Parliament, Lok Sabha).
+* **Key National Initiatives:** Digital India, Make in India, Ayushman Bharat, PM GatiShakti, Chandrayaan-3 lunar landing mission, Swachh Bharat Abhiyan, and Unified Payments Interface (UPI).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏛️ *Syllabus Reference (DAV Class 8 SST - We and Our World):* Unit 3 "The Union Executive" covers the appointment, powers, and constitutional functions of the Prime Minister and Council of Ministers.`
+    };
+  }
+
+  // 6c. DAV Hindi Textbooks Offline Knowledge
+  if (lowerQ.includes('hindi literature') || (lowerQ.includes('hindi') && (lowerQ.includes('book') || lowerQ.includes('kitab') || lowerQ.includes('pustak') || lowerQ.includes('name')))) {
+    return {
+      source: 'shankar-textbook-core',
+      isTextbookGrounded: true,
+      chapterInfo: 'DAV Class 8 Hindi Curriculum • DAVCMC Publications',
+      modelName: getTierBadge(dimension),
+      text: `📖 **Official DAV Class 8 Hindi Textbooks**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+In the official DAV Education Board curriculum for Class 8, there are **two prescribed Hindi textbooks**:
+
+1. 📚 **ज्ञान सागर (Gyan Sagar) — Literature Reader (साहित्य पाठ्यपुस्तक):**
+   * Contains prose stories, inspiring poems, and classical dohas (20 Chapters).
+   * **Key Chapters include:**
+     - पाठ 1: हम पंछी उन्मुक्त गगन के (शिवमंगल सिंह 'सुमन')
+     - पाठ 2: असल धन (कहानी)
+     - पाठ 3: अच्छे पड़ोसी के गुण
+     - पाठ 4: दोपहरी (कविता)
+     - पाठ 5: सागर और मेघ
+     - पाठ 9: कबीर के दोहे
+     - पाठ 12: सूरदास के पद
+
+2. ✍️ **अभ्यास सागर (Abhyas Sagar) — Grammar & Composition Worksheets (व्याकरण एवं अभ्यास):**
+   * Workbook designed to accompany each chapter of Gyan Sagar.
+   * Covers संधि, समास, उपसर्ग-प्रत्यय, मुहावरे-लोकोक्तियाँ, कारक, वाक्य-रूपांतरण, अपठित गद्यांश, एवं पत्र लेखन।
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✨ *Both books are officially written, designed, and published by the **DAV College Managing Committee (DAVCMC) / DAV Center for Academic Excellence (DAVCAE)**, New Delhi.`
+    };
+  }
+
+  // 6d. DAV Complete Textbook Directory Query
+  if ((lowerQ.includes('book') || lowerQ.includes('textbook') || lowerQ.includes('kitab')) && (lowerQ.includes('class 8') || lowerQ.includes('std 8') || lowerQ.includes('dav'))) {
+    return {
+      source: 'shankar-textbook-core',
+      isTextbookGrounded: true,
+      chapterInfo: 'DAV Class 8 Complete Textbook Directory',
+      modelName: getTierBadge(dimension),
+      text: `📚 **Official DAV Class 8 Prescribed Textbooks (DAVCMC / DAVCAE)**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The official DAV Board curriculum for Class 8 uses the following prescribed textbooks:
+
+1. **Science & Technology:** *The Living World* (20 Units: Cell Structure, Microorganisms, Synthetic Fibres, Metals/Non-metals, Force & Pressure, Light, Reproduction, etc.)
+2. **Mathematics:** *Secondary Mathematics (Class VIII)* (16 Chapters: Squares & Square Roots, Cubes, Exponents, Algebraic Identities, Linear Equations, Mensuration, Statistics, etc.)
+3. **Social Science (SST):** *We and Our World* (History: The Modern Period; Geography: Resources; Civics: The Union Legislature, Executive, and Judiciary)
+4. **English:** 
+   - *English Literature* (Stories & Poetry)
+   - *My English Reader* (Thematic Comprehension Units)
+   - *English Practice Book* (Applied English Grammar)
+5. **Hindi:**
+   - *ज्ञान सागर (Gyan Sagar)* — Literature Reader
+   - *अभ्यास सागर (Abhyas Sagar)* — Grammar Workbook
+6. **Sanskrit:** *सुरभिः (Surbhi)* (दश पाठ एवं व्याकरण)
+7. **Naitik Shiksha:** *नैतिक शिक्षा (DAV Vedic Heritage & Values)*
+8. **Computer Science:** *Hands-On ICT & Coding*
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💡 All these textbooks are fully available to read with continuous vertical streaming in **Section 2: Digital Library**!`
     };
   }
 

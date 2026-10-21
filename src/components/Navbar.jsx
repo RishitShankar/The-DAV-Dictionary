@@ -91,7 +91,7 @@ export function Navbar({
         <div className="flex items-center justify-between h-20">
           
           {/* Left: 3-Lines Hamburger Icon + Brand Logo */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={onToggleSidebar}
               className={`p-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-slate-950 transition border shadow-2xs flex items-center gap-2 cursor-pointer ${
@@ -109,7 +109,7 @@ export function Navbar({
               <img 
                 src="/logo.png" 
                 alt="The DAV Dictionary Official Logo" 
-                className="w-16 h-16 object-contain drop-shadow-md hover:scale-105 transition-transform"
+                className="w-16 h-16 object-contain drop-shadow-md hover:scale-105 transition-transform shrink-0"
               />
               <div>
                 <div className="flex items-center gap-2">
@@ -130,7 +130,7 @@ export function Navbar({
           </div>
 
           {/* Current Section Indicator in Header */}
-          <div className="hidden lg:flex items-center gap-2">
+          <div className="hidden xl:flex items-center gap-2 min-w-0 overflow-hidden">
             {isTeacher ? (
               <div className="flex items-center gap-2">
                 {/* Teacher Sub-Dimension Toggle (5A vs 5B) */}
@@ -276,7 +276,7 @@ export function Navbar({
           </div>
 
           {/* User Account / Admin Superpower Button */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
 
             {/* 5th Dimension Switcher: PC vs Mobile Mode */}
             <div className="flex items-center bg-slate-100 p-0.5 sm:p-1 rounded-xl border border-slate-200">

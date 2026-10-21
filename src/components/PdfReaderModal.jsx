@@ -554,8 +554,24 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     lastPosRef.current = currentPos;
   };
 
+  // Save Current Page Annotations (Automatic & Instant)
+  const saveCurrentPageAnnotations = () => {
+    if (!canvasRef.current || !book) return;
+    try {
+      const dataUrl = canvasRef.current.toDataURL('image/png');
+      const key = `dav_pdf_canvas_${book.title || 'book'}_p${currentPage}`;
+      localStorage.setItem(key, dataUrl);
+      if (typeof saveCloudPdfAnnotation === 'function') {
+        saveCloudPdfAnnotation(currentUser?.id, book.title, currentPage, dataUrl).catch(() => {});
+      }
+      setHasUnsavedAnnotations(false);
+    } catch (e) {}
+  };
+
   const handlePointerUp = () => {
+    if (!isDrawingRef.current) return;
     isDrawingRef.current = false;
+    saveCurrentPageAnnotations();
   };
 
   // Save Annotations Permanently
@@ -615,6 +631,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
   // Page Flip Handlers
   const handlePrevPage = () => {
+    saveCurrentPageAnnotations();
     if (currentPage > 1) {
       setCurrentPage(prev => Math.max(1, prev - 1));
     }
@@ -623,6 +640,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   const maxBookPages = totalPages ? Math.max(1, totalPages - pageOffset) : 600;
 
   const handleNextPage = () => {
+    saveCurrentPageAnnotations();
     if (currentPage < maxBookPages) {
       setCurrentPage(prev => prev + 1);
     }
@@ -1153,7 +1171,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
             title="Save annotations permanently (persists across page reloads)"
           >
             <Save className="w-3.5 h-3.5" />
-            <span>{isSavingAnnotations ? 'Saving...' : 'Save Notes'}</span>
+            <span>{isSavingAnnotations ? 'Saving...' : '✓ Auto-Saved'}</span>
           </button>
         </div>
 

@@ -39,8 +39,7 @@ export const DEFAULT_TEACHER_ACCOUNT = {
 };
 
 export const PRELOADED_DATABASE_USERS = [
-  MASTER_DEVELOPER_ACCOUNT,
-  DEFAULT_TEACHER_ACCOUNT
+  MASTER_DEVELOPER_ACCOUNT
 ];
 
 // Helper to initialize or retrieve registered users from database
@@ -50,16 +49,11 @@ export function getRegisteredUsers() {
     try {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        let updated = [...parsed];
+        let updated = parsed.filter(u => u.name !== 'Mrs. Sunita Sharma' && u.id !== 'teacher1');
         // Ensure admin account is always present
         const hasAdmin = updated.some(u => u.id === 'rishibhai' || u.isAdmin);
         if (!hasAdmin) {
           updated = [MASTER_DEVELOPER_ACCOUNT, ...updated];
-        }
-        // Ensure default teacher account is present
-        const hasTeacher = updated.some(u => u.id === 'teacher1' || (u.dimension === 5 && u.isTeacher));
-        if (!hasTeacher) {
-          updated = [...updated, DEFAULT_TEACHER_ACCOUNT];
         }
         if (updated.length !== parsed.length) {
           localStorage.setItem('dav_registered_users', JSON.stringify(updated));
@@ -70,11 +64,11 @@ export function getRegisteredUsers() {
       console.warn('Error reading dav_registered_users:', e);
     }
   }
-  // Initialize with master administrator and default teacher
-  const initial = [MASTER_DEVELOPER_ACCOUNT, DEFAULT_TEACHER_ACCOUNT];
+  // Initialize with master administrator
+  const initial = [MASTER_DEVELOPER_ACCOUNT];
   try {
     localStorage.setItem('dav_registered_users', JSON.stringify(initial));
-  } catch (err) {}
+  } catch (e) {}
   return initial;
 }
 

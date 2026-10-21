@@ -3,7 +3,7 @@ import {
   School, GraduationCap, Users, BookOpen, Calendar, 
   FileText, Award, Bell, CheckCircle2, Search, Plus, 
   Filter, Download, Sparkles, MessageSquare, ClipboardList,
-  Clock, ShieldCheck, Bookmark, ChevronRight, Send, Check,
+  Clock, ShieldCheck, Bookmark, ChevronRight, ChevronDown, Send, Check,
   Video, Mic, MicOff, VideoOff, ScreenShare, Share2, AlertCircle,
   HelpCircle, MessageCircle, BarChart3, TrendingUp, UserCheck,
   UserX, Paperclip, Smile, Image as ImageIcon,
@@ -387,6 +387,41 @@ const PDF_PAGES_METADATA = {
   }
 };
 
+// Compression helper to prevent QuotaExceededError in localStorage
+function compressImage(file, maxWidth = 300, maxHeight = 300, quality = 0.8) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (readerEvent) => {
+      const image = new Image();
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = image.width;
+        let height = image.height;
+        if (width > height) {
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(image, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      image.onerror = () => resolve(readerEvent.target.result);
+      image.src = readerEvent.target.result;
+    };
+    reader.onerror = () => resolve(null);
+    reader.readAsDataURL(file);
+  });
+}
+
 export function TeachersSection({ 
   user, 
   initialSubSection, 
@@ -428,6 +463,84 @@ export function TeachersSection({
   const [isFullScreenInteractive, setIsFullScreenInteractive] = useState(false);
 
   // =========================================================================
+  // PAGE 1: DAILY HOMEWORK HUB STATE & HANDLERS
+  // =========================================================================
+  const [selectedHwClass, setSelectedHwClass] = useState('8');
+  const [selectedHwSection, setSelectedHwSection] = useState('D');
+  const [showAssignHwModal, setShowAssignHwModal] = useState(false);
+  const [newHwClass, setNewHwClass] = useState('8');
+  const [newHwSection, setNewHwSection] = useState('D');
+  const [newHwSubject, setNewHwSubject] = useState('Science & Technology');
+  const [newHwDueDate, setNewHwDueDate] = useState('Tomorrow, 08:30 AM');
+  const [newHwTeacher, setNewHwTeacher] = useState(user?.name || 'Faculty Member');
+  const [newHwChapter, setNewHwChapter] = useState('');
+  const [newHwTitle, setNewHwTitle] = useState('');
+  const [newHwDesc, setNewHwDesc] = useState('');
+
+  const [homeworkStore, setHomeworkStore] = useState(() => {
+    try {
+      const raw = localStorage.getItem(HOMEWORK_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return [
+      {
+        id: 'hw_default_1',
+        classId: '8',
+        section: 'D',
+        subject: 'Science & Technology',
+        chapter: 'Chapter 11: The Human Eye and the Colourful World',
+        title: 'Ray Diagram of Human Eye & Myopia Correction',
+        desc: 'Draw neat labeled diagram of human eye in Science Homework notebook. Answer question 1 to 5 from DAV Textbook Exercise Part D (Page 142).',
+        dueDate: 'Tomorrow, 08:30 AM',
+        teacher: user?.name || 'Prof. Faculty Member',
+        createdAt: 'Today, 08:00 AM'
+      },
+      {
+        id: 'hw_default_2',
+        classId: '8',
+        section: 'D',
+        subject: 'Mathematics',
+        chapter: 'Chapter 6: Algebraic Expressions and Identities',
+        title: 'Worksheet 6.2 - Question 1 to 10 (DAV Secondary Math)',
+        desc: 'Solve all questions of Worksheet 6.2 using identities (a+b)^2 and (a-b)^2 in Math Fair notebook. Submit during Period 2.',
+        dueDate: 'Tomorrow, 09:30 AM',
+        teacher: user?.name || 'Prof. Faculty Member',
+        createdAt: 'Today, 08:15 AM'
+      }
+    ];
+  });
+
+  const handleCreateHomework = (e) => {
+    e.preventDefault();
+    if (!newHwTitle.trim()) return;
+    const newEntry = {
+      id: 'hw_' + Date.now(),
+      classId: newHwClass,
+      section: newHwSection,
+      subject: newHwSubject,
+      dueDate: newHwDueDate,
+      teacher: newHwTeacher || user?.name || 'Verified DAV Faculty',
+      chapter: newHwChapter || 'General Syllabus Assignment',
+      title: newHwTitle.trim(),
+      desc: newHwDesc.trim(),
+      createdAt: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
+    };
+    const updated = [newEntry, ...homeworkStore];
+    setHomeworkStore(updated);
+    try {
+      localStorage.setItem(HOMEWORK_STORAGE_KEY, JSON.stringify(updated));
+    } catch (err) {}
+    setShowAssignHwModal(false);
+    setNewHwTitle('');
+    setNewHwDesc('');
+    setNewHwChapter('');
+    playSoundChime('sent');
+  };
+
+  // =========================================================================
   // AUTOMATIC STORAGE SANITIZATION: PURGE ALL LEGACY & DEMO DATA
   // =========================================================================
   useEffect(() => {
@@ -447,7 +560,7 @@ export function TeachersSection({
       const demoNames = [
         'Aarav', 'Ananya', 'Aryan Sharma', 'Bhavna Patel', 'Chirag Gupta',
         'Divyansh', 'Esha', 'Farhan', 'Rajesh Verma', 'Neha Srivastava',
-        'Arvind Saxena', 'Rakesh Sharma', 'Anand Kumar Mishra', 'Deepak Chopra'
+        'Arvind Saxena', 'Rakesh Sharma', 'Anand Kumar Mishra', 'Deepak Chopra', 'Sunita Sharma', 'Mrs. Sunita Sharma', 'teacher1'
       ];
 
       for (let i = 0; i < localStorage.length; i++) {
@@ -616,18 +729,7 @@ export function TeachersSection({
             type: 'teacher',
             subject: u.subject || 'Science & Technology'
           }));
-        if (teachers.length === 0 && DEFAULT_TEACHER_ACCOUNT) {
-          teachers.push({
-            id: DEFAULT_TEACHER_ACCOUNT.id,
-            name: DEFAULT_TEACHER_ACCOUNT.name,
-            subtitle: DEFAULT_TEACHER_ACCOUNT.subject || 'Faculty Teacher',
-            role: 'Verified DAV Faculty (Dimension 5)',
-            dp: null,
-            status: 'Online',
-            type: 'teacher',
-            subject: DEFAULT_TEACHER_ACCOUNT.subject || 'Science & Technology'
-          });
-        }
+// Only real user-registered teachers appear
         return teachers;
       }
     } catch (e) {
@@ -695,18 +797,6 @@ export function TeachersSection({
             type: 'teacher',
             subject: u.subject || 'Science & Technology'
           }));
-        if (teachers.length === 0 && DEFAULT_TEACHER_ACCOUNT) {
-          teachers.push({
-            id: DEFAULT_TEACHER_ACCOUNT.id,
-            name: DEFAULT_TEACHER_ACCOUNT.name,
-            subtitle: DEFAULT_TEACHER_ACCOUNT.subject || 'Faculty Teacher',
-            role: 'Verified DAV Faculty (Dimension 5)',
-            dp: null,
-            status: 'Online',
-            type: 'teacher',
-            subject: DEFAULT_TEACHER_ACCOUNT.subject || 'Science & Technology'
-          });
-        }
         setChatContactsList(teachers);
       }
     } catch (e) {}
@@ -809,6 +899,97 @@ export function TeachersSection({
       });
     }
   }, [user]);
+
+  // Real-Time Online/Offline Heartbeat Presence Tracker
+  useEffect(() => {
+    const markActive = () => {
+      if (user?.id) {
+        try {
+          const nowStr = String(Date.now());
+          localStorage.setItem('dav_user_last_active_' + String(user.id).toLowerCase(), nowStr);
+          if (user.name) {
+            localStorage.setItem('dav_user_last_active_' + String(user.name).toLowerCase(), nowStr);
+          }
+        } catch (e) {}
+      }
+    };
+    markActive();
+    const interval = setInterval(markActive, 25000);
+    return () => clearInterval(interval);
+  }, [user?.id, user?.name]);
+
+  const isUserOnline = (contact) => {
+    if (!contact) return false;
+    const myId = String(user?.id || '').toLowerCase();
+    const myName = String(user?.name || '').toLowerCase();
+    const cId = String(contact.id || '').toLowerCase();
+    const cName = String(contact.name || '').toLowerCase();
+    if ((myId && cId === myId) || (myName && cName === myName)) return true;
+
+    try {
+      const ts1 = localStorage.getItem('dav_user_last_active_' + cId);
+      const ts2 = localStorage.getItem('dav_user_last_active_' + cName);
+      const lastActive = Math.max(Number(ts1) || 0, Number(ts2) || 0, Number(contact.lastActive) || 0);
+      if (lastActive && (Date.now() - lastActive < 5 * 60 * 1000)) {
+        return true;
+      }
+    } catch (e) {}
+    return false;
+  };
+
+  // WhatsApp-Style Delete Message State
+  const [deleteMsgModal, setDeleteMsgModal] = useState({ isOpen: false, msg: null, contact: null });
+
+  const handleDeleteForMe = (msg, contact) => {
+    if (!msg || !contact) return;
+    const myId = String(user?.id || 'me').toLowerCase();
+    const chKey = getConversationChannelKey(user, contact);
+    const currentMsgs = typeof getMessagesForContact === 'function' ? getMessagesForContact(contact) : (teacherChatsMap[chKey] || []);
+    const updatedMsgs = currentMsgs.map(m => {
+      if (m.id === msg.id) {
+        const deletedForMeList = Array.isArray(m.deletedForMe) ? [...m.deletedForMe] : [];
+        if (!deletedForMeList.includes(myId)) deletedForMeList.push(myId);
+        return { ...m, deletedForMe: deletedForMeList };
+      }
+      return m;
+    });
+    const updatedMap = {
+      ...teacherChatsMap,
+      [chKey]: updatedMsgs,
+      [contact.id]: updatedMsgs
+    };
+    persistChats(updatedMap);
+    setDeleteMsgModal({ isOpen: false, msg: null, contact: null });
+    playSoundChime('delivered');
+  };
+
+  const handleDeleteForEveryone = (msg, contact) => {
+    if (!msg || !contact) return;
+    const chKey = getConversationChannelKey(user, contact);
+    const currentMsgs = typeof getMessagesForContact === 'function' ? getMessagesForContact(contact) : (teacherChatsMap[chKey] || []);
+    const updatedMsgs = currentMsgs.map(m => {
+      if (m.id === msg.id) {
+        return {
+          ...m,
+          text: '🚫 This message was deleted',
+          media: null,
+          deletedForEveryone: true
+        };
+      }
+      return m;
+    });
+    const updatedMap = {
+      ...teacherChatsMap,
+      [chKey]: updatedMsgs,
+      [contact.id]: updatedMsgs
+    };
+    persistChats(updatedMap);
+    if (typeof saveCloudDoubtChats === 'function') {
+      saveCloudDoubtChats(chKey, updatedMsgs).catch(() => {});
+    }
+    setDeleteMsgModal({ isOpen: false, msg: null, contact: null });
+    playSoundChime('delivered');
+  };
 
   // Chat Conversations Map (Local + Supabase Cloud synced)
   const [teacherChatsMap, setTeacherChatsMap] = useState(() => {
@@ -2058,12 +2239,20 @@ export function TeachersSection({
     let filledCount = 0;
     const studentMaxMarks = Math.max(5, Number(student.maxMarks) || 100);
 
+    const GRADE_SET = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'D', 'E'];
     DAV_SUBJECTS_10.forEach(sub => {
       const maxForSub = student.maxMarks ? studentMaxMarks : (marksMaxConfig[sub.key] || 100);
-      if (student.marks && student.marks[sub.key] !== null && student.marks[sub.key] !== undefined && student.marks[sub.key] !== '') {
-        totalObtained += Number(student.marks[sub.key]);
-        attemptedMax += maxForSub;
-        filledCount++;
+      const rawVal = student.marks?.[sub.key];
+      if (rawVal !== null && rawVal !== undefined && rawVal !== '') {
+        const strVal = String(rawVal).trim().toUpperCase();
+        if (GRADE_SET.includes(strVal)) {
+          // Co-curricular letter grade: counted as assessed, but excluded from numeric total and %
+          filledCount++;
+        } else if (!isNaN(Number(rawVal))) {
+          totalObtained += Number(rawVal);
+          attemptedMax += maxForSub;
+          filledCount++;
+        }
       }
     });
 
@@ -2887,7 +3076,7 @@ export function TeachersSection({
                           {isDimension5 ? 'Registered Students' : 'Registered Faculty'}
                         </span>
                         <span className="text-[11px] font-mono text-purple-300">
-                          {chatContactsList.length} Online
+                          {chatContactsList.filter(c => isUserOnline(c)).length} Online • {chatContactsList.filter(c => !isUserOnline(c)).length} Offline
                         </span>
                       </div>
                       <div className="relative">
@@ -2949,7 +3138,11 @@ export function TeachersSection({
                                       {contact.name.charAt(0)}
                                     </div>
                                   )}
-                                  <span className="w-2.5 h-2.5 rounded-full bg-teal-400 absolute -bottom-0.5 -right-0.5 ring-2 ring-slate-950" />
+                                  {isUserOnline(contact) ? (
+                                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 absolute -bottom-0.5 -right-0.5 ring-2 ring-slate-950 shadow-xs" title="Online" />
+                                  ) : (
+                                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500 absolute -bottom-0.5 -right-0.5 ring-2 ring-slate-950 shadow-xs" title="Offline" />
+                                  )}
                                 </div>
 
                                 <div className="flex-1 min-w-0">
@@ -3008,7 +3201,10 @@ export function TeachersSection({
                           <div>
                             <h3 className="text-xs sm:text-sm font-black text-white flex items-center gap-1.5">
                               <span>{activeContact.name}</span>
-                              <span className="w-2 h-2 rounded-full bg-teal-400" />
+                              <span className={`w-2 h-2 rounded-full ${isUserOnline(activeContact) ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'}`} />
+                              <span className={`text-[10px] font-bold ${isUserOnline(activeContact) ? 'text-emerald-400' : 'text-rose-400'}`}>
+                                {isUserOnline(activeContact) ? 'Online' : 'Offline'}
+                              </span>
                             </h3>
                             <p className="text-[10px] sm:text-xs text-teal-300 font-mono">
                               {activeContact.subtitle} - {activeContact.role}
@@ -3073,18 +3269,29 @@ export function TeachersSection({
                             (isDimension5 ? msg.sender === 'teacher' : msg.sender === 'student')
                           );
 
+                          const myId = String(user?.id || 'me').toLowerCase();
+                          if (Array.isArray(msg.deletedForMe) && msg.deletedForMe.includes(myId)) {
+                            return null;
+                          }
+
                           return (
                             <div
                               key={msg.id}
-                              className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} animate-fadeIn`}
+                              className={`flex flex-col group ${isMe ? 'items-end' : 'items-start'} animate-fadeIn`}
                             >
                               <div
-                                className={`max-w-[85%] sm:max-w-[70%] p-3 rounded-2xl space-y-1.5 shadow-lg ${
+                                className={`max-w-[85%] sm:max-w-[70%] p-3 rounded-2xl space-y-1.5 shadow-lg relative ${
                                   isMe
                                     ? 'bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 rounded-br-none'
                                     : 'bg-purple-900/90 text-white rounded-bl-none border border-purple-700/60'
                                 }`}
                               >
+                                {msg.deletedForEveryone ? (
+                                  <div className="flex items-center gap-1.5 italic text-slate-400 text-xs py-1">
+                                    <Trash2 className="w-3.5 h-3.5 opacity-60" />
+                                    <span>This message was deleted</span>
+                                  </div>
+                                ) : (<>
                                 <div className="flex items-center justify-between gap-3 text-[10px] font-mono opacity-80 border-b border-black/10 pb-1">
                                   <span className="font-black">{msg.senderName}</span>
                                   <span>{msg.senderClassSec}</span>
@@ -3113,18 +3320,29 @@ export function TeachersSection({
                                   <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</p>
                                 )}
 
-                                <div className="flex items-center justify-end gap-1 text-[9px] font-mono opacity-80 pt-0.5">
-                                  <span>{msg.time}</span>
-                                  {isMe && (
-                                    <span>
-                                      {msg.status === 'delivered' ? (
-                                        <CheckCheck className="w-3 h-3 text-slate-950" />
-                                      ) : (
-                                        <Check className="w-3 h-3 text-slate-950/70" />
-                                      )}
-                                    </span>
-                                  )}
+                                <div className="flex items-center justify-between gap-2 text-[9px] font-mono opacity-80 pt-0.5">
+                                  <button
+                                    type="button"
+                                    onClick={() => setDeleteMsgModal({ isOpen: true, msg, contact: activeContact })}
+                                    className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:text-rose-600 transition cursor-pointer"
+                                    title="Delete message"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </button>
+                                  <div className="flex items-center gap-1">
+                                    <span>{msg.time}</span>
+                                    {isMe && (
+                                      <span>
+                                        {msg.status === 'delivered' ? (
+                                          <CheckCheck className="w-3 h-3 text-slate-950" />
+                                        ) : (
+                                          <Check className="w-3 h-3 text-slate-950/70" />
+                                        )}
+                                      </span>
+                                    )}
+                                  </div>
                                 </div>
+                                </>)}
                               </div>
                             </div>
                           );
@@ -3782,27 +4000,27 @@ export function TeachersSection({
                         : 'Attempt scheduled DAV unit examinations with timed countdown, MCQ options, and notebook photo uploads for subjective questions.'}
                     </p>
 
-                    {/* Action Buttons: Teacher Leaderboard vs Student Attempt */}
+                    {/* Action Buttons: Teacher & Student Leaderboard + Attempt */}
                     <div className="pt-2 flex items-center gap-3 flex-wrap">
-                      {isDimension5 ? (
-                        <button
-                          onClick={() => {
-                            setShowTeacherLeaderboardModal(true);
-                            playSoundChime('sent');
-                          }}
-                          className="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-500 via-purple-600 to-teal-400 hover:from-amber-400 hover:to-teal-300 text-slate-950 font-black text-xs md:text-sm flex items-center gap-2 shadow-xl shadow-amber-500/30 transition transform hover:scale-105 active:scale-95 cursor-pointer"
-                        >
-                          <Trophy className="w-4 h-4 text-slate-950" />
-                          <span>Check Test Leaderboard</span>
-                          <ArrowRight className="w-4 h-4" />
-                        </button>
-                      ) : (
+                      <button
+                        onClick={() => {
+                          setShowTeacherLeaderboardModal(true);
+                          playSoundChime('sent');
+                        }}
+                        className="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-500 via-purple-600 to-teal-400 hover:from-amber-400 hover:to-teal-300 text-slate-950 font-black text-xs md:text-sm flex items-center gap-2 shadow-xl shadow-amber-500/30 transition transform hover:scale-105 active:scale-95 cursor-pointer"
+                      >
+                        <Trophy className="w-4 h-4 text-slate-950" />
+                        <span>Check Test Leaderboard</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+
+                      {!isDimension5 && (
                         <button
                           onClick={() => {
                             setIsTestPortalOpen(true);
                             playSoundChime('sent');
                           }}
-                          className="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-500 via-purple-600 to-teal-400 hover:from-amber-400 hover:to-teal-300 text-slate-950 font-black text-xs md:text-sm flex items-center gap-2 shadow-xl shadow-amber-500/30 transition transform hover:scale-105 active:scale-95 cursor-pointer"
+                          className="px-6 py-3 rounded-2xl bg-gradient-to-r from-teal-400 to-cyan-500 hover:from-teal-300 hover:to-cyan-400 text-slate-950 font-black text-xs md:text-sm flex items-center gap-2 shadow-xl shadow-teal-500/30 transition transform hover:scale-105 active:scale-95 cursor-pointer"
                         >
                           <CheckSquare className="w-4 h-4 text-slate-950" />
                           <span>Attempt / Give Online Test</span>
@@ -3835,11 +4053,11 @@ export function TeachersSection({
                       <span>Active Verified Unit Tests for Class {selectedTestClass} - Section {selectedTestSection}</span>
                     </h3>
                     <span className="text-xs text-amber-300 font-mono">
-                      {testsDatabase.filter(t => t.classId === selectedTestClass && (t.sections ? t.sections.includes(selectedTestSection) : true)).length} Tests Ready
+                      {testsDatabase.filter(t => !isExamExpired(t) && t.classId === selectedTestClass && (t.sections ? t.sections.includes(selectedTestSection) : true)).length} Tests Ready
                     </span>
                   </div>
 
-                  {testsDatabase.filter(t => t.classId === selectedTestClass && (t.sections ? t.sections.includes(selectedTestSection) : true)).length === 0 ? (
+                  {testsDatabase.filter(t => !isExamExpired(t) && t.classId === selectedTestClass && (t.sections ? t.sections.includes(selectedTestSection) : true)).length === 0 ? (
                     <div className="p-12 text-center rounded-2xl bg-slate-900 border border-purple-800 space-y-3">
                       <BookOpen className="w-12 h-12 text-purple-400 mx-auto opacity-50" />
                       <h4 className="text-sm font-bold text-white">No examinations deployed yet for Class {selectedTestClass}-{selectedTestSection}</h4>
@@ -3878,19 +4096,20 @@ export function TeachersSection({
                                 </div>
                               </div>
 
-                              {isDimension5 ? (
+                              <div className="space-y-2">
                                 <button
+                                  type="button"
                                   onClick={() => {
                                     setLeaderboardSelectedTest(t);
                                     setShowTeacherLeaderboardModal(true);
                                     playSoundChime('sent');
                                   }}
-                                  className="w-full py-2.5 rounded-xl bg-purple-900 border border-teal-400 text-teal-300 hover:text-white font-black text-xs cursor-pointer shadow-md hover:opacity-95 flex items-center justify-center gap-1.5"
+                                  className="w-full py-2 rounded-xl bg-purple-900/80 border border-teal-400/80 text-teal-300 hover:text-white font-black text-xs cursor-pointer shadow-md hover:opacity-95 flex items-center justify-center gap-1.5"
                                 >
                                   <Trophy className="w-3.5 h-3.5 text-teal-300" />
                                   <span>Check Test Leaderboard</span>
                                 </button>
-                              ) : windowActive ? (
+                                {!isDimension5 && (windowActive ? (
                                 <button
                                   onClick={() => handleStartExam(t)}
                                   className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-teal-400 text-slate-950 font-black text-xs cursor-pointer shadow-md hover:opacity-95"
@@ -3901,7 +4120,8 @@ export function TeachersSection({
                                 <div className="w-full py-2 rounded-xl bg-slate-800 text-slate-400 font-bold text-xs text-center border border-slate-700">
                                   Window Closed ({t.startTime} - {t.endTime})
                                 </div>
-                              )}
+                              ))}
+                              </div>
                             </div>
                           );
                         })}
@@ -4190,6 +4410,49 @@ export function TeachersSection({
                           </div>
                         </div>
 
+                        {/* Section Selection for Deployed Exam */}
+                        <div className="p-3.5 rounded-2xl bg-purple-950/40 border border-purple-800 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <label className="font-bold text-teal-300 font-mono text-xs uppercase">Target Sections:</label>
+                            <span className="text-[11px] text-purple-300 font-mono">
+                              Active: {newTestSections.length === 5 ? 'All Sections (A-E)' : `Section ${newTestSections.join(', ')}`}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (newTestSections.length === 5) {
+                                  setNewTestSections(['D']);
+                                } else {
+                                  setNewTestSections(['A', 'B', 'C', 'D', 'E']);
+                                }
+                              }}
+                              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer border ${
+                                newTestSections.length === 5
+                                  ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 border-teal-200 shadow-md'
+                                  : 'bg-slate-950 text-purple-300 border-purple-800'
+                              }`}
+                            >
+                              All Sections (A to E)
+                            </button>
+                            {['A', 'B', 'C', 'D', 'E'].map(sec => (
+                              <button
+                                key={sec}
+                                type="button"
+                                onClick={() => handleToggleSectionCheckbox(sec)}
+                                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition cursor-pointer border ${
+                                  newTestSections.includes(sec)
+                                    ? 'bg-purple-600 text-white border-purple-300 shadow-sm'
+                                    : 'bg-slate-950 text-purple-400 border-purple-800 hover:border-purple-600'
+                                }`}
+                              >
+                                Sec {sec}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
                         {/* 24-Hour Time Window & Auto Duration */}
                         <div className="p-4 rounded-2xl bg-purple-950/40 border border-purple-800 space-y-3">
                           <h4 className="font-mono text-xs font-bold text-amber-300 uppercase tracking-wider">
@@ -4335,6 +4598,58 @@ export function TeachersSection({
                                         />
                                       </div>
                                     ))}
+                                  </div>
+
+                                  {/* MCQ Diagram / Image Attachment */}
+                                  <div className="flex items-center gap-3 flex-wrap pt-1">
+                                    <input
+                                      type="file"
+                                      accept="image/*"
+                                      id={`mcq-q-img-${qIdx}`}
+                                      className="hidden"
+                                      onChange={async (e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                          const compressed = await compressImage(file, 500, 500, 0.8);
+                                          if (compressed) {
+                                            setNewTestQuestions(prev => prev.map((item, idx) => idx === qIdx ? { ...item, questionImage: compressed } : item));
+                                          }
+                                        }
+                                      }}
+                                    />
+                                    <label
+                                      htmlFor={`mcq-q-img-${qIdx}`}
+                                      className="px-3 py-1.5 rounded-xl bg-purple-950 border border-purple-700 text-teal-300 font-bold cursor-pointer hover:bg-purple-900 transition flex items-center gap-1.5 text-[11px]"
+                                    >
+                                      <ImageIcon className="w-3.5 h-3.5 text-teal-300" />
+                                      <span>📷 Attach Question Diagram / Image</span>
+                                    </label>
+                                    {q.questionImage && (
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-[10px] text-teal-300 font-mono">Diagram Attached ✓</span>
+                                        <button
+                                          type="button"
+                                          onClick={() => setNewTestQuestions(prev => prev.map((item, idx) => idx === qIdx ? { ...item, questionImage: null } : item))}
+                                          className="text-[10px] text-rose-400 hover:underline"
+                                        >
+                                          Remove
+                                        </button>
+                                      </div>
+                                    )}
+                                    <div className="flex items-center gap-1.5 ml-auto">
+                                      <label className="text-[11px] font-bold text-purple-300">Marks:</label>
+                                      <input
+                                        type="number"
+                                        min={1}
+                                        max={50}
+                                        value={q.maxMarks || 5}
+                                        onChange={(e) => {
+                                          const mVal = Number(e.target.value) || 1;
+                                          setNewTestQuestions(prev => prev.map((item, idx) => idx === qIdx ? { ...item, maxMarks: mVal } : item));
+                                        }}
+                                        className="w-14 p-1.5 rounded-lg bg-slate-950 border border-purple-700 text-white font-mono font-bold text-center text-xs"
+                                      />
+                                    </div>
                                   </div>
 
                                   <div className="flex items-center gap-3 flex-wrap">

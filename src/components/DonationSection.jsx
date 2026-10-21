@@ -22,6 +22,41 @@ export function DonationSection({ currentUser }) {
   const [activeInvoice, setActiveInvoice] = useState(null);
   const [registeredUsers, setRegisteredUsers] = useState([]);
 
+  const isAdmin = Boolean(currentUser?.isAdmin || currentUser?.id === 'rishibhai' || currentUser?.dimension === 4);
+
+  const [donorsList, setDonorsList] = useState(() => {
+    try {
+      const stored = localStorage.getItem('dav_donors_list');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return [
+      { id: 'd_1', name: 'Saharsh Shankar', role: 'VVIP Pass & Top Contributor', amount: '₹20', badge: 'Diamond Donor', invoiceNumber: 'DAV-INV-001' },
+      { id: 'd_2', name: 'Rishit Shankar', role: 'Founder & Lead Developer', amount: 'Unlimited', badge: 'Creator', invoiceNumber: 'DAV-INV-000' },
+      { id: 'd_3', name: 'Class 8-D Classmates', role: 'Science & Sanskrit Batch', amount: '₹100', badge: 'Academic Star', invoiceNumber: 'DAV-INV-002' },
+      { id: 'd_4', name: 'DAV Alumni & Friends', role: 'Cloud & AI Infrastructure', amount: '₹500', badge: 'Patron', invoiceNumber: 'DAV-INV-003' }
+    ];
+  });
+
+  const handleDeleteDonor = (donorId, invoiceNumber, name) => {
+    if (!window.confirm(`Admin Superpower: Remove donor record for "${name}" and void their invoice?`)) {
+      return;
+    }
+    const updated = donorsList.filter(d => d.id !== donorId);
+    setDonorsList(updated);
+    try {
+      localStorage.setItem('dav_donors_list', JSON.stringify(updated));
+      const rawInvoices = localStorage.getItem('dav_invoices');
+      if (rawInvoices) {
+        const invoices = JSON.parse(rawInvoices);
+        const filtered = invoices.filter(inv => inv.invoiceNumber !== invoiceNumber && inv.studentName !== name);
+        localStorage.setItem('dav_invoices', JSON.stringify(filtered));
+      }
+    } catch (e) {}
+  };
+
   // Load existing registered users
   useEffect(() => {
     const list = getRegisteredUsers();
@@ -567,20 +602,27 @@ export function DonationSection({ currentUser }) {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-            {[
-              { name: 'Saharsh Shankar', role: 'VVIP Pass & Top Contributor', amount: '₹20', badge: 'Diamond Donor' },
-              { name: 'Rishit Shankar', role: 'Founder & Lead Developer', amount: 'Unlimited', badge: 'Creator' },
-              { name: 'Class 8-D Classmates', role: 'Science & Sanskrit Batch', amount: '₹100', badge: 'Academic Star' },
-              { name: 'DAV Alumni & Friends', role: 'Cloud & AI Infrastructure', amount: '₹500', badge: 'Patron' }
-            ].map((donor, idx) => (
-              <div key={idx} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs">
+            {donorsList.map((donor) => (
+              <div key={donor.id} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs relative group hover:border-amber-400 transition">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-bold text-slate-900">{donor.name}</span>
-                  <span className="font-mono font-extrabold text-red-800">{donor.amount}</span>
+                  <span className="font-bold text-slate-900 truncate pr-2">{donor.name}</span>
+                  <span className="font-mono font-extrabold text-red-800 shrink-0">{donor.amount}</span>
                 </div>
-                <div className="text-[10px] text-slate-500">{donor.role}</div>
-                <div className="mt-2 inline-block text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
-                  {donor.badge}
+                <div className="text-[10px] text-slate-500 truncate">{donor.role}</div>
+                <div className="mt-2 flex items-center justify-between gap-1">
+                  <span className="inline-block text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                    {donor.badge}
+                  </span>
+                  {isAdmin && (
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteDonor(donor.id, donor.invoiceNumber, donor.name)}
+                      className="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"
+                      title="Admin: Delete Donor Record & Void Bill"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
