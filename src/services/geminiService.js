@@ -7,7 +7,7 @@ import { lookupTextbookDatabase, DAV_CLASS_8_SYLLABUS_INDEX, DAV_TEXTBOOK_DATABA
 
 const STORAGE_KEY = 'shankar_ai_api_key';
 // Built-in intelligent engine key decoded at runtime for automatic zero-configuration AI access
-const BUILTIN_KEY_B64 = 'QVEuQWI4Uk42SWtBb090SkZuOHlBQUlCMW5YQ1FDQmhYYjhBTTZJaWhIRWVOVmpJMERGTEE=';
+const BUILTIN_KEY_B64 = 'QVEuQWI4Uk42SWtBb090SkZuOHlBQUlCMW5YQ1FDQmhYYjhBTTZJaWhIRWVOVmpJMERGWkE=';
 const getBuiltinKey = () => {
   try {
     if (typeof atob === 'function') return atob(BUILTIN_KEY_B64);
