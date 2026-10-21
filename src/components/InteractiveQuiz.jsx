@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   CheckCircle2, XCircle, Award, RotateCcw, ArrowRight, ArrowLeft, 
-  HelpCircle, Sparkles, BookOpen, ChevronRight, X, Flame 
+  HelpCircle, Sparkles, BookOpen, ChevronRight, X, Flame, Loader2 
 } from 'lucide-react';
 import { getQuizForChapter } from '../data/quizDatabase';
+import { generateChapterQuiz } from '../services/geminiService';
 
 export function InteractiveQuiz({ 
   classNum = 8, 
@@ -13,15 +14,44 @@ export function InteractiveQuiz({
   onClose,
   onAskAI
 }) {
-  // Retrieve quiz data from database
-  const quizData = getQuizForChapter(classNum, subjectId, chapterNum);
-  const questions = quizData?.questions || [];
-
+  const [loadingQuiz, setLoadingQuiz] = useState(true);
+  const [quizData, setQuizData] = useState(() => getQuizForChapter(classNum, subjectId, chapterNum));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({}); // { [qIndex]: optionIndex }
   const [isCompleted, setIsCompleted] = useState(false);
 
-  const currentQ = questions[currentIndex];
+  useEffect(() => {
+    let active = true;
+    async function loadDynamicQuiz() {
+      setLoadingQuiz(true);
+      try {
+        const generated = await generateChapterQuiz(classNum, subjectId, chapterNum, chapterTitle);
+        if (active) {
+          if (generated && generated.questions && generated.questions.length > 0) {
+            setQuizData(generated);
+          } else {
+            setQuizData(getQuizForChapter(classNum, subjectId, chapterNum));
+          }
+          setCurrentIndex(0);
+          setSelectedAnswers({});
+          setIsCompleted(false);
+        }
+      } catch (err) {
+        if (active) {
+          setQuizData(getQuizForChapter(classNum, subjectId, chapterNum));
+        }
+      } finally {
+        if (active) {
+          setLoadingQuiz(false);
+        }
+      }
+    }
+    loadDynamicQuiz();
+    return () => { active = false; };
+  }, [classNum, subjectId, chapterNum, chapterTitle]);
+
+  const questions = quizData?.questions || [];
+  const currentQ = questions[currentIndex] || questions[0];
   const totalQuestions = questions.length;
   const answeredCount = Object.keys(selectedAnswers).length;
 
@@ -61,6 +91,35 @@ export function InteractiveQuiz({
   }, 0);
 
   const percentage = Math.round((score / totalQuestions) * 100);
+
+  if (loadingQuiz) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-950 text-white min-h-[420px] animate-fadeIn">
+        <div className="relative mb-6">
+          <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-amber-500 via-orange-500 to-amber-300 flex items-center justify-center shadow-2xl shadow-orange-500/30 animate-pulse">
+            <Sparkles className="w-10 h-10 text-slate-950" />
+          </div>
+          <Loader2 className="w-7 h-7 text-amber-400 absolute -bottom-2 -right-2 animate-spin" />
+        </div>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-950/80 border border-orange-500/40 text-amber-300 text-xs font-bold mb-3 shadow-xs">
+          <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+          Shankar AI Active Test Synthesizer
+        </div>
+        <h3 className="text-xl sm:text-2xl font-black text-white mb-2">
+          Generating 10-Question Examination Test...
+        </h3>
+        <p className="text-xs sm:text-sm text-stone-300 max-w-md leading-relaxed">
+          Reading <strong>Class {classNum} {subjectId} • Chapter {chapterNum}: {chapterTitle}</strong> to formulate 10 authentic, syllabus-accurate DAV examination MCQs with official explanations.
+        </p>
+        <button
+          onClick={onClose}
+          className="mt-6 px-4 py-1.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-stone-400 hover:text-white border border-stone-800 text-xs font-bold transition cursor-pointer"
+        >
+          Cancel
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 flex flex-col bg-slate-950 text-white overflow-hidden animate-fadeIn">

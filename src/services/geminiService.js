@@ -333,6 +333,64 @@ ${q.answer}
 }
 
 /**
+ * Dynamically generate a 10-Question Interactive Chapter Test using live Shankar AI
+ */
+export async function generateChapterQuiz(classNum, subject, chapterNum, chapterTitle) {
+  const apiKey = getSavedApiKey();
+  const cNum = typeof classNum === 'string' ? classNum : `Class ${classNum}`;
+  const prompt = `You are Shankar AI, the official DAV curriculum examination board setter.
+Generate exactly 10 high-quality, 100% textbook-accurate multiple choice questions (MCQs) for:
+- Class: ${cNum}
+- Subject: ${subject}
+- Chapter ${chapterNum}: "${chapterTitle}"
+
+The questions must test:
+- Key characters, story events, and core themes
+- Important textbook definitions, facts, and formulas
+- In-depth comprehension and middle-of-chapter concepts
+- Official DAV examination style questions
+
+Return ONLY a valid JSON array of exactly 10 objects with this exact structure:
+[
+  {
+    "id": 1,
+    "question": "Clear, well-formed question text based on the chapter?",
+    "options": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correctIndex": 0,
+    "explanation": "Authentic explanation from the DAV textbook justifying why this option is correct."
+  }
+]
+
+Do NOT include any markdown fences or extra prose. Return ONLY the raw JSON array.`;
+
+  try {
+    const res = await queryLiveGemini(apiKey, 'You are Shankar AI examination generator. Output strictly valid JSON.', prompt, 'gemini-3.5-flash-lite', 3500);
+    if (res.success && res.text) {
+      let cleaned = res.text.trim();
+      if (cleaned.startsWith('```json')) cleaned = cleaned.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+      else if (cleaned.startsWith('```')) cleaned = cleaned.replace(/^```\s*/, '').replace(/\s*```$/, '');
+      const parsed = JSON.parse(cleaned);
+      if (Array.isArray(parsed) && parsed.length >= 5) {
+        return {
+          title: `DAV ${cNum} ${subject} • Ch ${chapterNum}: ${chapterTitle}`,
+          subject: subject,
+          chapter: `Ch ${chapterNum}: ${chapterTitle}`,
+          questions: parsed
+        };
+      }
+    }
+  } catch (err) {
+    console.warn('[Shankar AI Quiz] Error generating dynamic quiz:', err.message);
+  }
+  return null;
+}
+
+/**
  * Main query function for Shankar AI with 4-Dimension Tier Support & All-Class Intelligence
  */
 export async function askShankarAI(question, context = {}) {
@@ -356,34 +414,6 @@ export async function askShankarAI(question, context = {}) {
     dimension = 2;
   } else if (user?.plan === 'guest') {
     dimension = 0;
-  }
-
-  // Check for explicit study tool action requests (e.g. clicking "Summarize", "5-Mark Notes" buttons)
-  if (!isOuterWorld && context.chapter && context.actionType) {
-    const classKey = context.classNum || detectedClass || 8;
-    const subjKey = (context.subject || '').toLowerCase().includes('sci') ? 'science' :
-                    (context.subject || '').toLowerCase().includes('sst') || (context.subject || '').toLowerCase().includes('soc') ? 'sst' :
-                    (context.subject || '').toLowerCase().includes('math') ? 'maths' :
-                    (context.subject || '').toLowerCase().includes('hin') ? 'hindi' :
-                    (context.subject || '').toLowerCase().includes('eng') ? 'english' :
-                    (context.subject || '').toLowerCase().includes('sans') ? 'sanskrit' :
-                    (context.subject || 'sst');
-    const chapNum = parseInt(context.chapter, 10);
-    const chapterObj = DAV_TEXTBOOK_DATABASE[classKey]?.[subjKey]?.chapters?.find(c => c.number === chapNum);
-    const subjectName = DAV_TEXTBOOK_DATABASE[classKey]?.[subjKey]?.name || (subjKey.toUpperCase());
-
-    if (chapterObj) {
-      const studyNotes = formatStudyNotesForChapter(chapterObj, subjectName, classKey, context.actionType);
-      if (studyNotes) {
-        return {
-          source: 'shankar-textbook-core',
-          isTextbookGrounded: true,
-          chapterInfo: `DAV Class ${classKey} ${subjectName} • Ch ${chapNum}`,
-          modelName: getTierBadge(dimension),
-          text: studyNotes.text
-        };
-      }
-    }
   }
 
   // 1. Authoritative Database Grounding Match (for background enrichment)
@@ -444,7 +474,7 @@ ${dimensionInstruction}`;
 
     // Build enriched prompt with chapter context when the student selected a chapter
     let userPromptWithContext = trimmedQ;
-    if (!isOuterWorld && context.chapter && context.subject) {
+    if (!isOuterWorld && context.chapter) {
       const classKey = context.classNum || detectedClass || 8;
       const subjKey = (context.subject || '').toLowerCase().includes('sci') ? 'science' :
                       (context.subject || '').toLowerCase().includes('sst') || (context.subject || '').toLowerCase().includes('soc') ? 'sst' :
@@ -454,21 +484,30 @@ ${dimensionInstruction}`;
                       (context.subject || '').toLowerCase().includes('sans') ? 'sanskrit' : null;
       const chapNum = parseInt(context.chapter, 10);
       const chapterObj = subjKey ? DAV_TEXTBOOK_DATABASE[classKey]?.[subjKey]?.chapters?.find(c => c.number === chapNum) : null;
-      const subjectName = (subjKey && DAV_TEXTBOOK_DATABASE[classKey]?.[subjKey]?.name) || context.subject;
-      const chapterTitle = chapterObj?.title || `Chapter ${chapNum}`;
+      const subjectName = context.subject || (subjKey && DAV_TEXTBOOK_DATABASE[classKey]?.[subjKey]?.name) || 'DAV Board Subject';
+      const chapterTitle = context.chapterTitle || chapterObj?.title || `Chapter ${chapNum}`;
 
-      userPromptWithContext = `You are answering a specific DAV textbook question from the student's selected chapter.
+      userPromptWithContext = `You are answering an official DAV Board textbook query for a student studying this locked chapter.
 
-STUDENT SELECTED CONTEXT:
+OFFICIAL DAV TEXTBOOK CONTEXT:
 - Class: ${typeof classKey === 'string' ? classKey : `Class ${classKey}`}
 - Subject: ${subjectName}
 - Chapter ${chapNum}: "${chapterTitle}"
-${chapterObj?.summary ? `- Chapter Overview: ${chapterObj.summary.slice(0, 300)}` : ''}
-${chapterObj?.topics ? `- Key Topics in Chapter: ${chapterObj.topics.map(t => t.heading).join(', ')}` : ''}
+${chapterObj?.summary ? `- Curriculum Overview: ${chapterObj.summary}` : ''}
+${chapterObj?.topics ? `- Core Topics: ${chapterObj.topics.map(t => t.heading).join(', ')}` : ''}
 
-STUDENT'S QUESTION: "${trimmedQ}"
+STUDENT'S REQUEST: "${trimmedQ}"
 
-IMPORTANT: Answer this SPECIFIC question directly. Give the real answer — textbook content, explanation, definitions, or whatever the student needs. Do NOT produce a generic template.`;
+CRITICAL INSTRUCTIONS FOR 100% ACCURATE ACADEMIC ANSWERS:
+1. Provide a comprehensive, 100% textbook-accurate response strictly based on the official DAV curriculum for Chapter ${chapNum}: "${chapterTitle}".
+2. If asked "why the story/chapter/poem is named...", analyze the literary, thematic, and symbolic significance of the title "${chapterTitle}".
+3. If asked for 5-mark notes, provide exactly 10 comprehensive 5-mark examination questions with complete model answers from this chapter.
+4. If asked for question answers (पाठ में से, अभ्यास, comprehension), provide the authentic textbook questions and full-mark model answers.
+5. If asked for a summary, give a thorough, paragraph-by-paragraph breakdown of the entire story/lesson including characters, plot points, and moral values.
+6. If asked for short notes, provide high-yield revision summaries, key terms, and important formulas/dates.
+7. If asked for bullet notes, provide a comprehensive list of all important facts, definitions, and points to remember.
+8. If asked for HOTS (Higher Order Thinking Skills), provide analytical, reasoning-based questions with deep answers.
+9. Format with rich Markdown headings (###), bold bullet points, and clear examination scoring advice.`;
     } else if (textbookMatch) {
       if (textbookMatch.type === 'question-match') {
         userPromptWithContext = `[OFFICIAL DAV TEXTBOOK GROUNDED REFERENCE:

@@ -307,7 +307,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
       const response = await askShankarAI(question, {
         mode: activeMode,
         classNum: selectedClass === 'UKG' || selectedClass === 'LKG' ? selectedClass : Number(selectedClass),
-        subject: selectedSubject,
+        subject: currentSubjectObj?.name || selectedSubject,
         chapter: selectedChapter,
         chapterTitle: currentChapterObj?.title,
         actionType,
@@ -350,11 +350,11 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
     } else if (actionKey === 'short_notes') {
       queryText = `Provide high-yield short revision notes and key exam points for DAV Class ${selectedClass} ${subjName} Chapter ${selectedChapter}: "${chapTitle}".`;
     } else if (actionKey === 'five_mark') {
-      queryText = `Provide 5-mark comprehensive model examination notes with structured headings and conclusion for DAV Class ${selectedClass} ${subjName} Chapter ${selectedChapter}: "${chapTitle}".`;
+      queryText = `Provide 10 comprehensive 5-mark examination questions with complete model answers for DAV Class ${selectedClass} ${subjName} Chapter ${selectedChapter}: "${chapTitle}".`;
     } else if (actionKey === 'bullet_notes') {
       queryText = `Give key bullet points, definitions, formulas, and dates for DAV Class ${selectedClass} ${subjName} Chapter ${selectedChapter}: "${chapTitle}".`;
     } else if (actionKey === 'qa') {
-      queryText = `Provide official back-of-chapter questions and model answers for DAV Class ${selectedClass} ${subjName} Chapter ${selectedChapter}: "${chapTitle}".`;
+      queryText = `Provide official back-of-chapter questions and complete model answers (पाठ में से, अभ्यास) for DAV Class ${selectedClass} ${subjName} Chapter ${selectedChapter}: "${chapTitle}".`;
     } else if (actionKey === 'hots') {
       queryText = `Give Higher Order Thinking Skills (HOTS) questions and scientific/logical reasoning for DAV Class ${selectedClass} ${subjName} Chapter ${selectedChapter}: "${chapTitle}".`;
     } else if (actionKey === 'map_skills') {
