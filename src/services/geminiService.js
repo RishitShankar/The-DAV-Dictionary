@@ -148,8 +148,8 @@ You are the definitive authority on the official D.A.V. Public School curriculum
 /**
  * Query live Google Cloud Generative Language API
  */
-async function queryLiveGemini(apiKey, systemPrompt, userPrompt, targetModel = 'gemini-3.5-flash-lite', maxTokens = 2000) {
-  const modelsToTry = [targetModel, 'gemini-3.5-flash-lite', 'gemini-3-flash-preview', 'gemini-3.8-flash'];
+async function queryLiveGemini(apiKey, systemPrompt, userPrompt, targetModel = 'gemini-2.5-flash', maxTokens = 2000) {
+  const modelsToTry = [targetModel, 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.5-flash-lite'];
   const uniqueModels = [...new Set(modelsToTry)];
 
   for (const model of uniqueModels) {
@@ -403,38 +403,38 @@ ${textbookMatch.topics.map(t => `* **${t.heading}:** ${t.content.slice(0, 160)}.
 
   // 2. LIVE CLOUD GENERATION with 4-Tier Dimension Configuration
   if (apiKey) {
-    let targetModel = 'gemini-3.5-flash-lite';
+    let targetModel = 'gemini-2.5-flash';
     let maxTokens = 1800;
     let dimensionInstruction = '';
     let footerTag = '';
 
     if (dimension === 1) {
       // Dimension 1: Normal Plan
-      targetModel = 'gemini-3.5-flash-lite';
+      targetModel = 'gemini-2.5-flash';
       maxTokens = 450;
       dimensionInstruction = `You are serving a NORMAL PLAN (Dimension 1) student. Provide clear, concise, direct answers with bullet points. Keep response under 180 words.`;
       footerTag = `\n\n*(⚡ Normal Plan: Concise notes. Upgrade to VIP or VVIP for full 5-mark model answers & middle-of-page analysis!)*`;
     } else if (dimension === 2) {
       // Dimension 2: VIP Plan
-      targetModel = 'gemini-3.5-flash-lite';
+      targetModel = 'gemini-2.5-flash';
       maxTokens = 1200;
       dimensionInstruction = `You are serving a VIP PLAN (Dimension 2) student. Provide detailed explanations, comprehensive points, exam tips, and key formulas.`;
       footerTag = `\n\n*(⭐ VIP Plan: Enhanced detailed study notes & exam formulas.)*`;
     } else if (dimension === 3) {
       // Dimension 3: VVIP Plan
-      targetModel = 'gemini-3.5-flash-lite';
+      targetModel = 'gemini-2.5-flash';
       maxTokens = 2200;
       dimensionInstruction = `You are serving a VVIP ULTRA (Dimension 3) student. Provide exhaustive, comprehensive 5-mark model answers, middle-of-page concepts, historical/scientific background, step-by-step reasoning, and exam scoring secrets by Head Boy Rishit Shankar.`;
       footerTag = `\n\n*(👑 VVIP Ultra Pass: Full 5-Mark DAV Model Answer & Deep Syllabus Mastery.)*`;
     } else if (dimension === 4) {
       // Dimension 4: Master Developer
-      targetModel = 'gemini-3.5-flash-lite';
+      targetModel = 'gemini-2.5-flash';
       maxTokens = 4096;
       dimensionInstruction = `You are serving the CREATOR & MASTER DEVELOPER, Head Boy Rishit Shankar. Provide maximum analytical depth, unconstrained intelligence, exact syllabus cross-referencing, and architectural precision.`;
       footerTag = `\n\n*(💎 Dev Master Dimension: Unrestricted Neural Generation & Database Direct Feed.)*`;
     } else {
       // Dimension 0: Guest Preview
-      targetModel = 'gemini-3.5-flash-lite';
+      targetModel = 'gemini-2.5-flash';
       maxTokens = 250;
       dimensionInstruction = `You are serving a GUEST PREVIEW user. Provide a short 2-bullet preview of the answer.`;
       footerTag = `\n\n*(🔒 Free Preview Mode: Please log in with your Normal, VIP, or VVIP credentials to unlock complete answers!)*`;
@@ -770,6 +770,23 @@ Welcome to **The DAV Dictionary**! I am your personal academic and global intell
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🏛️ *Syllabus Reference (DAV Class 8 SST - We and Our World):* Unit 3 "The Union Executive" covers the appointment, powers, and constitutional functions of the Prime Minister and Council of Ministers.`
+    };
+  }
+
+  if (lowerQ.includes('president of india') || lowerQ.includes('who is president') || lowerQ.includes('droupadi murmu')) {
+    return {
+      source: 'shankar-geo-core',
+      isTextbookGrounded: false,
+      chapterInfo: 'Indian Civics & Governance • Head of State',
+      modelName: getTierBadge(dimension),
+      text: `🇮🇳 **President of India (भारत के राष्ट्रपति)**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### 👤 Current Incumbent: **Smt. Droupadi Murmu (द्रौपदी मुर्मू)**
+* **Office:** 15th President of the Republic of India (Assumed office on 25 July 2022).
+* **Constitutional Position:** 
+  - Under **Article 52 & 53 of the Constitution of India**, the President is the **Supreme Commander of the Indian Armed Forces** and First Citizen of India.
+* **Historic Milestone:** First tribal woman and second woman (after Pratibha Patil) to hold India's highest constitutional office.`
     };
   }
 

@@ -16,7 +16,43 @@ import {
 } from 'lucide-react';
 import { ShankarAILogo } from './ShankarAILogo';
 import { getAllTeachers } from '../data/davTeachers50';
-import { getRegisteredUsers, DEFAULT_TEACHER_ACCOUNT, MASTER_DEVELOPER_ACCOUNT } from '../data/preloadedUsers';
+import { getRegisteredUsers, MASTER_DEVELOPER_ACCOUNT } from '../data/preloadedUsers';
+
+// Helper to compress uploaded images to lightweight data URLs (avoids 5MB localStorage quota limit)
+const compressImageToDataUrl = (file, maxDim = 256, quality = 0.82) => {
+  return new Promise((resolve) => {
+    if (!file) return resolve(null);
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        if (width > height) {
+          if (width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          }
+        } else {
+          if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => resolve(ev.target.result);
+      img.src = ev.target.result;
+    };
+    reader.onerror = () => resolve(null);
+    reader.readAsDataURL(file);
+  });
+};
 import { saveCloudDoubtChats, fetchCloudDoubtChats, subscribeCloudDoubtChats, saveCloudLiveBroadcasts, fetchCloudLiveBroadcasts, subscribeCloudLiveBroadcasts, fetchCloudStudents } from '../services/supabaseClient';
 
 // Complete DAV School Class and Section Configuration
@@ -672,7 +708,7 @@ export function TeachersSection({
       let raw = localStorage.getItem('dav_registered_users');
       let allUsers = raw ? JSON.parse(raw) : [];
       if (!Array.isArray(allUsers) || allUsers.length === 0) {
-        allUsers = typeof getRegisteredUsers === 'function' ? getRegisteredUsers() : [MASTER_DEVELOPER_ACCOUNT, DEFAULT_TEACHER_ACCOUNT];
+        allUsers = typeof getRegisteredUsers === 'function' ? getRegisteredUsers() : [MASTER_DEVELOPER_ACCOUNT];
       }
 
       const currentId = user?.id?.toLowerCase();
@@ -943,7 +979,9 @@ export function TeachersSection({
   const handleDeleteForMe = (msg, contact) => {
     if (!msg || !contact) return;
     const myId = String(user?.id || 'me').toLowerCase();
-    const chKey = getConversationChannelKey(user, contact);
+    const myName = String(user?.name || '').toLowerCase().trim();
+    const chKey = getConversationChannelKey(user?.id, contact.id);
+    const nameKey = getNameChannelKey(user?.name, contact.name);
     const currentMsgs = typeof getMessagesForContact === 'function' ? getMessagesForContact(contact) : (teacherChatsMap[chKey] || []);
     const updatedMsgs = currentMsgs.map(m => {
       if (m.id === msg.id) {
@@ -985,7 +1023,7 @@ export function TeachersSection({
     };
     persistChats(updatedMap);
     if (typeof saveCloudDoubtChats === 'function') {
-      saveCloudDoubtChats(chKey, updatedMsgs).catch(() => {});
+      saveCloudDoubtChats(updatedMap).catch(() => {});
     }
     setDeleteMsgModal({ isOpen: false, msg: null, contact: null });
     playSoundChime('delivered');
@@ -1599,6 +1637,15 @@ export function TeachersSection({
     } else {
       setNewTestSections(prev => [...prev, sec]);
     }
+  };
+
+  // 20-Hour Maximum Test Retention Policy
+  const isExamExpired = (t) => {
+    if (!t) return false;
+    const createdAt = Number(t.createdAt) || (t.id ? Number(String(t.id).replace(/\D/g, '')) : 0);
+    if (!createdAt) return false;
+    const TWENTY_HOURS_MS = 20 * 60 * 60 * 1000;
+    return (Date.now() - createdAt) > TWENTY_HOURS_MS;
   };
 
   // Custom Tests Database (Zero fake/demo tests)
@@ -3324,7 +3371,7 @@ export function TeachersSection({
                                   <button
                                     type="button"
                                     onClick={() => setDeleteMsgModal({ isOpen: true, msg, contact: activeContact })}
-                                    className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:text-rose-600 transition cursor-pointer"
+                                    className="opacity-70 sm:opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-black/20 text-slate-400 hover:text-rose-400 transition cursor-pointer"
                                     title="Delete message"
                                   >
                                     <Trash2 className="w-3 h-3" />
@@ -3433,6 +3480,52 @@ export function TeachersSection({
                   </div>
                 </div>
 
+                {/* WhatsApp-Style Delete Message Confirmation Modal */}
+                {deleteMsgModal.isOpen && (
+                  <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="bg-slate-900 border border-purple-600 rounded-3xl p-6 max-w-sm w-full shadow-2xl text-center space-y-4 animate-fadeIn">
+                      <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 mx-auto flex items-center justify-center">
+                        <Trash2 className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-bold text-white">Delete message?</h3>
+                        <p className="text-xs text-purple-300 mt-1 line-clamp-2 italic">
+                          {deleteMsgModal.msg?.text || (deleteMsgModal.msg?.media ? '[' + deleteMsgModal.msg.media.type + ']' : 'Message')}
+                        </p>
+                      </div>
+                      <div className="flex flex-col gap-2 pt-2">
+                        {Boolean(
+                          (deleteMsgModal.msg?.senderUserId && user?.id && String(deleteMsgModal.msg.senderUserId).toLowerCase() === String(user.id).toLowerCase()) ||
+                          (deleteMsgModal.msg?.senderName && user?.name && String(deleteMsgModal.msg.senderName).toLowerCase() === String(user.name).toLowerCase()) ||
+                          (isDimension5 ? deleteMsgModal.msg?.sender === 'teacher' : deleteMsgModal.msg?.sender === 'student')
+                        ) && (
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteForEveryone(deleteMsgModal.msg, deleteMsgModal.contact)}
+                            className="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg transition cursor-pointer"
+                          >
+                            Delete for Everyone
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteForMe(deleteMsgModal.msg, deleteMsgModal.contact)}
+                          className="w-full py-2.5 rounded-xl bg-purple-700 hover:bg-purple-600 text-white font-bold text-xs shadow-md transition cursor-pointer"
+                        >
+                          Delete for Me
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDeleteMsgModal({ isOpen: false, msg: null, contact: null })}
+                          className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition cursor-pointer"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Edit Faculty Profile & DP Modal */}
                 {showTeacherProfileModal && (
                   <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md p-4 flex items-center justify-center animate-fadeIn">
@@ -3467,14 +3560,13 @@ export function TeachersSection({
                             accept="image/*"
                             id="faculty-dp-upload-input"
                             className="hidden"
-                            onChange={(e) => {
+                            onChange={async (e) => {
                               const file = e.target.files?.[0];
                               if (file) {
-                                const reader = new FileReader();
-                                reader.onload = (ev) => {
-                                  setCustomProfileForm(prev => ({ ...prev, dp: ev.target.result }));
-                                };
-                                reader.readAsDataURL(file);
+                                const compressed = await compressImageToDataUrl(file, 256, 0.82);
+                                if (compressed) {
+                                  setCustomProfileForm(prev => ({ ...prev, dp: compressed }));
+                                }
                               }
                             }}
                           />
@@ -3830,7 +3922,7 @@ export function TeachersSection({
                             {activeLiveSessionData?.topic || `DAV Class ${selectedLiveClassNum} Live Lecture`}
                           </h3>
                           <p className="text-[10px] text-teal-300 font-mono">
-                            Educator: {activeLiveSessionData?.teacher || user?.name || 'Mrs. Sunita Sharma'} - Real-Time WebRTC Video Stream
+                            Educator: {activeLiveSessionData?.teacher || user?.name || 'DAV Faculty'} - Real-Time WebRTC Video Stream
                           </p>
                         </div>
                       </div>

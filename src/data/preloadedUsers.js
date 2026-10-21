@@ -17,26 +17,7 @@ export const MASTER_DEVELOPER_ACCOUNT = {
   createdAt: 'System Root'
 };
 
-export const DEFAULT_TEACHER_ACCOUNT = {
-  id: 'teacher1',
-  password: 'Teach1@DAV2026',
-  name: 'Mrs. Sunita Sharma',
-  role: 'DAV Faculty Teacher',
-  subject: 'Science & Biology',
-  department: 'Science',
-  classNum: '8',
-  section: 'D',
-  plan: 'teacher',
-  dimension: 5,
-  dimensionName: 'Dimension 5: Faculty OS',
-  paidAmount: 'Institutional',
-  paymentMode: 'DAV School Official Faculty',
-  isAdmin: false,
-  isTeacher: true,
-  personalWhatsApp: '919470033984',
-  phoneNumber: '919470033984',
-  createdAt: 'Official Faculty Registry'
-};
+export const DEFAULT_TEACHER_ACCOUNT = null;
 
 export const PRELOADED_DATABASE_USERS = [
   MASTER_DEVELOPER_ACCOUNT

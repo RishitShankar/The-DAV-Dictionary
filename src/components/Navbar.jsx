@@ -166,14 +166,6 @@ export function Navbar({
                   <span className="px-3 py-1 rounded-lg bg-purple-50 text-purple-900 font-bold text-xs border border-purple-200 flex items-center gap-1.5 shadow-xs">
                     <Award className="w-3.5 h-3.5 text-purple-600" />
                     <span>{teacherSubDimension === 'teacher_only' ? 'Section 1: Faculty Master OS' : 'Section 5: Faculty Dimension'}</span>
-                    <span className="text-purple-300 mx-1">•</span>
-                    <span className="capitalize font-extrabold text-purple-700">
-                      {teacherSubSection === 'homework' && '📋 Homework Hub'}
-                      {teacherSubSection === 'doubts_chat' && '💬 WhatsApp Doubts'}
-                      {teacherSubSection === 'live_class' && '🎥 Live Classes'}
-                      {teacherSubSection === 'tests' && '📝 Tests'}
-                      {teacherSubSection === 'attendance' && '📊 Attendance'}
-                    </span>
                   </span>
                 ) : (
                   <span className="px-3 py-1 rounded-lg bg-red-50 text-red-900 font-bold text-xs border border-red-200 flex items-center gap-1.5 shadow-xs">
@@ -182,52 +174,6 @@ export function Navbar({
                     <span className="text-red-300 mx-1">•</span>
                     <span className="font-extrabold text-purple-700">Teacher Explorer Active</span>
                   </span>
-                )}
-
-                {/* Quick sub-section switcher tabs on desktop when in Section 5 */}
-                {(activeSection === 5 || teacherSubDimension === 'teacher_only') && (
-                  <div className="hidden xl:flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
-                    <button
-                      onClick={() => onSelectTeacherSubSection && onSelectTeacherSubSection('homework')}
-                      className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer ${
-                        teacherSubSection === 'homework' ? 'bg-white text-purple-700 shadow-xs border border-purple-200' : 'text-slate-500 hover:text-slate-800'
-                      }`}
-                    >
-                      📋 HW
-                    </button>
-                    <button
-                      onClick={() => onSelectTeacherSubSection && onSelectTeacherSubSection('doubts_chat')}
-                      className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer ${
-                        teacherSubSection === 'doubts_chat' ? 'bg-white text-emerald-700 shadow-xs border border-emerald-200' : 'text-slate-500 hover:text-slate-800'
-                      }`}
-                    >
-                      💬 Doubts
-                    </button>
-                    <button
-                      onClick={() => onSelectTeacherSubSection && onSelectTeacherSubSection('live_class')}
-                      className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer ${
-                        teacherSubSection === 'live_class' ? 'bg-white text-rose-700 shadow-xs border border-rose-200' : 'text-slate-500 hover:text-slate-800'
-                      }`}
-                    >
-                      🎥 Live
-                    </button>
-                    <button
-                      onClick={() => onSelectTeacherSubSection && onSelectTeacherSubSection('tests')}
-                      className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer ${
-                        teacherSubSection === 'tests' ? 'bg-white text-indigo-700 shadow-xs border border-indigo-200' : 'text-slate-500 hover:text-slate-800'
-                      }`}
-                    >
-                      📝 Tests
-                    </button>
-                    <button
-                      onClick={() => onSelectTeacherSubSection && onSelectTeacherSubSection('attendance')}
-                      className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer ${
-                        teacherSubSection === 'attendance' ? 'bg-white text-amber-700 shadow-xs border border-amber-200' : 'text-slate-500 hover:text-slate-800'
-                      }`}
-                    >
-                      📊 Attendance
-                    </button>
-                  </div>
                 )}
               </div>
             ) : (
