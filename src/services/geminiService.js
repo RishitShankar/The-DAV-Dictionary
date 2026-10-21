@@ -158,15 +158,13 @@ You are the definitive authority on the official D.A.V. Public School curriculum
 /**
  * Query live Google Cloud Generative Language API
  */
-async function queryLiveGemini(apiKey, systemPrompt, userPrompt, targetModel = 'gemma-4-26b-a4b-it', maxTokens = 2000) {
+async function queryLiveGemini(apiKey, systemPrompt, userPrompt, targetModel = 'gemini-3.5-flash-lite', maxTokens = 3000) {
   const modelsToTry = [
     targetModel,
-    'gemma-4-26b-a4b-it',
-    'gemma-4-31b-it',
-    'gemini-3.8-flash',
-    'gemini-flash-latest',
-    'gemini-2.5-flash',
-    'gemini-2.0-flash'
+    'gemini-3.5-flash-lite',
+    'gemini-3.5-flash',
+    'gemini-3.1-flash-lite',
+    'gemma-4-26b-a4b-it'
   ];
   const uniqueModels = [...new Set(modelsToTry)];
 
@@ -190,7 +188,7 @@ async function queryLiveGemini(apiKey, systemPrompt, userPrompt, targetModel = '
       };
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 12000);
+      const timeoutId = setTimeout(() => controller.abort(), 25000);
 
       const res = await fetch(url, {
         method: 'POST',
@@ -360,29 +358,22 @@ export async function askShankarAI(question, context = {}) {
     dimension = 0;
   }
 
-  // Check for explicit locked chapter study notes requests in Academics mode
-  if (!isOuterWorld && context.chapter) {
+  // Check for explicit study tool action requests (e.g. clicking "Summarize", "5-Mark Notes" buttons)
+  if (!isOuterWorld && context.chapter && context.actionType) {
     const classKey = context.classNum || detectedClass || 8;
     const subjKey = (context.subject || '').toLowerCase().includes('sci') ? 'science' :
                     (context.subject || '').toLowerCase().includes('sst') || (context.subject || '').toLowerCase().includes('soc') ? 'sst' :
                     (context.subject || '').toLowerCase().includes('math') ? 'maths' :
                     (context.subject || '').toLowerCase().includes('hin') ? 'hindi' :
                     (context.subject || '').toLowerCase().includes('eng') ? 'english' :
+                    (context.subject || '').toLowerCase().includes('sans') ? 'sanskrit' :
                     (context.subject || 'sst');
     const chapNum = parseInt(context.chapter, 10);
     const chapterObj = DAV_TEXTBOOK_DATABASE[classKey]?.[subjKey]?.chapters?.find(c => c.number === chapNum);
     const subjectName = DAV_TEXTBOOK_DATABASE[classKey]?.[subjKey]?.name || (subjKey.toUpperCase());
 
-    const detectedAction = context.actionType || (
-      lowerQ.includes('summar') ? 'summary' :
-      lowerQ.includes('short note') ? 'short_notes' :
-      (lowerQ.includes('5 mark') || lowerQ.includes('five mark')) ? 'five_mark' :
-      lowerQ.includes('bullet') ? 'bullets' :
-      (lowerQ.includes('question') && lowerQ.includes('answer')) || lowerQ.includes('back of chapter') ? 'qa' : null
-    );
-
-    if (detectedAction && chapterObj) {
-      const studyNotes = formatStudyNotesForChapter(chapterObj, subjectName, classKey, detectedAction);
+    if (chapterObj) {
+      const studyNotes = formatStudyNotesForChapter(chapterObj, subjectName, classKey, context.actionType);
       if (studyNotes) {
         return {
           source: 'shankar-textbook-core',
@@ -395,96 +386,61 @@ export async function askShankarAI(question, context = {}) {
     }
   }
 
-  // 1. Authoritative Database Grounding Match (Skip if in outer_world mode unless explicitly querying textbook)
+  // 1. Authoritative Database Grounding Match (for background enrichment)
   const textbookMatch = !isOuterWorld ? lookupTextbookDatabase(trimmedQ, detectedClass) : null;
 
-  // If question is specifically asking for chapter name / title
-  if (textbookMatch?.type === 'chapter-name-match') {
-    return {
-      source: 'shankar-textbook-core',
-      isTextbookGrounded: true,
-      chapterInfo: `DAV Class ${detectedClass} ${textbookMatch.subjectName} • Ch ${textbookMatch.chapterNumber}`,
-      modelName: getTierBadge(dimension),
-      text: `📖 **DAV Class ${detectedClass} ${textbookMatch.subjectName}**
-📚 **Chapter ${textbookMatch.chapterNumber}: ${textbookMatch.chapterTitle}**
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-The official name of Chapter ${textbookMatch.chapterNumber} in the DAV textbook is:
-# **"${textbookMatch.chapterTitle}"**
-
-${textbookMatch.section ? `*Section:* **${textbookMatch.section}**\n` : ''}
-### 📝 Chapter Overview & Key Themes:
-${textbookMatch.summary}
-
-${textbookMatch.topics ? `### 📌 Core Middle-of-Page Topics Covered:
-${textbookMatch.topics.map(t => `* **${t.heading}:** ${t.content.slice(0, 160)}...`).join('\n')}` : ''}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💡 *Need full questions or middle-of-page notes?* Ask Shankar AI for any topic or question!`
-    };
-  }
-
-  // 2. LIVE CLOUD GENERATION with 4-Tier Dimension Configuration
+  // 2. LIVE CLOUD GENERATION — Fully unrestricted, powerful AI like ChatGPT and Gemini
   if (apiKey) {
-    let targetModel = 'gemma-4-26b-a4b-it';
-    let maxTokens = 1800;
+    let targetModel = 'gemini-3.5-flash-lite';
+    let maxTokens = 3500;
     let dimensionInstruction = '';
     let footerTag = '';
 
     if (dimension === 1) {
-      targetModel = 'gemma-4-26b-a4b-it';
-      maxTokens = 450;
-      dimensionInstruction = `You are serving a NORMAL PLAN (Dimension 1) student. Provide clear, concise, direct answers with bullet points. Keep response under 180 words.`;
-      footerTag = `\n\n*(⚡ Normal Plan: Concise notes. Upgrade to VIP or VVIP for full 5-mark model answers & middle-of-page analysis!)*`;
+      targetModel = 'gemini-3.5-flash-lite';
+      maxTokens = 3000;
+      dimensionInstruction = `Provide clear, comprehensive, and helpful answers with clear structure and examples.`;
     } else if (dimension === 2) {
-      targetModel = 'gemma-4-26b-a4b-it';
-      maxTokens = 1200;
-      dimensionInstruction = `You are serving a VIP PLAN (Dimension 2) student. Provide detailed explanations, comprehensive points, exam tips, and key formulas.`;
-      footerTag = `\n\n*(⭐ VIP Plan: Enhanced detailed study notes & exam formulas.)*`;
+      targetModel = 'gemini-3.5-flash-lite';
+      maxTokens = 3500;
+      dimensionInstruction = `Provide in-depth, detailed explanations, exam tips, and key concepts.`;
     } else if (dimension === 3) {
-      targetModel = 'gemma-4-26b-a4b-it';
-      maxTokens = 2200;
-      dimensionInstruction = `You are serving a VVIP ULTRA (Dimension 3) student. Provide exhaustive, comprehensive 5-mark model answers, middle-of-page concepts, historical/scientific background, step-by-step reasoning, and exam scoring secrets by Head Boy Rishit Shankar.`;
-      footerTag = `\n\n*(👑 VVIP Ultra Pass: Full 5-Mark DAV Model Answer & Deep Syllabus Mastery.)*`;
-    } else if (dimension === 4) {
-      targetModel = 'gemma-4-26b-a4b-it';
+      targetModel = 'gemini-3.5-flash-lite';
       maxTokens = 4096;
-      dimensionInstruction = `You are serving the CREATOR & MASTER DEVELOPER, Head Boy Rishit Shankar. Provide maximum analytical depth, unconstrained intelligence, exact syllabus cross-referencing, and architectural precision.`;
-      footerTag = `\n\n*(💎 Dev Master Dimension: Unrestricted Neural Generation & Database Direct Feed.)*`;
+      dimensionInstruction = `Provide exhaustive, comprehensive model answers with step-by-step reasoning and deep syllabus mastery.`;
+    } else if (dimension === 4) {
+      targetModel = 'gemini-3.5-flash-lite';
+      maxTokens = 4096;
+      dimensionInstruction = `Provide maximum analytical depth, unconstrained intelligence, exact syllabus cross-referencing, and architectural precision.`;
     } else {
-      targetModel = 'gemma-4-26b-a4b-it';
-      maxTokens = 250;
-      dimensionInstruction = `You are serving a GUEST PREVIEW user. Provide a short 2-bullet preview of the answer.`;
-      footerTag = `\n\n*(🔒 Free Preview Mode: Please log in with your Normal, VIP, or VVIP credentials to unlock complete answers!)*`;
+      targetModel = 'gemini-3.5-flash-lite';
+      maxTokens = 2500;
+      dimensionInstruction = `Provide helpful, direct, and complete answers.`;
     }
 
-    const fullSystemPrompt = `You are "Shankar AI", the official proprietary intelligence engine developed by Head Boy Rishit Shankar for The DAV Dictionary.
+    const fullSystemPrompt = `You are "Shankar AI", a brilliant, versatile, and completely unrestricted AI intelligence engine created by Head Boy Rishit Shankar for The DAV Dictionary.
+
+You have the comprehensive knowledge, versatility, problem-solving ability, and conversational depth of ChatGPT and Google Gemini.
+You can answer ANY question across all disciplines, academic subjects, and worldly topics:
+- All academic subjects (Mathematics, Science, Physics, Chemistry, Biology, History, Civics, Geography, Hindi, English, Sanskrit, Computer Science, Economics) for all classes (LKG to Class 8 and beyond)
+- General knowledge, world affairs, history, geopolitics, current events, abbreviations, and technology
+- Coding, programming, debugging, algorithms, and logic puzzles
+- Creative writing, essays, letter drafting, summaries, and debate arguments
+- Mathematical derivations, step-by-step solutions, formulas, and proofs
 
 ${MASTER_DAV_GROUNDING}
 
-TARGET AUDIENCE CONTEXT:
-- Student Class: ${typeof detectedClass === 'string' ? detectedClass : `Class ${detectedClass}`}
-- Question Category: ${category}
+TARGET CONTEXT:
+- Mode: ${isOuterWorld ? 'Outer World / General Knowledge' : 'Academics & Curriculum'}
+- Class: ${typeof detectedClass === 'string' ? detectedClass : `Class ${detectedClass}`}
+- Category: ${category}
 
-CRITICAL RULES FOR RESPONSES:
-1. ALWAYS give a REAL, SPECIFIC, DIRECT answer to the student's actual question. NEVER return a generic template or boilerplate.
-2. When answering ANY DAV textbook question (LKG to Class 8, any subject):
-   - Cite the exact DAV chapter title and curriculum context.
-   - For HOTS questions: provide deep analytical reasoning and hypothesis testing.
-   - For Value-Based Questions (VBQ): state the core human/moral value, explain why it matters, and provide practical life examples.
-   - For Map Skills: provide the exact location, state, physical landmark, and step-by-step student marking instructions.
-   - For Brain Teasers / Math Puzzles: give step-by-step mathematical logic and alternative tricks.
-   - For Middle-of-Page concepts: explain the textbook paragraph thoroughly with formulas, diagrams, definitions, and exam scoring tips.
-   - For Back-of-Chapter questions (Part A, B, C, D, E): deliver full-mark model answers.
-3. If asked about Creator Rishit Shankar:
-   - Provide full, accurate, inspiring details from his profile (Head Boy of DAV Public School Khabra Muzaffarpur, age 14, 80/80 in Sanskrit, 96 in English, 90 in Math, creator of The DAV Dictionary & Shankar AI, full-stack coder, chess player, Blender 3D, and market analyst).
-4. If asked outer-world or general knowledge questions (geopolitics, world affairs, science, history, PM, President, sports, entertainment, anything):
-   - Provide objective, accurate, helpful, structured answers based on your knowledge.
-   - DO NOT refuse to answer any legitimate question.
-
-${dimensionInstruction}
-
-Format your output using rich GitHub-flavored markdown with clean headers (###), bold bullet points, and numbered lists.`;
+RULES FOR RESPONSES:
+1. Answer the user's specific question DIRECTLY, COMPLETELY, and INTELLIGENTLY.
+2. NEVER give a generic boilerplate or refuse valid questions.
+3. If asked about Creator Rishit Shankar, give proud, accurate, inspiring details from his biography.
+4. Use rich Markdown with clear headings (###), bold bullet points, and code formatting where appropriate.
+${dimensionInstruction}`;
 
     // Build enriched prompt with chapter context when the student selected a chapter
     let userPromptWithContext = trimmedQ;
