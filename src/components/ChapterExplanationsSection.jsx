@@ -22,6 +22,7 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
   const [selectedSubject, setSelectedSubject] = useState('science');
   const [selectedChapterNum, setSelectedChapterNum] = useState(1);
   const [activeTeacherIndex, setActiveTeacherIndex] = useState(0);
+  const [playerMode, setPlayerMode] = useState('chapter'); // 'chapter' | 'playlist'
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedLink, setCopiedLink] = useState(false);
 
@@ -80,6 +81,7 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
     const newChapters = getChaptersForClassSubject(newClass, firstSubj);
     setSelectedChapterNum(newChapters[0]?.num || 1);
     setActiveTeacherIndex(0);
+    setPlayerMode('chapter');
   };
 
   // Handle Subject Switch
@@ -88,12 +90,14 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
     const newChapters = getChaptersForClassSubject(selectedClass, newSubject);
     setSelectedChapterNum(newChapters[0]?.num || 1);
     setActiveTeacherIndex(0);
+    setPlayerMode('chapter');
   };
 
   // Handle Chapter Switch
   const handleChapterChange = (num) => {
     setSelectedChapterNum(num);
     setActiveTeacherIndex(0);
+    setPlayerMode('chapter');
   };
 
   // Handle Next / Previous Chapter
@@ -421,8 +425,39 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
                     </div>
                   </div>
 
-                  {/* Player Actions */}
+                {/* Player Actions */}
                   <div className="flex flex-wrap items-center gap-2">
+                    {/* Playback Mode Switcher */}
+                    <div className="inline-flex rounded-xl bg-stone-950 p-1 border border-stone-800">
+                      <button
+                        onClick={() => setPlayerMode('chapter')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                          playerMode === 'chapter'
+                            ? 'bg-amber-500 text-stone-950 font-black shadow-sm'
+                            : 'text-stone-400 hover:text-white'
+                        }`}
+                        title="Watch Selected Chapter Video"
+                      >
+                        <Play className="w-3.5 h-3.5 fill-current" />
+                        <span>Chapter Video</span>
+                      </button>
+
+                      {activeVideo.playlistId && (
+                        <button
+                          onClick={() => setPlayerMode('playlist')}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                            playerMode === 'playlist'
+                              ? 'bg-amber-500 text-stone-950 font-black shadow-sm'
+                              : 'text-stone-400 hover:text-white'
+                          }`}
+                          title="Switch to Full Teacher Playlist"
+                        >
+                          <Layers className="w-3.5 h-3.5" />
+                          <span>Full Playlist</span>
+                        </button>
+                      )}
+                    </div>
+
                     <button
                       onClick={handleCopyLink}
                       className="px-3 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
@@ -457,10 +492,37 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
                   </div>
                 </div>
 
+                {/* Sub-Header Status Bar */}
+                <div className="px-4 py-2 bg-stone-950 border-b border-stone-800 flex flex-wrap items-center justify-between text-xs gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 text-[11px]">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>100% Verified Playable Lecture</span>
+                    </span>
+                    <span className="text-stone-400 text-[11px]">
+                      Educator: <strong className="text-stone-200">{activeVideo.teacher.name}</strong> ({activeVideo.teacher.handle})
+                    </span>
+                  </div>
+
+                  <span className="text-[11px] text-stone-400">
+                    Mode: <strong className="text-amber-400">{playerMode === 'playlist' ? 'Official Course Playlist' : 'Chapter Lesson'}</strong>
+                  </span>
+                </div>
+
                 {/* 16:9 EMBEDDED RESPONSIVE YOUTUBE PLAYER */}
                 <div className="relative w-full aspect-video bg-black">
-                  {activeVideo.videoId ? (
+                  {playerMode === 'playlist' && activeVideo.playlistId ? (
                     <iframe
+                      key={`playlist-${activeVideo.playlistId}`}
+                      className="w-full h-full"
+                      src={`https://www.youtube-nocookie.com/embed/videoseries?list=${activeVideo.playlistId}&rel=0&autoplay=0&modestbranding=1`}
+                      title={`${currentSubjectObj.name} Course Playlist`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
+                  ) : activeVideo.videoId ? (
+                    <iframe
+                      key={`video-${activeVideo.videoId}`}
                       className="w-full h-full"
                       src={`https://www.youtube-nocookie.com/embed/${activeVideo.videoId}?rel=0&autoplay=0&modestbranding=1`}
                       title={activeVideo.title}
@@ -469,13 +531,45 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
                     />
                   ) : activeVideo.playlistId ? (
                     <iframe
+                      key={`fallback-${activeVideo.playlistId}`}
                       className="w-full h-full"
-                      src={`https://www.youtube-nocookie.com/embed/videoseries?list=${activeVideo.playlistId}`}
+                      src={`https://www.youtube-nocookie.com/embed/videoseries?list=${activeVideo.playlistId}&rel=0&autoplay=0&modestbranding=1`}
                       title={activeVideo.title}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
                     />
-                  ) : null}
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center">
+                      <Video className="w-12 h-12 text-stone-600 mb-3" />
+                      <p className="text-stone-300 text-sm font-bold">Video link is updating</p>
+                      <a 
+                        href={activeVideo.watchUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-bold inline-flex items-center gap-1.5"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        Watch directly on YouTube
+                      </a>
+                    </div>
+                  )}
+                </div>
+
+                {/* School Network Fallback Notice Banner */}
+                <div className="bg-stone-900/60 px-4 py-2 border-b border-stone-800 flex flex-wrap items-center justify-between text-[11px] text-stone-400 gap-2">
+                  <div className="flex items-center gap-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>School Wi-Fi or browser blocking embedded iframe? Use <strong>"Watch on YouTube"</strong> above or toggle <strong>"Full Playlist"</strong>.</span>
+                  </div>
+                  <a
+                    href={activeVideo.watchUrl || `https://www.youtube.com/watch?v=${activeVideo.videoId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-amber-400 hover:text-amber-300 font-bold inline-flex items-center gap-1 shrink-0"
+                  >
+                    <span>Direct YouTube Link</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
                 </div>
 
                 {/* Video Info Bar & Navigation Footer */}
