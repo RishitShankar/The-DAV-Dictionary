@@ -8,6 +8,11 @@ import {
 import { DAV_CLASSES, DAV_SUBJECTS_BY_CLASS, getChaptersForClassSubject } from '../data/curriculumData';
 import { 
   TOP_DAV_CREATORS, 
+  getTeachersForSubject,
+  getMathWorksheets,
+  getExerciseSections,
+  getChapterExplanationParts,
+  resolveActiveLecture,
   getVideoLecturesForChapter, 
   DAV_PYQ_ARCHIVE, 
   DAV_SAMPLE_PAPERS 
@@ -21,10 +26,22 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
   const [selectedClass, setSelectedClass] = useState('8');
   const [selectedSubject, setSelectedSubject] = useState('science');
   const [selectedChapterNum, setSelectedChapterNum] = useState(1);
+  const [lectureMode, setLectureMode] = useState('explanation'); // 'explanation' | 'solutions'
+  const [selectedPartId, setSelectedPartId] = useState('part1');
   const [activeTeacherIndex, setActiveTeacherIndex] = useState(0);
   const [playerMode, setPlayerMode] = useState('chapter'); // 'chapter' | 'playlist'
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedLink, setCopiedLink] = useState(false);
+
+  // Nursery removed as requested by user
+  const sectionClasses = useMemo(() => {
+    return DAV_CLASSES.filter(c => c.id !== 'Nursery');
+  }, []);
+
+  // Whether video lectures exist for this class (Classes 3 to 8)
+  const isVideoAvailable = useMemo(() => {
+    return ['8', '7', '6', '5', '4', '3'].includes(selectedClass);
+  }, [selectedClass]);
 
   // PYQ State
   const [selectedPyqYear, setSelectedPyqYear] = useState('all');
@@ -64,24 +81,54 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
     );
   }, [availableChapters, searchQuery]);
 
-  // Videos available for current chapter
-  const currentVideos = useMemo(() => {
-    return getVideoLecturesForChapter(selectedClass, selectedSubject, currentChapterObj.num, currentChapterObj.title);
-  }, [selectedClass, selectedSubject, currentChapterObj]);
+  // Available parts / worksheets for current chapter & mode
+  const availableParts = useMemo(() => {
+    if (lectureMode === 'explanation') {
+      return getChapterExplanationParts();
+    }
+    if (selectedSubject === 'maths') {
+      return getMathWorksheets(selectedClass, currentChapterObj.num);
+    }
+    return getExerciseSections(selectedSubject);
+  }, [lectureMode, selectedClass, selectedSubject, currentChapterObj]);
 
-  // Active playing video
-  const activeVideo = currentVideos[activeTeacherIndex] || currentVideos[0];
+  // Current selected part object
+  const selectedPartObj = useMemo(() => {
+    return availableParts.find(p => p.id === selectedPartId) || availableParts[0] || { id: 'main', label: 'Main Chapter' };
+  }, [availableParts, selectedPartId]);
+
+  // Available 3 specialized educators for current subject
+  const availableTeachers = useMemo(() => {
+    return getTeachersForSubject(selectedSubject);
+  }, [selectedSubject]);
+
+  // Resolved active lecture object with zero cross-chapter mismatch
+  const activeLecture = useMemo(() => {
+    return resolveActiveLecture({
+      classId: selectedClass,
+      subjectId: selectedSubject,
+      chapterNum: currentChapterObj.num,
+      chapterTitle: currentChapterObj.title,
+      mode: lectureMode,
+      selectedPart: selectedPartObj,
+      teacherIndex: activeTeacherIndex
+    });
+  }, [selectedClass, selectedSubject, currentChapterObj, lectureMode, selectedPartObj, activeTeacherIndex]);
 
   // Handle Class Switch
   const handleClassChange = (newClass) => {
     setSelectedClass(newClass);
-    const newSubjects = DAV_SUBJECTS_BY_CLASS[newClass] || DAV_SUBJECTS_BY_CLASS['8'];
-    const firstSubj = newSubjects[0].id;
-    setSelectedSubject(firstSubj);
-    const newChapters = getChaptersForClassSubject(newClass, firstSubj);
-    setSelectedChapterNum(newChapters[0]?.num || 1);
-    setActiveTeacherIndex(0);
-    setPlayerMode('chapter');
+    if (['8', '7', '6', '5', '4', '3'].includes(newClass)) {
+      const newSubjects = DAV_SUBJECTS_BY_CLASS[newClass] || DAV_SUBJECTS_BY_CLASS['8'];
+      const firstSubj = newSubjects[0].id;
+      setSelectedSubject(firstSubj);
+      const newChapters = getChaptersForClassSubject(newClass, firstSubj);
+      setSelectedChapterNum(newChapters[0]?.num || 1);
+      setActiveTeacherIndex(0);
+      setSelectedPartId('part1');
+      setLectureMode('explanation');
+      setPlayerMode('chapter');
+    }
   };
 
   // Handle Subject Switch
@@ -90,6 +137,7 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
     const newChapters = getChaptersForClassSubject(selectedClass, newSubject);
     setSelectedChapterNum(newChapters[0]?.num || 1);
     setActiveTeacherIndex(0);
+    setSelectedPartId(lectureMode === 'explanation' ? 'part1' : (newSubject === 'maths' ? 'ws1' : 'part_abc'));
     setPlayerMode('chapter');
   };
 
@@ -97,6 +145,21 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
   const handleChapterChange = (num) => {
     setSelectedChapterNum(num);
     setActiveTeacherIndex(0);
+    setSelectedPartId(lectureMode === 'explanation' ? 'part1' : (selectedSubject === 'maths' ? 'ws1' : 'part_abc'));
+    setPlayerMode('chapter');
+  };
+
+  // Handle Mode Switch (Explanation vs Solutions)
+  const handleModeChange = (newMode) => {
+    setLectureMode(newMode);
+    setActiveTeacherIndex(0);
+    setSelectedPartId(newMode === 'explanation' ? 'part1' : (selectedSubject === 'maths' ? 'ws1' : 'part_abc'));
+    setPlayerMode('chapter');
+  };
+
+  // Handle Part / Worksheet Switch
+  const handlePartChange = (partId) => {
+    setSelectedPartId(partId);
     setPlayerMode('chapter');
   };
 
@@ -112,9 +175,7 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
 
   // Copy Video Link to Clipboard
   const handleCopyLink = () => {
-    const url = activeVideo.videoId 
-      ? `https://www.youtube.com/watch?v=${activeVideo.videoId}`
-      : activeVideo.watchUrl;
+    const url = activeLecture.watchUrl;
     navigator.clipboard.writeText(url);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);
@@ -248,7 +309,7 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
       {/* ========================================================= */}
       {activeSubTab === 'videos' && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-          {/* STEP 1: CLASS SELECTOR BAR */}
+          {/* STEP 1: CLASS SELECTOR BAR (NURSERY EXCLUDED) */}
           <div className="bg-stone-950 p-4 rounded-2xl border border-stone-800 mb-6 shadow-md">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-black uppercase tracking-wider text-stone-400 flex items-center gap-1.5">
@@ -256,14 +317,14 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
                 Select Class:
               </span>
               <span className="text-xs text-stone-400 font-medium">
-                Primary Focus: <strong className="text-amber-400">Class 5 to 8</strong> (Full Video Coverage)
+                Live Video Lectures: <strong className="text-amber-400">Class 3 to 8</strong> (Full Syllabus & Worksheets)
               </span>
             </div>
 
             <div className="flex items-center gap-2 overflow-x-auto pb-1">
-              {DAV_CLASSES.map((c) => {
+              {sectionClasses.map((c) => {
                 const isSelected = selectedClass === c.id;
-                const isPrimary = ['8', '7', '6', '5'].includes(c.id);
+                const isPrimary = ['8', '7', '6', '5', '4', '3'].includes(c.id);
                 return (
                   <button
                     key={c.id}
@@ -284,458 +345,565 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
             </div>
           </div>
 
-          {/* STEP 2: SUBJECT SELECTOR BAR */}
-          <div className="bg-stone-950 p-4 rounded-2xl border border-stone-800 mb-6 shadow-md">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-black uppercase tracking-wider text-stone-400 flex items-center gap-1.5">
-                <BookOpen className="w-3.5 h-3.5 text-blue-400" />
-                Select Subject for Class {selectedClass}:
+          {/* IF CLASS HAS NO VIDEO LECTURES AVAILABLE (CLASS 2, 1, UKG, LKG) */}
+          {!isVideoAvailable ? (
+            <div className="bg-stone-950 rounded-3xl border border-stone-800 p-8 sm:p-14 text-center shadow-2xl max-w-3xl mx-auto my-8">
+              <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mx-auto mb-4">
+                <BookOpen className="w-8 h-8" />
+              </div>
+              <span className="px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-black uppercase tracking-wider">
+                Curriculum In Preparation
               </span>
-              <span className="text-xs text-stone-400">
-                Verified Curricula: <strong className="text-white">{availableSubjects.length} Subjects</strong>
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2.5 overflow-x-auto pb-1">
-              {availableSubjects.map((s) => {
-                const isSelected = selectedSubject === s.id;
-                return (
-                  <button
-                    key={s.id}
-                    onClick={() => handleSubjectChange(s.id)}
-                    className={`px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap flex items-center gap-2 border ${
-                      isSelected
-                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-400 shadow-md font-black'
-                        : 'bg-stone-900 hover:bg-stone-800 text-stone-300 border-stone-800'
-                    }`}
-                  >
-                    <span>{s.name}</span>
-                    {isSelected && <Check className="w-3.5 h-3.5" />}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* MAIN 2-COLUMN VIDEO THEATER WORKSPACE */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            {/* LEFT COLUMN: CHAPTER DIRECTORY (4 COLS) */}
-            <div className="lg:col-span-4 bg-stone-950 rounded-3xl border border-stone-800 p-5 shadow-xl">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="text-base font-black text-white flex items-center gap-2">
-                    <Layers className="w-4 h-4 text-amber-400" />
-                    Chapter Index
-                  </h3>
-                  <p className="text-xs text-stone-400 mt-0.5">
-                    Class {selectedClass} • {currentSubjectObj.name}
-                  </p>
-                </div>
-                <span className="px-2.5 py-1 rounded-full bg-stone-900 border border-stone-800 text-[11px] font-bold text-amber-400">
-                  {availableChapters.length} Chapters
-                </span>
-              </div>
-
-              {/* Chapter Search Bar */}
-              <div className="relative mb-3">
-                <Search className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
-                <input
-                  type="text"
-                  placeholder="Search chapter name or number..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-stone-900 text-xs text-white pl-9 pr-3 py-2 rounded-xl border border-stone-800 focus:border-amber-500 focus:outline-none"
-                />
-              </div>
-
-              {/* Scrollable Chapter List */}
-              <div className="space-y-1.5 max-h-[620px] overflow-y-auto pr-1">
-                {filteredChapters.map((ch) => {
-                  const isSelected = Number(ch.num) === Number(currentChapterObj.num);
-                  return (
-                    <button
-                      key={ch.num}
-                      onClick={() => handleChapterChange(ch.num)}
-                      className={`w-full p-3 rounded-xl text-left text-xs transition cursor-pointer flex items-center justify-between border ${
-                        isSelected
-                          ? 'bg-amber-500 text-stone-950 border-amber-300 font-black shadow-md'
-                          : 'bg-stone-900/80 hover:bg-stone-800/90 text-stone-300 border-stone-800 font-medium'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                        <span className={`w-6 h-6 rounded-lg flex items-center justify-center font-mono font-black text-[11px] shrink-0 ${
-                          isSelected ? 'bg-stone-950 text-amber-400' : 'bg-stone-800 text-stone-400'
-                        }`}>
-                          {ch.num}
-                        </span>
-                        <span className="truncate">{ch.title}</span>
-                      </div>
-                      {isSelected ? (
-                        <Play className="w-4 h-4 text-stone-950 shrink-0 fill-current" />
-                      ) : (
-                        <ChevronRight className="w-3.5 h-3.5 text-stone-400 shrink-0" />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Quick AI Action Card */}
-              <div className="mt-4 p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30">
-                <div className="flex items-center gap-2 text-xs font-black text-amber-400 mb-1">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Study with Shankar AI</span>
-                </div>
-                <p className="text-[11px] text-stone-300 mb-3 leading-relaxed">
-                  Have doubts in {currentChapterObj.title}? Ask Shankar AI for instant line-by-line solutions.
-                </p>
-                <button
-                  onClick={handleAskAIAboutChapter}
-                  className="w-full py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-md"
+              <h2 className="text-2xl sm:text-3xl font-black text-white mt-4">
+                Video Explanations for Class {selectedClass} are Not Available Yet
+              </h2>
+              <p className="text-sm text-stone-300 mt-2 max-w-lg mx-auto leading-relaxed">
+                Official DAVCAE video lectures for Class {selectedClass} are currently in production and will be added in a future update. You can access the complete verified textbooks in Section 2 (Digital Library) or ask Shankar AI for instant line-by-line solutions.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+                <a
+                  href="#section-2"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    alert(`To read Class ${selectedClass} official textbooks, navigate to Section 2 (Official Textbooks) from the navigation menu.`);
+                  }}
+                  className="px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs flex items-center gap-2 transition"
                 >
-                  <span>Ask Shankar AI About Chapter {currentChapterObj.num}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <BookOpen className="w-4 h-4" />
+                  <span>Open Class {selectedClass} Books in Section 2</span>
+                </a>
+                <button
+                  onClick={() => {
+                    if (onOpenAIWithQuestion) {
+                      onOpenAIWithQuestion(`I am studying DAV Class ${selectedClass}. Can you please provide chapter summaries and concept explanations?`);
+                    }
+                  }}
+                  className="px-5 py-3 rounded-xl bg-stone-800 hover:bg-stone-700 text-white font-bold text-xs flex items-center gap-2 border border-stone-700 transition cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  <span>Ask Shankar AI</span>
                 </button>
               </div>
             </div>
-
-            {/* RIGHT COLUMN: VIDEO THEATER & MULTI-TEACHER HUB (8 COLS) */}
-            <div className="lg:col-span-8 space-y-6">
-              
-              {/* VIDEO PLAYER CARD */}
-              <div className="bg-stone-950 rounded-3xl border border-stone-800 overflow-hidden shadow-2xl">
-                {/* Player Header Bar */}
-                <div className="p-4 bg-stone-900 border-b border-stone-800 flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-7 h-7 rounded-lg bg-red-600 text-white flex items-center justify-center font-bold">
-                      <Play className="w-4 h-4 fill-current" />
-                    </span>
-                    <div>
-                      <h2 className="text-sm sm:text-base font-black text-white truncate max-w-md">
-                        Ch {currentChapterObj.num}: {currentChapterObj.title}
-                      </h2>
-                      <div className="text-[11px] text-stone-400 flex items-center gap-2">
-                        <span>Class {selectedClass}</span>
-                        <span>•</span>
-                        <span>{currentSubjectObj.name}</span>
-                        <span>•</span>
-                        <span className="text-amber-400 font-bold">{activeVideo.type}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                {/* Player Actions */}
-                  <div className="flex flex-wrap items-center gap-2">
-                    {/* Playback Mode Switcher */}
-                    <div className="inline-flex rounded-xl bg-stone-950 p-1 border border-stone-800">
-                      <button
-                        onClick={() => setPlayerMode('chapter')}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-                          playerMode === 'chapter'
-                            ? 'bg-amber-500 text-stone-950 font-black shadow-sm'
-                            : 'text-stone-400 hover:text-white'
-                        }`}
-                        title="Watch Selected Chapter Video"
-                      >
-                        <Play className="w-3.5 h-3.5 fill-current" />
-                        <span>Chapter Video</span>
-                      </button>
-
-                      {activeVideo.playlistId && (
-                        <button
-                          onClick={() => setPlayerMode('playlist')}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-                            playerMode === 'playlist'
-                              ? 'bg-amber-500 text-stone-950 font-black shadow-sm'
-                              : 'text-stone-400 hover:text-white'
-                          }`}
-                          title="Switch to Full Teacher Playlist"
-                        >
-                          <Layers className="w-3.5 h-3.5" />
-                          <span>Full Playlist</span>
-                        </button>
-                      )}
-                    </div>
-
-                    <button
-                      onClick={handleCopyLink}
-                      className="px-3 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
-                      title="Copy Video Link"
-                    >
-                      {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                      <span>{copiedLink ? 'Copied!' : 'Copy Link'}</span>
-                    </button>
-
-                    {activeVideo.playlistId && (
-                      <a
-                        href={`https://www.youtube.com/playlist?list=${activeVideo.playlistId}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-3 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-400 text-xs font-bold flex items-center gap-1.5 transition shadow-sm border border-stone-700"
-                        title="View Full Playlist on YouTube"
-                      >
-                        <Layers className="w-3.5 h-3.5" />
-                        <span>Teacher Playlist</span>
-                      </a>
-                    )}
-
-                    <a
-                      href={activeVideo.watchUrl || `https://www.youtube.com/watch?v=${activeVideo.videoId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-bold flex items-center gap-1.5 transition shadow-sm"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                      <span>Watch on YouTube</span>
-                    </a>
-                  </div>
-                </div>
-
-                {/* Sub-Header Status Bar */}
-                <div className="px-4 py-2 bg-stone-950 border-b border-stone-800 flex flex-wrap items-center justify-between text-xs gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 text-[11px]">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>100% Verified Playable Lecture</span>
-                    </span>
-                    <span className="text-stone-400 text-[11px]">
-                      Educator: <strong className="text-stone-200">{activeVideo.teacher.name}</strong> ({activeVideo.teacher.handle})
-                    </span>
-                  </div>
-
-                  <span className="text-[11px] text-stone-400">
-                    Mode: <strong className="text-amber-400">{playerMode === 'playlist' ? 'Official Course Playlist' : 'Chapter Lesson'}</strong>
+          ) : (
+            <>
+              {/* STEP 2: SUBJECT SELECTOR BAR */}
+              <div className="bg-stone-950 p-4 rounded-2xl border border-stone-800 mb-6 shadow-md">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-black uppercase tracking-wider text-stone-400 flex items-center gap-1.5">
+                    <BookOpen className="w-3.5 h-3.5 text-blue-400" />
+                    Select Subject for Class {selectedClass}:
+                  </span>
+                  <span className="text-xs text-stone-400">
+                    Verified Curricula: <strong className="text-white">{availableSubjects.length} Subjects</strong>
                   </span>
                 </div>
 
-                {/* 16:9 EMBEDDED RESPONSIVE YOUTUBE PLAYER */}
-                <div className="relative w-full aspect-video bg-black">
-                  {playerMode === 'playlist' && activeVideo.playlistId ? (
-                    <iframe
-                      key={`playlist-${activeVideo.playlistId}`}
-                      className="w-full h-full"
-                      src={`https://www.youtube-nocookie.com/embed/videoseries?list=${activeVideo.playlistId}&rel=0&autoplay=0&modestbranding=1`}
-                      title={`${currentSubjectObj.name} Course Playlist`}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                    />
-                  ) : activeVideo.videoId ? (
-                    <iframe
-                      key={`video-${activeVideo.videoId}`}
-                      className="w-full h-full"
-                      src={`https://www.youtube-nocookie.com/embed/${activeVideo.videoId}?rel=0&autoplay=0&modestbranding=1`}
-                      title={activeVideo.title}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                    />
-                  ) : activeVideo.playlistId ? (
-                    <iframe
-                      key={`fallback-${activeVideo.playlistId}`}
-                      className="w-full h-full"
-                      src={`https://www.youtube-nocookie.com/embed/videoseries?list=${activeVideo.playlistId}&rel=0&autoplay=0&modestbranding=1`}
-                      title={activeVideo.title}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center">
-                      <Video className="w-12 h-12 text-stone-600 mb-3" />
-                      <p className="text-stone-300 text-sm font-bold">Video link is updating</p>
-                      <a 
-                        href={activeVideo.watchUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-bold inline-flex items-center gap-1.5"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                        Watch directly on YouTube
-                      </a>
-                    </div>
-                  )}
-                </div>
-
-                {/* School Network Fallback Notice Banner */}
-                <div className="bg-stone-900/60 px-4 py-2 border-b border-stone-800 flex flex-wrap items-center justify-between text-[11px] text-stone-400 gap-2">
-                  <div className="flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                    <span>School Wi-Fi or browser blocking embedded iframe? Use <strong>"Watch on YouTube"</strong> above or toggle <strong>"Full Playlist"</strong>.</span>
-                  </div>
-                  <a
-                    href={activeVideo.watchUrl || `https://www.youtube.com/watch?v=${activeVideo.videoId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-amber-400 hover:text-amber-300 font-bold inline-flex items-center gap-1 shrink-0"
-                  >
-                    <span>Direct YouTube Link</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div>
-
-                {/* Video Info Bar & Navigation Footer */}
-                <div className="p-5 bg-stone-950 border-t border-stone-800">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div>
-                      <h3 className="text-base font-bold text-white leading-snug">
-                        {activeVideo.title}
-                      </h3>
-                      <div className="flex items-center gap-3 mt-1.5 text-xs text-stone-400">
-                        <span className="flex items-center gap-1">
-                          <User className="w-3.5 h-3.5 text-amber-400" />
-                          <strong className="text-stone-200">{activeVideo.teacher.name}</strong>
-                        </span>
-                        <span>•</span>
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3.5 h-3.5 text-blue-400" />
-                          <span>{activeVideo.duration}</span>
-                        </span>
-                        <span>•</span>
-                        <span className="text-emerald-400 font-bold">{activeVideo.teacher.badge}</span>
-                      </div>
-                    </div>
-
-                    {/* Next / Prev Chapter Navigation */}
-                    <div className="flex items-center gap-2 self-end sm:self-center">
-                      <button
-                        onClick={() => handleNavigateChapter('prev')}
-                        className="px-3 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs font-bold flex items-center gap-1 transition cursor-pointer"
-                        title="Previous Chapter"
-                      >
-                        <ChevronLeft className="w-4 h-4" />
-                        <span>Prev</span>
-                      </button>
-
-                      <button
-                        onClick={() => handleNavigateChapter('next')}
-                        className="px-4 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black flex items-center gap-1 transition cursor-pointer shadow-md"
-                        title="Next Chapter"
-                      >
-                        <span>Next</span>
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* KEY TOPICS COVERED PILLS */}
-                  {activeVideo.keyTopics && activeVideo.keyTopics.length > 0 && (
-                    <div className="mt-4 pt-4 border-t border-stone-800">
-                      <div className="text-xs font-black text-stone-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />
-                        Topics & Worksheets Solved in this Video:
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {activeVideo.keyTopics.map((topic, i) => (
-                          <span
-                            key={i}
-                            className="px-3 py-1 rounded-full bg-stone-900 border border-stone-800 text-stone-300 text-xs font-medium"
-                          >
-                            ✓ {topic}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* 2 TO 3 CURATED YOUTUBERS SELECTION PANEL */}
-              <div className="bg-stone-950 rounded-3xl border border-stone-800 p-5 shadow-xl">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h3 className="text-base font-black text-white flex items-center gap-2">
-                      <Award className="w-4 h-4 text-amber-400" />
-                      Available Verified YouTubers for this Chapter
-                    </h3>
-                    <p className="text-xs text-stone-400 mt-0.5">
-                      Choose between 2 to 3 top DAV educators for different explanations, worksheets, and one-shot revisions.
-                    </p>
-                  </div>
-                  <span className="text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30">
-                    {currentVideos.length} Educators Available
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-                  {currentVideos.map((vid, idx) => {
-                    const isSelected = activeTeacherIndex === idx;
+                <div className="flex items-center gap-2.5 overflow-x-auto pb-1">
+                  {availableSubjects.map((s) => {
+                    const isSelected = selectedSubject === s.id;
                     return (
                       <button
-                        key={idx}
-                        onClick={() => setActiveTeacherIndex(idx)}
-                        className={`p-4 rounded-2xl border text-left transition cursor-pointer flex flex-col justify-between ${
+                        key={s.id}
+                        onClick={() => handleSubjectChange(s.id)}
+                        className={`px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap flex items-center gap-2 border ${
                           isSelected
-                            ? 'bg-stone-900 border-amber-500 shadow-xl ring-2 ring-amber-500/30'
-                            : 'bg-stone-900/60 hover:bg-stone-900 border-stone-800 text-stone-400'
+                            ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-400 shadow-md font-black'
+                            : 'bg-stone-900 hover:bg-stone-800 text-stone-300 border-stone-800'
                         }`}
                       >
-                        <div>
-                          <div className="flex items-center justify-between mb-2">
-                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                              idx === 0 
-                                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40' 
-                                : 'bg-stone-800 text-stone-300'
-                            }`}>
-                              {idx === 0 ? 'Primary Recommended' : `Teacher Option ${idx + 1}`}
-                            </span>
-                            {isSelected && <CheckCircle2 className="w-4 h-4 text-amber-400" />}
-                          </div>
-
-                          <div className="text-sm font-black text-white mt-1">
-                            {vid.teacher.name}
-                          </div>
-                          <div className="text-[11px] text-stone-400 font-mono mt-0.5">
-                            {vid.teacher.handle}
-                          </div>
-
-                          <div className="mt-2 text-xs font-semibold text-stone-200 line-clamp-2">
-                            {vid.title}
-                          </div>
-                        </div>
-
-                        <div className="mt-4 pt-3 border-t border-stone-800/80 flex items-center justify-between text-[11px]">
-                          <span className="text-stone-400 font-mono">{vid.duration}</span>
-                          <span className="font-bold text-amber-400 flex items-center gap-1">
-                            <span>Watch</span>
-                            <Play className="w-3 h-3 fill-current" />
-                          </span>
-                        </div>
+                        <span>{s.name}</span>
+                        {isSelected && <Check className="w-3.5 h-3.5" />}
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* STUDY COMPANION & TEXTBOOK SYNC CARD */}
-              <div className="bg-gradient-to-r from-stone-950 via-stone-900 to-stone-950 p-6 rounded-3xl border border-stone-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 shadow-lg">
-                <div>
-                  <div className="inline-flex items-center gap-1.5 text-xs font-black text-amber-400 uppercase tracking-widest mb-1">
-                    <BookOpen className="w-3.5 h-3.5" />
-                    <span>Synchronized with Section 2 Digital Library</span>
+              {/* MAIN 2-COLUMN VIDEO THEATER WORKSPACE */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                {/* LEFT COLUMN: CHAPTER DIRECTORY (4 COLS) */}
+                <div className="lg:col-span-4 bg-stone-950 rounded-3xl border border-stone-800 p-5 shadow-xl">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="text-base font-black text-white flex items-center gap-2">
+                        <Layers className="w-4 h-4 text-amber-400" />
+                        Chapter Index
+                      </h3>
+                      <p className="text-xs text-stone-400 mt-0.5">
+                        Class {selectedClass} • {currentSubjectObj.name}
+                      </p>
+                    </div>
+                    <span className="px-2.5 py-1 rounded-full bg-stone-900 border border-stone-800 text-[11px] font-bold text-amber-400">
+                      {availableChapters.length} Chapters
+                    </span>
                   </div>
-                  <h4 className="text-lg font-black text-white">
-                    Want to read the textbook PDF while watching?
-                  </h4>
-                  <p className="text-xs text-stone-300 mt-1 max-w-xl leading-relaxed">
-                    Open <strong className="text-amber-400">{currentSubjectObj.name}</strong> in Section 2 to use the 10-color neon highlighter, sticky notes, and vertical reading workspace.
-                  </p>
+
+                  {/* Chapter Search Bar */}
+                  <div className="relative mb-3">
+                    <Search className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
+                    <input
+                      type="text"
+                      placeholder="Search chapter name or number..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full bg-stone-900 text-xs text-white pl-9 pr-3 py-2 rounded-xl border border-stone-800 focus:border-amber-500 focus:outline-none"
+                    />
+                  </div>
+
+                  {/* Scrollable Chapter List */}
+                  <div className="space-y-1.5 max-h-[620px] overflow-y-auto pr-1">
+                    {filteredChapters.map((ch) => {
+                      const isSelected = Number(ch.num) === Number(currentChapterObj.num);
+                      return (
+                        <button
+                          key={ch.num}
+                          onClick={() => handleChapterChange(ch.num)}
+                          className={`w-full p-3 rounded-xl text-left text-xs transition cursor-pointer flex items-center justify-between border ${
+                            isSelected
+                              ? 'bg-amber-500 text-stone-950 border-amber-300 font-black shadow-md'
+                              : 'bg-stone-900/80 hover:bg-stone-800/90 text-stone-300 border-stone-800 font-medium'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                            <span className={`w-6 h-6 rounded-lg flex items-center justify-center font-mono font-black text-[11px] shrink-0 ${
+                              isSelected ? 'bg-stone-950 text-amber-400' : 'bg-stone-800 text-stone-400'
+                            }`}>
+                              {ch.num}
+                            </span>
+                            <span className="truncate">{ch.title}</span>
+                          </div>
+                          {isSelected ? (
+                            <Play className="w-4 h-4 text-stone-950 shrink-0 fill-current" />
+                          ) : (
+                            <ChevronRight className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Quick AI Action Card */}
+                  <div className="mt-4 p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30">
+                    <div className="flex items-center gap-2 text-xs font-black text-amber-400 mb-1">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Study with Shankar AI</span>
+                    </div>
+                    <p className="text-[11px] text-stone-300 mb-3 leading-relaxed">
+                      Have doubts in {currentChapterObj.title}? Ask Shankar AI for instant line-by-line solutions.
+                    </p>
+                    <button
+                      onClick={handleAskAIAboutChapter}
+                      className="w-full py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-md"
+                    >
+                      <span>Ask Shankar AI About Chapter {currentChapterObj.num}</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
 
-                <a
-                  href={`#book-${currentSubjectObj.id}`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    // Link to open PDF or trigger action
-                    alert(`To view the full verified PDF for ${currentSubjectObj.name}, navigate to Section 2 (Official Textbooks) from the left sidebar.`);
-                  }}
-                  className="px-5 py-3 rounded-2xl bg-stone-800 hover:bg-stone-700 text-stone-200 font-black text-xs flex items-center gap-2 border border-stone-700 shrink-0 transition"
-                >
-                  <BookOpen className="w-4 h-4 text-amber-400" />
-                  <span>Open Book in Section 2</span>
-                </a>
-              </div>
+                {/* RIGHT COLUMN: VIDEO THEATER & MULTI-TEACHER HUB (8 COLS) */}
+                <div className="lg:col-span-8 space-y-5">
+                  
+                  {/* TWO CORE MODES: 1. CHAPTER EXPLANATION vs 2. QUESTIONS & WORKSHEETS */}
+                  <div className="bg-stone-950 p-2 rounded-2xl border border-stone-800 flex flex-wrap sm:flex-nowrap gap-2 shadow-lg">
+                    <button
+                      onClick={() => handleModeChange('explanation')}
+                      className={`flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-black transition cursor-pointer flex items-center justify-center gap-2 ${
+                        lectureMode === 'explanation'
+                          ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 shadow-md scale-[1.01]'
+                          : 'bg-stone-900 hover:bg-stone-800 text-stone-300'
+                      }`}
+                    >
+                      <BookOpen className="w-4 h-4" />
+                      <span>1. Chapter Explanation (व्याख्या एवं संकल्पना)</span>
+                    </button>
 
-            </div>
-          </div>
+                    <button
+                      onClick={() => handleModeChange('solutions')}
+                      className={`flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-black transition cursor-pointer flex items-center justify-center gap-2 ${
+                        lectureMode === 'solutions'
+                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md scale-[1.01]'
+                          : 'bg-stone-900 hover:bg-stone-800 text-stone-300'
+                      }`}
+                    >
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>
+                        2. {selectedSubject === 'maths' ? 'Worksheets & Brain Teasers (कार्यपत्रक हल)' : 'Question Answers (प्रश्नोत्तर)'}
+                      </span>
+                    </button>
+                  </div>
+
+                  {/* PARTS / WORKSHEETS SELECTOR BAR */}
+                  <div className="bg-stone-950 p-3.5 rounded-2xl border border-stone-800 shadow-md">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-black uppercase tracking-wider text-stone-400 flex items-center gap-1.5">
+                        <Layers className="w-3.5 h-3.5 text-amber-400" />
+                        {lectureMode === 'explanation' 
+                          ? 'Select Lecture Part / Section:' 
+                          : (selectedSubject === 'maths' ? 'Select Mathematics Worksheet / Exercise:' : 'Select Chapter Exercise Section:')
+                        }
+                      </span>
+                      <span className="text-[11px] text-stone-400">
+                        Selected: <strong className="text-amber-400">{selectedPartObj.label}</strong>
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                      {availableParts.map((p) => {
+                        const isSel = selectedPartId === p.id;
+                        return (
+                          <button
+                            key={p.id}
+                            onClick={() => handlePartChange(p.id)}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer border ${
+                              isSel
+                                ? 'bg-amber-500 text-stone-950 border-amber-300 font-black shadow-md scale-105'
+                                : 'bg-stone-900 hover:bg-stone-800 text-stone-300 border-stone-800'
+                            }`}
+                          >
+                            {p.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* VIDEO PLAYER CARD */}
+                  <div className="bg-stone-950 rounded-3xl border border-stone-800 overflow-hidden shadow-2xl">
+                    {/* Player Header Bar */}
+                    <div className="p-4 bg-stone-900 border-b border-stone-800 flex flex-wrap items-center justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <span className="w-7 h-7 rounded-lg bg-red-600 text-white flex items-center justify-center font-bold">
+                          <Play className="w-4 h-4 fill-current" />
+                        </span>
+                        <div>
+                          <h2 className="text-sm sm:text-base font-black text-white truncate max-w-md">
+                            Ch {currentChapterObj.num}: {currentChapterObj.title}
+                          </h2>
+                          <div className="text-[11px] text-stone-400 flex items-center gap-2">
+                            <span>Class {selectedClass}</span>
+                            <span>•</span>
+                            <span>{currentSubjectObj.name}</span>
+                            <span>•</span>
+                            <span className="text-amber-400 font-bold">{selectedPartObj.label}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Player Actions */}
+                      <div className="flex flex-wrap items-center gap-2">
+                        {/* Playback Mode Switcher */}
+                        <div className="inline-flex rounded-xl bg-stone-950 p-1 border border-stone-800">
+                          <button
+                            onClick={() => setPlayerMode('chapter')}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                              playerMode === 'chapter'
+                                ? 'bg-amber-500 text-stone-950 font-black shadow-sm'
+                                : 'text-stone-400 hover:text-white'
+                            }`}
+                            title="Watch Chapter / Part Video"
+                          >
+                            <Play className="w-3.5 h-3.5 fill-current" />
+                            <span>Lesson Video</span>
+                          </button>
+
+                          {activeLecture.playlistId && (
+                            <button
+                              onClick={() => setPlayerMode('playlist')}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                                playerMode === 'playlist'
+                                  ? 'bg-amber-500 text-stone-950 font-black shadow-sm'
+                                  : 'text-stone-400 hover:text-white'
+                              }`}
+                              title="Switch to Full Subject Playlist"
+                            >
+                              <Layers className="w-3.5 h-3.5" />
+                              <span>Full Playlist</span>
+                            </button>
+                          )}
+                        </div>
+
+                        <button
+                          onClick={handleCopyLink}
+                          className="px-3 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                          title="Copy Video Link"
+                        >
+                          {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                          <span>{copiedLink ? 'Copied!' : 'Copy Link'}</span>
+                        </button>
+
+                        {activeLecture.playlistId && (
+                          <a
+                            href={`https://www.youtube.com/playlist?list=${activeLecture.playlistId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-400 text-xs font-bold flex items-center gap-1.5 transition shadow-sm border border-stone-700"
+                            title="View Full Playlist on YouTube"
+                          >
+                            <Layers className="w-3.5 h-3.5" />
+                            <span>Teacher Playlist</span>
+                          </a>
+                        )}
+
+                        <a
+                          href={activeLecture.watchUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-bold flex items-center gap-1.5 transition shadow-sm"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                          <span>Watch on YouTube</span>
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* Sub-Header Status Bar */}
+                    <div className="px-4 py-2 bg-stone-950 border-b border-stone-800 flex flex-wrap items-center justify-between text-xs gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center gap-1.5 text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 text-[11px]">
+                          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>100% Verified Playable</span>
+                        </span>
+                        <span className="text-stone-400 text-[11px]">
+                          Educator: <strong className="text-stone-200">{activeLecture.teacher.name}</strong> ({activeLecture.teacher.handle})
+                        </span>
+                      </div>
+
+                      <span className="text-[11px] text-stone-400">
+                        Section: <strong className="text-amber-400">{selectedPartObj.label}</strong>
+                      </span>
+                    </div>
+
+                    {/* 16:9 EMBEDDED RESPONSIVE YOUTUBE PLAYER */}
+                    <div className="relative w-full aspect-video bg-black">
+                      {playerMode === 'playlist' && activeLecture.playlistId ? (
+                        <iframe
+                          key={`playlist-${activeLecture.playlistId}`}
+                          className="w-full h-full"
+                          src={`https://www.youtube-nocookie.com/embed/videoseries?list=${activeLecture.playlistId}&rel=0&autoplay=0&modestbranding=1`}
+                          title={`${currentSubjectObj.name} Course Playlist`}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
+                      ) : activeLecture.videoId ? (
+                        <iframe
+                          key={`video-${activeLecture.videoId}`}
+                          className="w-full h-full"
+                          src={`https://www.youtube-nocookie.com/embed/${activeLecture.videoId}?rel=0&autoplay=0&modestbranding=1`}
+                          title={activeLecture.title}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
+                      ) : activeLecture.playlistId ? (
+                        <iframe
+                          key={`fallback-playlist-${activeLecture.playlistId}`}
+                          className="w-full h-full"
+                          src={`https://www.youtube-nocookie.com/embed/videoseries?list=${activeLecture.playlistId}&rel=0&autoplay=0&modestbranding=1`}
+                          title={activeLecture.title}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center">
+                          <Video className="w-12 h-12 text-stone-600 mb-3" />
+                          <p className="text-stone-300 text-sm font-bold">Watch on YouTube directly</p>
+                          <a 
+                            href={activeLecture.watchUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-bold inline-flex items-center gap-1.5"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                            Search & Watch on YouTube
+                          </a>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* School Network Fallback Notice Banner */}
+                    <div className="bg-stone-900/60 px-4 py-2 border-b border-stone-800 flex flex-wrap items-center justify-between text-[11px] text-stone-400 gap-2">
+                      <div className="flex items-center gap-1.5">
+                        <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                        <span>School Wi-Fi or adblocker blocking embedded player? Click <strong>"Watch on YouTube"</strong> above or toggle <strong>"Full Playlist"</strong>.</span>
+                      </div>
+                      <a
+                        href={activeLecture.watchUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-amber-400 hover:text-amber-300 font-bold inline-flex items-center gap-1 shrink-0"
+                      >
+                        <span>Direct YouTube Lecture Link</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+
+                    {/* Video Info Bar & Navigation Footer */}
+                    <div className="p-5 bg-stone-950 border-t border-stone-800">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                          <h3 className="text-base font-bold text-white leading-snug">
+                            {activeLecture.title}
+                          </h3>
+                          <div className="flex items-center gap-3 mt-1.5 text-xs text-stone-400">
+                            <span className="flex items-center gap-1">
+                              <User className="w-3.5 h-3.5 text-amber-400" />
+                              <strong className="text-stone-200">{activeLecture.teacher.name}</strong>
+                            </span>
+                            <span>•</span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-3.5 h-3.5 text-blue-400" />
+                              <span>{activeLecture.duration}</span>
+                            </span>
+                            <span>•</span>
+                            <span className="text-emerald-400 font-bold">{activeLecture.teacher.badge}</span>
+                          </div>
+                        </div>
+
+                        {/* Next / Prev Chapter Navigation */}
+                        <div className="flex items-center gap-2 self-end sm:self-center">
+                          <button
+                            onClick={() => handleNavigateChapter('prev')}
+                            className="px-3 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs font-bold flex items-center gap-1 transition cursor-pointer"
+                            title="Previous Chapter"
+                          >
+                            <ChevronLeft className="w-4 h-4" />
+                            <span>Prev</span>
+                          </button>
+
+                          <button
+                            onClick={() => handleNavigateChapter('next')}
+                            className="px-4 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black flex items-center gap-1 transition cursor-pointer shadow-md"
+                            title="Next Chapter"
+                          >
+                            <span>Next</span>
+                            <ChevronRight className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* KEY TOPICS COVERED PILLS */}
+                      {activeLecture.keyTopics && activeLecture.keyTopics.length > 0 && (
+                        <div className="mt-4 pt-4 border-t border-stone-800">
+                          <div className="text-xs font-black text-stone-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />
+                            Topics & Exercises Covered in this Lesson:
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {activeLecture.keyTopics.map((topic, i) => (
+                              <span
+                                key={i}
+                                className="px-3 py-1 rounded-full bg-stone-900 border border-stone-800 text-stone-300 text-xs font-medium"
+                              >
+                                ✓ {topic}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* 3 SPECIALIZED CURATED TEACHERS PANEL */}
+                  <div className="bg-stone-950 rounded-3xl border border-stone-800 p-5 shadow-xl">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h3 className="text-base font-black text-white flex items-center gap-2">
+                          <Award className="w-4 h-4 text-amber-400" />
+                          Choose Educator for {selectedPartObj.label}
+                        </h3>
+                        <p className="text-xs text-stone-400 mt-0.5">
+                          Select between 3 distinct verified educators teaching this exact chapter and worksheet.
+                        </p>
+                      </div>
+                      <span className="text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30">
+                        3 Specialized Educators
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {availableTeachers.map((tch, idx) => {
+                        const isSelected = activeTeacherIndex === idx;
+                        return (
+                          <button
+                            key={tch.id}
+                            onClick={() => setActiveTeacherIndex(idx)}
+                            className={`p-4 rounded-2xl border text-left transition cursor-pointer flex flex-col justify-between ${
+                              isSelected
+                                ? 'bg-stone-900 border-amber-500 shadow-xl ring-2 ring-amber-500/30'
+                                : 'bg-stone-900/60 hover:bg-stone-900 border-stone-800 text-stone-400'
+                            }`}
+                          >
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                                  idx === 0 
+                                    ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40' 
+                                    : 'bg-stone-800 text-stone-300'
+                                }`}>
+                                  {idx === 0 ? 'Primary Specialist' : `Teacher Option ${idx + 1}`}
+                                </span>
+                                {isSelected && <CheckCircle2 className="w-4 h-4 text-amber-400" />}
+                              </div>
+
+                              <div className="text-sm font-black text-white mt-1">
+                                {tch.name}
+                              </div>
+                              <div className="text-[11px] text-stone-400 font-mono mt-0.5">
+                                {tch.handle}
+                              </div>
+
+                              <div className="mt-2 text-xs font-medium text-stone-300 line-clamp-2">
+                                {tch.specialty}
+                              </div>
+                            </div>
+
+                            <div className="mt-4 pt-3 border-t border-stone-800/80 flex items-center justify-between text-[11px]">
+                              <span className="text-stone-400 truncate max-w-[120px]">{tch.badge}</span>
+                              <span className="font-bold text-amber-400 flex items-center gap-1">
+                                <span>{isSelected ? 'Playing' : 'Switch'}</span>
+                                <Play className="w-3 h-3 fill-current" />
+                              </span>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* STUDY COMPANION & TEXTBOOK SYNC CARD */}
+                  <div className="bg-gradient-to-r from-stone-950 via-stone-900 to-stone-950 p-6 rounded-3xl border border-stone-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 shadow-lg">
+                    <div>
+                      <div className="inline-flex items-center gap-1.5 text-xs font-black text-amber-400 uppercase tracking-widest mb-1">
+                        <BookOpen className="w-3.5 h-3.5" />
+                        <span>Synchronized with Section 2 Digital Library</span>
+                      </div>
+                      <h4 className="text-lg font-black text-white">
+                        Want to read the textbook PDF while watching?
+                      </h4>
+                      <p className="text-xs text-stone-300 mt-1 max-w-xl leading-relaxed">
+                        Open <strong className="text-amber-400">{currentSubjectObj.name}</strong> in Section 2 to use the 10-color neon highlighter, sticky notes, and vertical reading workspace.
+                      </p>
+                    </div>
+
+                    <a
+                      href={`#book-${currentSubjectObj.id}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        alert(`To view the full verified PDF for ${currentSubjectObj.name}, navigate to Section 2 (Official Textbooks) from the navigation menu.`);
+                      }}
+                      className="px-5 py-3 rounded-2xl bg-stone-800 hover:bg-stone-700 text-stone-200 font-black text-xs flex items-center gap-2 border border-stone-700 shrink-0 transition"
+                    >
+                      <BookOpen className="w-4 h-4 text-amber-400" />
+                      <span>Open Book in Section 2</span>
+                    </a>
+                  </div>
+
+                </div>
+              </div>
+            </>
+          )}
         </div>
       )}
 

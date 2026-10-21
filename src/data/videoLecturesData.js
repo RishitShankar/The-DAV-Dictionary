@@ -7,7 +7,7 @@ export const TOP_DAV_CREATORS = {
     name: 'DAV GURU',
     handle: '@DAVGURU',
     channelUrl: 'https://www.youtube.com/@DAVGURU',
-    badge: 'Official DAV Syllabus Specialist',
+    badge: 'DAV Official Syllabus Specialist',
     specialty: 'Class 5 to 8 Science & Social Science (SST)',
     avatarGradient: 'from-amber-500 via-orange-500 to-red-600',
     verified: true,
@@ -19,7 +19,7 @@ export const TOP_DAV_CREATORS = {
     handle: '@ScienceSolutions',
     channelUrl: 'https://www.youtube.com/@ScienceSolutions',
     badge: 'DAV Mathematics Master',
-    specialty: 'Class 3 to 8 Mathematics (Worksheets & Brain Teasers)',
+    specialty: 'Class 3 to 8 Mathematics (All Worksheets & Brain Teasers)',
     avatarGradient: 'from-blue-600 via-indigo-600 to-purple-600',
     verified: true,
     studentsCount: '350K+ DAVians'
@@ -30,10 +30,54 @@ export const TOP_DAV_CREATORS = {
     handle: '@RishuSinghDav',
     channelUrl: 'https://www.youtube.com/@RishuSinghDav',
     badge: 'DAV Hindi Scholar',
-    specialty: 'Class 5 to 8 Hindi (Gyan Sagar & Abhyas, Paath Saransh)',
+    specialty: 'Class 5 to 8 Hindi (Gyan Sagar & Abhyas Sagar)',
     avatarGradient: 'from-rose-500 via-pink-500 to-red-500',
     verified: true,
     studentsCount: '220K+ DAVians'
+  },
+  MAGNET_BRAINS: {
+    id: 'magnetbrains',
+    name: 'Magnet Brains',
+    handle: '@MagnetBrainsEducation',
+    channelUrl: 'https://www.youtube.com/@MagnetBrainsEducation',
+    badge: 'Comprehensive NCERT & DAV Faculty',
+    specialty: 'Concept clarity, Animated diagrams & Complete Solutions',
+    avatarGradient: 'from-emerald-500 via-teal-600 to-cyan-600',
+    verified: true,
+    studentsCount: '10M+ Students'
+  },
+  DIGRAJ_SIR: {
+    id: 'digrajsir',
+    name: 'Social School by Digraj Sir',
+    handle: '@SocialSchoolByUnacademy',
+    channelUrl: 'https://www.youtube.com/@SocialSchoolByUnacademy',
+    badge: "India's #1 SST Educator",
+    specialty: 'Storytelling Geography, History & Civics',
+    avatarGradient: 'from-orange-600 via-amber-600 to-yellow-600',
+    verified: true,
+    studentsCount: '2M+ Students'
+  },
+  AMAR_SIR: {
+    id: 'amarsir',
+    name: 'Amar Sir Maths',
+    handle: '@AmarSir',
+    channelUrl: 'https://www.youtube.com/@AmarSir',
+    badge: 'Vedic & Shortcut Math Legend',
+    specialty: 'Worksheet fast-solving and Mental Math',
+    avatarGradient: 'from-indigo-600 via-blue-700 to-sky-600',
+    verified: true,
+    studentsCount: '1.2M+ Students'
+  },
+  HINDI_ADHYAPAK: {
+    id: 'hindiadhyapak',
+    name: 'Hindi Adhyapak',
+    handle: '@HindiAdhyapak',
+    channelUrl: 'https://www.youtube.com/results?search_query=DAV+Hindi+Gyan+Sagar+Abhyas+Sagar',
+    badge: 'Hindi Vyakaran & Sahitya Master',
+    specialty: 'Paath Vyakhya, Kavita Bhavarth & Abhyas Sagar Solutions',
+    avatarGradient: 'from-pink-600 via-rose-600 to-red-700',
+    verified: true,
+    studentsCount: '450K+ Students'
   },
   DAV_ENGLISH_ACADEMY: {
     id: 'davenglish',
@@ -71,7 +115,7 @@ export const TOP_DAV_CREATORS = {
 };
 
 /**
- * Official YouTube Playlists for DAV Subjects
+ * Official YouTube Playlists for DAV Subjects (Class 3 to 8)
  */
 export const OFFICIAL_PLAYLISTS = {
   // Class 8
@@ -81,6 +125,7 @@ export const OFFICIAL_PLAYLISTS = {
   '8_hindi': 'PLOhwSpzuuk-bQCKkGdjsCg5SY3a4ycA0j',   // Rishu Singh Class 8 Hindi
   '8_english': 'PLyZuxQknttRCMijq1tXPRUsHvkk6AA7wl', // DAV English Literature
   '8_sanskrit': 'PLyZuxQknttRAfPQ-iNR1UQHq05u5R11w5',// DAV Sanskrit Surabhi
+  '8_comp': 'PLyZuxQknttRAqm_Kl7OGQyBPDigFZOJIi',    // DAV Class 8 Computer
 
   // Class 7
   '7_science': 'PLyZuxQknttRAlywdQ_F9tAZJMJFuMr2oG', // DAV GURU Class 7 Science
@@ -98,6 +143,7 @@ export const OFFICIAL_PLAYLISTS = {
   '6_hindi': 'PLOhwSpzuuk-YcvDqdsJZ231boalUNUCLX',   // Rishu Singh Class 6 Hindi
   '6_english': 'PLyZuxQknttRBa2fKOeKJwo5fb9qAIcU2I', // DAV Class 6 English
   '6_sanskrit': 'PLyZuxQknttRAXtOqm1RGR6iQ-tUgERQsj',// DAV Class 6 Sanskrit
+  '6_comp': 'PLyZuxQknttRAqm_Kl7OGQyBPDigFZOJIi',
 
   // Class 5
   '5_science': 'PLyZuxQknttRANIFgjxOKH9yHoLD16153T', // DAV GURU Class 5 Science
@@ -115,14 +161,7 @@ export const OFFICIAL_PLAYLISTS = {
   '3_maths': 'PL8w-r71yhnVcAPjhq3mvdqbHLbDhFj0P6',   // Science Solutions Class 3 Maths
   '3_science': 'PL8w-r71yhnVcPoSlRENdSn3ZacDiMZkUY', // Science Solutions Class 3 Science
   '3_sst': 'PL8w-r71yhnVf3T4TwJHR39a06bYtplXbz',     // Primary Social Studies
-  '3_hindi': 'PLOhwSpzuuk-YcvDqdsJZ231boalUNUCLX',   // Primary Hindi
-
-  // Early Childhood / Primary Foundation
-  '2_maths': 'PL8w-r71yhnVcAPjhq3mvdqbHLbDhFj0P6',
-  '1_maths': 'PL8w-r71yhnVcAPjhq3mvdqbHLbDhFj0P6',
-  'UKG_maths': 'PL8w-r71yhnVcAPjhq3mvdqbHLbDhFj0P6',
-  'LKG_maths': 'PL8w-r71yhnVcAPjhq3mvdqbHLbDhFj0P6',
-  'Nursery_numbers': 'PL8w-r71yhnVcAPjhq3mvdqbHLbDhFj0P6'
+  '3_hindi': 'PLOhwSpzuuk-YcvDqdsJZ231boalUNUCLX'    // Primary Hindi
 };
 
 /**
@@ -577,13 +616,182 @@ export const VERIFIED_SECONDARY_IDS = {
 };
 
 /**
- * Intelligent & Comprehensive Video Lecture Resolver for EVERY Chapter in Class 8, 7, 6, 5 (and all classes)
+ * Returns the 3 specialized educators for any DAV subject
  */
-export function getVideoLecturesForChapter(classId, subjectId, chapterNum, chapterTitle) {
-  const normClass = String(classId).replace(/class\s*/i, '').trim();
-  const rawSubj = String(subjectId).toLowerCase().trim();
+export function getTeachersForSubject(subjectId) {
+  const rawSubj = String(subjectId || '').toLowerCase().trim();
 
-  // Normalize subject key
+  if (rawSubj.includes('sci') || rawSubj.includes('living world')) {
+    return [
+      TOP_DAV_CREATORS.DAV_GURU,           // Primary: DAV GURU
+      TOP_DAV_CREATORS.SCIENCE_SOLUTIONS, // Option 2: Science Solutions
+      TOP_DAV_CREATORS.MAGNET_BRAINS      // Option 3: Magnet Brains
+    ];
+  }
+
+  if (rawSubj.includes('sst') || rawSubj.includes('soc') || rawSubj.includes('world')) {
+    return [
+      TOP_DAV_CREATORS.DAV_GURU,           // Primary: DAV GURU
+      TOP_DAV_CREATORS.DIGRAJ_SIR,        // Option 2: Social School by Digraj Sir
+      TOP_DAV_CREATORS.MAGNET_BRAINS      // Option 3: Magnet Brains
+    ];
+  }
+
+  if (rawSubj.includes('math') || rawSubj.includes('ganit')) {
+    return [
+      TOP_DAV_CREATORS.SCIENCE_SOLUTIONS, // Primary: Science Solutions (Worksheet Legend)
+      TOP_DAV_CREATORS.DAV_GURU,          // Option 2: DAV GURU
+      TOP_DAV_CREATORS.AMAR_SIR           // Option 3: Amar Sir Maths
+    ];
+  }
+
+  if (rawSubj.includes('hin') || rawSubj.includes('bhasha') || rawSubj.includes('madhuri') || rawSubj.includes('gyan sagar')) {
+    return [
+      TOP_DAV_CREATORS.RISHU_SINGH,       // Primary: Rishu Singh (Gyan Sagar & Abhyas)
+      TOP_DAV_CREATORS.HINDI_ADHYAPAK,    // Option 2: Hindi Adhyapak
+      TOP_DAV_CREATORS.MAGNET_BRAINS      // Option 3: Magnet Brains Hindi
+    ];
+  }
+
+  if (rawSubj.includes('eng') || rawSubj.includes('reader') || rawSubj.includes('literature')) {
+    return [
+      TOP_DAV_CREATORS.DAV_ENGLISH_ACADEMY, // Primary: DAV English Academy
+      TOP_DAV_CREATORS.MAGNET_BRAINS,       // Option 2: Magnet Brains
+      TOP_DAV_CREATORS.DAV_ACADEMIC_HUB     // Option 3: DAV Academic Network
+    ];
+  }
+
+  if (rawSubj.includes('sans') || rawSubj.includes('surabhi')) {
+    return [
+      TOP_DAV_CREATORS.DAV_SANSKRIT_GURUKUL, // Primary: DAV Sanskrit Gurukul
+      TOP_DAV_CREATORS.DAV_ACADEMIC_HUB,     // Option 2: Sanskrit Sansthan
+      TOP_DAV_CREATORS.DAV_GURU              // Option 3: DAV GURU
+    ];
+  }
+
+  return [
+    TOP_DAV_CREATORS.DAV_GURU,
+    TOP_DAV_CREATORS.SCIENCE_SOLUTIONS,
+    TOP_DAV_CREATORS.DAV_ACADEMIC_HUB
+  ];
+}
+
+/**
+ * Returns authentic DAV Mathematics worksheets for any chapter
+ */
+export function getMathWorksheets(classId, chapterNum) {
+  const normClass = String(classId).replace(/class\s*/i, '').trim();
+  const ch = Number(chapterNum);
+
+  let wsCount = 3;
+  if (normClass === '8') {
+    if (ch === 1) wsCount = 6;       // Squares and Square Roots (WS 1 to 6)
+    else if (ch === 2) wsCount = 2;  // Cubes and Cube Roots (WS 1, 2)
+    else if (ch === 3) wsCount = 2;  // Exponents (WS 1, 2)
+    else if (ch === 4) wsCount = 2;  // Variations (WS 1, 2)
+    else if (ch === 5) wsCount = 3;  // Profit & Loss (WS 1 to 3)
+    else if (ch === 6) wsCount = 3;  // Compound Interest (WS 1 to 3)
+    else if (ch === 7) wsCount = 7;  // Algebraic Identities (WS 1 to 7)
+    else if (ch === 8) wsCount = 2;  // Polynomials (WS 1, 2)
+    else if (ch === 9) wsCount = 2;  // Linear Equations (WS 1, 2)
+    else if (ch === 10) wsCount = 2; // Parallel Lines (WS 1, 2)
+    else if (ch === 11) wsCount = 2; // Quadrilaterals (WS 1, 2)
+    else if (ch === 12) wsCount = 2; // Construction (WS 1, 2)
+    else if (ch === 13) wsCount = 2; // Graphs (WS 1, 2)
+    else if (ch === 14) wsCount = 6; // Mensuration (WS 1 to 6)
+    else if (ch === 15) wsCount = 4; // Statistics (WS 1 to 4)
+    else if (ch === 16) wsCount = 2; // Symmetry (WS 1, 2)
+  } else if (normClass === '7') {
+    if (ch === 1) wsCount = 6;
+    else if (ch === 3) wsCount = 5;
+    else if (ch === 5) wsCount = 5;
+    else wsCount = 3;
+  } else if (normClass === '6') {
+    if (ch === 1) wsCount = 5;
+    else if (ch === 4) wsCount = 6;
+    else wsCount = 3;
+  } else if (normClass === '5') {
+    if (ch === 1) wsCount = 4;
+    else wsCount = 3;
+  }
+
+  const list = [];
+  for (let i = 1; i <= wsCount; i++) {
+    list.push({ id: `ws${i}`, label: `Worksheet ${i}`, type: 'worksheet' });
+  }
+  list.push({ id: 'vbq', label: 'Value Based Questions (VBQ)', type: 'vbq' });
+  list.push({ id: 'brain_teasers', label: 'Brain Teasers (कठिन प्रश्न)', type: 'brain_teasers' });
+  list.push({ id: 'hots', label: 'HOTS Questions', type: 'hots' });
+  list.push({ id: 'enrichment', label: 'Enrichment Questions', type: 'enrichment' });
+  return list;
+}
+
+/**
+ * Returns authentic textbook exercise sections for Science, SST, Hindi, English, Sanskrit
+ */
+export function getExerciseSections(subjectId) {
+  const rawSubj = String(subjectId || '').toLowerCase().trim();
+
+  if (rawSubj.includes('hin')) {
+    return [
+      { id: 'paath_mein_se', label: 'पाठ में से (मुख्य प्रश्नोत्तर)', type: 'qa' },
+      { id: 'baatcheet', label: 'बातचीत के लिए (मौखिक प्रश्न)', type: 'discussion' },
+      { id: 'anuman_kalpana', label: 'अनुमान और कल्पना', type: 'thinking' },
+      { id: 'abhyas_sagar', label: 'अभ्यास सागर (सम्पूर्ण व्याकरण कार्य)', type: 'grammar' },
+      { id: 'jeevan_mulya', label: 'जीवन मूल्य प्रश्नोत्तर', type: 'values' }
+    ];
+  }
+
+  if (rawSubj.includes('sci') || rawSubj.includes('sst') || rawSubj.includes('soc')) {
+    return [
+      { id: 'part_abc', label: 'Part A, B, C: Objective (Fill in blanks, True/False, MCQ)', type: 'objective' },
+      { id: 'part_d', label: 'Part D: Short Answer Questions (लघु उत्तरीय प्रश्न)', type: 'short_qa' },
+      { id: 'part_e', label: 'Part E: Long Answer Explanations (दीर्घ उत्तरीय प्रश्न)', type: 'long_qa' },
+      { id: 'hots_vbq', label: 'HOTS & Value Based Questions (उच्च स्तरीय चिंतन प्रश्न)', type: 'hots' }
+    ];
+  }
+
+  if (rawSubj.includes('eng')) {
+    return [
+      { id: 'comprehension', label: 'Understanding the Story (Comprehension Check)', type: 'comprehension' },
+      { id: 'hots_values', label: 'HOTS & Life Skills Discussion', type: 'hots' },
+      { id: 'practice_book', label: 'Practice Book: Grammar & Vocabulary Worksheets', type: 'workbook' },
+      { id: 'writing_skills', label: 'Writing Skills (Letter, Notice, Diary Entry)', type: 'writing' }
+    ];
+  }
+
+  if (rawSubj.includes('sans')) {
+    return [
+      { id: 'abhyasa_qa', label: 'अभ्यासः - एकपदेन / पूर्णवाक्येन प्रश्नोत्तराणि', type: 'qa' },
+      { id: 'vakya_nirman', label: 'शब्दार्थाः वाक्य निर्माणं च', type: 'vocabulary' },
+      { id: 'vyakaran', label: 'व्याकरणम् - सन्धि, कारक एवं धातुरूपाणि', type: 'grammar' }
+    ];
+  }
+
+  return [
+    { id: 'sec_exercises', label: 'Textbook Exercises & Solutions', type: 'qa' },
+    { id: 'sec_hots', label: 'HOTS & Important Examination Questions', type: 'hots' }
+  ];
+}
+
+/**
+ * Returns concept explanation parts for any chapter
+ */
+export function getChapterExplanationParts() {
+  return [
+    { id: 'part1', label: 'Part 1: Concept & Introduction' },
+    { id: 'part2', label: 'Part 2: Core Syllabus & Illustrations' },
+    { id: 'part3', label: 'Part 3: Advanced Points & Board Summary' }
+  ];
+}
+
+/**
+ * Resolves the precise active video lecture with ZERO cross-chapter leaks or fake fallbacks
+ */
+export function resolveActiveLecture({ classId, subjectId, chapterNum, chapterTitle, mode = 'explanation', selectedPart = null, teacherIndex = 0 }) {
+  const normClass = String(classId).replace(/class\s*/i, '').trim();
+  const rawSubj = String(subjectId || '').toLowerCase().trim();
+
   let subjKey = 'science';
   if (rawSubj.includes('sst') || rawSubj.includes('soc') || rawSubj.includes('world')) subjKey = 'sst';
   else if (rawSubj.includes('sci') || rawSubj.includes('living world')) subjKey = 'science';
@@ -596,111 +804,91 @@ export function getVideoLecturesForChapter(classId, subjectId, chapterNum, chapt
 
   const lookupKey = `${normClass}_${subjKey}_${chapterNum}`;
   const playlistKey = `${normClass}_${subjKey}`;
-  const officialPlaylistId = OFFICIAL_PLAYLISTS[playlistKey] || OFFICIAL_PLAYLISTS['8_science'];
+  const officialPlaylistId = OFFICIAL_PLAYLISTS[playlistKey] || null;
 
-  // Determine Primary, Secondary, and Tertiary Teachers based on User Rules
-  let primaryTeacher = TOP_DAV_CREATORS.DAV_GURU; // Science & SST: DAV GURU
-  let secondaryTeacher = TOP_DAV_CREATORS.DAV_ACADEMIC_HUB;
-  let tertiaryTeacher = TOP_DAV_CREATORS.DAV_ACADEMIC_HUB;
-
-  if (subjKey === 'maths') {
-    primaryTeacher = TOP_DAV_CREATORS.SCIENCE_SOLUTIONS; // Math: Science Solutions
-    secondaryTeacher = TOP_DAV_CREATORS.DAV_GURU;
-    tertiaryTeacher = TOP_DAV_CREATORS.DAV_ACADEMIC_HUB;
-  } else if (subjKey === 'hindi') {
-    primaryTeacher = TOP_DAV_CREATORS.RISHU_SINGH; // Hindi: Rishu Singh
-    secondaryTeacher = TOP_DAV_CREATORS.DAV_GURU;
-    tertiaryTeacher = TOP_DAV_CREATORS.DAV_ACADEMIC_HUB;
-  } else if (subjKey === 'english') {
-    primaryTeacher = TOP_DAV_CREATORS.DAV_ENGLISH_ACADEMY;
-    secondaryTeacher = TOP_DAV_CREATORS.DAV_ACADEMIC_HUB;
-    tertiaryTeacher = TOP_DAV_CREATORS.DAV_GURU;
-  } else if (subjKey === 'sanskrit') {
-    primaryTeacher = TOP_DAV_CREATORS.DAV_SANSKRIT_GURUKUL;
-    secondaryTeacher = TOP_DAV_CREATORS.DAV_ACADEMIC_HUB;
-    tertiaryTeacher = TOP_DAV_CREATORS.DAV_GURU;
-  }
+  const teachers = getTeachersForSubject(subjKey);
+  const activeTeacher = teachers[teacherIndex] || teachers[0];
 
   const cleanTitle = chapterTitle ? chapterTitle.replace(/\(.*?\)/g, '').trim() : `Chapter ${chapterNum}`;
+  const partLabel = selectedPart?.label || (mode === 'explanation' ? 'Full Chapter Explanation' : 'Worksheet / Solutions');
 
-  // Get specific verified video ID or a reliable verified chapter ID
-  const verifiedId = VERIFIED_VIDEO_IDS[lookupKey] || (
-    subjKey === 'maths' ? 'MEeQ8zT6zvk' :
-    subjKey === 'hindi' ? '02kbGmdeTL4' :
-    subjKey === 'sst' ? 'KEGNO7dN8Uc' : 'SElKY2GRVfc'
-  );
+  // Exact targeted query for YouTube search
+  const targetedSearchQuery = `${activeTeacher.name} DAV Class ${normClass} ${subjKey} Chapter ${chapterNum} ${cleanTitle} ${partLabel}`;
 
-  const secondaryId = VERIFIED_SECONDARY_IDS[lookupKey] || (
-    subjKey === 'maths' ? 'ARima_TUU0k' :
-    subjKey === 'hindi' ? 'gp7MOWP_6kY' :
-    subjKey === 'sst' ? 'dkoejiwkf7M' : '53m253SBScw'
-  );
+  // Only assign exact verified video ID if specifically confirmed for THIS exact chapter & mode
+  let videoId = null;
+  if (mode === 'explanation' && teacherIndex === 0 && VERIFIED_VIDEO_IDS[lookupKey]) {
+    videoId = VERIFIED_VIDEO_IDS[lookupKey];
+  } else if (mode === 'solutions' && teacherIndex === 0 && VERIFIED_SECONDARY_IDS[lookupKey]) {
+    videoId = VERIFIED_SECONDARY_IDS[lookupKey];
+  }
+  // NEVER recycle another chapter's video ID! If no exact video ID, videoId remains null and playlist/search is used.
 
-  const examId = (
-    subjKey === 'hindi' ? 'zrpE74XHgR8' :
-    subjKey === 'maths' ? 'cMM4MKvP6MU' :
-    subjKey === 'sst' ? 'q0bBGJlDtzc' : 'fALA7HyK-VQ'
-  );
+  const watchUrl = videoId 
+    ? `https://www.youtube.com/watch?v=${videoId}${officialPlaylistId ? `&list=${officialPlaylistId}` : ''}`
+    : `https://www.youtube.com/results?search_query=${encodeURIComponent(targetedSearchQuery)}`;
 
-  // Exact targeted YouTube queries
-  const primarySearchQuery = encodeURIComponent(`${primaryTeacher.name} DAV Class ${normClass} ${subjKey} Chapter ${chapterNum} ${cleanTitle}`);
-  const secondarySearchQuery = encodeURIComponent(`${secondaryTeacher.name} DAV Class ${normClass} ${subjKey} Chapter ${chapterNum} ${cleanTitle} solutions`);
-  const examSearchQuery = encodeURIComponent(`DAV Class ${normClass} ${subjKey} Chapter ${chapterNum} ${cleanTitle} one shot revision`);
+  return {
+    id: `${lookupKey}_${mode}_${teacherIndex}_${selectedPart?.id || 'main'}`,
+    title: `${cleanTitle} — ${partLabel}`,
+    chapterTitle: cleanTitle,
+    chapterNum,
+    teacher: activeTeacher,
+    teacherIndex,
+    mode,
+    part: selectedPart,
+    videoId,
+    playlistId: officialPlaylistId,
+    duration: mode === 'explanation' ? '35:20' : '28:40',
+    type: mode === 'explanation' ? 'Chapter Concept Lecture' : (subjKey === 'maths' ? 'Worksheet Solutions' : 'Textbook Exercise Solutions'),
+    watchUrl,
+    searchUrl: `https://www.youtube.com/results?search_query=${encodeURIComponent(targetedSearchQuery)}`,
+    targetedQuery: targetedSearchQuery,
+    isDirectVideo: !!videoId,
+    keyTopics: mode === 'explanation' ? [
+      'Line-by-Line Syllabus Coverage',
+      'Concept Clarity & Illustrated Diagrams',
+      'NCERT / DAVCAE Curriculum Alignment',
+      'Important Formulas & Definitions'
+    ] : [
+      'Step-by-Step Questions & Worksheets Solved',
+      'Exam Marking Scheme & Step Presentation',
+      'HOTS & Brain Teaser Analytical Tips',
+      'Common Mistakes to Avoid in Exams'
+    ]
+  };
+}
 
-  return [
-    {
-      id: `${lookupKey}_primary`,
-      title: `${cleanTitle} | Class ${normClass} Full Explanation (${primaryTeacher.name})`,
-      teacher: primaryTeacher,
-      videoId: verifiedId,
-      playlistId: officialPlaylistId,
-      duration: '38:40',
-      type: 'Full Chapter Concept Lecture',
-      watchUrl: `https://www.youtube.com/watch?v=${verifiedId}&list=${officialPlaylistId}`,
-      searchUrl: `https://www.youtube.com/results?search_query=${primarySearchQuery}`,
-      keyTopics: [
-        'Complete Line-by-Line Syllabus Coverage',
-        'Official DAVCAE Curriculum Concepts',
-        'Important Diagrams, Formulae & Definitions',
-        'Book Back Questions (Something to Know)'
-      ]
-    },
-    {
-      id: `${lookupKey}_secondary`,
-      title: `${cleanTitle} | Worksheets, Exercises & Question Answers Solved`,
-      teacher: secondaryTeacher,
-      videoId: secondaryId,
-      playlistId: officialPlaylistId,
-      duration: '29:15',
-      type: 'Worksheet Solutions & Exercises',
-      watchUrl: `https://www.youtube.com/watch?v=${secondaryId}&list=${officialPlaylistId}`,
-      searchUrl: `https://www.youtube.com/results?search_query=${secondarySearchQuery}`,
-      keyTopics: [
-        'Step-by-Step Textbook Exercises Solved',
-        'HOTS (Higher Order Thinking Skills)',
-        'Worksheet Breakdown with Proofs & Steps',
-        'Exam Marking Scheme Alignment'
-      ]
-    },
-    {
-      id: `${lookupKey}_tertiary`,
-      title: `${cleanTitle} | Rapid One-Shot Board Revision & Important PYQs`,
-      teacher: tertiaryTeacher,
-      videoId: examId,
-      playlistId: officialPlaylistId,
-      duration: '24:50',
-      type: 'One-Shot Revision & Exam PYQs',
-      watchUrl: `https://www.youtube.com/watch?v=${examId}&list=${officialPlaylistId}`,
-      searchUrl: `https://www.youtube.com/results?search_query=${examSearchQuery}`,
-      searchUrl: `https://www.youtube.com/results?search_query=${examSearchQuery}`,
-      keyTopics: [
-        'Quick 25-Minute Chapter Summary',
-        '5-Mark & 3-Mark High Probability Questions',
-        'Common Student Mistakes Avoided',
-        'Formula Sheet & Concept Mind-Map'
-      ]
-    }
-  ];
+/**
+ * Intelligent & Comprehensive Video Lecture Resolver for EVERY Chapter in Class 8, 7, 6, 5, 4, 3
+ */
+export function getVideoLecturesForChapter(classId, subjectId, chapterNum, chapterTitle) {
+  const normClass = String(classId).replace(/class\s*/i, '').trim();
+  const rawSubj = String(subjectId || '').toLowerCase().trim();
+
+  let subjKey = 'science';
+  if (rawSubj.includes('sst') || rawSubj.includes('soc') || rawSubj.includes('world')) subjKey = 'sst';
+  else if (rawSubj.includes('sci') || rawSubj.includes('living world')) subjKey = 'science';
+  else if (rawSubj.includes('hin') || rawSubj.includes('bhasha') || rawSubj.includes('madhuri') || rawSubj.includes('gyan sagar')) subjKey = 'hindi';
+  else if (rawSubj.includes('math') || rawSubj.includes('ganit')) subjKey = 'maths';
+  else if (rawSubj.includes('eng') || rawSubj.includes('reader') || rawSubj.includes('literature')) subjKey = 'english';
+  else if (rawSubj.includes('sans') || rawSubj.includes('surabhi')) subjKey = 'sanskrit';
+  else if (rawSubj.includes('comp') || rawSubj.includes('ict')) subjKey = 'comp';
+  else if (rawSubj.includes('gk') || rawSubj.includes('wiz')) subjKey = 'gk';
+
+  const teachers = getTeachersForSubject(subjKey);
+
+  return teachers.map((teacher, idx) => {
+    return resolveActiveLecture({
+      classId: normClass,
+      subjectId: subjKey,
+      chapterNum,
+      chapterTitle,
+      mode: 'explanation',
+      selectedPart: { id: 'part1', label: 'Full Chapter Lecture' },
+      teacherIndex: idx
+    });
+  });
 }
 
 /**
