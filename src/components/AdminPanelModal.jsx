@@ -37,6 +37,7 @@ import {
   saveCloudStudent, 
   updateCloudPassword, 
   deleteCloudStudent,
+  deleteCloudDonation,
   fetchCloudDonations
 } from '../services/supabaseClient';
 
@@ -424,6 +425,56 @@ _With heartfelt gratitude from the entire DAV student community!_`;
       saveUsers(updated);
       deleteCloudStudent(idToDelete);
     }
+  };
+
+  const handleDeleteDonation = (donation) => {
+    const invId = donation.invoiceNumber || donation.id;
+    const name = donation.studentName || donation.donorName || donation.userId || 'this donor';
+    if (!window.confirm(`Are you sure you want to permanently delete donor record for "${name}" (Invoice: ${invId}) and void this bill from the platform?`)) {
+      return;
+    }
+
+    // 1. Remove from local state
+    const updated = donationsList.filter(d => (d.invoiceNumber || d.id) !== invId);
+    setDonationsList(updated);
+
+    // 2. Remove from localStorage 'dav_cloud_donations'
+    try {
+      const stored = localStorage.getItem('dav_cloud_donations');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        const filtered = parsed.filter(d => (d.invoiceNumber || d.id) !== invId);
+        localStorage.setItem('dav_cloud_donations', JSON.stringify(filtered));
+      }
+    } catch (e) {}
+
+    // 3. Remove from localStorage 'dav_invoices'
+    try {
+      const storedInvoices = localStorage.getItem('dav_invoices');
+      if (storedInvoices) {
+        const parsedInvoices = JSON.parse(storedInvoices);
+        const filteredInvoices = parsedInvoices.filter(d => (d.invoiceNumber || d.id) !== invId);
+        localStorage.setItem('dav_invoices', JSON.stringify(filteredInvoices));
+      }
+    } catch (e) {}
+
+    // 4. Remove from localStorage 'dav_donors_list'
+    try {
+      const storedDonors = localStorage.getItem('dav_donors_list');
+      if (storedDonors) {
+        const parsedDonors = JSON.parse(storedDonors);
+        const filteredDonors = parsedDonors.filter(d => d.invoiceNumber !== invId && d.name !== name);
+        localStorage.setItem('dav_donors_list', JSON.stringify(filteredDonors));
+      }
+    } catch (e) {}
+
+    // 5. Delete from Supabase cloud
+    if (typeof deleteCloudDonation === 'function') {
+      deleteCloudDonation(invId).catch(() => {});
+    }
+
+    // 6. Notify entire application
+    window.dispatchEvent(new Event('dav_donations_updated'));
   };
 
   const handleEditPassword = async (userObj) => {
@@ -1447,6 +1498,16 @@ _With heartfelt gratitude from the entire DAV student community!_`;
                         title="Copy Invoice ID"
                       >
                         {isCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                      </button>
+
+                      {/* Delete Donor Record & Void Bill Button */}
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteDonation(d)}
+                        title="Admin: Delete Donor Record & Void Bill Permanently"
+                        className="p-1.5 rounded-xl bg-slate-800 hover:bg-rose-950 text-slate-400 hover:text-rose-400 border border-slate-700 hover:border-rose-700 transition cursor-pointer"
+                      >
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>

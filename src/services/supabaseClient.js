@@ -262,6 +262,25 @@ export async function saveCloudDonation(donation) {
   }
 }
 
+export async function deleteCloudDonation(invoiceNumber) {
+  const client = getSupabaseClient();
+  if (!client || !invoiceNumber) return false;
+  try {
+    const { error } = await client
+      .from('dav_donations')
+      .delete()
+      .eq('invoice_number', invoiceNumber);
+    if (error) {
+      console.warn('deleteCloudDonation error:', error.message);
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error('deleteCloudDonation exception:', e);
+    return false;
+  }
+}
+
 export const FACULTY_DOUBT_VAULT_UUID = '00000000-0000-0000-0000-000000000001';
 
 /**
