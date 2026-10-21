@@ -152,7 +152,7 @@ export function GeminiSidebar({
 
               {teacherSubSections.map((sub) => {
                 const isActive = teacherSubSection === sub.id;
-                const IconComp = sub.icon;
+                const IconComp = sub.icon || Sparkles;
 
                 return (
                   <button
@@ -197,7 +197,7 @@ export function GeminiSidebar({
                 const isActive = activeSection === sec.id;
                 const isSpecialCreator = sec.id === 10;
                 const isTeacherSec5 = sec.id === 5 && isTeacher;
-                const IconComp = sec.icon;
+                const IconComp = sec.icon || Sparkles;
 
                 return (
                   <button

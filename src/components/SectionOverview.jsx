@@ -3,7 +3,7 @@ import {
   BookOpen, Brain, Award, FileText, User, 
   HelpCircle, Bell, Compass, ArrowRight, Sparkles, 
   Layers, School, Heart, CheckCircle2, Star, Zap, Flame,
-  BookmarkCheck, MessageCircle, ShieldCheck
+  BookmarkCheck, MessageCircle, ShieldCheck, Video
 } from 'lucide-react';
 
 export function SectionOverview({ onSelectSection }) {
@@ -278,7 +278,7 @@ export function SectionOverview({ onSelectSection }) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {sectionsList.map((sec) => {
-              const IconComp = sec.icon;
+              const IconComp = sec.icon || Sparkles;
               const isCurrent = sec.id === 1;
               const isBeingClicked = clickedCardId === sec.id;
 
