@@ -189,6 +189,7 @@ export function PurpleFooter({ onSelectSection }) {
                 { id: 1, name: 'Section 1: Master Directory' },
                 { id: 2, name: 'Section 2: Official Textbooks (LKG-8)' },
                 { id: 3, name: 'Section 3: Questions & Answers' },
+                { id: 6, name: 'Section 6: Video Explanations & PYQs' },
                 { id: 8, name: 'Section 8: Donate to Developer' },
                 { id: 9, name: 'Section 9: Student Personal Profile' },
                 { id: 10, name: 'Section 10: About Creator Rishit' }

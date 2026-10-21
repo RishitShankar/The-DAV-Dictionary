@@ -78,16 +78,16 @@ export function SectionOverview({ onSelectSection }) {
     },
     {
       id: 6,
-      title: 'Section 6: The DAV Academic Dictionary',
-      shortTitle: 'Word Dictionary',
-      icon: FileText,
-      emoji: '📖',
-      color: 'from-purple-600 to-pink-600',
-      cardBg: 'from-purple-500/10 via-pink-50/80 to-white',
-      borderHover: 'hover:border-purple-500',
-      tag: 'Vocabulary Engine',
-      tagColor: 'bg-purple-100 text-purple-900 border-purple-300',
-      description: 'Search academic vocabulary with phonetic transcriptions, grammar classifications, definitions, and contextual sentences derived from DAV textbooks.'
+      title: 'Section 6: Chapter Explanations, PYQs & Sample Papers',
+      shortTitle: 'Video Lectures & PYQs',
+      icon: Video,
+      emoji: '🎥',
+      color: 'from-amber-500 via-orange-600 to-red-600',
+      cardBg: 'from-amber-500/10 via-orange-50/80 to-white',
+      borderHover: 'hover:border-amber-500',
+      tag: 'DAV Guru • Science Solutions • Rishu Singh',
+      tagColor: 'bg-amber-100 text-amber-900 border-amber-300 font-bold',
+      description: 'Official chapter-wise video lectures from top verified DAV educators (DAV GURU for Science & SST, Science Solutions for Maths, Rishu Singh for Hindi) alongside Board PYQs (2020-2024) and DAVCAE 80-mark sample test papers.'
     },
     {
       id: 7,

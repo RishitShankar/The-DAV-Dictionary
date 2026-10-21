@@ -18,6 +18,7 @@ import { SectionOverview } from './components/SectionOverview';
 import { QuestionsAnswersSection } from './components/QuestionsAnswersSection';
 import { DonationSection } from './components/DonationSection';
 import { TeachersSection } from './components/TeachersSection';
+import { ChapterExplanationsSection } from './components/ChapterExplanationsSection';
 import { PurpleFooter } from './components/PurpleFooter';
 import { SectionErrorBoundary } from './components/SectionErrorBoundary';
 import { 
@@ -339,6 +340,11 @@ export function App() {
             onSubSectionChange={(sub) => setTeacherSubSection(sub)}
             teacherSubDimension={teacherSubDimension}
             onToggleSubDimension={handleToggleTeacherSubDimension}
+          />
+        ) : activeSection === 6 ? (
+          <ChapterExplanationsSection 
+            user={user} 
+            onOpenAIWithQuestion={handleOpenAIWithQuestion}
           />
         ) : activeSection === 8 ? (
           <DonationSection currentUser={user} />

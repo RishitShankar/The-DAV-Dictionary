@@ -193,7 +193,22 @@ export function Navbar({
                   ) : activeSection === 3 ? (
                     <>
                       <Layers className="w-3.5 h-3.5 text-blue-600" />
-                      <span>Section 3: Questions & Answers (Reserved)</span>
+                      <span>Section 3: Questions & Answers</span>
+                    </>
+                  ) : activeSection === 4 ? (
+                    <>
+                      <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Section 4: Shankar AI Companion</span>
+                    </>
+                  ) : activeSection === 5 ? (
+                    <>
+                      <Layers className="w-3.5 h-3.5 text-purple-600" />
+                      <span>Section 5: Dimension 5 Faculty OS</span>
+                    </>
+                  ) : activeSection === 6 ? (
+                    <>
+                      <Sparkles className="w-3.5 h-3.5 text-orange-500" />
+                      <span>Section 6: Video Explanations & PYQs</span>
                     </>
                   ) : activeSection === 8 ? (
                     <>

@@ -28,7 +28,7 @@ export function GeminiSidebar({
     { id: 3, name: 'Section 3: Questions & Answers', icon: HelpCircle, status: 'Reserved' },
     { id: 4, name: 'Section 4: Shankar AI Companion', icon: Sparkles, status: 'AI Workspace' },
     { id: 5, name: 'Section 5: Dimension 5 Faculty OS', icon: Award, status: 'Teachers OS' },
-    { id: 6, name: 'Section 6: Academic Dictionary', icon: BookOpen, status: 'Vocabulary' },
+    { id: 6, name: 'Section 6: Video Explanations & PYQs', icon: Video, status: 'Lectures & PYQs' },
     { id: 7, name: 'Section 7: Syllabus & Blueprint', icon: Layers, status: 'Curriculum' },
     { id: 8, name: 'Section 8: Donate to Developer', icon: Heart, status: 'Support & Bills' },
     { id: 9, name: 'Section 9: Student Personal Profile', icon: User, status: 'Smart ID Vault' },
