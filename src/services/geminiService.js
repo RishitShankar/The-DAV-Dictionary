@@ -148,8 +148,16 @@ You are the definitive authority on the official D.A.V. Public School curriculum
 /**
  * Query live Google Cloud Generative Language API
  */
-async function queryLiveGemini(apiKey, systemPrompt, userPrompt, targetModel = 'gemini-2.5-flash', maxTokens = 2000) {
-  const modelsToTry = [targetModel, 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.5-flash-lite'];
+async function queryLiveGemini(apiKey, systemPrompt, userPrompt, targetModel = 'gemma-4-26b-a4b-it', maxTokens = 2000) {
+  const modelsToTry = [
+    targetModel,
+    'gemma-4-26b-a4b-it',
+    'gemma-4-31b-it',
+    'gemini-3.8-flash',
+    'gemini-flash-latest',
+    'gemini-2.5-flash',
+    'gemini-2.0-flash'
+  ];
   const uniqueModels = [...new Set(modelsToTry)];
 
   for (const model of uniqueModels) {
@@ -403,33 +411,33 @@ ${textbookMatch.topics.map(t => `* **${t.heading}:** ${t.content.slice(0, 160)}.
 
   // 2. LIVE CLOUD GENERATION with 4-Tier Dimension Configuration
   if (apiKey) {
-    let targetModel = 'gemini-2.5-flash';
+    let targetModel = 'gemma-4-26b-a4b-it';
     let maxTokens = 1800;
     let dimensionInstruction = '';
     let footerTag = '';
 
     if (dimension === 1) {
-      targetModel = 'gemini-2.5-flash';
+      targetModel = 'gemma-4-26b-a4b-it';
       maxTokens = 450;
       dimensionInstruction = `You are serving a NORMAL PLAN (Dimension 1) student. Provide clear, concise, direct answers with bullet points. Keep response under 180 words.`;
       footerTag = `\n\n*(⚡ Normal Plan: Concise notes. Upgrade to VIP or VVIP for full 5-mark model answers & middle-of-page analysis!)*`;
     } else if (dimension === 2) {
-      targetModel = 'gemini-2.5-flash';
+      targetModel = 'gemma-4-26b-a4b-it';
       maxTokens = 1200;
       dimensionInstruction = `You are serving a VIP PLAN (Dimension 2) student. Provide detailed explanations, comprehensive points, exam tips, and key formulas.`;
       footerTag = `\n\n*(⭐ VIP Plan: Enhanced detailed study notes & exam formulas.)*`;
     } else if (dimension === 3) {
-      targetModel = 'gemini-2.5-flash';
+      targetModel = 'gemma-4-26b-a4b-it';
       maxTokens = 2200;
       dimensionInstruction = `You are serving a VVIP ULTRA (Dimension 3) student. Provide exhaustive, comprehensive 5-mark model answers, middle-of-page concepts, historical/scientific background, step-by-step reasoning, and exam scoring secrets by Head Boy Rishit Shankar.`;
       footerTag = `\n\n*(👑 VVIP Ultra Pass: Full 5-Mark DAV Model Answer & Deep Syllabus Mastery.)*`;
     } else if (dimension === 4) {
-      targetModel = 'gemini-2.5-flash';
+      targetModel = 'gemma-4-26b-a4b-it';
       maxTokens = 4096;
       dimensionInstruction = `You are serving the CREATOR & MASTER DEVELOPER, Head Boy Rishit Shankar. Provide maximum analytical depth, unconstrained intelligence, exact syllabus cross-referencing, and architectural precision.`;
       footerTag = `\n\n*(💎 Dev Master Dimension: Unrestricted Neural Generation & Database Direct Feed.)*`;
     } else {
-      targetModel = 'gemini-2.5-flash';
+      targetModel = 'gemma-4-26b-a4b-it';
       maxTokens = 250;
       dimensionInstruction = `You are serving a GUEST PREVIEW user. Provide a short 2-bullet preview of the answer.`;
       footerTag = `\n\n*(🔒 Free Preview Mode: Please log in with your Normal, VIP, or VVIP credentials to unlock complete answers!)*`;
