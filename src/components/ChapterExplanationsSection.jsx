@@ -422,7 +422,7 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
                   </div>
 
                   {/* Player Actions */}
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <button
                       onClick={handleCopyLink}
                       className="px-3 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
@@ -432,14 +432,27 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
                       <span>{copiedLink ? 'Copied!' : 'Copy Link'}</span>
                     </button>
 
+                    {activeVideo.playlistId && (
+                      <a
+                        href={`https://www.youtube.com/playlist?list=${activeVideo.playlistId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-400 text-xs font-bold flex items-center gap-1.5 transition shadow-sm border border-stone-700"
+                        title="View Full Playlist on YouTube"
+                      >
+                        <Layers className="w-3.5 h-3.5" />
+                        <span>Teacher Playlist</span>
+                      </a>
+                    )}
+
                     <a
-                      href={activeVideo.videoId ? `https://www.youtube.com/watch?v=${activeVideo.videoId}` : activeVideo.watchUrl}
+                      href={activeVideo.watchUrl || `https://www.youtube.com/watch?v=${activeVideo.videoId}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-bold flex items-center gap-1.5 transition shadow-sm"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
-                      <span>Open on YouTube</span>
+                      <span>Watch on YouTube</span>
                     </a>
                   </div>
                 </div>
@@ -454,15 +467,15 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
                     />
-                  ) : (
+                  ) : activeVideo.playlistId ? (
                     <iframe
                       className="w-full h-full"
-                      src={activeVideo.embedUrl}
+                      src={`https://www.youtube-nocookie.com/embed/videoseries?list=${activeVideo.playlistId}`}
                       title={activeVideo.title}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
                     />
-                  )}
+                  ) : null}
                 </div>
 
                 {/* Video Info Bar & Navigation Footer */}
