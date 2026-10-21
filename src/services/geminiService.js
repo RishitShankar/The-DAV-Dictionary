@@ -409,31 +409,26 @@ ${textbookMatch.topics.map(t => `* **${t.heading}:** ${t.content.slice(0, 160)}.
     let footerTag = '';
 
     if (dimension === 1) {
-      // Dimension 1: Normal Plan
       targetModel = 'gemini-2.5-flash';
       maxTokens = 450;
       dimensionInstruction = `You are serving a NORMAL PLAN (Dimension 1) student. Provide clear, concise, direct answers with bullet points. Keep response under 180 words.`;
       footerTag = `\n\n*(⚡ Normal Plan: Concise notes. Upgrade to VIP or VVIP for full 5-mark model answers & middle-of-page analysis!)*`;
     } else if (dimension === 2) {
-      // Dimension 2: VIP Plan
       targetModel = 'gemini-2.5-flash';
       maxTokens = 1200;
       dimensionInstruction = `You are serving a VIP PLAN (Dimension 2) student. Provide detailed explanations, comprehensive points, exam tips, and key formulas.`;
       footerTag = `\n\n*(⭐ VIP Plan: Enhanced detailed study notes & exam formulas.)*`;
     } else if (dimension === 3) {
-      // Dimension 3: VVIP Plan
       targetModel = 'gemini-2.5-flash';
       maxTokens = 2200;
       dimensionInstruction = `You are serving a VVIP ULTRA (Dimension 3) student. Provide exhaustive, comprehensive 5-mark model answers, middle-of-page concepts, historical/scientific background, step-by-step reasoning, and exam scoring secrets by Head Boy Rishit Shankar.`;
       footerTag = `\n\n*(👑 VVIP Ultra Pass: Full 5-Mark DAV Model Answer & Deep Syllabus Mastery.)*`;
     } else if (dimension === 4) {
-      // Dimension 4: Master Developer
       targetModel = 'gemini-2.5-flash';
       maxTokens = 4096;
       dimensionInstruction = `You are serving the CREATOR & MASTER DEVELOPER, Head Boy Rishit Shankar. Provide maximum analytical depth, unconstrained intelligence, exact syllabus cross-referencing, and architectural precision.`;
       footerTag = `\n\n*(💎 Dev Master Dimension: Unrestricted Neural Generation & Database Direct Feed.)*`;
     } else {
-      // Dimension 0: Guest Preview
       targetModel = 'gemini-2.5-flash';
       maxTokens = 250;
       dimensionInstruction = `You are serving a GUEST PREVIEW user. Provide a short 2-bullet preview of the answer.`;
@@ -449,7 +444,8 @@ TARGET AUDIENCE CONTEXT:
 - Question Category: ${category}
 
 CRITICAL RULES FOR RESPONSES:
-1. When answering ANY DAV textbook question (LKG to Class 8, any subject):
+1. ALWAYS give a REAL, SPECIFIC, DIRECT answer to the student's actual question. NEVER return a generic template or boilerplate.
+2. When answering ANY DAV textbook question (LKG to Class 8, any subject):
    - Cite the exact DAV chapter title and curriculum context.
    - For HOTS questions: provide deep analytical reasoning and hypothesis testing.
    - For Value-Based Questions (VBQ): state the core human/moral value, explain why it matters, and provide practical life examples.
@@ -457,17 +453,44 @@ CRITICAL RULES FOR RESPONSES:
    - For Brain Teasers / Math Puzzles: give step-by-step mathematical logic and alternative tricks.
    - For Middle-of-Page concepts: explain the textbook paragraph thoroughly with formulas, diagrams, definitions, and exam scoring tips.
    - For Back-of-Chapter questions (Part A, B, C, D, E): deliver full-mark model answers.
-2. If asked about Creator Rishit Shankar:
-   - Provide full, accurate, inspiring details from his 200-line profile (Head Boy of DAV Public School Khabra Muzaffarpur, age 14, 80/80 in Sanskrit, 96 in English, 90 in Math, creator of The DAV Dictionary & Shankar AI, full-stack coder, chess player, Blender 3D, and market analyst).
-3. If asked outer-world questions (geopolitics, world affairs, weather, ISRO, space, global economics):
-   - Provide objective, highly intelligent, structured answers.
+3. If asked about Creator Rishit Shankar:
+   - Provide full, accurate, inspiring details from his profile (Head Boy of DAV Public School Khabra Muzaffarpur, age 14, 80/80 in Sanskrit, 96 in English, 90 in Math, creator of The DAV Dictionary & Shankar AI, full-stack coder, chess player, Blender 3D, and market analyst).
+4. If asked outer-world or general knowledge questions (geopolitics, world affairs, science, history, PM, President, sports, entertainment, anything):
+   - Provide objective, accurate, helpful, structured answers based on your knowledge.
+   - DO NOT refuse to answer any legitimate question.
 
 ${dimensionInstruction}
 
 Format your output using rich GitHub-flavored markdown with clean headers (###), bold bullet points, and numbered lists.`;
 
+    // Build enriched prompt with chapter context when the student selected a chapter
     let userPromptWithContext = trimmedQ;
-    if (textbookMatch) {
+    if (!isOuterWorld && context.chapter && context.subject) {
+      const classKey = context.classNum || detectedClass || 8;
+      const subjKey = (context.subject || '').toLowerCase().includes('sci') ? 'science' :
+                      (context.subject || '').toLowerCase().includes('sst') || (context.subject || '').toLowerCase().includes('soc') ? 'sst' :
+                      (context.subject || '').toLowerCase().includes('math') ? 'maths' :
+                      (context.subject || '').toLowerCase().includes('hin') ? 'hindi' :
+                      (context.subject || '').toLowerCase().includes('eng') ? 'english' :
+                      (context.subject || '').toLowerCase().includes('sans') ? 'sanskrit' : null;
+      const chapNum = parseInt(context.chapter, 10);
+      const chapterObj = subjKey ? DAV_TEXTBOOK_DATABASE[classKey]?.[subjKey]?.chapters?.find(c => c.number === chapNum) : null;
+      const subjectName = (subjKey && DAV_TEXTBOOK_DATABASE[classKey]?.[subjKey]?.name) || context.subject;
+      const chapterTitle = chapterObj?.title || `Chapter ${chapNum}`;
+
+      userPromptWithContext = `You are answering a specific DAV textbook question from the student's selected chapter.
+
+STUDENT SELECTED CONTEXT:
+- Class: ${typeof classKey === 'string' ? classKey : `Class ${classKey}`}
+- Subject: ${subjectName}
+- Chapter ${chapNum}: "${chapterTitle}"
+${chapterObj?.summary ? `- Chapter Overview: ${chapterObj.summary.slice(0, 300)}` : ''}
+${chapterObj?.topics ? `- Key Topics in Chapter: ${chapterObj.topics.map(t => t.heading).join(', ')}` : ''}
+
+STUDENT'S QUESTION: "${trimmedQ}"
+
+IMPORTANT: Answer this SPECIFIC question directly. Give the real answer — textbook content, explanation, definitions, or whatever the student needs. Do NOT produce a generic template.`;
+    } else if (textbookMatch) {
       if (textbookMatch.type === 'question-match') {
         userPromptWithContext = `[OFFICIAL DAV TEXTBOOK GROUNDED REFERENCE:
 Subject: ${textbookMatch.subjectName}
@@ -508,10 +531,15 @@ Please formulate a complete, full-mark DAV examination response based on the cur
         isLiveCloud: true,
         modelName: getTierBadge(dimension),
         isTextbookGrounded: !!textbookMatch,
-        chapterInfo: textbookMatch ? `DAV Class ${detectedClass} ${textbookMatch.subjectName} • Ch ${textbookMatch.chapterNumber} (${textbookMatch.id || `Q${textbookMatch.qNum}`})` : (detectedClass ? `DAV ${typeof detectedClass === 'string' ? detectedClass : `Class ${detectedClass}`} Intelligence` : null),
+        chapterInfo: (!isOuterWorld && context.chapter && context.subject)
+          ? `DAV ${context.classNum ? `Class ${context.classNum}` : 'Class 8'} ${context.subject} • Ch ${context.chapter}`
+          : textbookMatch
+            ? `DAV Class ${detectedClass} ${textbookMatch.subjectName} • Ch ${textbookMatch.chapterNumber}`
+            : (detectedClass ? `DAV ${typeof detectedClass === 'string' ? detectedClass : `Class ${detectedClass}`} Intelligence` : null),
         text: liveResult.text + footerTag
       };
     }
+    // Live API call failed — fall through to offline handlers
   }
 
   // 3. OFFLINE FALLBACK ENGINE
@@ -750,47 +778,8 @@ Welcome to **The DAV Dictionary**! I am your personal academic and global intell
     };
   }
 
-  // 6b. National & Governance Offline Knowledge Routers
-  if (lowerQ.includes('pm of india') || lowerQ.includes('prime minister of india') || lowerQ.includes('who is pm') || lowerQ.includes('who is the pm') || lowerQ.includes('narendra modi') || lowerQ.includes('who is prime minister')) {
-    return {
-      source: 'shankar-geo-core',
-      isTextbookGrounded: false,
-      chapterInfo: 'Indian Civics & Governance • Head of Government',
-      modelName: getTierBadge(dimension),
-      text: `🇮🇳 **Prime Minister of India (भारत के प्रधान मंत्री)**
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-### 👤 Current Incumbent: **Shri Narendra Damodardas Modi (नरेंद्र मोदी)**
-* **Office:** 14th Prime Minister of the Republic of India (Serving since 26 May 2014; re-elected in 2019 and 2024).
-* **Constitutional Position:** 
-  - Under **Article 74 & 75 of the Indian Constitution**, the Prime Minister is the **Head of Government** (de facto executive), while the President is the constitutional Head of State (de jure executive).
-  - Leads the Union Council of Ministers and advises the President on all major executive and legislative affairs.
-* **Constituency:** Varanasi, Uttar Pradesh (Member of Parliament, Lok Sabha).
-* **Key National Initiatives:** Digital India, Make in India, Ayushman Bharat, PM GatiShakti, Chandrayaan-3 lunar landing mission, Swachh Bharat Abhiyan, and Unified Payments Interface (UPI).
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🏛️ *Syllabus Reference (DAV Class 8 SST - We and Our World):* Unit 3 "The Union Executive" covers the appointment, powers, and constitutional functions of the Prime Minister and Council of Ministers.`
-    };
-  }
-
-  if (lowerQ.includes('president of india') || lowerQ.includes('who is president') || lowerQ.includes('droupadi murmu')) {
-    return {
-      source: 'shankar-geo-core',
-      isTextbookGrounded: false,
-      chapterInfo: 'Indian Civics & Governance • Head of State',
-      modelName: getTierBadge(dimension),
-      text: `🇮🇳 **President of India (भारत के राष्ट्रपति)**
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-### 👤 Current Incumbent: **Smt. Droupadi Murmu (द्रौपदी मुर्मू)**
-* **Office:** 15th President of the Republic of India (Assumed office on 25 July 2022).
-* **Constitutional Position:** 
-  - Under **Article 52 & 53 of the Constitution of India**, the President is the **Supreme Commander of the Indian Armed Forces** and First Citizen of India.
-* **Historic Milestone:** First tribal woman and second woman (after Pratibha Patil) to hold India's highest constitutional office.`
-    };
-  }
-
-  // 6c. DAV Hindi Textbooks Offline Knowledge
+  // 6b. DAV Hindi Textbooks Offline Knowledge (fallback only when no API key)
   if (lowerQ.includes('hindi literature') || (lowerQ.includes('hindi') && (lowerQ.includes('book') || lowerQ.includes('kitab') || lowerQ.includes('pustak') || lowerQ.includes('name')))) {
     return {
       source: 'shankar-textbook-core',
@@ -853,31 +842,25 @@ The official DAV Board curriculum for Class 8 uses the following prescribed text
     };
   }
 
-  // 7. General Curriculum & Academic Concept Engine
+  // 7. Final fallback — no API key configured, no offline match found
   return {
-    source: 'shankar-general-core',
+    source: 'shankar-no-key',
     isTextbookGrounded: false,
     modelName: getTierBadge(dimension),
-    text: `⚡ **Shankar AI Comprehensive Syllabus Response**
+    text: `🔑 **Shankar AI — API Key Required**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-### Academic Analysis of:
-> **"${trimmedQ}"**
+To get real, live answers from Shankar AI, please add your **Google Gemini API Key**:
 
-1. **Foundational Concept (${typeof detectedClass === 'string' ? detectedClass : `Class ${detectedClass}`}):**
-* This question addresses core conceptual principles established in the official DAV College Managing Committee (DAVCMC) / DAVCAE syllabus.
-* Key terms must be formulated through precise definitions, verified historical facts, or empirical scientific formulas.
+1. Click the **⚙️ Engine Key** button in the Shankar AI interface.
+2. Enter your API key (starts with \`AIzaSy...\`).
+3. Click **Save** — then ask your question again!
 
-2. **Detailed Breakdown & Mechanisms:**
-* **Primary Mechanism:** Focus on identifying root causes, structural definitions, and chronological sequences.
-* **Analytical Reasoning:** Evaluate how underlying social, political, or physical laws interact.
-* **Practical Application:** Connect the theory to real-world observations and exam marking criteria.
+**Your Question:** *"${trimmedQ}"*
 
-3. **Model Examination Answering Technique:**
-* For 3-mark questions: State 3 concise, numbered points with clear subheadings.
-* For 5-mark questions: Begin with an introductory definition, follow with 5 distinct analytical bullet points, and conclude with a crisp summary.
+Once your key is configured, Shankar AI will answer this and any other question — academic, general knowledge, or world affairs — with complete, real, intelligent responses powered by Google Gemini.
 
-*(💡 Pro-Tip: You can ask Shankar AI any question from LKG to Class 8, HOTS, Map Skills, Value-Based questions, or world geopolitics!)*`
+*(💡 Get a free API key at [aistudio.google.com](https://aistudio.google.com))*`
   };
 }
 
