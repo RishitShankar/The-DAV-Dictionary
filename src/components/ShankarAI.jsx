@@ -649,7 +649,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
         {showQuiz ? (
           <InteractiveQuiz
             classNum={selectedClass}
-            subjectId={selectedSubject}
+            subjectId={currentSubjectObj?.name || selectedSubject}
             chapterNum={selectedChapter}
             chapterTitle={currentChapterObj?.title}
             onClose={() => setShowQuiz(false)}
