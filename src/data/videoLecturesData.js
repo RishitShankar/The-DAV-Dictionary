@@ -8,6 +8,7 @@ import {
   VERIFIED_TEACHER2_IDS,
   VERIFIED_TEACHER3_IDS
 } from './verifiedCatalogs.js';
+import { getSection6Teachers } from './section6Data.js';
 
 export {
   VERIFIED_PARTS_IDS,
@@ -994,66 +995,89 @@ export function resolveActiveLecture({ classId, subjectId, chapterNum, chapterTi
   const rawSubj = String(subjectId || '').toLowerCase().trim();
 
   let subjKey = 'science';
-  if (rawSubj.includes('sst') || rawSubj.includes('soc') || rawSubj.includes('world')) subjKey = 'sst';
+  if (rawSubj.includes('hindi_abhyas') || rawSubj.includes('abhyas')) subjKey = 'hindi_abhyas';
+  else if (rawSubj.includes('hindi_madhuri') || rawSubj.includes('hindi_gyan') || rawSubj.includes('gyan') || rawSubj.includes('madhuri') || rawSubj.includes('hin')) subjKey = 'hindi_gyan';
+  else if (rawSubj.includes('english_practice')) subjKey = 'english_practice';
+  else if (rawSubj.includes('english_reader')) subjKey = 'english_reader';
+  else if (rawSubj.includes('english_lit')) subjKey = 'english_lit';
+  else if (rawSubj.includes('eng')) subjKey = 'english_lit';
+  else if (rawSubj.includes('sst') || rawSubj.includes('soc') || rawSubj.includes('world')) subjKey = 'sst';
   else if (rawSubj.includes('sci') || rawSubj.includes('living world')) subjKey = 'science';
-  else if (rawSubj.includes('hin') || rawSubj.includes('bhasha') || rawSubj.includes('madhuri') || rawSubj.includes('gyan sagar')) subjKey = 'hindi';
   else if (rawSubj.includes('math') || rawSubj.includes('ganit')) subjKey = 'maths';
-  else if (rawSubj.includes('eng') || rawSubj.includes('reader') || rawSubj.includes('literature')) subjKey = 'english';
   else if (rawSubj.includes('sans') || rawSubj.includes('surabhi')) subjKey = 'sanskrit';
   else if (rawSubj.includes('comp') || rawSubj.includes('ict')) subjKey = 'comp';
   else if (rawSubj.includes('gk') || rawSubj.includes('wiz')) subjKey = 'gk';
 
+  const baseSubjKey = subjKey.startsWith('hindi') ? 'hindi' : (subjKey.startsWith('english') ? 'english' : subjKey);
+
   const lookupKey = `${normClass}_${subjKey}_${chapterNum}`;
-  const playlistKey = `${normClass}_${subjKey}`;
+  const fallbackLookupKey = `${normClass}_${baseSubjKey}_${chapterNum}`;
+  const playlistKey = `${normClass}_${baseSubjKey}`;
   const officialPlaylistId = OFFICIAL_PLAYLISTS[playlistKey] || null;
 
-  const teachers = getTeachersForSubject(subjKey);
+  const teachers = getSection6Teachers(normClass, subjKey);
   const activeTeacher = teachers[teacherIndex] || teachers[0];
 
   const cleanTitle = chapterTitle ? chapterTitle.replace(/\(.*?\)/g, '').trim() : `Chapter ${chapterNum}`;
   const partLabel = selectedPart?.label || (mode === 'explanation' ? 'Full Chapter Explanation' : 'Worksheet / Solutions');
 
   // Exact targeted query for YouTube search
-  const targetedSearchQuery = `${activeTeacher.name} DAV Class ${normClass} ${subjKey} Chapter ${chapterNum} ${cleanTitle} ${partLabel}`;
+  const targetedSearchQuery = `${activeTeacher.name} DAV Class ${normClass} ${subjKey.replace('_', ' ')} Chapter ${chapterNum} ${cleanTitle} ${partLabel}`;
 
-  // Only assign exact verified video ID if specifically confirmed for THIS exact chapter & mode
   let videoId = null;
+  let isPartAvailable = true;
+  let partNotice = null;
+  let isSolutionAvailable = true;
 
   if (mode === 'explanation') {
+    const isPart1 = !selectedPart || selectedPart.id === 'part1';
     if (teacherIndex === 0) {
-      const partKey = selectedPart?.id ? `${lookupKey}_${selectedPart.id}` : null;
-      videoId = (partKey && VERIFIED_PARTS_IDS[partKey]) || VERIFIED_VIDEO_IDS[lookupKey] || null;
+      if (isPart1) {
+        const partKey = `${lookupKey}_part1`;
+        const fbPartKey = `${fallbackLookupKey}_part1`;
+        videoId = VERIFIED_PARTS_IDS[partKey] || VERIFIED_PARTS_IDS[fbPartKey] || VERIFIED_VIDEO_IDS[lookupKey] || VERIFIED_VIDEO_IDS[fallbackLookupKey] || null;
+      } else {
+        const partKey = `${lookupKey}_${selectedPart.id}`;
+        const fbPartKey = `${fallbackLookupKey}_${selectedPart.id}`;
+        videoId = VERIFIED_PARTS_IDS[partKey] || VERIFIED_PARTS_IDS[fbPartKey] || null;
+        if (!videoId) {
+          isPartAvailable = false;
+          partNotice = `This chapter syllabus is comprehensively covered in the main lecture. A separate ${selectedPart.label} video is not required.`;
+        }
+      }
     } else if (teacherIndex === 1) {
-      videoId = VERIFIED_TEACHER2_IDS[lookupKey] || VERIFIED_VIDEO_IDS[lookupKey] || null;
+      const t2PartKey = selectedPart?.id ? `${lookupKey}_${selectedPart.id}_t2` : null;
+      videoId = (t2PartKey && VERIFIED_PARTS_IDS[t2PartKey]) || VERIFIED_TEACHER2_IDS[lookupKey] || VERIFIED_TEACHER2_IDS[fallbackLookupKey] || null;
     } else if (teacherIndex === 2) {
-      videoId = VERIFIED_TEACHER3_IDS[lookupKey] || VERIFIED_VIDEO_IDS[lookupKey] || null;
+      const t3PartKey = selectedPart?.id ? `${lookupKey}_${selectedPart.id}_t3` : null;
+      videoId = (t3PartKey && VERIFIED_PARTS_IDS[t3PartKey]) || VERIFIED_TEACHER3_IDS[lookupKey] || VERIFIED_TEACHER3_IDS[fallbackLookupKey] || null;
     }
   } else if (mode === 'solutions') {
     if (subjKey === 'maths') {
+      const wsKey = selectedPart?.id ? `${lookupKey}_${selectedPart.id}` : null;
+      const fbWsKey = selectedPart?.id ? `${fallbackLookupKey}_${selectedPart.id}` : null;
       if (teacherIndex === 0) {
-        const wsKey = selectedPart?.id ? `${lookupKey}_${selectedPart.id}` : null;
-        videoId = (wsKey && VERIFIED_MATH_WORKSHEETS_IDS[wsKey]) || VERIFIED_VIDEO_IDS[lookupKey] || null;
+        videoId = (wsKey && VERIFIED_MATH_WORKSHEETS_IDS[wsKey]) || (fbWsKey && VERIFIED_MATH_WORKSHEETS_IDS[fbWsKey]) || null;
       } else if (teacherIndex === 1) {
-        videoId = VERIFIED_TEACHER2_IDS[lookupKey] || VERIFIED_VIDEO_IDS[lookupKey] || null;
+        videoId = (wsKey && VERIFIED_MATH_WORKSHEETS_IDS[`${wsKey}_t2`]) || VERIFIED_TEACHER2_IDS[`${lookupKey}_sol`] || null;
       } else if (teacherIndex === 2) {
-        videoId = VERIFIED_TEACHER3_IDS[lookupKey] || VERIFIED_VIDEO_IDS[lookupKey] || null;
+        videoId = (wsKey && VERIFIED_MATH_WORKSHEETS_IDS[`${wsKey}_t3`]) || VERIFIED_TEACHER3_IDS[`${lookupKey}_sol`] || null;
       }
     } else {
+      const solKey = selectedPart?.id ? `${lookupKey}_${selectedPart.id}` : null;
+      const fbSolKey = selectedPart?.id ? `${fallbackLookupKey}_${selectedPart.id}` : null;
       if (teacherIndex === 0) {
-        const solKey = selectedPart?.id ? `${lookupKey}_${selectedPart.id}` : null;
-        videoId = (solKey && VERIFIED_SOLUTIONS_IDS[solKey]) || VERIFIED_SECONDARY_IDS[lookupKey] || VERIFIED_VIDEO_IDS[lookupKey] || null;
+        videoId = (solKey && VERIFIED_SOLUTIONS_IDS[solKey]) || (fbSolKey && VERIFIED_SOLUTIONS_IDS[fbSolKey]) || VERIFIED_SECONDARY_IDS[lookupKey] || VERIFIED_SECONDARY_IDS[fallbackLookupKey] || null;
       } else if (teacherIndex === 1) {
-        videoId = VERIFIED_TEACHER2_IDS[lookupKey] || VERIFIED_VIDEO_IDS[lookupKey] || null;
+        videoId = VERIFIED_TEACHER2_IDS[`${lookupKey}_sol`] || null;
       } else if (teacherIndex === 2) {
-        videoId = VERIFIED_TEACHER3_IDS[lookupKey] || VERIFIED_VIDEO_IDS[lookupKey] || null;
+        videoId = VERIFIED_TEACHER3_IDS[`${lookupKey}_sol`] || null;
       }
     }
-  }
 
-  // Fallback to official chapter video if still null (ensures zero dead screens, zero blank embeds)
-  // NEVER cross-leak another chapter: strictly keyed to lookupKey
-  if (!videoId) {
-    videoId = VERIFIED_VIDEO_IDS[lookupKey] || null;
+    if (!videoId) {
+      isSolutionAvailable = false;
+    }
   }
 
   const watchUrl = videoId 
@@ -1077,6 +1101,9 @@ export function resolveActiveLecture({ classId, subjectId, chapterNum, chapterTi
     searchUrl: `https://www.youtube.com/results?search_query=${encodeURIComponent(targetedSearchQuery)}`,
     targetedQuery: targetedSearchQuery,
     isDirectVideo: !!videoId,
+    isPartAvailable,
+    partNotice,
+    isSolutionAvailable,
     keyTopics: mode === 'explanation' ? [
       'Line-by-Line Syllabus Coverage',
       'Concept Clarity & Illustrated Diagrams',
