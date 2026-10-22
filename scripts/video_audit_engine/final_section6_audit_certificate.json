@@ -1,0 +1,64 @@
+{
+  "certificationTimestamp": "2026-10-22T16:25:54.170Z",
+  "pass1": {
+    "totalChecked": 644,
+    "passed": 644,
+    "failures": []
+  },
+  "pass2": {
+    "totalChecked": 644,
+    "passed": 644,
+    "failures": []
+  },
+  "classSummaries": {
+    "3": {
+      "totalChapters": 77,
+      "t1Ok": 77,
+      "t2Ok": 77,
+      "t3Ok": 77,
+      "solOk": 77,
+      "collisions": 0
+    },
+    "4": {
+      "totalChapters": 80,
+      "t1Ok": 80,
+      "t2Ok": 80,
+      "t3Ok": 80,
+      "solOk": 80,
+      "collisions": 0
+    },
+    "5": {
+      "totalChapters": 107,
+      "t1Ok": 107,
+      "t2Ok": 107,
+      "t3Ok": 107,
+      "solOk": 107,
+      "collisions": 0
+    },
+    "6": {
+      "totalChapters": 126,
+      "t1Ok": 126,
+      "t2Ok": 126,
+      "t3Ok": 126,
+      "solOk": 126,
+      "collisions": 0
+    },
+    "7": {
+      "totalChapters": 118,
+      "t1Ok": 118,
+      "t2Ok": 118,
+      "t3Ok": 118,
+      "solOk": 118,
+      "collisions": 0
+    },
+    "8": {
+      "totalChapters": 136,
+      "t1Ok": 136,
+      "t2Ok": 136,
+      "t3Ok": 136,
+      "solOk": 136,
+      "collisions": 0
+    }
+  },
+  "certified": true
+}
