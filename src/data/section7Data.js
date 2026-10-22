@@ -1,33 +1,47 @@
-// Official Geographic & Fleet Database for Section 7: Kids Fun & Live DAV Khabra Teleport
+// Official Geographic, Weather, Academic & Fleet Data for Section 7: Kids Fun & Gadgets Suite
 // Principal: Shri Anil Kumar Singh • Head Boy: Rishit Shankar
+// Exact Destination: 492F+563, Khabra, Muzaffarpur, Bihar 843113
 
 export const DAV_KHABRA_COORDINATES = {
   name: 'D.A.V. Public School, Khabra',
   campus: 'Khabra Campus, Muzaffarpur, Bihar',
-  address: 'Khabra-Darbhanga Road, At Bakhri Chowk, P.O. Mirzapur, Via Bochahan, Muzaffarpur, Bihar - 843103',
-  lat: 26.1118,
-  lng: 85.3985,
-  pincode: '843103',
+  plusCode: '492F+563, Khabra, Muzaffarpur, Bihar 843113',
+  address: '492F+563, Khabra, Muzaffarpur, Bihar 843113',
+  lat: 26.0730,
+  lng: 85.3735,
+  pincode: '843113',
   principal: 'Shri Anil Kumar Singh',
   headBoy: 'Rishit Shankar (Class 8-D, Roll 25)',
-  affiliation: 'CBSE Affiliated, DAV College Managing Committee (DAVCMC), New Delhi',
-  googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=DAV+Public+School+Khabra+Muzaffarpur+Bihar',
-  directionsBaseUrl: 'https://www.google.com/maps/dir/?api=1&destination=DAV+Public+School+Khabra+Muzaffarpur+Bihar&travelmode=driving&dir_action=navigate'
+  googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=492F%2B563,+Khabra,+Muzaffarpur,+Bihar+843113',
+  directionsBaseUrl: 'https://www.google.com/maps/dir/?api=1&destination=492F%2B563,+Khabra,+Muzaffarpur,+Bihar+843113&travelmode=driving&dir_action=navigate'
 };
 
-// Popular preset starting points in Bihar for instant 1-click testing & demo
+// Popular preset locations in Muzaffarpur & Bihar
 export const PRESET_STARTING_LOCATIONS = [
+  {
+    id: 'muz_brahmpura',
+    name: 'Brahmpura / Maa Tara Biryani (NH-22)',
+    area: 'NH-22 Corridor, Muzaffarpur',
+    lat: 26.1080,
+    lng: 85.3680,
+    roadKm: 4.1,
+    busMins: 10,
+    carMins: 8,
+    bikeMins: 18,
+    walkMins: 50,
+    emoji: '🛣️'
+  },
   {
     id: 'muz_station',
     name: 'Muzaffarpur Railway Junction',
     area: 'Station Road, Muzaffarpur',
     lat: 26.1226,
     lng: 85.3906,
-    roadKm: 8.2,
+    roadKm: 7.5,
     busMins: 18,
     carMins: 14,
-    bikeMins: 22,
-    walkMins: 95,
+    bikeMins: 24,
+    walkMins: 90,
     emoji: '🚆'
   },
   {
@@ -36,12 +50,12 @@ export const PRESET_STARTING_LOCATIONS = [
     area: 'NH-28 Intersection, Muzaffarpur',
     lat: 26.1310,
     lng: 85.4120,
-    roadKm: 4.5,
-    busMins: 10,
-    carMins: 8,
-    bikeMins: 14,
-    walkMins: 52,
-    emoji: '🛣️'
+    roadKm: 6.8,
+    busMins: 15,
+    carMins: 12,
+    bikeMins: 20,
+    walkMins: 80,
+    emoji: '🚦'
   },
   {
     id: 'mithanpura',
@@ -49,11 +63,11 @@ export const PRESET_STARTING_LOCATIONS = [
     area: 'Club Road, Muzaffarpur',
     lat: 26.1180,
     lng: 85.3850,
-    roadKm: 6.1,
-    busMins: 14,
-    carMins: 11,
-    bikeMins: 18,
-    walkMins: 72,
+    roadKm: 5.4,
+    busMins: 12,
+    carMins: 10,
+    bikeMins: 16,
+    walkMins: 65,
     emoji: '🏬'
   },
   {
@@ -62,38 +76,12 @@ export const PRESET_STARTING_LOCATIONS = [
     area: 'Hajipur Road, Muzaffarpur',
     lat: 26.0950,
     lng: 85.3780,
-    roadKm: 9.4,
-    busMins: 20,
-    carMins: 16,
-    bikeMins: 28,
-    walkMins: 110,
+    roadKm: 3.2,
+    busMins: 8,
+    carMins: 6,
+    bikeMins: 12,
+    walkMins: 38,
     emoji: '🏘️'
-  },
-  {
-    id: 'bhagwanpur',
-    name: 'Bhagwanpur Chowk',
-    area: 'Rewa Road, Muzaffarpur',
-    lat: 26.1380,
-    lng: 85.3620,
-    roadKm: 11.2,
-    busMins: 24,
-    carMins: 19,
-    bikeMins: 32,
-    walkMins: 130,
-    emoji: '🚏'
-  },
-  {
-    id: 'aghoria_bazar',
-    name: 'Aghoria Bazar',
-    area: 'Central Market, Muzaffarpur',
-    lat: 26.1140,
-    lng: 85.3720,
-    roadKm: 7.8,
-    busMins: 17,
-    carMins: 13,
-    bikeMins: 24,
-    walkMins: 90,
-    emoji: '🏪'
   },
   {
     id: 'gobarsahi',
@@ -101,25 +89,25 @@ export const PRESET_STARTING_LOCATIONS = [
     area: 'NH-28 Bypass, Muzaffarpur',
     lat: 26.1020,
     lng: 85.3610,
-    roadKm: 10.5,
-    busMins: 22,
-    carMins: 17,
-    bikeMins: 30,
-    walkMins: 125,
+    roadKm: 4.5,
+    busMins: 10,
+    carMins: 8,
+    bikeMins: 15,
+    walkMins: 55,
     emoji: '🏙️'
   },
   {
-    id: 'bakhri',
-    name: 'Bakhri Chowk (Nearest Hub)',
-    area: 'Khabra Corridor, Muzaffarpur',
-    lat: 26.1120,
-    lng: 85.4050,
-    roadKm: 1.8,
-    busMins: 4,
-    carMins: 3,
-    bikeMins: 6,
-    walkMins: 20,
-    emoji: '🏫'
+    id: 'bhagwanpur',
+    name: 'Bhagwanpur Chowk',
+    area: 'Rewa Road, Muzaffarpur',
+    lat: 26.1380,
+    lng: 85.3620,
+    roadKm: 8.9,
+    busMins: 20,
+    carMins: 16,
+    bikeMins: 28,
+    walkMins: 105,
+    emoji: '🚏'
   },
   {
     id: 'patna',
@@ -127,25 +115,12 @@ export const PRESET_STARTING_LOCATIONS = [
     area: 'Gandhi Maidan / Patna Jn',
     lat: 25.6093,
     lng: 85.1235,
-    roadKm: 78.0,
+    roadKm: 76.0,
     busMins: 130,
     carMins: 95,
     bikeMins: 210,
-    walkMins: 950,
+    walkMins: 920,
     emoji: '🏛️'
-  },
-  {
-    id: 'darbhanga',
-    name: 'Darbhanga Tower Chowk',
-    area: 'Darbhanga Town',
-    lat: 26.1520,
-    lng: 85.8970,
-    roadKm: 52.0,
-    busMins: 75,
-    carMins: 58,
-    bikeMins: 140,
-    walkMins: 620,
-    emoji: '🏰'
   }
 ];
 
@@ -165,14 +140,14 @@ export const DAV_BUS_FLEET = [
     attendantName: 'Manoj Pandey',
     attendantPhone: '+91 91234 56789',
     routeTitle: 'Ramdayalu ➔ Aghoria Bazar ➔ Mithanpura ➔ DAV Khabra',
-    currentStatus: 'moving', // 'moving' | 'stopped' | 'arrived'
+    currentStatus: 'moving',
     currentSpeed: 38,
     heading: 'North-East towards Khabra',
     currentLocationName: 'Passing Aghoria Bazar Chowk (Near Central Bank)',
     currentLat: 26.1142,
     currentLng: 85.3725,
-    destinationDistanceKm: 7.8,
-    etaMinutes: 17,
+    destinationDistanceKm: 4.8,
+    etaMinutes: 12,
     kidsOnboard: 38,
     totalCapacity: 42,
     cctvStatus: 'Active (4 Cameras Recording)',
@@ -184,10 +159,9 @@ export const DAV_BUS_FLEET = [
       { name: 'Aghoria Bazar (Stop 2)', time: '07:02 AM', completed: true },
       { name: 'Mithanpura Petrol Pump (Stop 3)', time: '07:15 AM', completed: false, isNext: true },
       { name: 'Zero Mile Turn (Stop 4)', time: '07:25 AM', completed: false },
-      { name: 'Bakhri Chowk (Stop 5)', time: '07:32 AM', completed: false },
+      { name: 'Khabra Bakhri Chowk (Stop 5)', time: '07:32 AM', completed: false },
       { name: 'D.A.V. Public School Khabra Campus', time: '07:40 AM', completed: false, isFinal: true }
-    ],
-    funFacts: 'Golden Eagle Express has won the DAV Best Maintained Bus Award for 3 consecutive years!'
+    ]
   },
   {
     busId: 'BUS-02',
@@ -207,8 +181,8 @@ export const DAV_BUS_FLEET = [
     currentSpeed: 35,
     heading: 'South-East towards Khabra Gates',
     currentLocationName: 'Crossing Mirzapur Main Road (1.4 km from School)',
-    currentLat: 26.1180,
-    currentLng: 85.4090,
+    currentLat: 26.0980,
+    currentLng: 85.3890,
     destinationDistanceKm: 2.1,
     etaMinutes: 5,
     kidsOnboard: 41,
@@ -221,10 +195,9 @@ export const DAV_BUS_FLEET = [
       { name: 'Zero Mile Chowk (Origin)', time: '07:05 AM', completed: true },
       { name: 'Bochahan Road Turn (Stop 2)', time: '07:18 AM', completed: true },
       { name: 'Mirzapur Village Crossing (Stop 3)', time: '07:28 AM', completed: true },
-      { name: 'Bakhri Chowk (Stop 4)', time: '07:34 AM', completed: false, isNext: true },
+      { name: 'Khabra Gate (Stop 4)', time: '07:34 AM', completed: false, isNext: true },
       { name: 'D.A.V. Public School Khabra Campus', time: '07:40 AM', completed: false, isFinal: true }
-    ],
-    funFacts: 'Fastest morning commute bus, dedicated to northern residential colonies of Muzaffarpur.'
+    ]
   },
   {
     busId: 'BUS-03',
@@ -246,8 +219,8 @@ export const DAV_BUS_FLEET = [
     currentLocationName: 'Stopped at Bhagwanpur Chowk (Boarding Students)',
     currentLat: 26.1380,
     currentLng: 85.3620,
-    destinationDistanceKm: 11.2,
-    etaMinutes: 24,
+    destinationDistanceKm: 8.9,
+    etaMinutes: 20,
     kidsOnboard: 32,
     totalCapacity: 40,
     cctvStatus: 'Active (Full HD Dual Feed)',
@@ -258,11 +231,9 @@ export const DAV_BUS_FLEET = [
       { name: 'Gobarsahi Main Gate (Origin)', time: '06:40 AM', completed: true },
       { name: 'Bhagwanpur Chowk (Stop 2)', time: '07:00 AM', completed: false, isNext: true },
       { name: 'Saraiya Ganj Tower (Stop 3)', time: '07:15 AM', completed: false },
-      { name: 'Purani Bazar (Stop 4)', time: '07:25 AM', completed: false },
-      { name: 'Zero Mile Flyover (Stop 5)', time: '07:33 AM', completed: false },
+      { name: 'Zero Mile Flyover (Stop 4)', time: '07:33 AM', completed: false },
       { name: 'D.A.V. Public School Khabra Campus', time: '07:42 AM', completed: false, isFinal: true }
-    ],
-    funFacts: 'Equipped with child-safety step sensors and automated door interlocks!'
+    ]
   },
   {
     busId: 'BUS-04',
@@ -293,13 +264,11 @@ export const DAV_BUS_FLEET = [
     acStatus: 'Air Conditioned & HEPA Filtered',
     firstAidKit: 'Inspected Today 07:10 AM',
     stops: [
-      { name: 'Muzaffarpur Jn Platform 1 Gate (Origin)', time: '06:50 AM', completed: true },
+      { name: 'Muzaffarpur Jn Gate (Origin)', time: '06:50 AM', completed: true },
       { name: 'Kalyani Chowk (Stop 2)', time: '07:05 AM', completed: true },
       { name: 'Bela Industrial Estate (Stop 3)', time: '07:20 AM', completed: true },
-      { name: 'Bakhri Bypass (Stop 4)', time: '07:32 AM', completed: false, isNext: true },
       { name: 'D.A.V. Public School Khabra Campus', time: '07:40 AM', completed: false, isFinal: true }
-    ],
-    funFacts: 'Driven by Ajay Thakur who holds 12 years of accident-free safe driving record!'
+    ]
   },
   {
     busId: 'BUS-05',
@@ -333,14 +302,43 @@ export const DAV_BUS_FLEET = [
       { name: 'Maripur Overbridge (Origin)', time: '06:55 AM', completed: true },
       { name: 'Kanti Road Corner (Stop 2)', time: '07:10 AM', completed: true },
       { name: 'Damodarpur Crossing (Stop 3)', time: '07:22 AM', completed: false, isNext: true },
-      { name: 'Bakhri Market (Stop 4)', time: '07:33 AM', completed: false },
       { name: 'D.A.V. Public School Khabra Campus', time: '07:42 AM', completed: false, isFinal: true }
-    ],
-    funFacts: 'Special cartoon cushions and rhymes playing for LKG, UKG, and primary students!'
+    ]
   }
 ];
 
-// Calculate distance in KM using the standard Haversine formula
+// Official DAV School Events & Holidays Database for Calendar
+export const DAV_SCHOOL_CALENDAR_EVENTS = [
+  { date: '2026-01-26', title: 'Republic Day Celebration 🇮🇳', type: 'holiday', icon: '🇮🇳' },
+  { date: '2026-02-15', title: 'Maharshi Dayanand Saraswati Jayanti 🕉️', type: 'event', icon: '🕉️' },
+  { date: '2026-03-04', title: 'Holi Festival Celebration 🎨', type: 'holiday', icon: '🎨' },
+  { date: '2026-04-19', title: 'Mahatma Hansraj Birthday 🌟', type: 'event', icon: '🌟' },
+  { date: '2026-05-15', title: 'DAV Summer Vacation Begins ☀️', type: 'holiday', icon: '☀️' },
+  { date: '2026-06-18', title: 'School Reopens after Summer Break 🎒', type: 'event', icon: '🎒' },
+  { date: '2026-08-15', title: 'Independence Day & Flag Hoisting 🇮🇳', type: 'event', icon: '🇮🇳' },
+  { date: '2026-09-05', title: 'Teachers Day Celebration 👨‍🏫', type: 'event', icon: '👨‍🏫' },
+  { date: '2026-09-18', title: 'DAV Half-Yearly Term Exams 📝', type: 'exam', icon: '📝' },
+  { date: '2026-10-02', title: 'Gandhi Jayanti 🕊️', type: 'holiday', icon: '🕊️' },
+  { date: '2026-10-20', title: 'Durga Puja & Dussehra Vacation 🪔', type: 'holiday', icon: '🪔' },
+  { date: '2026-11-08', title: 'Diwali & Chhath Puja Holidays 🎆', type: 'holiday', icon: '🎆' },
+  { date: '2026-11-14', title: 'Childrens Day Sports Gala 🏆', type: 'event', icon: '🏆' },
+  { date: '2026-12-25', title: 'Christmas Holiday 🎄', type: 'holiday', icon: '🎄' }
+];
+
+// Decode Open-Meteo Weather Codes
+export function decodeWeatherCode(code) {
+  if (code === 0) return { label: 'Clear Sky / Sunny', icon: '☀️', mood: 'Perfect day for outdoor games!' };
+  if (code === 1 || code === 2) return { label: 'Partly Cloudy', icon: '⛅', mood: 'Nice pleasant weather!' };
+  if (code === 3) return { label: 'Overcast Clouds', icon: '☁️', mood: 'Cool and breezy today!' };
+  if (code === 45 || code === 48) return { label: 'Misty / Foggy', icon: '🌫️', mood: 'Drive safe on roads!' };
+  if (code >= 51 && code <= 55) return { label: 'Light Drizzle', icon: '🌦️', mood: 'Carry your small umbrella!' };
+  if (code >= 61 && code <= 65) return { label: 'Rain Showers', icon: '🌧️', mood: 'Rainy day fun at school!' };
+  if (code >= 80 && code <= 82) return { label: 'Heavy Rain Showers', icon: '⛈️', mood: 'Indoor games time!' };
+  if (code >= 95 && code <= 99) return { label: 'Thunderstorm', icon: '⚡', mood: 'Stay safe indoors!' };
+  return { label: 'Pleasant & Mild', icon: '🌤️', mood: 'Have a great day!' };
+}
+
+// Calculate distance in KM using Haversine formula
 export function calculateHaversineDistanceKm(lat1, lon1, lat2, lon2) {
   const R = 6371; // Earth radius in km
   const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -351,12 +349,12 @@ export function calculateHaversineDistanceKm(lat1, lon1, lat2, lon2) {
     Math.sin(dLon / 2) * Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const straightKm = R * c;
-  // Road distance is typically 1.25x - 1.35x of straight line distance in cities
-  const roadKm = Math.max(0.5, Math.round(straightKm * 1.28 * 10) / 10);
+  // Road distance is typically ~1.25x of straight line in Muzaffarpur roads
+  const roadKm = Math.max(0.5, Math.round(straightKm * 1.25 * 10) / 10);
   return roadKm;
 }
 
-// Built-in Pure Web Audio API Sound Synthesizer (Works offline, zero external sound files!)
+// Built-in Pure Web Audio API Sound Synthesizer (Zero external audio files required!)
 export class KidSoundFX {
   static ctx = null;
 
@@ -372,7 +370,6 @@ export class KidSoundFX {
     }
   }
 
-  // Playful Bus Horn "Honk! Honk!"
   static playHorn() {
     try {
       this.init();
@@ -405,7 +402,6 @@ export class KidSoundFX {
     } catch (e) {}
   }
 
-  // Cheerful Sparkle Ding / Star Chime
   static playDing() {
     try {
       this.init();
@@ -415,8 +411,8 @@ export class KidSoundFX {
       const gain = this.ctx.createGain();
 
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(880, t); // A5
-      osc.frequency.exponentialRampToValueAtTime(1760, t + 0.15); // A6
+      osc.frequency.setValueAtTime(880, t);
+      osc.frequency.exponentialRampToValueAtTime(1760, t + 0.15);
 
       gain.gain.setValueAtTime(0.22, t);
       gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
@@ -429,12 +425,11 @@ export class KidSoundFX {
     } catch (e) {}
   }
 
-  // Cheerful Victory Fanfare
   static playVictory() {
     try {
       this.init();
       if (!this.ctx) return;
-      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      const notes = [523.25, 659.25, 783.99, 1046.50];
       const t = this.ctx.currentTime;
 
       notes.forEach((freq, idx) => {
@@ -456,32 +451,6 @@ export class KidSoundFX {
     } catch (e) {}
   }
 
-  // Engine Rev "Vroom Vroom"
-  static playEngineRev() {
-    try {
-      this.init();
-      if (!this.ctx) return;
-      const t = this.ctx.currentTime;
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(110, t);
-      osc.frequency.linearRampToValueAtTime(220, t + 0.25);
-      osc.frequency.linearRampToValueAtTime(90, t + 0.5);
-
-      gain.gain.setValueAtTime(0.12, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
-
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-
-      osc.start(t);
-      osc.stop(t + 0.55);
-    } catch (e) {}
-  }
-
-  // Soft Button Click Pop
   static playPop() {
     try {
       this.init();
@@ -502,6 +471,28 @@ export class KidSoundFX {
 
       osc.start(t);
       osc.stop(t + 0.07);
+    } catch (e) {}
+  }
+
+  static playBeep() {
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(900, t);
+
+      gain.gain.setValueAtTime(0.1, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(t);
+      osc.stop(t + 0.05);
     } catch (e) {}
   }
 }
