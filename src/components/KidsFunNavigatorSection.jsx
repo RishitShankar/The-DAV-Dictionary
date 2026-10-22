@@ -7,11 +7,12 @@ import {
   Pause, HelpCircle, Heart, Info, AlertCircle, CheckCircle2, ChevronRight,
   CloudSun, Calculator, Calendar as CalendarIcon, Clock as ClockIcon,
   Sun, CloudRain, Wind, Droplets, Thermometer, RotateCcw, Plus, Trash2, 
-  Search, ShieldAlert, ArrowUpRight
+  Search, ShieldAlert, ArrowUpRight, Globe, Copy
 } from 'lucide-react';
 import { 
   DAV_KHABRA_COORDINATES, 
   PRESET_STARTING_LOCATIONS, 
+  WORLD_COUNTRIES_TIMEZONES,
   DAV_BUS_FLEET, 
   DAV_SCHOOL_CALENDAR_EVENTS,
   decodeWeatherCode,
@@ -67,7 +68,7 @@ export function KidsFunNavigatorSection({ user }) {
   const [liveGpsCoords, setLiveGpsCoords] = useState(null);
   const [gpsErrorMsg, setGpsErrorMsg] = useState(null);
   const [isGpsLoading, setIsGpsLoading] = useState(false);
-  const [selectedPresetId, setSelectedPresetId] = useState('muz_brahmpura');
+  const [selectedPresetId, setSelectedPresetId] = useState('ls_college');
 
   // Ask for browser GPS on initial load of section
   useEffect(() => {
@@ -86,7 +87,7 @@ export function KidsFunNavigatorSection({ user }) {
           setIsGpsLoading(false);
           // If denied, user can click to enable
           setLocationPermissionStatus('denied');
-          setGpsErrorMsg('Live location permission not granted yet. Click "Allow Live Location" below or select a nearby landmark.');
+          setGpsErrorMsg('Live location permission not granted yet. Click "Turn On / Allow Live Location" below or select one of the 5 selective landmarks.');
         },
         { enableHighAccuracy: true, timeout: 8000 }
       );
@@ -115,43 +116,58 @@ export function KidsFunNavigatorSection({ user }) {
       (err) => {
         setIsGpsLoading(false);
         setLocationPermissionStatus('denied');
-        setGpsErrorMsg('Could not detect live GPS. Please allow location access in your browser or choose a preset point.');
+        setGpsErrorMsg('Could not detect live GPS. Please allow location access in your browser or choose one of the 5 selective landmarks.');
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
   };
 
-  // Calculate live route distance
+  // Calculate live route distance for all 5 modes (School Bus, Car, Taxi, Bicycle, Kid Walking)
   const routeCalculations = useMemo(() => {
     let originLat, originLng, originName;
+    let roadKm, busMins, carMins, taxiMins, bikeMins, walkMins;
 
     if (locationPermissionStatus === 'granted' && liveGpsCoords) {
       originLat = liveGpsCoords.lat;
       originLng = liveGpsCoords.lng;
       originName = `My Live GPS (${originLat.toFixed(4)}° N, ${originLng.toFixed(4)}° E)`;
+      
+      const straightKm = calculateHaversineDistanceKm(
+        originLat, 
+        originLng, 
+        DAV_KHABRA_COORDINATES.lat, 
+        DAV_KHABRA_COORDINATES.lng
+      );
+      // Realistic road distance with Bihar winding factor ~1.25x
+      roadKm = Math.round(straightKm * 1.25 * 10) / 10;
+      busMins = Math.max(3, Math.round((roadKm / 32) * 60) + 4);
+      carMins = Math.max(2, Math.round((roadKm / 42) * 60));
+      taxiMins = Math.max(2, Math.round((roadKm / 45) * 60));
+      bikeMins = Math.max(4, Math.round((roadKm / 16) * 60));
+      walkMins = Math.max(8, Math.round((roadKm / 4.5) * 60));
     } else {
       const preset = PRESET_STARTING_LOCATIONS.find(p => p.id === selectedPresetId) || PRESET_STARTING_LOCATIONS[0];
       originLat = preset.lat;
       originLng = preset.lng;
       originName = preset.name;
+      roadKm = preset.roadKm;
+      busMins = preset.busMins;
+      carMins = preset.carMins;
+      taxiMins = preset.taxiMins;
+      bikeMins = preset.bikeMins;
+      walkMins = preset.walkMins;
     }
-
-    const roadKm = calculateHaversineDistanceKm(
-      originLat, 
-      originLng, 
-      DAV_KHABRA_COORDINATES.lat, 
-      DAV_KHABRA_COORDINATES.lng
-    );
 
     return {
       originLat,
       originLng,
       originName,
       roadKm,
-      busMins: Math.max(3, Math.round((roadKm / 35) * 60)),
-      carMins: Math.max(2, Math.round((roadKm / 45) * 60)),
-      bikeMins: Math.max(5, Math.round((roadKm / 15) * 60)),
-      walkMins: Math.max(10, Math.round((roadKm / 4) * 60))
+      busMins,
+      carMins,
+      taxiMins,
+      bikeMins,
+      walkMins
     };
   }, [locationPermissionStatus, liveGpsCoords, selectedPresetId]);
 
