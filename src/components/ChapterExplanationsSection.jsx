@@ -80,13 +80,31 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
     );
   }, [availableChapters, searchQuery]);
 
-  // Available 5-part lecture selector or subject-specific worksheets/solutions
+  // Available parts selector or subject-specific worksheets/solutions
   const availableParts = useMemo(() => {
     if (lectureMode === 'explanation') {
-      return getSection6ExplanationParts();
+      return getSection6ExplanationParts(selectedSubject);
     }
     return getSection6SolutionParts(selectedClass, selectedSubject, currentChapterObj.num);
   }, [lectureMode, selectedClass, selectedSubject, currentChapterObj]);
+
+  // Dynamic labels for mode buttons strictly customized to the subject
+  const explanationButtonLabel = useMemo(() => {
+    if (selectedSubject === 'maths') return '1. One-Shot Crash Course & Concepts (DAV GURU / Theory)';
+    if (selectedSubject.includes('abhyas')) return '1. व्याकरण नियम व मुख्य संकल्पना';
+    if (selectedSubject.includes('practice')) return '1. Grammar Rules & Concept Overview';
+    if (selectedSubject.includes('gyan') || selectedSubject.includes('madhuri')) return '1. पाठ एवं कविता भावार्थ (Explanation)';
+    if (selectedSubject.includes('sans')) return '1. सम्पूर्ण पाठ हिन्दी अनुवाद (Translation)';
+    return '1. Chapter Explanation (व्याख्या एवं संकल्पना)';
+  }, [selectedSubject]);
+
+  const solutionsButtonLabel = useMemo(() => {
+    if (selectedSubject === 'maths') return '2. Worksheets, Brain Teasers & HOTS (Science Solutions)';
+    if (selectedSubject.includes('practice')) return '2. Practice Book Worksheets & DIY (VKPDT / Solved)';
+    if (selectedSubject.includes('abhyas')) return '2. अभ्यास सागर हल (सम्पूर्ण व्याकरण कार्य)';
+    if (selectedSubject.includes('sans')) return '2. अभ्यास कार्यम् प्रश्नोत्तराणि (Shloka & Sandhi)';
+    return '2. Textbook Question Answers (Part A, B, C, D, E)';
+  }, [selectedSubject]);
 
   // Current selected part object
   const selectedPartObj = useMemo(() => {
@@ -530,7 +548,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                       }`}
                     >
                       <BookOpen className="w-4 h-4" />
-                      <span>1. Chapter Explanation (व्याख्या एवं संकल्पना)</span>
+                      <span>{explanationButtonLabel}</span>
                     </button>
 
                     <button
@@ -542,15 +560,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                       }`}
                     >
                       <CheckCircle2 className="w-4 h-4" />
-                      <span>
-                        2. {selectedSubject === 'maths' 
-                          ? 'Worksheets & Brain Teasers (कार्यपत्रक हल)' 
-                          : selectedSubject.includes('practice')
-                            ? 'Practice Book Worksheets (व्याकरण अभ्यास)'
-                            : selectedSubject.includes('abhyas')
-                              ? 'अभ्यास सागर हल (सम्पूर्ण व्याकरण)'
-                              : 'Question Answers (प्रश्नोत्तर)'}
-                      </span>
+                      <span>{solutionsButtonLabel}</span>
                     </button>
                   </div>
 
@@ -798,6 +808,12 @@ Please write each question clearly and show all steps, formulas, and reasoning s
 
                     {/* Video Info Bar & Navigation Footer */}
                     <div className="p-5 bg-stone-950 border-t border-stone-800">
+                      {activeLecture.isCrashCourse && (
+                        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-orange-500/20 via-amber-500/20 to-red-500/20 border border-orange-500/40 text-orange-400 text-xs font-black mb-3.5 shadow-sm">
+                          <Flame className="w-4 h-4 fill-current text-orange-400" />
+                          <span>One-Shot Crash Course & Rapid Revision Marathon (DAV GURU)</span>
+                        </div>
+                      )}
                       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div>
                           <h3 className="text-base font-bold text-white leading-snug">
@@ -882,14 +898,17 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
                       {availableTeachers.map((tch, idx) => {
                         const isSelected = activeTeacherIndex === idx;
+                        const isAuthorMatch = activeLecture.teacher.id === tch.id;
                         return (
                           <button
                             key={tch.id || idx}
                             onClick={() => setActiveTeacherIndex(idx)}
                             className={`p-4 rounded-2xl border text-left transition cursor-pointer flex flex-col justify-between ${
-                              isSelected
-                                ? 'bg-stone-900 border-amber-500 shadow-xl ring-2 ring-amber-500/30'
-                                : 'bg-stone-900/60 hover:bg-stone-900 border-stone-800 text-stone-400'
+                              isAuthorMatch
+                                ? 'bg-stone-900 border-emerald-500 shadow-xl ring-2 ring-emerald-500/30'
+                                : isSelected
+                                  ? 'bg-stone-900 border-amber-500 shadow-xl ring-2 ring-amber-500/30'
+                                  : 'bg-stone-900/60 hover:bg-stone-900 border-stone-800 text-stone-400'
                             }`}
                           >
                             <div>
@@ -901,7 +920,11 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                                 }`}>
                                   {idx === 0 ? 'Primary Specialist' : `Teacher Option ${idx + 1}`}
                                 </span>
-                                {isSelected && <CheckCircle2 className="w-4 h-4 text-amber-400" />}
+                                {isAuthorMatch ? (
+                                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                                ) : isSelected ? (
+                                  <Check className="w-4 h-4 text-amber-400" />
+                                ) : null}
                               </div>
 
                               <div className="text-sm font-black text-white mt-1">
@@ -918,8 +941,10 @@ Please write each question clearly and show all steps, formulas, and reasoning s
 
                             <div className="mt-4 pt-3 border-t border-stone-800/80 flex items-center justify-between text-[11px]">
                               <span className="text-stone-400 truncate max-w-[120px]">{tch.badge}</span>
-                              <span className="font-bold text-amber-400 flex items-center gap-1">
-                                <span>{isSelected ? 'Playing' : 'Switch'}</span>
+                              <span className={`font-bold flex items-center gap-1 ${
+                                isAuthorMatch ? 'text-emerald-400' : isSelected ? 'text-amber-400' : 'text-stone-400'
+                              }`}>
+                                <span>{isAuthorMatch ? 'Playing' : isSelected ? 'Active' : 'Switch'}</span>
                                 <Play className="w-3 h-3 fill-current" />
                               </span>
                             </div>

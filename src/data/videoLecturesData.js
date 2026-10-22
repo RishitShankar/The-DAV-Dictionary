@@ -8,7 +8,7 @@ import {
   VERIFIED_TEACHER2_IDS,
   VERIFIED_TEACHER3_IDS
 } from './verifiedCatalogs.js';
-import { getSection6Teachers } from './section6Data.js';
+import { SECTION6_CREATORS, getSection6Teachers } from './section6Data.js';
 
 export {
   VERIFIED_PARTS_IDS,
@@ -16,6 +16,124 @@ export {
   VERIFIED_SOLUTIONS_IDS,
   VERIFIED_TEACHER2_IDS,
   VERIFIED_TEACHER3_IDS
+};
+
+/**
+ * 100% Verified Author Map: Maps video IDs to their actual verified YouTube educator
+ * Prevents any discrepancy between the teacher name on screen and the teacher in the video
+ */
+export const VERIFIED_CREATORS_BY_VIDEO_ID = {
+  // DAV GURU (Manish Sir)
+  'ylNxQcgQ2uc': 'davguru',
+  'duzethLdmFo': 'davguru',
+  'jWsxzGW8L6A': 'davguru',
+  'KEGNO7dN8Uc': 'davguru',
+  'mho0_f5zb1s': 'davguru',
+  'M1SppEzdYsU': 'davguru',
+  'ju6T8ut0z-8': 'davguru',
+  'swiMi1wF0yQ': 'davguru',
+  't3YfQi45DuI': 'davguru',
+  'mvUDJX9VL5g': 'davguru',
+  'pWNjS5_YplI': 'davguru',
+  '53m253SBScw': 'davguru',
+  'fALA7HyK-VQ': 'davguru',
+  '08WxRsuyfss': 'davguru',
+  '0Bb0TeKFBYE': 'davguru',
+  'Vo4hBQtu-gk': 'davguru',
+  'CrYQW10F96o': 'davguru',
+  'M_SmQuyIPe4': 'davguru',
+  'xaW_ZCHAa2I': 'davguru',
+  '_O6DS2NeDhg': 'davguru',
+  '4f_UQKmyWtw': 'davguru',
+  'Xf6crm2YlWg': 'davguru',
+  'a5ma39FlSdo': 'davguru',
+  'aKSTwPR79nE': 'davguru',
+  'OmkrI-suA6M': 'davguru',
+  '9rSyunq4ndA': 'davguru',
+  'o8M8DfBayKo': 'davguru',
+  '4BoApG9m39s': 'davguru',
+  'l2SVjAOyttg': 'davguru',
+  'UWtBkuJsBYg': 'davguru',
+  '0MoIzTl-MjI': 'davguru',
+  'b8O3nR4tvLA': 'davguru',
+  '2Uyc3UgzDrs': 'davguru',
+  'Z3HnxRiVnRo': 'davguru',
+  'ACohOfVSMQE': 'davguru',
+  'R2P2K29X1VM': 'davguru',
+  'UD-t_fzFipg': 'davguru',
+  'QmF-cTArxlc': 'davguru',
+  'ca4z44jVnL0': 'davguru',
+  'vWETTbsl9Wc': 'davguru',
+  'dz6ayay0vGo': 'davguru',
+  'Iyq8GyFACtI': 'davguru',
+  'vMj8zLWvvds': 'davguru',
+  'U9hVdi_EQa0': 'davguru',
+  'CzxpgnxqF9c': 'davguru',
+  'U3UpE5voVoc': 'davguru',
+  'oSMnGaL18Ck': 'davguru',
+  '0A0l9fngOaA': 'davguru',
+  'qXKEShw407g': 'davguru',
+  'V9lK2PL2L5I': 'davguru',
+  'BJWLsFM2xdI': 'davguru',
+  'iaaddZvdQj4': 'davguru',
+  'Bv4A-1pUaJ4': 'davguru',
+  'acjmytwBESg': 'davguru',
+
+  // Science Solutions
+  'MEeQ8zT6zvk': 'sciencesolutions',
+  'SElKY2GRVfc': 'sciencesolutions',
+  'pUFfuJXEwgU': 'sciencesolutions',
+  'eGT2O-hmQ2M': 'sciencesolutions',
+  'gTaEEPtZHLQ': 'sciencesolutions',
+  'qbUfZylf2iQ': 'sciencesolutions',
+  'eRXcHoH6y6o': 'sciencesolutions',
+  'h0_HcIIjL6Y': 'sciencesolutions',
+  'bNh2fHV0U2w': 'sciencesolutions',
+  'n29-WRMefQc': 'sciencesolutions',
+  'f8QL5GGT2yM': 'sciencesolutions',
+  'A0NDsN-RaF4': 'sciencesolutions',
+  'yUDBxMpNiKk': 'sciencesolutions',
+  '7amIh70ss-E': 'sciencesolutions',
+  '90Dw-UqM_Xk': 'sciencesolutions',
+  'gYJhJWbHiII': 'sciencesolutions',
+  'xZjyNsIh07g': 'sciencesolutions',
+  '-u1-SCwcLrY': 'sciencesolutions',
+  'K4GDIf4XaIY': 'sciencesolutions',
+  'd-ysJASNS7o': 'sciencesolutions',
+  'JkXaGk4I7hw': 'sciencesolutions',
+
+  // Rishu Singh (Rishu Study)
+  '02kbGmdeTL4': 'rishusingh',
+  'gp7MOWP_6kY': 'rishusingh',
+  'zYjVzsFOVRE': 'rishusingh',
+  '2Ix81tReMCY': 'rishusingh',
+  'fMAulMRanMU': 'rishusingh',
+  'qDjvZftOkHY': 'rishusingh',
+  'IKdJ7CBEWR8': 'rishusingh',
+  'c7GBt2-oJPk': 'rishusingh',
+  'vumtdo_SCiY': 'rishusingh',
+  'Cjj494GzSBI': 'rishusingh',
+  'GyisjwQHMno': 'rishusingh',
+  'Buvl0XGm3ks': 'rishusingh',
+  'uI2_tsXWOW8': 'rishusingh',
+  'ORkNwgchpmA': 'rishusingh',
+  'pAfP-tcnTSg': 'rishusingh',
+  'Qvxxq9TJ31k': 'rishusingh',
+  'HsrTItaZ_v0': 'rishusingh',
+  '5_klzN3I_TQ': 'rishusingh',
+  'pOxtuA9Ispg': 'rishusingh',
+  'v3tqt93ZJYU': 'rishusingh',
+  'r3AsndLtzl8': 'rishusingh',
+  'grhxLdpt2N4': 'rishusingh',
+
+  // Padhai Station
+  'KRFnyx4z2gI': 'padhaistation',
+  'sUAQnXPOxa0': 'padhaistation',
+  'zOATTtPrZ1I': 'padhaistation',
+
+  // History By SRB
+  'rLC6xVuXq0U': 'historybysrb',
+  'TN6hyyxyw4c': 'historybysrb'
 };
 
 export const TOP_DAV_CREATORS = {
@@ -1031,37 +1149,56 @@ export function resolveActiveLecture({ classId, subjectId, chapterNum, chapterTi
 
   if (mode === 'explanation') {
     const isPart1 = !selectedPart || selectedPart.id === 'part1';
-    if (teacherIndex === 0) {
-      if (isPart1) {
-        const partKey = `${lookupKey}_part1`;
-        const fbPartKey = `${fallbackLookupKey}_part1`;
-        videoId = VERIFIED_PARTS_IDS[partKey] || VERIFIED_PARTS_IDS[fbPartKey] || VERIFIED_VIDEO_IDS[lookupKey] || VERIFIED_VIDEO_IDS[fallbackLookupKey] || null;
-      } else {
-        const partKey = `${lookupKey}_${selectedPart.id}`;
-        const fbPartKey = `${fallbackLookupKey}_${selectedPart.id}`;
-        videoId = VERIFIED_PARTS_IDS[partKey] || VERIFIED_PARTS_IDS[fbPartKey] || null;
-        if (!videoId) {
-          isPartAvailable = false;
-          partNotice = `This chapter syllabus is comprehensively covered in the main lecture. A separate ${selectedPart.label} video is not required.`;
-        }
+    if (subjKey === 'maths') {
+      if (teacherIndex === 0) {
+        // Science Solutions (WS1 / concept)
+        const wsKey = selectedPart?.id ? `${lookupKey}_${selectedPart.id}` : null;
+        videoId = (wsKey && VERIFIED_MATH_WORKSHEETS_IDS[wsKey]) || VERIFIED_MATH_WORKSHEETS_IDS[`${lookupKey}_ws1`] || VERIFIED_VIDEO_IDS[lookupKey] || null;
+      } else if (teacherIndex === 1) {
+        // DAV GURU (Crash Course)
+        videoId = VERIFIED_TEACHER2_IDS[lookupKey] || (lookupKey === '8_maths_1' ? 'ylNxQcgQ2uc' : null);
+      } else if (teacherIndex === 2) {
+        // EduMagnet
+        videoId = VERIFIED_TEACHER3_IDS[lookupKey] || null;
       }
-    } else if (teacherIndex === 1) {
-      const t2PartKey = selectedPart?.id ? `${lookupKey}_${selectedPart.id}_t2` : null;
-      videoId = (t2PartKey && VERIFIED_PARTS_IDS[t2PartKey]) || VERIFIED_TEACHER2_IDS[lookupKey] || VERIFIED_TEACHER2_IDS[fallbackLookupKey] || null;
-    } else if (teacherIndex === 2) {
-      const t3PartKey = selectedPart?.id ? `${lookupKey}_${selectedPart.id}_t3` : null;
-      videoId = (t3PartKey && VERIFIED_PARTS_IDS[t3PartKey]) || VERIFIED_TEACHER3_IDS[lookupKey] || VERIFIED_TEACHER3_IDS[fallbackLookupKey] || null;
+    } else {
+      if (teacherIndex === 0) {
+        if (isPart1) {
+          const partKey = `${lookupKey}_part1`;
+          const fbPartKey = `${fallbackLookupKey}_part1`;
+          videoId = VERIFIED_PARTS_IDS[partKey] || VERIFIED_PARTS_IDS[fbPartKey] || VERIFIED_VIDEO_IDS[lookupKey] || VERIFIED_VIDEO_IDS[fallbackLookupKey] || null;
+        } else {
+          const partKey = `${lookupKey}_${selectedPart.id}`;
+          const fbPartKey = `${fallbackLookupKey}_${selectedPart.id}`;
+          videoId = VERIFIED_PARTS_IDS[partKey] || VERIFIED_PARTS_IDS[fbPartKey] || null;
+          if (!videoId) {
+            isPartAvailable = false;
+            partNotice = `This chapter syllabus is comprehensively covered in the main lecture. A separate ${selectedPart.label} video is not required.`;
+          }
+        }
+      } else if (teacherIndex === 1) {
+        const t2PartKey = selectedPart?.id ? `${lookupKey}_${selectedPart.id}_t2` : null;
+        videoId = (t2PartKey && VERIFIED_PARTS_IDS[t2PartKey]) || VERIFIED_TEACHER2_IDS[lookupKey] || VERIFIED_TEACHER2_IDS[fallbackLookupKey] || null;
+      } else if (teacherIndex === 2) {
+        const t3PartKey = selectedPart?.id ? `${lookupKey}_${selectedPart.id}_t3` : null;
+        videoId = (t3PartKey && VERIFIED_PARTS_IDS[t3PartKey]) || VERIFIED_TEACHER3_IDS[lookupKey] || VERIFIED_TEACHER3_IDS[fallbackLookupKey] || null;
+      }
     }
   } else if (mode === 'solutions') {
     if (subjKey === 'maths') {
       const wsKey = selectedPart?.id ? `${lookupKey}_${selectedPart.id}` : null;
       const fbWsKey = selectedPart?.id ? `${fallbackLookupKey}_${selectedPart.id}` : null;
       if (teacherIndex === 0) {
+        // Science Solutions Worksheet Solutions
         videoId = (wsKey && VERIFIED_MATH_WORKSHEETS_IDS[wsKey]) || (fbWsKey && VERIFIED_MATH_WORKSHEETS_IDS[fbWsKey]) || null;
       } else if (teacherIndex === 1) {
-        videoId = (wsKey && VERIFIED_MATH_WORKSHEETS_IDS[`${wsKey}_t2`]) || VERIFIED_TEACHER2_IDS[`${lookupKey}_sol`] || null;
+        // DAV GURU does crash course revision, not worksheet breakdowns
+        videoId = null;
+        isSolutionAvailable = false;
+        partNotice = 'DAV GURU provides complete One-Shot Crash Courses for this chapter. For individual worksheet-by-worksheet solutions, select Science Solutions (Teacher Option 1).';
       } else if (teacherIndex === 2) {
-        videoId = (wsKey && VERIFIED_MATH_WORKSHEETS_IDS[`${wsKey}_t3`]) || VERIFIED_TEACHER3_IDS[`${lookupKey}_sol`] || null;
+        // EduMagnet Worksheets
+        videoId = (wsKey && VERIFIED_MATH_WORKSHEETS_IDS[`${wsKey}_t3`]) || null;
       }
     } else {
       const solKey = selectedPart?.id ? `${lookupKey}_${selectedPart.id}` : null;
@@ -1080,6 +1217,21 @@ export function resolveActiveLecture({ classId, subjectId, chapterNum, chapterTi
     }
   }
 
+  // CRITICAL: Ensure activeTeacher strictly matches the real author of the video
+  let resolvedTeacher = activeTeacher;
+  if (videoId && VERIFIED_CREATORS_BY_VIDEO_ID[videoId]) {
+    const creatorKey = VERIFIED_CREATORS_BY_VIDEO_ID[videoId];
+    const matchingCreator = Object.values(SECTION6_CREATORS).find(c => c.id === creatorKey);
+    if (matchingCreator) {
+      resolvedTeacher = matchingCreator;
+    }
+  }
+
+  const isCrashCourse = (videoId === 'ylNxQcgQ2uc') || (resolvedTeacher.id === 'davguru' && subjKey === 'maths') || cleanTitle.toLowerCase().includes('crash course');
+  const lectureType = isCrashCourse
+    ? 'Full Chapter Crash Course & Board Revision'
+    : (mode === 'explanation' ? 'Chapter Concept Lecture' : (subjKey === 'maths' ? 'Worksheet & Brain Teaser Solutions' : 'Textbook Exercise Solutions'));
+
   const watchUrl = videoId 
     ? `https://www.youtube.com/watch?v=${videoId}${officialPlaylistId ? `&list=${officialPlaylistId}` : ''}`
     : `https://www.youtube.com/results?search_query=${encodeURIComponent(targetedSearchQuery)}`;
@@ -1089,14 +1241,15 @@ export function resolveActiveLecture({ classId, subjectId, chapterNum, chapterTi
     title: `${cleanTitle} — ${partLabel}`,
     chapterTitle: cleanTitle,
     chapterNum,
-    teacher: activeTeacher,
+    teacher: resolvedTeacher,
     teacherIndex,
     mode,
     part: selectedPart,
     videoId,
     playlistId: officialPlaylistId,
-    duration: mode === 'explanation' ? '35:20' : '28:40',
-    type: mode === 'explanation' ? 'Chapter Concept Lecture' : (subjKey === 'maths' ? 'Worksheet Solutions' : 'Textbook Exercise Solutions'),
+    duration: isCrashCourse ? '42:15' : (mode === 'explanation' ? '35:20' : '28:40'),
+    type: lectureType,
+    isCrashCourse,
     watchUrl,
     searchUrl: `https://www.youtube.com/results?search_query=${encodeURIComponent(targetedSearchQuery)}`,
     targetedQuery: targetedSearchQuery,
