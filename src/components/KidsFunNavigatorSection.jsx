@@ -750,78 +750,108 @@ export function KidsFunNavigatorSection({ user }) {
                   </div>
                 </div>
 
-                {/* 4 CALCULATED MODE TILES (BUS, CAR, BICYCLE, WALK) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  
-                  {/* Bus Mode */}
-                  <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
-                    <div className="flex items-center justify-between text-amber-300 text-xs font-black uppercase">
+                {/* CALCULATED LIVE ROUTE DISTANCE SECTION */}
+                {locationPermissionStatus !== 'granted' && !selectedPresetId ? (
+                  <div className="bg-stone-950/80 rounded-2xl p-6 border-2 border-dashed border-amber-400/60 text-center space-y-3">
+                    <div className="text-3xl">🛰️</div>
+                    <div className="text-base font-black text-amber-300">
+                      Live Route Distance Waiting for Location
+                    </div>
+                    <p className="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto">
+                      Please allow your live location or select your nearby landmark so we can calculate the exact road distance from where you are to <strong>DAV Public School Khabra (492F+563)</strong>.
+                    </p>
+                    <button
+                      onClick={requestLiveLocation}
+                      className="px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs sm:text-sm inline-flex items-center gap-2 cursor-pointer shadow-lg"
+                    >
+                      <Navigation className="w-4 h-4" />
+                      <span>Allow Live Location Now</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="text-xs font-black uppercase tracking-wider text-amber-300 mb-2 flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
-                        <Bus className="w-4 h-4" />
-                        <span>School Bus</span>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                        <span>Calculated Distance from {routeCalculations.originName} to DAV Khabra (492F+563)</span>
                       </span>
-                      <span className="text-[10px] bg-amber-400 text-stone-950 px-2 py-0.5 rounded font-black">~35 km/h</span>
+                      <span className="text-white font-mono">{routeCalculations.roadKm} KM</span>
                     </div>
-                    <div className="text-3xl font-black text-white mt-2">
-                      {routeCalculations.roadKm} <span className="text-sm text-amber-200">KM</span>
-                    </div>
-                    <div className="text-xs font-bold text-emerald-300 mt-1">
-                      Time: ~{routeCalculations.busMins} mins
+
+                    {/* 4 CALCULATED MODE TILES (BUS, CAR, BICYCLE, WALK) */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      
+                      {/* Bus Mode */}
+                      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
+                        <div className="flex items-center justify-between text-amber-300 text-xs font-black uppercase">
+                          <span className="flex items-center gap-1.5">
+                            <Bus className="w-4 h-4" />
+                            <span>School Bus</span>
+                          </span>
+                          <span className="text-[10px] bg-amber-400 text-stone-950 px-2 py-0.5 rounded font-black">~35 km/h</span>
+                        </div>
+                        <div className="text-3xl font-black text-white mt-2">
+                          {routeCalculations.roadKm} <span className="text-sm text-amber-200">KM</span>
+                        </div>
+                        <div className="text-xs font-bold text-emerald-300 mt-1">
+                          Time: ~{routeCalculations.busMins} mins
+                        </div>
+                      </div>
+
+                      {/* Car Mode */}
+                      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
+                        <div className="flex items-center justify-between text-cyan-300 text-xs font-black uppercase">
+                          <span className="flex items-center gap-1.5">
+                            <Car className="w-4 h-4" />
+                            <span>Car / Taxi</span>
+                          </span>
+                          <span className="text-[10px] bg-cyan-400 text-stone-950 px-2 py-0.5 rounded font-black">~45 km/h</span>
+                        </div>
+                        <div className="text-3xl font-black text-white mt-2">
+                          {routeCalculations.roadKm} <span className="text-sm text-cyan-200">KM</span>
+                        </div>
+                        <div className="text-xs font-bold text-emerald-300 mt-1">
+                          Time: ~{routeCalculations.carMins} mins
+                        </div>
+                      </div>
+
+                      {/* Bicycle Mode */}
+                      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
+                        <div className="flex items-center justify-between text-yellow-300 text-xs font-black uppercase">
+                          <span className="flex items-center gap-1.5">
+                            <Bike className="w-4 h-4" />
+                            <span>Bicycle</span>
+                          </span>
+                          <span className="text-[10px] bg-yellow-400 text-stone-950 px-2 py-0.5 rounded font-black">~15 km/h</span>
+                        </div>
+                        <div className="text-3xl font-black text-white mt-2">
+                          {routeCalculations.roadKm} <span className="text-sm text-yellow-200">KM</span>
+                        </div>
+                        <div className="text-xs font-bold text-emerald-300 mt-1">
+                          Time: ~{routeCalculations.bikeMins} mins
+                        </div>
+                      </div>
+
+                      {/* Walking Mode */}
+                      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
+                        <div className="flex items-center justify-between text-pink-300 text-xs font-black uppercase">
+                          <span className="flex items-center gap-1.5">
+                            <Footprints className="w-4 h-4" />
+                            <span>Kid Walking</span>
+                          </span>
+                          <span className="text-[10px] bg-pink-400 text-stone-950 px-2 py-0.5 rounded font-black">~4 km/h</span>
+                        </div>
+                        <div className="text-3xl font-black text-white mt-2">
+                          {routeCalculations.roadKm} <span className="text-sm text-pink-200">KM</span>
+                        </div>
+                        <div className="text-xs font-bold text-emerald-300 mt-1">
+                          Time: ~{routeCalculations.walkMins} mins
+                        </div>
+                      </div>
+
                     </div>
                   </div>
-
-                  {/* Car Mode */}
-                  <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
-                    <div className="flex items-center justify-between text-cyan-300 text-xs font-black uppercase">
-                      <span className="flex items-center gap-1.5">
-                        <Car className="w-4 h-4" />
-                        <span>Car / Taxi</span>
-                      </span>
-                      <span className="text-[10px] bg-cyan-400 text-stone-950 px-2 py-0.5 rounded font-black">~45 km/h</span>
-                    </div>
-                    <div className="text-3xl font-black text-white mt-2">
-                      {routeCalculations.roadKm} <span className="text-sm text-cyan-200">KM</span>
-                    </div>
-                    <div className="text-xs font-bold text-emerald-300 mt-1">
-                      Time: ~{routeCalculations.carMins} mins
-                    </div>
-                  </div>
-
-                  {/* Bicycle Mode */}
-                  <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
-                    <div className="flex items-center justify-between text-yellow-300 text-xs font-black uppercase">
-                      <span className="flex items-center gap-1.5">
-                        <Bike className="w-4 h-4" />
-                        <span>Bicycle</span>
-                      </span>
-                      <span className="text-[10px] bg-yellow-400 text-stone-950 px-2 py-0.5 rounded font-black">~15 km/h</span>
-                    </div>
-                    <div className="text-3xl font-black text-white mt-2">
-                      {routeCalculations.roadKm} <span className="text-sm text-yellow-200">KM</span>
-                    </div>
-                    <div className="text-xs font-bold text-emerald-300 mt-1">
-                      Time: ~{routeCalculations.bikeMins} mins
-                    </div>
-                  </div>
-
-                  {/* Walking Mode */}
-                  <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
-                    <div className="flex items-center justify-between text-pink-300 text-xs font-black uppercase">
-                      <span className="flex items-center gap-1.5">
-                        <Footprints className="w-4 h-4" />
-                        <span>Kid Walking</span>
-                      </span>
-                      <span className="text-[10px] bg-pink-400 text-stone-950 px-2 py-0.5 rounded font-black">~4 km/h</span>
-                    </div>
-                    <div className="text-3xl font-black text-white mt-2">
-                      {routeCalculations.roadKm} <span className="text-sm text-pink-200">KM</span>
-                    </div>
-                    <div className="text-xs font-bold text-emerald-300 mt-1">
-                      Time: ~{routeCalculations.walkMins} mins
-                    </div>
-                  </div>
-
-                </div>
+                )}
 
                 {/* THE GIANT "GO TO DAV KHABRA" ACTION BUTTON (OPENS GOOGLE MAPS NAVIGATION) */}
                 <div className="pt-4 flex flex-col items-center justify-center">
@@ -1028,8 +1058,44 @@ export function KidsFunNavigatorSection({ user }) {
                   </a>
                 </div>
 
-                {/* Driver Contact */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Route Stops Timeline */}
+                {activeBusFleetData.stops && activeBusFleetData.stops.length > 0 && (
+                  <div>
+                    <div className="text-xs font-black uppercase text-amber-300 mb-3 flex items-center justify-between">
+                      <span>Live Route Stops Schedule:</span>
+                      <span className="text-[11px] font-bold text-slate-400">
+                        {activeBusFleetData.stops.filter(s => s.completed).length} of {activeBusFleetData.stops.length} Stops Reached
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+                      {activeBusFleetData.stops.map((stop, idx) => (
+                        <div
+                          key={idx}
+                          className={`p-3 rounded-2xl border transition ${
+                            stop.completed
+                              ? 'bg-emerald-950/60 border-emerald-500 text-emerald-200'
+                              : stop.isNext
+                              ? 'bg-amber-400 text-stone-950 font-black border-white shadow-lg ring-2 ring-amber-300'
+                              : stop.isFinal
+                              ? 'bg-blue-900/40 border-blue-400 text-blue-200'
+                              : 'bg-stone-950 border-slate-800 text-slate-400'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between text-[10px] font-black uppercase">
+                            <span>{stop.completed ? '✓ Passed' : stop.isNext ? '⚡ NEXT STOP' : stop.isFinal ? '🏫 SCHOOL' : `Stop ${idx + 1}`}</span>
+                            <span>{stop.time}</span>
+                          </div>
+                          <div className="text-xs font-bold mt-1 line-clamp-2">
+                            {stop.name}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Driver Contact & Fun Horn Button */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="bg-stone-950 p-4 rounded-2xl border border-slate-800 flex items-center justify-between">
                     <div>
                       <div className="text-[10px] uppercase font-bold text-slate-400">DAV Driver</div>
@@ -1038,7 +1104,8 @@ export function KidsFunNavigatorSection({ user }) {
                     </div>
                     <a
                       href={`tel:${activeBusFleetData.driverPhone.replace(/\s+/g, '')}`}
-                      className="p-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white"
+                      className="p-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer shadow-md"
+                      title="Call Driver"
                     >
                       <PhoneCall className="w-4 h-4" />
                     </a>
@@ -1052,10 +1119,26 @@ export function KidsFunNavigatorSection({ user }) {
                     </div>
                     <a
                       href={`tel:${activeBusFleetData.attendantPhone.replace(/\s+/g, '')}`}
-                      className="p-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white"
+                      className="p-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white cursor-pointer shadow-md"
+                      title="Call Attendant"
                     >
                       <PhoneCall className="w-4 h-4" />
                     </a>
+                  </div>
+
+                  <div className="bg-stone-950 p-4 rounded-2xl border border-slate-800 flex items-center justify-between">
+                    <div>
+                      <div className="text-[10px] uppercase font-bold text-amber-300">Safety & Horn</div>
+                      <div className="text-xs font-bold text-emerald-400">{activeBusFleetData.kidsOnboard || 38}/{activeBusFleetData.totalCapacity || 42} Kids Onboard</div>
+                      <div className="text-[10px] text-slate-400">✓ CCTV • Speed: 40 km/h max</div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => playFx('horn')}
+                      className="px-3 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs flex items-center gap-1 shadow cursor-pointer active:scale-95 transition"
+                    >
+                      <span>📢 Honk!</span>
+                    </button>
                   </div>
                 </div>
 
@@ -1086,20 +1169,45 @@ export function KidsFunNavigatorSection({ user }) {
                   </p>
                 </div>
 
-                <button
-                  onClick={() => {
-                    playFx('pop');
-                    if (locationPermissionStatus === 'granted' && liveGpsCoords) {
-                      fetchLiveWeather(liveGpsCoords.lat, liveGpsCoords.lng, 'My Live Current Area');
-                    } else {
-                      fetchLiveWeather(26.073, 85.373, 'Khabra, Muzaffarpur');
-                    }
-                  }}
-                  className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 border border-white/30 cursor-pointer"
-                >
-                  <RefreshCw className={`w-3.5 h-3.5 ${weatherLoading ? 'animate-spin' : ''}`} />
-                  <span>Refresh Weather</span>
-                </button>
+                <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-white/20">
+                  <span className="text-xs font-black uppercase text-cyan-200">Quick City Switcher:</span>
+                  {[
+                    { name: 'Khabra, Muzaffarpur', lat: 26.073, lng: 85.373, emoji: '🏫' },
+                    { name: 'Patna City', lat: 25.609, lng: 85.123, emoji: '🏛️' },
+                    { name: 'Darbhanga', lat: 26.152, lng: 85.897, emoji: '🏰' },
+                    { name: 'New Delhi', lat: 28.613, lng: 77.209, emoji: '🇮🇳' }
+                  ].map((city, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        fetchLiveWeather(city.lat, city.lng, city.name);
+                        playFx('pop');
+                      }}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer border ${
+                        weatherCityName === city.name
+                          ? 'bg-amber-400 text-stone-950 font-black border-white shadow-md'
+                          : 'bg-white/10 hover:bg-white/20 text-white border-white/20'
+                      }`}
+                    >
+                      <span>{city.emoji} {city.name}</span>
+                    </button>
+                  ))}
+                  {locationPermissionStatus === 'granted' && liveGpsCoords && (
+                    <button
+                      onClick={() => {
+                        fetchLiveWeather(liveGpsCoords.lat, liveGpsCoords.lng, 'My Live Current Area');
+                        playFx('pop');
+                      }}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer border ${
+                        weatherCityName === 'My Live Current Area'
+                          ? 'bg-emerald-400 text-stone-950 font-black border-white shadow-md'
+                          : 'bg-emerald-950/60 text-emerald-200 border-emerald-400/50'
+                      }`}
+                    >
+                      <span>📍 My Exact GPS</span>
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Weather Display Card */}
