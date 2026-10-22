@@ -150,6 +150,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
   const [pendingMedia, setPendingMedia] = useState(null);
   const fileInputRef = useRef(null);
   const recognitionRef = useRef(null);
+  const baseInputRef = useRef('');
   const [loading, setLoading] = useState(false);
   const [apiKey, setApiKey] = useState('');
   const [showKeyConfig, setShowKeyConfig] = useState(false);
@@ -224,6 +225,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
         recognitionRef.current.stop();
       }
       setIsListening(false);
+      baseInputRef.current = '';
       return;
     }
 
@@ -233,35 +235,52 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
       recognition.continuous = true;
       recognition.interimResults = true;
 
+      baseInputRef.current = input;
+
       recognition.onstart = () => {
         setIsListening(true);
       };
 
       recognition.onresult = (event) => {
-        let transcript = '';
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript;
+        let finalTranscript = '';
+        let interimTranscript = '';
+
+        for (let i = 0; i < event.results.length; i++) {
+          const item = event.results[i];
+          if (item.isFinal) {
+            finalTranscript += item[0].transcript + ' ';
+          } else {
+            interimTranscript += item[0].transcript;
+          }
         }
-        if (transcript.trim()) {
-          setInput(prev => {
-            const clean = prev.trim();
-            return clean ? `${clean} ${transcript.trim()}` : transcript.trim();
-          });
+
+        const combinedSpoken = (finalTranscript + interimTranscript).trim();
+        const base = baseInputRef.current ? baseInputRef.current.trim() : '';
+
+        if (base && combinedSpoken) {
+          setInput(`${base} ${combinedSpoken}`);
+        } else if (combinedSpoken) {
+          setInput(combinedSpoken);
         }
       };
 
-      recognition.onerror = () => {
+      recognition.onerror = (e) => {
+        console.warn('Speech recognition error:', e?.error);
         setIsListening(false);
+        baseInputRef.current = '';
       };
 
       recognition.onend = () => {
         setIsListening(false);
+        baseInputRef.current = '';
       };
 
       recognitionRef.current = recognition;
       recognition.start();
     } catch (err) {
+      console.warn('Speech recognition start failed:', err);
       setIsListening(false);
+      baseInputRef.current = '';
     }
   };
 
