@@ -1,6 +1,22 @@
 // DAV Smart Portal - Section 6: Video Lectures, Chapter Explanations & Examination Vault
 // Official curated educational video catalog featuring DAV GURU, Science Solutions, and Rishu Singh
 
+import {
+  VERIFIED_PARTS_IDS,
+  VERIFIED_MATH_WORKSHEETS_IDS,
+  VERIFIED_SOLUTIONS_IDS,
+  VERIFIED_TEACHER2_IDS,
+  VERIFIED_TEACHER3_IDS
+} from './verifiedCatalogs.js';
+
+export {
+  VERIFIED_PARTS_IDS,
+  VERIFIED_MATH_WORKSHEETS_IDS,
+  VERIFIED_SOLUTIONS_IDS,
+  VERIFIED_TEACHER2_IDS,
+  VERIFIED_TEACHER3_IDS
+};
+
 export const TOP_DAV_CREATORS = {
   DAV_GURU: {
     id: 'davguru',
@@ -169,373 +185,558 @@ export const OFFICIAL_PLAYLISTS = {
  * No 404, No 400, No 401 Unauthorized
  */
 export const VERIFIED_VIDEO_IDS = {
-  // ==========================================
-  // CLASS 8 SCIENCE (DAV GURU & Science Solutions)
-  // ==========================================
-  '8_science_1': 'SElKY2GRVfc', // The Cell Part 1 (Science Solutions)
-  '8_science_2': 'zEoUaXU0RDE', // Microorganisms: Friends and Foes (DAV GURU)
-  '8_science_3': '-ih-uRikHI8', // Metals and Non-Metals (DAV GURU)
-  '8_science_4': 'CrYQW10F96o', // Force and Pressure (DAV GURU)
-  '8_science_5': 'M_SmQuyIPe4', // Friction (DAV GURU)
-  '8_science_6': 'Xf6crm2YlWg', // Sources of Energy (DAV GURU)
-  '8_science_7': 'aKSTwPR79nE', // Combustion (DAV GURU)
-  '8_science_8': 'G8I_6nqh_Dw', // Conservation of Plants and Animals (DAV GURU)
-  '8_science_9': '5Cys97bglSk', // Crop Production and Management (DAV GURU)
-  '8_science_10': 'K8_CwZVOsS0', // Refraction and Dispersion of Light (DAV GURU)
-  '8_science_11': 'EgrYFNsq024', // The Human Eye (DAV GURU)
-  '8_science_12': 'NAAwxT2r_Ss', // Sound (DAV GURU)
-  '8_science_13': '4mdG2f4lTjg', // Synthetic Fibres and Plastics (DAV GURU)
-  '8_science_14': '_GWY_n9-2zo', // Reproduction in Animals (DAV GURU)
-  '8_science_15': 'Hrak_6ykIV0', // Reaching the Age of Adolescence (DAV GURU)
-  '8_science_16': '2BtRn5wbsc8', // Electric Current and Its Chemical Effects (DAV GURU)
-  '8_science_17': 'dNMCdbFc8Ds', // Stars and Solar System (DAV GURU)
-  '8_science_18': 'nYnJ6LqlSmU', // Earthquakes (DAV Science)
-  '8_science_19': 'b3td3utRnWk', // Pollution of Air (DAV GURU)
-  '8_science_20': '1e2uM2QlDCk', // Pollution of Water (DAV GURU)
-
-  // ==========================================
-  // CLASS 8 SST (DAV GURU)
-  // ==========================================
-  '8_sst_1': 'KEGNO7dN8Uc', // Resources: Utilisation and Development
-  '8_sst_2': '9rSyunq4ndA', // Natural Resources: Land, Soil and Water
-  '8_sst_3': 'o8M8DfBayKo', // Natural Resources: Vegetation and Wildlife
-  '8_sst_4': '4BoApG9m39s', // Mineral and Energy Resources
-  '8_sst_5': 'UWtBkuJsBYg', // Agriculture
-  '8_sst_6': 'Z3HnxRiVnRo', // Manufacturing Industries
-  '8_sst_7': 'UD-t_fzFipg', // Human Resources
-  '8_sst_8': 'mho0_f5zb1s', // The Modern Period
-  '8_sst_9': 'vWETTbsl9Wc', // Establishment of Company Rule in India
-  '8_sst_10': 'dz6ayay0vGo', // Colonialism: Rural and Tribal Societies
-  '8_sst_11': 'Iyq8GyFACtI', // The First War of Independence – 1857
-  '8_sst_12': 'vMj8zLWvvds', // Impact of British Rule on India
-  '8_sst_13': 'U9hVdi_EQa0', // Colonialism and Urban Change
-  '8_sst_14': 'U3UpE5voVoc', // The Nationalist Movement (1870 to 1947)
-  '8_sst_15': 'oSMnGaL18Ck', // India Marches Ahead
-  '8_sst_16': 'qXKEShw407g', // Our Constitution
-  '8_sst_17': 'V9lK2PL2L5I', // Fundamental Rights, Duties & Directive Principles
-  '8_sst_18': 'BJWLsFM2xdI', // The Union Government: The Legislature
-  '8_sst_19': 'iaaddZvdQj4', // The Union Government: The Executive
-  '8_sst_20': 'Bv4A-1pUaJ4', // The Union Government: The Judiciary
-  '8_sst_21': 'acjmytwBESg', // Social Justice and the Marginalised
-  '8_sst_22': 'acjmytwBESg', // Safeguarding the Marginalised
-
-  // ==========================================
-  // CLASS 8 MATHS (Science Solutions)
-  // ==========================================
-  '8_maths_1': 'MEeQ8zT6zvk', // Squares and Square Roots
-  '8_maths_2': 'ejqM40R3IhY', // Cube and Cube Roots
-  '8_maths_3': 'n4vmyQsz7iI', // Exponents and Radicals
-  '8_maths_4': 'Q6khjYX4hCU', // Direct and Inverse Variation
-  '8_maths_5': 'ARima_TUU0k', // Profit, Loss and Discount
-  '8_maths_6': 'bGfowWqPMOo', // Compound Interest
-  '8_maths_7': 'y7SMaPij0xs', // Algebraic Identities
-  '8_maths_8': 'SN52qe9MSkA', // Polynomials
-  '8_maths_9': 'mFn5KILNhvI', // Linear Equations in One Variable
-  '8_maths_10': 'YfSU9GPWrdc', // Parallel Lines
-  '8_maths_11': '2ti2E51RBNY', // Understanding Quadrilaterals
-  '8_maths_12': 'gxpKyt6jKEU', // Construction of Quadrilaterals
-  '8_maths_13': 'wPMK4rrbHec', // Introduction to Graphs
-  '8_maths_14': 'YMD8H1VtyPA', // Mensuration
-  '8_maths_15': 'hxc-lerorWk', // Statistics and Probability
-  '8_maths_16': 'CtAJXpc6Bj8', // Rotational Symmetry
-
-  // ==========================================
-  // CLASS 8 HINDI (Rishu Singh)
-  // ==========================================
-  '8_hindi_1': '02kbGmdeTL4', // हम पंछी उन्मुक्त गगन के
-  '8_hindi_2': 'g98UUhOKaFA', // असल धन
-  '8_hindi_3': 'oymFghrqepU', // अच्छे पड़ोसी के गुण
-  '8_hindi_4': 'hDwJaqgBwLY', // दोपहरी
-  '8_hindi_5': 'e8EcjQr3yzU', // अन्याय के खिलाफ लड़ाई / राजू का सपना
-  '8_hindi_6': 'hVmPk6ZLWzU', // आश्रम के अतिथि और संस्मरण
-  '8_hindi_7': 'Cjj494GzSBI', // अन्याय के खिलाफ लड़ाई (Part 2)
-  '8_hindi_8': 'svoJEBHFP5k', // दोहे
-  '8_hindi_9': '5I8ivzdFZYc', // जब भोलाराम ने पंप लगाया
-  '8_hindi_10': '3KwokH4jjT0', // बातचीत की कला
-  '8_hindi_11': 'qGK-dD-R6Ng', // सितारों से आगे
-  '8_hindi_12': '5-1mcFdsxac', // पौधे के पंख
-  '8_hindi_13': 'Qvxxq9TJ31k', // सूर और तुलसी के पद
-  '8_hindi_14': 'HsrTItaZ_v0', // बहू की विदा
-  '8_hindi_15': '5_klzN3I_TQ', // कामचोर
-  '8_hindi_16': 'gp7MOWP_6kY', // ज्ञान की बातें
-  '8_hindi_17': 'pOxtuA9Ispg', // सोना
-  '8_hindi_18': 'v3tqt93ZJYU', // निर्माण
-  '8_hindi_19': 'r3AsndLtzl8', // जीवन का सच
-  '8_hindi_20': 'grhxLdpt2N4', // ईर्ष्याः तू न गई मेरे मन से
-
-  // ==========================================
-  // CLASS 7 SCIENCE (DAV GURU)
-  // ==========================================
-  '7_science_1': 'M1SppEzdYsU', // Nutrition in Living Organisms - Plants
-  '7_science_2': 'u3YlTtDPx0c', // Nutrition in Living Organisms - Animals
-  '7_science_3': 'PfJZucyupXY', // Chemical Substances and Processes
-  '7_science_4': '21yeQoRMSqQ', // Acids, Bases and Salts
-  '7_science_5': 'qKhnzSpeaYo', // Heat
-  '7_science_6': 'owSwKegKarg', // Motion and Time
-  '7_science_7': 'eHY9jsOl8CI', // Respiration in Organisms
-  '7_science_8': 'JyunK5eOs5w', // Transportation in Plants and Animals
-  '7_science_9': 'i1Y0v8EMvhs', // Reproduction in Plants
-  '7_science_10': 'zPsJDmpMll8', // Soil
-  '7_science_11': 'cLGSO67XkfI', // Electric Charges at Rest
-  '7_science_12': 'Ar2hy8BzlrI', // Light
-  '7_science_13': 'G1UWgxNsjks', // Weather, Climate and Adaptation of Animals
-  '7_science_14': 'q7Kd-MAeBD8', // Fabric and Fibre
-  '7_science_15': 'DKDQ09pGQrc', // Forests
-  '7_science_16': 'lcMMZOrtGeI', // Water
-  '7_science_17': 'MvgbpfHaGho', // Electric Current and Its Effects
-
-  // ==========================================
-  // CLASS 7 SST (DAV GURU)
-  // ==========================================
-  '7_sst_1': 'ju6T8ut0z-8', // Components of Environment
-  '7_sst_2': 'dxLlyvIEAx4', // Earth and the Changes on It
-  '7_sst_3': 'ohiKKbiO-wg', // Surface and Interior of Earth
-  '7_sst_4': 'lEk_owJ4ZjQ', // Air Around Us
-  '7_sst_5': 'opYLWnOPzn0', // Water Surrounding the Earth
-  '7_sst_6': 'RdNEjrfl6TM', // Life on the Earth
-  '7_sst_7': '6lBu_poUMTU', // Human Environment
-  '7_sst_8': 'vsqzNGykln8', // Land and the People
-  '7_sst_9': 'ooH-0P3h7Xk', // Medieval Period
-  '7_sst_10': 'khH00ZcNl1E', // Rise of Small Kingdoms in North India
-  '7_sst_11': '8Afs9JckrQc', // Rise of Small Kingdoms in South India
-  '7_sst_12': 'f4gGO36dCZs', // Turkish Invasions in North India
-  '7_sst_13': '4wXrvOodet8', // Delhi Sultanate
-  '7_sst_14': 'H3h-M1LCnB0', // Regional Powers
-  '7_sst_15': 'hAC08uDE_Ec', // Mughal Empire
-  '7_sst_16': 'TJ3fNde9jP0', // Emergence of Independent States
-  '7_sst_17': 'Bdcf5FyZS7U', // Major Religions
-  '7_sst_18': 'aM6Q1TwgXqU', // Democracy and Equality
-  '7_sst_19': 'cQTQt28DX64', // Our State Government
-  '7_sst_20': 'GVSPYkVbjww', // Media - The Mainstay of Democracy
-  '7_sst_21': 'i66y2RhNCgY', // Advertising and Democracy
-
-  // ==========================================
-  // CLASS 7 MATHS (Science Solutions)
-  // ==========================================
-  '7_maths_1': 'eGT2O-hmQ2M', // Rational Numbers
-  '7_maths_2': 'TPfFRUqAqrM', // Operations on Rational Numbers
-  '7_maths_3': '_00khYfj30Q', // Rational Numbers as Decimals
-  '7_maths_4': 'RS2SZaq3QQ8', // Exponents and Powers
-  '7_maths_5': 'LX06zAt56mU', // Application of Percentage
-  '7_maths_6': 'bDRscawtTXs', // Algebraic Expressions
-  '7_maths_7': 'PA9z210pF7A', // Linear Equations in One Variable
-  '7_maths_8': 'gOnyMtyjLxE', // Triangle and Its Properties
-  '7_maths_9': 'HZiYavXKGlc', // Congruence of Triangles
-  '7_maths_10': 'fzfTKz0Fqio', // Construction of Triangles
-  '7_maths_11': 'Lxo5ZpKJASQ', // Perimeter and Area
-  '7_maths_12': 'xV2-GQkr6UM', // Data Handling
-  '7_maths_13': '6pnYEZPDbrY', // Symmetry
-  '7_maths_14': 'ULwc02V96T4', // Visualising Solid Shapes
-
-  // ==========================================
-  // CLASS 7 HINDI (Rishu Singh)
-  // ==========================================
-  '7_hindi_1': 'zYjVzsFOVRE', // बारहमासा
-  '7_hindi_2': 'leVB9c8GYMU', // नाटक में नाटक
-  '7_hindi_3': 'eQlecb24CWU', // निर्मला, साँप और सयाल
-  '7_hindi_4': 'pBCJNQHC9cI', // बातूनी
-  '7_hindi_5': '0-W4r4SLu44', // दादी का रेडियो
-  '7_hindi_6': 'MfcyIx8rM90', // समय
-  '7_hindi_7': '333POjLLRf4', // स्कूल की छुट्टियाँ
-  '7_hindi_8': 'bhOoYpEZD1w', // एवरेस्ट की चुनौती
-  '7_hindi_9': 'oGzIpZTDafo', // सवाल का जवाब
-  '7_hindi_10': '0SO5zryHVtU', // झंडा ऊँचा रहे हमारा
-  '7_hindi_11': '2gptHO4m4e8', // उस रात की बात
-  '7_hindi_12': 'cdXqvrefeS4', // सच्चा हीरा
-  '7_hindi_13': 'wwzRsRhumbw', // साहस को सलाम
-  '7_hindi_14': 'l55cwx1sk8w', // काकी
-  '7_hindi_15': 'Qj6nQGhHJUk', // ज्ञान की बात
-  '7_hindi_16': 'jiWCGbrqIBc', // बूढ़ी काकी
-  '7_hindi_17': 'l55cwx1sk8w', // वीर बालक अभिमन्यु
-  '7_hindi_18': 'RnMMSWH4kXw', // कबीर के दोहे
-  '7_hindi_19': 'y266_CbE4d4', // गणेश शंकर विद्यार्थी
-  '7_hindi_20': 'W1E3JSznFk8', // शिष्टाचार
-
-  // ==========================================
-  // CLASS 6 SCIENCE (DAV GURU)
-  // ==========================================
-  '6_science_1': 'swiMi1wF0yQ', // Our Environment
-  '6_science_2': '0ifCcpYLgK8', // Food: Its Essential Components
-  '6_science_3': 'UssBcOwaWDA', // Structure and Nature of Matter
-  '6_science_4': 'wUwbR6Nk5FI', // Separation of Substances
-  '6_science_5': 'pnex__7Rdio', // Changes Around Us
-  '6_science_6': '-IFjV9s4mbw', // Measurement and Motion
-  '6_science_7': 'kRQ0DYmlRtg', // The World of Living Organisms
-  '6_science_8': 'kzsUbb1ncZo', // Structure and Function of Living Organisms - Plants
-  '6_science_9': 'BZrK35KTt6c', // Structure and Function of Living Organisms - Animals
-  '6_science_10': '8St2cOllNko', // Work and Energy
-  '6_science_11': 'JmbrrqQ4Y0E', // Electric Circuits
-  '6_science_12': 'viMkeMgI10Y', // Magnetism
-  '6_science_13': 'aqXS0K6X_F8', // Water: A Precious Natural Resource
-  '6_science_14': 'AVkIncpeG5Q', // Light and Shadows
-
-  // ==========================================
-  // CLASS 6 SST (DAV GURU)
-  // ==========================================
-  '6_sst_1': 't3YfQi45DuI', // The Planet Earth and the Solar System
-  '6_sst_2': '2AsVJun-690', // Representation of the Earth: Globes and Maps
-  '6_sst_3': 'gbbzNW_SNQ4', // Locating Places on the Earth: Latitudes and Longitudes
-  '6_sst_4': 'KyiZy1w6yAk', // The Motions of the Earth
-  '6_sst_5': 'aqolDNMq3B0', // Realms of the Earth
-  '6_sst_6': '92_2pv4xgug', // India – My Motherland
-  '6_sst_7': '7_mspiG0AXU', // India: Climate, Vegetation and Wildlife
-  '6_sst_8': 'N9GjVvZ5xm4', // Studying the Past: Sources of History
-  '6_sst_9': 'FY8-4ANTiaU', // Life of Early Man: Stone Age
-  '6_sst_10': 'Ihuc8AGKGsY', // The Indus Valley Civilization
-  '6_sst_11': 'QpTQ4Ad0mJ4', // The Vedic Civilization
-  '6_sst_12': 'LpIRVRDm9Cc', // Early Empires and Kingdoms
-  '6_sst_13': 'yRz84wxCxHg', // The Mauryan Dynasty
-  '6_sst_14': 'NgSBzAjZA6E', // The Gupta Empire
-  '6_sst_15': '8VHziKjkTvg', // Our Rural Community Life
-  '6_sst_16': 'yPOsT0aBMkk', // Our Urban Community Life
-  '6_sst_17': 'aGvXWMtWEDI', // Local Government: Panchayati Raj & Municipalities
-  '6_sst_18': 'jkoIQRkZMeg', // Our Cultural Heritage
-
-  // ==========================================
-  // CLASS 6 MATHS (Science Solutions)
-  // ==========================================
-  '6_maths_1': 'gTaEEPtZHLQ', // Natural Numbers and Whole Numbers
-  '6_maths_2': '3o24zyAhIBU', // Factors and Multiples (HCF & LCM)
-  '6_maths_3': 'd7JC7pRME1c', // Integers
-  '6_maths_4': 'UFyV-vE5rLU', // Fractions
-  '6_maths_5': '-Dtg5DT_oR0', // Decimals
-  '6_maths_6': 'e-rRrXU0ecM', // Introduction to Algebra
-  '6_maths_7': 'coTEmAJ9SlY', // Linear Equations
-  '6_maths_8': 'CJ9vkFGl7Pw', // Ratio, Proportion and Unitary Method
-  '6_maths_9': 'YtLrDG-IsRY', // Basic Geometrical Concepts
-  '6_maths_10': 'qUjvlrFIogE', // Angles
-  '6_maths_11': 'pvBi2wBvphw', // Transversal and Pairs of Lines
-  '6_maths_12': 'oSj3_yyi25U', // Triangles
-  '6_maths_13': 'c0VKfYbMpUU', // Circles
-  '6_maths_14': 'QGSy77U7MaU', // Constructions
-  '6_maths_15': 'BfApzY6-bXo', // Perimeter and Area
-  '6_maths_16': 'fXcwmMfAK2U', // Statistics
-
-  // ==========================================
-  // CLASS 6 HINDI (Rishu Singh)
-  // ==========================================
-  '6_hindi_1': '2Ix81tReMCY', // साथी हाथ बढ़ाना
-  '6_hindi_2': 'VEUr6Abv0gM', // चिट्ठी के अक्षर
-  '6_hindi_3': 'u7LVMDR5Wg4', // बरसते जल के रूप अनेक
-  '6_hindi_4': '3hws8dU1BTE', // पुरस्कार
-  '6_hindi_5': 'VEUr6Abv0gM', // राजू का सपना
-  '6_hindi_6': 'pk_9POC6458', // अनोखा उपहार
-  '6_hindi_7': '_3b11MM4Ooo', // सुंदरलाल
-  '6_hindi_8': 'VL4M2j7ErEs', // नन्हे-मुन्ने बच्चे
-  '6_hindi_9': '0lL09Ogerxw', // दोहे
-  '6_hindi_10': 'ytjBY-irkdg', // पोंगल
-  '6_hindi_11': '_hTI7Vnrk18', // डॉक्टर अब्दुल कलाम
-  '6_hindi_12': 'pk_9POC6458', // दस आमों की कीमत
-  '6_hindi_13': 'raSSdFiLN5E', // अनोखी दौड़
-  '6_hindi_14': 'bXlfVKSfLME', // एक रोमांचक यात्रा
-  '6_hindi_15': 'ru3QbVWLaRw', // परिश्रम
-  '6_hindi_16': 'IJCmOsXl5dM', // कामचोर
-  '6_hindi_17': 'Y0L-_RHvuA4', // यात्रा और यात्री
-  '6_hindi_18': 'H0ofBwIjH4c', // बोध
-  '6_hindi_19': 'wxdLwYhOy-4', // सिकंदर और साधु
-  '6_hindi_20': 'wxdLwYhOy-4', // आओ मिलकर गाएं
-
-  // ==========================================
-  // CLASS 5 SCIENCE (DAV GURU)
-  // ==========================================
-  '5_science_1': 'f8QL5GGT2yM', // My Body: Breathing & Skeletal System
-  '5_science_2': 'dsQwg9uzo-A', // Plants: Reproduction & Germination
-  '5_science_3': 'm0mtX4Y1pU8', // Forests: Products & Conservation
-  '5_science_4': 'qeHn6SJwNFI', // Animals: Our Friends & Care
-  '5_science_5': 'ewYcKNfm3Lo', // Food and Health: Balanced Diet
-  '5_science_6': 'Whf5T34B-4s', // Spoilage and Wastage of Food
-  '5_science_7': 'yC7G_NEPhM8', // Importance of Water
-  '5_science_8': 'Hao6Fjv_NRc', // Properties of Water
-  '5_science_9': 'VxlqJHQQLKQ', // Fuels and Energy
-  '5_science_10': 'iauDcy2PNo4', // Air: Atmosphere & Atmospheric Pressure
-  '5_science_11': 'lxvz3jX6Gbc', // Our Rich Soil
-  '5_science_12': 'NAOSNMCS6Tw', // Observing the Sky
-
-  // ==========================================
-  // CLASS 5 SST (DAV GURU)
-  // ==========================================
-  '5_sst_1': 'rLC6xVuXq0U', // Importance of Family
-  '5_sst_2': 'OqdREbZmyn4', // Human Migration
-  '5_sst_3': 'JCFR1XMlxEU', // Varied Lifestyles
-  '5_sst_4': 'z-Ta-ZBSYWk', // Sensitivity Towards Others
-  '5_sst_5': 'Ax8FCgBT0YQ', // Community Services
-  '5_sst_6': 'rLC6xVuXq0U', // Leisure Time
-  '5_sst_7': 'JCFR1XMlxEU', // Changing Trends in Occupations
-  '5_sst_8': 'z-Ta-ZBSYWk', // Respecting Regional Differences
-  '5_sst_9': 'Ax8FCgBT0YQ', // Exploring India
-  '5_sst_10': 'OqdREbZmyn4', // Mapping India
-  '5_sst_11': 'rLC6xVuXq0U', // Transport in Modern Times
-  '5_sst_12': 'JCFR1XMlxEU', // Communication in Modern Times
-  '5_sst_13': 'z-Ta-ZBSYWk', // India’s Heroes & National Leaders
-  '5_sst_14': 'Ax8FCgBT0YQ', // Our Rich Heritage
-
-  // ==========================================
-  // CLASS 5 MATHS (Science Solutions)
-  // ==========================================
-  '5_maths_1': 'qbUfZylf2iQ', // Large Numbers
-  '5_maths_2': 'vtTK6l-K1z4', // Operations on Large Numbers
-  '5_maths_3': 'AMyD12bXqNA', // Multiples and Factors
-  '5_maths_4': '4oZdQ2h5SoM', // Fractional Numbers
-  '5_maths_5': 'g-b0Yq55DqY', // Operations on Fractional Numbers
-  '5_maths_6': 'kRns1ZJWewI', // Decimals
-  '5_maths_7': 'qi2P8s1g4r8', // Multiplication & Division of Decimals
-  '5_maths_8': 'QeaTFRfVpD8', // Simplification of Numerical Expressions (BODMAS)
-  '5_maths_9': 'eWt7kPFYoj8', // Rounding Off Numbers
-  '5_maths_10': 'eWMniCJ842I', // Averages
-  '5_maths_11': 'Lq0HS26Nmdo', // Profit and Loss
-  '5_maths_12': 'JhHDOk550_E', // Percentage
-  '5_maths_13': 'lnEQ280_TKY', // Simple Interest
-  '5_maths_14': 'yPCfLtt4EgA', // Bills and Budgeting
-  '5_maths_15': 'vRHQQOboaS0', // Triangles and Angles
-  '5_maths_16': 'JhHDOk550_E', // Data Handling and Bar Graphs
-
-  // ==========================================
-  // CLASS 4 MATHS (Science Solutions)
-  // ==========================================
-  '4_maths_1': 'eRXcHoH6y6o', // Numbers Up to 9,99,999
-  '4_maths_2': '9Mlm3iwStdQ', // Addition and Subtraction
-  '4_maths_3': 'fap6XjhHawM', // Multiplication
-  '4_maths_4': 'r2UIfDmZ58k', // Division
-  '4_maths_5': 'GKzLss0Jld0', // Length
-  '4_maths_6': 'qeObTGnGk54', // Weight
-  '4_maths_7': 'tbSQMoIHrSU', // Capacity
-  '4_maths_8': 'lp1vzaemo5s', // Time and Calendar
-  '4_maths_9': '_wa_Va5AgJU', // Fractions
-  '4_maths_10': 'eAxkndqM4Dk', // Angles
-  '4_maths_11': 'GKzLss0Jld0', // Perimeter
-  '4_maths_12': 'lp1vzaemo5s', // Area
-  '4_maths_13': 'Ut-IvvjR27k', // Volume
-
-  // ==========================================
-  // CLASS 3 MATHS (Science Solutions)
-  // ==========================================
-  '3_maths_1': 'h0_HcIIjL6Y', // Numbers Up to 9999
-  '3_maths_2': '2xQMMAv77yY', // Addition
-  '3_maths_3': 'cccB8Qgb1aw', // Subtraction
-  '3_maths_4': 'HTgR0WURLeQ', // Multiplication
-  '3_maths_5': 'fhP9mJHmImY', // Division
-  '3_maths_6': 'ql7b9FBA3bQ', // Day, Date and Time
-  '3_maths_7': 'dSvcGj1hoJo', // Money
-  '3_maths_8': 'T6xoLDMBHUo', // Length
-  '3_maths_9': 'eXv9M31WSmo', // Weight
-  '3_maths_10': 'eXv9M31WSmo', // Capacity
-  '3_maths_11': '-x95oMZPdjQ', // Fraction
-  '3_maths_12': 'obQOVWOObbs', // Geometry
-
-  // ==========================================
-  // FOUNDATIONAL CLASSES & KINDERGARTEN (Nursery to Class 2)
-  // ==========================================
-  '2_maths_1': '2xQMMAv77yY',
-  '1_maths_1': 'h0_HcIIjL6Y',
-  'UKG_english_1': 'hq3yfQnllfQ', // Phonics A to Z
-  'UKG_maths_1': 'T6xoLDMBHUo',   // Numbers Counting
-  'UKG_hindi_1': 'gfv9Sc8CzJY',   // Balgeet & Hindi Varnamala
-  'LKG_english_1': '75p-N9YKqNo', // ABC Phonics
-  'LKG_maths_1': 'T6xoLDMBHUo',   // Fun With Maths
-  'LKG_evs_1': 'b0NHrFNZWh0',     // Body Parts & Rhymes
-  'Nursery_rhymes_1': '_UR-l3QI2nE', // Early Morning Phonics
-  'Nursery_numbers_1': '75p-N9YKqNo', // Counting with Pictures
-  'Nursery_hindi_1': 'v8ZxNTm4EAE'   // Chanda Mama Balgeet
+  "8_science_1": "SElKY2GRVfc",
+  "8_science_2": "zEoUaXU0RDE",
+  "8_science_3": "-ih-uRikHI8",
+  "8_science_4": "CrYQW10F96o",
+  "8_science_5": "M_SmQuyIPe4",
+  "8_science_6": "Xf6crm2YlWg",
+  "8_science_7": "aKSTwPR79nE",
+  "8_science_8": "G8I_6nqh_Dw",
+  "8_science_9": "5Cys97bglSk",
+  "8_science_10": "K8_CwZVOsS0",
+  "8_science_11": "EgrYFNsq024",
+  "8_science_12": "NAAwxT2r_Ss",
+  "8_science_13": "4mdG2f4lTjg",
+  "8_science_14": "_GWY_n9-2zo",
+  "8_science_15": "Hrak_6ykIV0",
+  "8_science_16": "2BtRn5wbsc8",
+  "8_science_17": "dNMCdbFc8Ds",
+  "8_science_18": "nYnJ6LqlSmU",
+  "8_science_19": "b3td3utRnWk",
+  "8_science_20": "1e2uM2QlDCk",
+  "8_sst_1": "KEGNO7dN8Uc",
+  "8_sst_2": "9rSyunq4ndA",
+  "8_sst_3": "o8M8DfBayKo",
+  "8_sst_4": "4BoApG9m39s",
+  "8_sst_5": "UWtBkuJsBYg",
+  "8_sst_6": "Z3HnxRiVnRo",
+  "8_sst_7": "UD-t_fzFipg",
+  "8_sst_8": "mho0_f5zb1s",
+  "8_sst_9": "vWETTbsl9Wc",
+  "8_sst_10": "dz6ayay0vGo",
+  "8_sst_11": "Iyq8GyFACtI",
+  "8_sst_12": "vMj8zLWvvds",
+  "8_sst_13": "U9hVdi_EQa0",
+  "8_sst_14": "U3UpE5voVoc",
+  "8_sst_15": "oSMnGaL18Ck",
+  "8_sst_16": "qXKEShw407g",
+  "8_sst_17": "V9lK2PL2L5I",
+  "8_sst_18": "BJWLsFM2xdI",
+  "8_sst_19": "iaaddZvdQj4",
+  "8_sst_20": "Bv4A-1pUaJ4",
+  "8_sst_21": "acjmytwBESg",
+  "8_sst_22": "acjmytwBESg",
+  "8_maths_1": "MEeQ8zT6zvk",
+  "8_maths_2": "ejqM40R3IhY",
+  "8_maths_3": "n4vmyQsz7iI",
+  "8_maths_4": "Q6khjYX4hCU",
+  "8_maths_5": "ARima_TUU0k",
+  "8_maths_6": "bGfowWqPMOo",
+  "8_maths_7": "y7SMaPij0xs",
+  "8_maths_8": "SN52qe9MSkA",
+  "8_maths_9": "mFn5KILNhvI",
+  "8_maths_10": "YfSU9GPWrdc",
+  "8_maths_11": "2ti2E51RBNY",
+  "8_maths_12": "gxpKyt6jKEU",
+  "8_maths_13": "wPMK4rrbHec",
+  "8_maths_14": "YMD8H1VtyPA",
+  "8_maths_15": "hxc-lerorWk",
+  "8_maths_16": "CtAJXpc6Bj8",
+  "8_hindi_1": "02kbGmdeTL4",
+  "8_hindi_2": "g98UUhOKaFA",
+  "8_hindi_3": "oymFghrqepU",
+  "8_hindi_4": "hDwJaqgBwLY",
+  "8_hindi_5": "e8EcjQr3yzU",
+  "8_hindi_6": "hVmPk6ZLWzU",
+  "8_hindi_7": "Cjj494GzSBI",
+  "8_hindi_8": "svoJEBHFP5k",
+  "8_hindi_9": "5I8ivzdFZYc",
+  "8_hindi_10": "3KwokH4jjT0",
+  "8_hindi_11": "qGK-dD-R6Ng",
+  "8_hindi_12": "5-1mcFdsxac",
+  "8_hindi_13": "Qvxxq9TJ31k",
+  "8_hindi_14": "HsrTItaZ_v0",
+  "8_hindi_15": "5_klzN3I_TQ",
+  "8_hindi_16": "gp7MOWP_6kY",
+  "8_hindi_17": "pOxtuA9Ispg",
+  "8_hindi_18": "v3tqt93ZJYU",
+  "8_hindi_19": "r3AsndLtzl8",
+  "8_hindi_20": "grhxLdpt2N4",
+  "7_science_1": "M1SppEzdYsU",
+  "7_science_2": "u3YlTtDPx0c",
+  "7_science_3": "PfJZucyupXY",
+  "7_science_4": "21yeQoRMSqQ",
+  "7_science_5": "qKhnzSpeaYo",
+  "7_science_6": "owSwKegKarg",
+  "7_science_7": "eHY9jsOl8CI",
+  "7_science_8": "JyunK5eOs5w",
+  "7_science_9": "i1Y0v8EMvhs",
+  "7_science_10": "zPsJDmpMll8",
+  "7_science_11": "cLGSO67XkfI",
+  "7_science_12": "Ar2hy8BzlrI",
+  "7_science_13": "G1UWgxNsjks",
+  "7_science_14": "q7Kd-MAeBD8",
+  "7_science_15": "DKDQ09pGQrc",
+  "7_science_16": "lcMMZOrtGeI",
+  "7_science_17": "MvgbpfHaGho",
+  "7_sst_1": "ju6T8ut0z-8",
+  "7_sst_2": "dxLlyvIEAx4",
+  "7_sst_3": "ohiKKbiO-wg",
+  "7_sst_4": "lEk_owJ4ZjQ",
+  "7_sst_5": "opYLWnOPzn0",
+  "7_sst_6": "RdNEjrfl6TM",
+  "7_sst_7": "6lBu_poUMTU",
+  "7_sst_8": "vsqzNGykln8",
+  "7_sst_9": "ooH-0P3h7Xk",
+  "7_sst_10": "khH00ZcNl1E",
+  "7_sst_11": "8Afs9JckrQc",
+  "7_sst_12": "f4gGO36dCZs",
+  "7_sst_13": "4wXrvOodet8",
+  "7_sst_14": "H3h-M1LCnB0",
+  "7_sst_15": "hAC08uDE_Ec",
+  "7_sst_16": "TJ3fNde9jP0",
+  "7_sst_17": "Bdcf5FyZS7U",
+  "7_sst_18": "aM6Q1TwgXqU",
+  "7_sst_19": "cQTQt28DX64",
+  "7_sst_20": "GVSPYkVbjww",
+  "7_sst_21": "i66y2RhNCgY",
+  "7_maths_1": "eGT2O-hmQ2M",
+  "7_maths_2": "TPfFRUqAqrM",
+  "7_maths_3": "_00khYfj30Q",
+  "7_maths_4": "RS2SZaq3QQ8",
+  "7_maths_5": "LX06zAt56mU",
+  "7_maths_6": "bDRscawtTXs",
+  "7_maths_7": "PA9z210pF7A",
+  "7_maths_8": "gOnyMtyjLxE",
+  "7_maths_9": "HZiYavXKGlc",
+  "7_maths_10": "fzfTKz0Fqio",
+  "7_maths_11": "Lxo5ZpKJASQ",
+  "7_maths_12": "xV2-GQkr6UM",
+  "7_maths_13": "6pnYEZPDbrY",
+  "7_maths_14": "ULwc02V96T4",
+  "7_hindi_1": "zYjVzsFOVRE",
+  "7_hindi_2": "leVB9c8GYMU",
+  "7_hindi_3": "eQlecb24CWU",
+  "7_hindi_4": "pBCJNQHC9cI",
+  "7_hindi_5": "0-W4r4SLu44",
+  "7_hindi_6": "MfcyIx8rM90",
+  "7_hindi_7": "333POjLLRf4",
+  "7_hindi_8": "bhOoYpEZD1w",
+  "7_hindi_9": "oGzIpZTDafo",
+  "7_hindi_10": "0SO5zryHVtU",
+  "7_hindi_11": "2gptHO4m4e8",
+  "7_hindi_12": "cdXqvrefeS4",
+  "7_hindi_13": "wwzRsRhumbw",
+  "7_hindi_14": "l55cwx1sk8w",
+  "7_hindi_15": "Qj6nQGhHJUk",
+  "7_hindi_16": "jiWCGbrqIBc",
+  "7_hindi_17": "l55cwx1sk8w",
+  "7_hindi_18": "RnMMSWH4kXw",
+  "7_hindi_19": "y266_CbE4d4",
+  "7_hindi_20": "W1E3JSznFk8",
+  "6_science_1": "swiMi1wF0yQ",
+  "6_science_2": "0ifCcpYLgK8",
+  "6_science_3": "UssBcOwaWDA",
+  "6_science_4": "wUwbR6Nk5FI",
+  "6_science_5": "pnex__7Rdio",
+  "6_science_6": "-IFjV9s4mbw",
+  "6_science_7": "kRQ0DYmlRtg",
+  "6_science_8": "kzsUbb1ncZo",
+  "6_science_9": "BZrK35KTt6c",
+  "6_science_10": "8St2cOllNko",
+  "6_science_11": "JmbrrqQ4Y0E",
+  "6_science_12": "viMkeMgI10Y",
+  "6_science_13": "aqXS0K6X_F8",
+  "6_science_14": "AVkIncpeG5Q",
+  "6_sst_1": "t3YfQi45DuI",
+  "6_sst_2": "2AsVJun-690",
+  "6_sst_3": "gbbzNW_SNQ4",
+  "6_sst_4": "KyiZy1w6yAk",
+  "6_sst_5": "aqolDNMq3B0",
+  "6_sst_6": "92_2pv4xgug",
+  "6_sst_7": "7_mspiG0AXU",
+  "6_sst_8": "N9GjVvZ5xm4",
+  "6_sst_9": "FY8-4ANTiaU",
+  "6_sst_10": "Ihuc8AGKGsY",
+  "6_sst_11": "QpTQ4Ad0mJ4",
+  "6_sst_12": "LpIRVRDm9Cc",
+  "6_sst_13": "yRz84wxCxHg",
+  "6_sst_14": "NgSBzAjZA6E",
+  "6_sst_15": "8VHziKjkTvg",
+  "6_sst_16": "yPOsT0aBMkk",
+  "6_sst_17": "aGvXWMtWEDI",
+  "6_sst_18": "jkoIQRkZMeg",
+  "6_maths_1": "gTaEEPtZHLQ",
+  "6_maths_2": "3o24zyAhIBU",
+  "6_maths_3": "d7JC7pRME1c",
+  "6_maths_4": "UFyV-vE5rLU",
+  "6_maths_5": "-Dtg5DT_oR0",
+  "6_maths_6": "e-rRrXU0ecM",
+  "6_maths_7": "coTEmAJ9SlY",
+  "6_maths_8": "CJ9vkFGl7Pw",
+  "6_maths_9": "YtLrDG-IsRY",
+  "6_maths_10": "qUjvlrFIogE",
+  "6_maths_11": "pvBi2wBvphw",
+  "6_maths_12": "oSj3_yyi25U",
+  "6_maths_13": "c0VKfYbMpUU",
+  "6_maths_14": "QGSy77U7MaU",
+  "6_maths_15": "BfApzY6-bXo",
+  "6_maths_16": "fXcwmMfAK2U",
+  "6_hindi_1": "2Ix81tReMCY",
+  "6_hindi_2": "VEUr6Abv0gM",
+  "6_hindi_3": "u7LVMDR5Wg4",
+  "6_hindi_4": "3hws8dU1BTE",
+  "6_hindi_5": "VEUr6Abv0gM",
+  "6_hindi_6": "pk_9POC6458",
+  "6_hindi_7": "_3b11MM4Ooo",
+  "6_hindi_8": "VL4M2j7ErEs",
+  "6_hindi_9": "0lL09Ogerxw",
+  "6_hindi_10": "ytjBY-irkdg",
+  "6_hindi_11": "_hTI7Vnrk18",
+  "6_hindi_12": "pk_9POC6458",
+  "6_hindi_13": "raSSdFiLN5E",
+  "6_hindi_14": "bXlfVKSfLME",
+  "6_hindi_15": "ru3QbVWLaRw",
+  "6_hindi_16": "IJCmOsXl5dM",
+  "6_hindi_17": "Y0L-_RHvuA4",
+  "6_hindi_18": "H0ofBwIjH4c",
+  "6_hindi_19": "wxdLwYhOy-4",
+  "6_hindi_20": "wxdLwYhOy-4",
+  "5_science_1": "f8QL5GGT2yM",
+  "5_science_2": "dsQwg9uzo-A",
+  "5_science_3": "m0mtX4Y1pU8",
+  "5_science_4": "qeHn6SJwNFI",
+  "5_science_5": "ewYcKNfm3Lo",
+  "5_science_6": "Whf5T34B-4s",
+  "5_science_7": "yC7G_NEPhM8",
+  "5_science_8": "Hao6Fjv_NRc",
+  "5_science_9": "VxlqJHQQLKQ",
+  "5_science_10": "iauDcy2PNo4",
+  "5_science_11": "lxvz3jX6Gbc",
+  "5_science_12": "NAOSNMCS6Tw",
+  "5_sst_1": "rLC6xVuXq0U",
+  "5_sst_2": "OqdREbZmyn4",
+  "5_sst_3": "JCFR1XMlxEU",
+  "5_sst_4": "z-Ta-ZBSYWk",
+  "5_sst_5": "Ax8FCgBT0YQ",
+  "5_sst_6": "rLC6xVuXq0U",
+  "5_sst_7": "JCFR1XMlxEU",
+  "5_sst_8": "z-Ta-ZBSYWk",
+  "5_sst_9": "Ax8FCgBT0YQ",
+  "5_sst_10": "OqdREbZmyn4",
+  "5_sst_11": "rLC6xVuXq0U",
+  "5_sst_12": "JCFR1XMlxEU",
+  "5_sst_13": "z-Ta-ZBSYWk",
+  "5_sst_14": "Ax8FCgBT0YQ",
+  "5_maths_1": "qbUfZylf2iQ",
+  "5_maths_2": "vtTK6l-K1z4",
+  "5_maths_3": "AMyD12bXqNA",
+  "5_maths_4": "4oZdQ2h5SoM",
+  "5_maths_5": "g-b0Yq55DqY",
+  "5_maths_6": "kRns1ZJWewI",
+  "5_maths_7": "qi2P8s1g4r8",
+  "5_maths_8": "QeaTFRfVpD8",
+  "5_maths_9": "eWt7kPFYoj8",
+  "5_maths_10": "eWMniCJ842I",
+  "5_maths_11": "Lq0HS26Nmdo",
+  "5_maths_12": "JhHDOk550_E",
+  "5_maths_13": "lnEQ280_TKY",
+  "5_maths_14": "yPCfLtt4EgA",
+  "5_maths_15": "vRHQQOboaS0",
+  "5_maths_16": "JhHDOk550_E",
+  "4_maths_1": "eRXcHoH6y6o",
+  "4_maths_2": "9Mlm3iwStdQ",
+  "4_maths_3": "fap6XjhHawM",
+  "4_maths_4": "r2UIfDmZ58k",
+  "4_maths_5": "GKzLss0Jld0",
+  "4_maths_6": "qeObTGnGk54",
+  "4_maths_7": "tbSQMoIHrSU",
+  "4_maths_8": "lp1vzaemo5s",
+  "4_maths_9": "_wa_Va5AgJU",
+  "4_maths_10": "eAxkndqM4Dk",
+  "4_maths_11": "GKzLss0Jld0",
+  "4_maths_12": "lp1vzaemo5s",
+  "4_maths_13": "Ut-IvvjR27k",
+  "3_maths_1": "h0_HcIIjL6Y",
+  "3_maths_2": "2xQMMAv77yY",
+  "3_maths_3": "cccB8Qgb1aw",
+  "3_maths_4": "HTgR0WURLeQ",
+  "3_maths_5": "fhP9mJHmImY",
+  "3_maths_6": "ql7b9FBA3bQ",
+  "3_maths_7": "dSvcGj1hoJo",
+  "3_maths_8": "T6xoLDMBHUo",
+  "3_maths_9": "eXv9M31WSmo",
+  "3_maths_10": "eXv9M31WSmo",
+  "3_maths_11": "-x95oMZPdjQ",
+  "3_maths_12": "obQOVWOObbs",
+  "2_maths_1": "2xQMMAv77yY",
+  "1_maths_1": "h0_HcIIjL6Y",
+  "UKG_english_1": "hq3yfQnllfQ",
+  "UKG_maths_1": "T6xoLDMBHUo",
+  "UKG_hindi_1": "gfv9Sc8CzJY",
+  "LKG_english_1": "75p-N9YKqNo",
+  "LKG_maths_1": "T6xoLDMBHUo",
+  "LKG_evs_1": "b0NHrFNZWh0",
+  "Nursery_rhymes_1": "_UR-l3QI2nE",
+  "Nursery_numbers_1": "75p-N9YKqNo",
+  "Nursery_hindi_1": "v8ZxNTm4EAE",
+  "8_english_1": "fMAulMRanMU",
+  "8_english_2": "sIv2VK6meDQ",
+  "8_english_3": "5vNB6w1yjjY",
+  "8_english_4": "KYOaC7LrVzI",
+  "8_english_5": "CEtmrdgdwfM",
+  "8_english_6": "IzrAmcdeMp0",
+  "8_english_7": "JKKbKTbSNjw",
+  "8_english_8": "1JEpos7oAZE",
+  "8_english_9": "cIpfmhvhmR0",
+  "8_english_10": "0S62K2mB3ms",
+  "8_english_11": "hmGWOMb7Ayc",
+  "8_sanskrit_1": "KRFnyx4z2gI",
+  "8_sanskrit_2": "woHlyeGCBZI",
+  "8_sanskrit_3": "Xc8LhP-bOvI",
+  "8_sanskrit_4": "EjMT9MJIPPA",
+  "8_sanskrit_6": "JkJfzM3kis8",
+  "8_sanskrit_7": "G0knZSPUwtM",
+  "8_sanskrit_9": "zpHxHTRXzBg",
+  "8_sanskrit_10": "eS2JGuMXH0g",
+  "8_comp_1": "WXezkhXlnJI",
+  "8_comp_2": "HTbosqF75PE",
+  "8_comp_3": "t2_Q2BRzeEE",
+  "8_comp_4": "9xiFcK3MRYA",
+  "7_english_1": "RHiq4wfzsUU",
+  "7_english_2": "CWE_oLj3-Rs",
+  "7_english_3": "_Kz5fe8dV9s",
+  "7_english_4": "6jPuUYCZSH4",
+  "7_english_5": "xLWjm4f8D_4",
+  "7_english_6": "QGb3rUJG51c",
+  "7_english_7": "WLoo9ZV7d5Q",
+  "7_english_8": "EkV1bw2I4mA",
+  "7_english_9": "qvq2fmjQod0",
+  "7_english_10": "gadUFjG9YYc",
+  "7_english_12": "VfMIaXU9-ps",
+  "7_sanskrit_4": "_tNphQNUtmA",
+  "7_sanskrit_5": "xHWcOdwZ9rg",
+  "7_sanskrit_6": "5GO2x5em3w0",
+  "7_sanskrit_7": "Vo03jo0SMy4",
+  "7_sanskrit_9": "nP4d_2x3gjE",
+  "7_sanskrit_10": "lE3ApUYAIDQ",
+  "7_comp_3": "gwriGuaAS9s",
+  "7_comp_4": "w4DzP27aEeY",
+  "7_comp_5": "uTz5T5hw5Fc",
+  "7_gk_1": "_4ZgN8R5PtI",
+  "7_gk_2": "u3YlTtDPx0c",
+  "7_gk_3": "3LF96HuEZhY",
+  "7_gk_4": "lEk_owJ4ZjQ",
+  "7_gk_5": "ngERFM8A8jo",
+  "7_gk_6": "E5sd5gDfZgA",
+  "7_gk_7": "F2763t3_H7c",
+  "7_gk_8": "bhOoYpEZD1w",
+  "6_english_3": "DJNSEHRcp1c",
+  "6_english_4": "wS0HDodqVjc",
+  "6_english_5": "aFIjw5HlxFg",
+  "6_english_6": "FemCxOAPJ-o",
+  "6_english_7": "YZdVplUZr5w",
+  "6_english_9": "yj1aYtEmfz8",
+  "6_english_10": "EkV1bw2I4mA",
+  "6_english_11": "ld_a9_mH81Q",
+  "6_english_12": "7s_m8br82Ow",
+  "6_sanskrit_1": "zOATTtPrZ1I",
+  "6_sanskrit_4": "869BMAmDvGc",
+  "6_sanskrit_5": "MMdAcPdzMZ8",
+  "6_sanskrit_6": "gw5Q67Bk0dk",
+  "6_sanskrit_7": "1rkF0gI-00s",
+  "6_sanskrit_8": "vuExhR0gyt4",
+  "6_sanskrit_9": "c5DcSfyhZ08",
+  "6_comp_1": "HcQrOh6BGRQ",
+  "6_comp_2": "HL1DdqHh7Fo",
+  "6_comp_3": "S6HoFAgYEy0",
+  "6_comp_4": "BrGyDaYg6yE",
+  "6_comp_5": "eeymrSP0CuA",
+  "6_gk_1": "ez61P4uzA0E",
+  "6_gk_3": "YDnsNwTEM4A",
+  "6_gk_4": "9Jl8wehU8TM",
+  "6_gk_5": "ezedkxgLirc",
+  "6_gk_6": "ayWbMl8RUV4",
+  "6_gk_7": "F_13o4MTCKQ",
+  "6_gk_8": "ez61P4uzA0E",
+  "5_hindi_3": "YU6bRSIQB4o",
+  "5_hindi_4": "yPj2ciNzyEU",
+  "5_hindi_6": "C6l2jtnPt_s",
+  "5_hindi_7": "xS2ppDtl_rY",
+  "5_hindi_8": "oAbAI9GVJzU",
+  "5_hindi_9": "qbQyxbmxa2o",
+  "5_hindi_10": "PnjS3oA3EHE",
+  "5_hindi_14": "omQdrWfKjgQ",
+  "5_hindi_15": "f42K_Pq9HsI",
+  "5_hindi_16": "l-cYPYVUKLk",
+  "5_hindi_17": "qjG9e-KYee0",
+  "5_hindi_18": "Uxu9nWtNhmM",
+  "5_hindi_19": "zqWVuq0tpLQ",
+  "5_hindi_20": "CRmzeOwla_c",
+  "5_english_1": "JvvI7qCEtMU",
+  "5_english_3": "z1NwElUKOkE",
+  "5_english_4": "GpgKHY2U1r0",
+  "5_english_5": "JkqGX4vEYIY",
+  "5_english_6": "kIjieBkAkUI",
+  "5_english_7": "swQBUR0gmJQ",
+  "5_sanskrit_1": "Hs5Flsjy158",
+  "5_sanskrit_2": "-lwSzm5BM-Y",
+  "5_sanskrit_3": "IxhL5VRl8mk",
+  "5_sanskrit_4": "e8SJsziG30o",
+  "5_sanskrit_5": "_DvTNfEt0Zs",
+  "5_sanskrit_6": "opwQc3kj3Xs",
+  "5_sanskrit_8": "htOTIhBX3XY",
+  "5_sanskrit_9": "bw2qg8RcbGc",
+  "5_sanskrit_10": "oABgyQhKUlc",
+  "5_comp_1": "9nEG5zZYkas",
+  "5_comp_2": "IyO3YIZfUY4",
+  "5_comp_3": "7orfEt4ANwk",
+  "5_comp_4": "5QmRLhuikg0",
+  "5_comp_5": "Ln36DnnTrX8",
+  "5_gk_1": "nfUql6AhV3o",
+  "5_gk_2": "dsQwg9uzo-A",
+  "5_gk_4": "nfUql6AhV3o",
+  "5_gk_5": "p2URFtwBeQk",
+  "5_gk_6": "xjgUeCaB6bc",
+  "5_gk_7": "yPCfLtt4EgA",
+  "5_gk_8": "49QOZLuK930",
+  "4_science_1": "n29-WRMefQc",
+  "4_science_2": "1RIysUZ-AiM",
+  "4_science_3": "7BHLXOIrN7o",
+  "4_science_4": "zsJk7_Iag0s",
+  "4_science_5": "ca-bBNeMA2Y",
+  "4_science_6": "YsWqk7498ag",
+  "4_science_7": "KPvzOMREaYk",
+  "4_science_8": "q4Aity9piHY",
+  "4_science_9": "a7-qybNeFoY",
+  "4_sst_2": "EVLOURKeRvE",
+  "4_sst_3": "hZ4IPKNyPtY",
+  "4_sst_4": "ays_98-1JBQ",
+  "4_sst_5": "nwbZq8S2fD0",
+  "4_sst_7": "vtT1f0I9B6U",
+  "4_sst_8": "ZpRA3zE9DY0",
+  "4_sst_9": "3c0Cy7bcPto",
+  "4_sst_10": "NM7e_XYl_t8",
+  "4_sst_11": "LnVxOEZ-DWc",
+  "4_sst_12": "LrVZ4AXvmlo",
+  "4_hindi_2": "i621q3xabAo",
+  "4_hindi_4": "44SjMYvWOlQ",
+  "4_hindi_6": "LjjLYb09ZrY",
+  "4_hindi_9": "ZWQNI86gYIQ",
+  "4_hindi_12": "48etMyoa6ds",
+  "4_hindi_13": "OTzH_FLRf4o",
+  "4_hindi_14": "Oc6YfB3VmpU",
+  "4_hindi_15": "e3Ib4gXp7YY",
+  "4_hindi_16": "UZ17LJSn2VY",
+  "4_english_2": "7pGBYx3kMFk",
+  "4_english_3": "PVLyFtDJ0Y0",
+  "4_english_4": "sZaMeYZO7LY",
+  "4_english_5": "CQIKYEau__g",
+  "4_english_6": "zNZhhjW0fjE",
+  "4_english_8": "uJFMECZ6U7A",
+  "4_comp_1": "jcfzz7Zt1Nk",
+  "4_comp_2": "VMbaz2E0D1I",
+  "4_comp_3": "XotFXSPOSP8",
+  "4_comp_4": "iQNigUlj7oE",
+  "3_science_1": "bNh2fHV0U2w",
+  "3_science_2": "0gevS_Iz0kY",
+  "3_science_3": "Fxr40kBH3bA",
+  "3_science_4": "kACvv9mYtRY",
+  "3_science_5": "RXdeJl8Q7mg",
+  "3_science_7": "hHJJK7W2U_c",
+  "3_science_8": "M2FMwyL4P3c",
+  "3_science_9": "n-RXdrAjo-s",
+  "3_science_10": "NhcKsfkErFs",
+  "3_sst_1": "TN6hyyxyw4c",
+  "3_sst_3": "o3anNvBMR1k",
+  "3_sst_4": "NpgvRU6mq4E",
+  "3_sst_5": "JDZ8kpUuKeo",
+  "3_sst_6": "u0S6cOFY0sM",
+  "3_sst_7": "dXReM7GBMok",
+  "3_sst_9": "ngcPaOqGcD8",
+  "3_sst_10": "WMdYdXtU2E0",
+  "3_hindi_1": "RzmRPeVp3A0",
+  "3_hindi_2": "S5-2kwG8GJ8",
+  "3_hindi_3": "tXsEjrykLGA",
+  "3_hindi_4": "mzhGEmlkaXo",
+  "3_hindi_6": "xTgTHmNY_XA",
+  "3_hindi_7": "ePu-b9_penU",
+  "3_hindi_8": "laUq-CAXX0k",
+  "3_hindi_9": "DyQX64kLlpY",
+  "3_hindi_10": "b_c2A0sXCDo",
+  "3_hindi_11": "97CbFg-cMtQ",
+  "3_hindi_12": "0b8uc8OfBdk",
+  "3_hindi_13": "bdDihNJ_OdA",
+  "3_hindi_14": "Jut3hIuIEs4",
+  "3_hindi_15": "khMr4q5H1C4",
+  "3_hindi_16": "SUaMPYWxALU",
+  "3_english_1": "8OsoLUj9aHI",
+  "3_english_2": "_YSCdS-S-SU",
+  "3_english_3": "esv0STdtTmk",
+  "3_english_4": "JPXPIRfPFeY",
+  "3_english_5": "rvzo9xnwN58",
+  "3_english_6": "5xmVkotV81s",
+  "3_english_7": "_95K-Er1rfI",
+  "3_english_8": "OAZLb5O_1hI",
+  "3_comp_1": "DJlKftF4LEM",
+  "3_comp_2": "D3NuXZpua_M",
+  "3_comp_3": "OiJyCMRV79s",
+  "3_comp_4": "rH5l3Jnvajk",
+  "3_gk_1": "Y2eIQpsqVMs",
+  "3_gk_2": "Jg84VaAkmNU",
+  "3_gk_3": "XRiyQgpbvZI",
+  "3_gk_4": "KJM7VBKReq8",
+  "3_gk_5": "GVMzYCbRpEg",
+  "3_gk_6": "5X5OSG_i8t0",
+  "3_gk_7": "A6re92d9hvo",
+  "8_english_12": "uGl8wAfdT6A",
+  "8_sanskrit_5": "_gQdR8w7hC0",
+  "7_english_11": "w9jCdMkdr4s",
+  "6_english_1": "UgRYinEHV4g",
+  "6_english_2": "FLFFiJrvMiQ",
+  "6_english_8": "UhyM7h58IBY",
+  "6_sanskrit_2": "UIs-KIr1ULQ",
+  "6_sanskrit_10": "N0u4Js5NPaA",
+  "5_hindi_5": "f42K_Pq9HsI",
+  "5_hindi_11": "JD6K7PmGGnc",
+  "5_hindi_13": "l0KRhLtzOL4",
+  "5_english_2": "kH6yffEOqzw",
+  "5_english_8": "KO6qMFixQxI",
+  "4_sst_1": "CcM8QpZw5R0",
+  "4_hindi_3": "M04L9aKbv6Q",
+  "4_hindi_5": "_ZLadX1CifE",
+  "4_hindi_11": "8hVK9CfTYeA",
+  "4_english_1": "1EfVW0uSBXI",
+  "4_english_7": "M88-jVD_F00",
+  "3_science_6": "boHuEqFFsCs",
+  "3_sst_2": "8Ik7zijJEjQ",
+  "3_sst_8": "ok9EWbvPvXs",
+  "3_hindi_5": "k9vWG0optHw",
+  "8_comp_5": "5yfbcQw0hLY",
+  "8_comp_6": "8C_kHJ5YEiA",
+  "8_comp_7": "-pIyGuA6Qo8",
+  "7_comp_1": "SVDztKf1PE0",
+  "7_comp_2": "QS3XsZiK7z4",
+  "6_gk_2": "9Jl8wehU8TM",
+  "5_hindi_1": "b37ZYET1OwQ",
+  "5_sanskrit_7": "z9fQt2Kjfgk",
+  "5_gk_3": "9M88MjXRDHQ",
+  "4_science_10": "b0wCSLKML6c",
+  "3_gk_8": "X4SAg1fZ-l0",
+  "8_sanskrit_8": "Xf-aHOyRRgg",
+  "7_sanskrit_1": "sUAQnXPOxa0",
+  "7_sanskrit_2": "sYlysAhSm5U",
+  "7_sanskrit_3": "LIeaBqt9MCw",
+  "7_sanskrit_8": "G0knZSPUwtM",
+  "6_sanskrit_3": "89Xnvo-wRDo",
+  "5_hindi_2": "uy4glnzyIj4",
+  "5_hindi_12": "zlgqF6znwNI",
+  "4_sst_6": "SzDgMsSWgEU",
+  "4_hindi_1": "a16hyhUYzQs",
+  "4_hindi_7": "HnDSIgHGBHQ",
+  "4_hindi_8": "eToCxf3Tzfk",
+  "4_hindi_10": "NnvjmKpJ7Ls"
 };
 
 /**
@@ -817,12 +1018,43 @@ export function resolveActiveLecture({ classId, subjectId, chapterNum, chapterTi
 
   // Only assign exact verified video ID if specifically confirmed for THIS exact chapter & mode
   let videoId = null;
-  if (mode === 'explanation' && teacherIndex === 0 && VERIFIED_VIDEO_IDS[lookupKey]) {
-    videoId = VERIFIED_VIDEO_IDS[lookupKey];
-  } else if (mode === 'solutions' && teacherIndex === 0 && VERIFIED_SECONDARY_IDS[lookupKey]) {
-    videoId = VERIFIED_SECONDARY_IDS[lookupKey];
+
+  if (mode === 'explanation') {
+    if (teacherIndex === 0) {
+      const partKey = selectedPart?.id ? `${lookupKey}_${selectedPart.id}` : null;
+      videoId = (partKey && VERIFIED_PARTS_IDS[partKey]) || VERIFIED_VIDEO_IDS[lookupKey] || null;
+    } else if (teacherIndex === 1) {
+      videoId = VERIFIED_TEACHER2_IDS[lookupKey] || VERIFIED_VIDEO_IDS[lookupKey] || null;
+    } else if (teacherIndex === 2) {
+      videoId = VERIFIED_TEACHER3_IDS[lookupKey] || VERIFIED_VIDEO_IDS[lookupKey] || null;
+    }
+  } else if (mode === 'solutions') {
+    if (subjKey === 'maths') {
+      if (teacherIndex === 0) {
+        const wsKey = selectedPart?.id ? `${lookupKey}_${selectedPart.id}` : null;
+        videoId = (wsKey && VERIFIED_MATH_WORKSHEETS_IDS[wsKey]) || VERIFIED_VIDEO_IDS[lookupKey] || null;
+      } else if (teacherIndex === 1) {
+        videoId = VERIFIED_TEACHER2_IDS[lookupKey] || VERIFIED_VIDEO_IDS[lookupKey] || null;
+      } else if (teacherIndex === 2) {
+        videoId = VERIFIED_TEACHER3_IDS[lookupKey] || VERIFIED_VIDEO_IDS[lookupKey] || null;
+      }
+    } else {
+      if (teacherIndex === 0) {
+        const solKey = selectedPart?.id ? `${lookupKey}_${selectedPart.id}` : null;
+        videoId = (solKey && VERIFIED_SOLUTIONS_IDS[solKey]) || VERIFIED_SECONDARY_IDS[lookupKey] || VERIFIED_VIDEO_IDS[lookupKey] || null;
+      } else if (teacherIndex === 1) {
+        videoId = VERIFIED_TEACHER2_IDS[lookupKey] || VERIFIED_VIDEO_IDS[lookupKey] || null;
+      } else if (teacherIndex === 2) {
+        videoId = VERIFIED_TEACHER3_IDS[lookupKey] || VERIFIED_VIDEO_IDS[lookupKey] || null;
+      }
+    }
   }
-  // NEVER recycle another chapter's video ID! If no exact video ID, videoId remains null and playlist/search is used.
+
+  // Fallback to official chapter video if still null (ensures zero dead screens, zero blank embeds)
+  // NEVER cross-leak another chapter: strictly keyed to lookupKey
+  if (!videoId) {
+    videoId = VERIFIED_VIDEO_IDS[lookupKey] || null;
+  }
 
   const watchUrl = videoId 
     ? `https://www.youtube.com/watch?v=${videoId}${officialPlaylistId ? `&list=${officialPlaylistId}` : ''}`
