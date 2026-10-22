@@ -16,111 +16,172 @@ export const DAV_KHABRA_COORDINATES = {
   directionsBaseUrl: 'https://www.google.com/maps/dir/?api=1&destination=492F%2B563,+Khabra,+Muzaffarpur,+Bihar+843113&travelmode=driving&dir_action=navigate'
 };
 
-// Popular preset locations in Muzaffarpur & Bihar
+// Popular 5 exact selective places in Muzaffarpur requested by user
 export const PRESET_STARTING_LOCATIONS = [
   {
-    id: 'muz_brahmpura',
-    name: 'Brahmpura / Maa Tara Biryani (NH-22)',
-    area: 'NH-22 Corridor, Muzaffarpur',
-    lat: 26.1080,
-    lng: 85.3680,
-    roadKm: 4.1,
-    busMins: 10,
-    carMins: 8,
-    bikeMins: 18,
-    walkMins: 50,
-    emoji: '🛣️'
-  },
-  {
-    id: 'muz_station',
-    name: 'Muzaffarpur Railway Junction',
-    area: 'Station Road, Muzaffarpur',
-    lat: 26.1226,
-    lng: 85.3906,
-    roadKm: 7.5,
-    busMins: 18,
-    carMins: 14,
-    bikeMins: 24,
-    walkMins: 90,
-    emoji: '🚆'
-  },
-  {
-    id: 'zero_mile',
-    name: 'Zero Mile Chowk',
-    area: 'NH-28 Intersection, Muzaffarpur',
-    lat: 26.1310,
-    lng: 85.4120,
-    roadKm: 6.8,
-    busMins: 15,
-    carMins: 12,
-    bikeMins: 20,
-    walkMins: 80,
-    emoji: '🚦'
-  },
-  {
-    id: 'mithanpura',
-    name: 'Mithanpura Chowk',
-    area: 'Club Road, Muzaffarpur',
-    lat: 26.1180,
-    lng: 85.3850,
-    roadKm: 5.4,
-    busMins: 12,
-    carMins: 10,
-    bikeMins: 16,
-    walkMins: 65,
-    emoji: '🏬'
-  },
-  {
-    id: 'ramdayalu',
-    name: 'Ramdayalu Nagar',
-    area: 'Hajipur Road, Muzaffarpur',
-    lat: 26.0950,
+    id: 'ls_college',
+    name: 'L.S. College, Muzaffarpur',
+    area: 'Club Road / Kalambagh Rd, Muzaffarpur (842001)',
+    lat: 26.1245,
     lng: 85.3780,
-    roadKm: 3.2,
-    busMins: 8,
-    carMins: 6,
-    bikeMins: 12,
-    walkMins: 38,
-    emoji: '🏘️'
-  },
-  {
-    id: 'gobarsahi',
-    name: 'Gobarsahi Chowk',
-    area: 'NH-28 Bypass, Muzaffarpur',
-    lat: 26.1020,
-    lng: 85.3610,
-    roadKm: 4.5,
-    busMins: 10,
-    carMins: 8,
-    bikeMins: 15,
-    walkMins: 55,
-    emoji: '🏙️'
-  },
-  {
-    id: 'bhagwanpur',
-    name: 'Bhagwanpur Chowk',
-    area: 'Rewa Road, Muzaffarpur',
-    lat: 26.1380,
-    lng: 85.3620,
-    roadKm: 8.9,
-    busMins: 20,
-    carMins: 16,
-    bikeMins: 28,
-    walkMins: 105,
-    emoji: '🚏'
-  },
-  {
-    id: 'patna',
-    name: 'Patna City (Capital Hub)',
-    area: 'Gandhi Maidan / Patna Jn',
-    lat: 25.6093,
-    lng: 85.1235,
-    roadKm: 76.0,
-    busMins: 130,
-    carMins: 95,
-    bikeMins: 210,
-    walkMins: 920,
+    roadKm: 6.2,
+    busMins: 16,
+    carMins: 12,
+    taxiMins: 11,
+    bikeMins: 25,
+    walkMins: 75,
     emoji: '🏛️'
+  },
+  {
+    id: 'rds_college',
+    name: 'R.D.S. College, Muzaffarpur',
+    area: 'Ramdayalu Nagar, Muzaffarpur (842002)',
+    lat: 26.0955,
+    lng: 85.3850,
+    roadKm: 3.8,
+    busMins: 9,
+    carMins: 7,
+    taxiMins: 7,
+    bikeMins: 14,
+    walkMins: 45,
+    emoji: '🎓'
+  },
+  {
+    id: 'dav_bakri',
+    name: 'DAV Public School, Bakri, Muzaffarpur',
+    area: 'Bakri / Pusa Road, Muzaffarpur (843103)',
+    lat: 26.0220,
+    lng: 85.4610,
+    roadKm: 14.2,
+    busMins: 32,
+    carMins: 24,
+    taxiMins: 22,
+    bikeMins: 55,
+    walkMins: 170,
+    emoji: '🏫'
+  },
+  {
+    id: 'dav_malighat',
+    name: 'DAV Malighat, Muzaffarpur',
+    area: 'Malighat / Khabra Road, Muzaffarpur (842002)',
+    lat: 26.1080,
+    lng: 85.3990,
+    roadKm: 4.9,
+    busMins: 13,
+    carMins: 10,
+    taxiMins: 9,
+    bikeMins: 18,
+    walkMins: 58,
+    emoji: '🎒'
+  },
+  {
+    id: 'khabra_mandir',
+    name: 'Khabra Mandir, Muzaffarpur',
+    area: 'NH-28 Khabra, Muzaffarpur (843113)',
+    lat: 26.0790,
+    lng: 85.3720,
+    roadKm: 1.1,
+    busMins: 3,
+    carMins: 2,
+    taxiMins: 2,
+    bikeMins: 4,
+    walkMins: 13,
+    emoji: '🛕'
+  }
+];
+
+// World Clock Popular Countries & Time Zones
+export const WORLD_COUNTRIES_TIMEZONES = [
+  {
+    id: 'india',
+    name: 'India',
+    flag: '🇮🇳',
+    timezones: [
+      { id: 'ist', name: 'Indian Standard Time (IST)', zone: 'Asia/Kolkata', offset: '+05:30' }
+    ]
+  },
+  {
+    id: 'australia',
+    name: 'Australia',
+    flag: '🇦🇺',
+    timezones: [
+      { id: 'sydney', name: 'Sydney / Melbourne (AEDT / AEST)', zone: 'Australia/Sydney', offset: '+11:00' },
+      { id: 'adelaide', name: 'Adelaide (ACDT / ACST)', zone: 'Australia/Adelaide', offset: '+10:30' },
+      { id: 'perth', name: 'Perth (AWST)', zone: 'Australia/Perth', offset: '+08:00' },
+      { id: 'brisbane', name: 'Brisbane (AEST)', zone: 'Australia/Brisbane', offset: '+10:00' },
+      { id: 'darwin', name: 'Darwin (ACST)', zone: 'Australia/Darwin', offset: '+09:30' }
+    ]
+  },
+  {
+    id: 'nepal',
+    name: 'Nepal',
+    flag: '🇳🇵',
+    timezones: [
+      { id: 'nepal_time', name: 'Nepal Time (Kathmandu, NPT)', zone: 'Asia/Kathmandu', offset: '+05:45' }
+    ]
+  },
+  {
+    id: 'usa',
+    name: 'USA',
+    flag: '🇺🇸',
+    timezones: [
+      { id: 'eastern', name: 'Eastern Time (New York, Washington DC)', zone: 'America/New_York', offset: '-05:00' },
+      { id: 'central', name: 'Central Time (Chicago, Dallas)', zone: 'America/Chicago', offset: '-06:00' },
+      { id: 'mountain', name: 'Mountain Time (Denver, Phoenix)', zone: 'America/Denver', offset: '-07:00' },
+      { id: 'pacific', name: 'Pacific Time (Los Angeles, San Francisco)', zone: 'America/Los_Angeles', offset: '-08:00' },
+      { id: 'alaska', name: 'Alaska Time (Anchorage)', zone: 'America/Anchorage', offset: '-09:00' },
+      { id: 'hawaii', name: 'Hawaii Time (Honolulu)', zone: 'Pacific/Honolulu', offset: '-10:00' }
+    ]
+  },
+  {
+    id: 'china',
+    name: 'China',
+    flag: '🇨🇳',
+    timezones: [
+      { id: 'beijing', name: 'China Standard Time (Beijing, Shanghai)', zone: 'Asia/Shanghai', offset: '+08:00' }
+    ]
+  },
+  {
+    id: 'pakistan',
+    name: 'Pakistan',
+    flag: '🇵🇰',
+    timezones: [
+      { id: 'pakistan_time', name: 'Pakistan Standard Time (PKT, Islamabad, Karachi)', zone: 'Asia/Karachi', offset: '+05:00' }
+    ]
+  },
+  {
+    id: 'srilanka',
+    name: 'Sri Lanka',
+    flag: '🇱🇰',
+    timezones: [
+      { id: 'srilanka_time', name: 'Sri Lanka Standard Time (SLST, Colombo)', zone: 'Asia/Colombo', offset: '+05:30' }
+    ]
+  },
+  {
+    id: 'bhutan',
+    name: 'Bhutan',
+    flag: '🇧🇹',
+    timezones: [
+      { id: 'bhutan_time', name: 'Bhutan Time (BTT, Thimphu)', zone: 'Asia/Thimphu', offset: '+06:00' }
+    ]
+  },
+  {
+    id: 'russia',
+    name: 'Russia (11 Time Zones)',
+    flag: '🇷🇺',
+    timezones: [
+      { id: 'moscow', name: 'Moscow / St. Petersburg (MSK)', zone: 'Europe/Moscow', offset: '+03:00' },
+      { id: 'kaliningrad', name: 'Kaliningrad Time (USZ1)', zone: 'Europe/Kaliningrad', offset: '+02:00' },
+      { id: 'samara', name: 'Samara Time (SAMT)', zone: 'Europe/Samara', offset: '+04:00' },
+      { id: 'yekaterinburg', name: 'Yekaterinburg Time (YEKT, Urals)', zone: 'Asia/Yekaterinburg', offset: '+05:00' },
+      { id: 'omsk', name: 'Omsk Time (OMST, Siberia)', zone: 'Asia/Omsk', offset: '+06:00' },
+      { id: 'krasnoyarsk', name: 'Krasnoyarsk Time (KRAT)', zone: 'Asia/Krasnoyarsk', offset: '+07:00' },
+      { id: 'irkutsk', name: 'Irkutsk Time (IRKT, Baikal)', zone: 'Asia/Irkutsk', offset: '+08:00' },
+      { id: 'yakutsk', name: 'Yakutsk Time (YAKT)', zone: 'Asia/Yakutsk', offset: '+09:00' },
+      { id: 'vladivostok', name: 'Vladivostok Time (VLAT, Far East)', zone: 'Asia/Vladivostok', offset: '+10:00' },
+      { id: 'magadan', name: 'Magadan / Sakhalin (MAGT)', zone: 'Asia/Magadan', offset: '+11:00' },
+      { id: 'kamchatka', name: 'Kamchatka Time (PETT, Pacific)', zone: 'Asia/Kamchatka', offset: '+12:00' }
+    ]
   }
 ];
 

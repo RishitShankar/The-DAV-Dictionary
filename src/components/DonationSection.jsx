@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Heart, IndianRupee, QrCode, CreditCard, Banknote, ShieldCheck, 
   Sparkles, CheckCircle2, Copy, Check, ExternalLink, ArrowRight, 
-  User, Award, School, Receipt, Printer, Share2, AlertCircle, RefreshCw
+  User, Award, School, Receipt, Printer, Share2, AlertCircle, RefreshCw, Trash2
 } from 'lucide-react';
 import { WhatsAppLogo } from './SocialLogos';
 import { DavInvoiceModal } from './DavInvoiceModal';
@@ -70,9 +70,9 @@ export function DonationSection({ currentUser }) {
     }
   }, [currentUser]);
 
-  const activeUserData = registeredUsers.find(u => u.id.toLowerCase() === selectedUser.toLowerCase()) || {
-    id: selectedUser,
-    name: selectedUser === 'rishibhai' ? 'Rishit Shankar' : (currentUser?.name || selectedUser),
+  const activeUserData = (registeredUsers || []).find(u => u && u.id && String(u.id).toLowerCase() === String(selectedUser || '').toLowerCase()) || {
+    id: selectedUser || 'rishibhai',
+    name: selectedUser === 'rishibhai' ? 'Rishit Shankar' : (currentUser?.name || selectedUser || 'Student'),
     paidAmount: '0',
     plan: 'Normal Plan',
     classNum: '8'
@@ -112,8 +112,8 @@ export function DonationSection({ currentUser }) {
 
     try {
       // 1. Update user's lifetime paid amount in localStorage
-      const updatedList = registeredUsers.map(u => {
-        if (u.id.toLowerCase() === selectedUser.toLowerCase()) {
+      const updatedList = (registeredUsers || []).map(u => {
+        if (u && u.id && String(u.id).toLowerCase() === String(selectedUser || '').toLowerCase()) {
           return {
             ...u,
             paidAmount: String(grandTotalAfterDonation)
@@ -123,7 +123,7 @@ export function DonationSection({ currentUser }) {
       });
 
       // If user wasn't in list, add them
-      if (!registeredUsers.some(u => u.id.toLowerCase() === selectedUser.toLowerCase())) {
+      if (!registeredUsers.some(u => u && u.id && String(u.id).toLowerCase() === String(selectedUser || '').toLowerCase())) {
         updatedList.push({
           id: selectedUser,
           name: currentUser?.name || selectedUser,
