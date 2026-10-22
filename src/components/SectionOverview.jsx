@@ -3,7 +3,7 @@ import {
   BookOpen, Brain, Award, FileText, User, 
   HelpCircle, Bell, Compass, ArrowRight, Sparkles, 
   Layers, School, Heart, CheckCircle2, Star, Zap, Flame,
-  BookmarkCheck, MessageCircle, ShieldCheck, Video
+  BookmarkCheck, MessageCircle, ShieldCheck, Video, Bus, Navigation, MapPin
 } from 'lucide-react';
 
 export function SectionOverview({ onSelectSection }) {
@@ -91,16 +91,16 @@ export function SectionOverview({ onSelectSection }) {
     },
     {
       id: 7,
-      title: 'Section 7: DAV Syllabus & Curriculum Guides',
-      shortTitle: 'Syllabus Blueprint',
-      icon: Layers,
-      emoji: '📋',
-      color: 'from-cyan-600 to-blue-600',
-      cardBg: 'from-cyan-500/10 via-blue-50/80 to-white',
-      borderHover: 'hover:border-cyan-500',
-      tag: 'Examination Scheme',
-      tagColor: 'bg-cyan-100 text-cyan-900 border-cyan-300',
-      description: 'Chapter-wise mark weightage, examination blueprints, monthly split-up syllabus, and prescribed learning objectives across all subjects.'
+      title: 'Section 7: Kids Fun Zone & DAV Khabra Live GPS Teleport',
+      shortTitle: 'Kids Fun & Bus GPS',
+      icon: Bus,
+      emoji: '🚌',
+      color: 'from-amber-500 via-orange-500 to-red-600',
+      cardBg: 'from-yellow-500/15 via-amber-50/80 to-white',
+      borderHover: 'hover:border-amber-500',
+      tag: 'Kids Fun • Live Bus Radar',
+      tagColor: 'bg-amber-100 text-amber-950 border-amber-300 font-black',
+      description: 'Exclusive Kids Fun Portal! Teleport to DAV Khabra with auto-start live Google Maps directions, track Principal Anil Kumar Singh\'s school bus fleet with Bus ID & Password, and play the Bus Driver Arcade!'
     },
     {
       id: 8,

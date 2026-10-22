@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, Award, BookOpen, Layers, ShieldAlert, LogOut, KeyRound, User, Crown, Sparkles, Lock, Heart, Smartphone, Monitor } from 'lucide-react';
+import { Menu, Award, BookOpen, Layers, ShieldAlert, LogOut, KeyRound, User, Crown, Sparkles, Lock, Heart, Smartphone, Monitor, Bus } from 'lucide-react';
 import { BlackDogLogo } from './BlackDogLogo';
 
 export function Navbar({ 
@@ -209,6 +209,11 @@ export function Navbar({
                     <>
                       <Sparkles className="w-3.5 h-3.5 text-orange-500" />
                       <span>Section 6: Video Explanations & PYQs</span>
+                    </>
+                  ) : activeSection === 7 ? (
+                    <>
+                      <Bus className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Section 7: Kids Fun & Live Bus GPS</span>
                     </>
                   ) : activeSection === 8 ? (
                     <>

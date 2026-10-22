@@ -19,6 +19,7 @@ import { QuestionsAnswersSection } from './components/QuestionsAnswersSection';
 import { DonationSection } from './components/DonationSection';
 import { TeachersSection } from './components/TeachersSection';
 import { ChapterExplanationsSection } from './components/ChapterExplanationsSection';
+import { KidsFunNavigatorSection } from './components/KidsFunNavigatorSection';
 import { PurpleFooter } from './components/PurpleFooter';
 import { SectionErrorBoundary } from './components/SectionErrorBoundary';
 import { 
@@ -346,6 +347,8 @@ export function App() {
             user={user} 
             onOpenAIWithQuestion={handleOpenAIWithQuestion}
           />
+        ) : activeSection === 7 ? (
+          <KidsFunNavigatorSection user={user} />
         ) : activeSection === 8 ? (
           <DonationSection currentUser={user} />
         ) : activeSection === 9 ? (
