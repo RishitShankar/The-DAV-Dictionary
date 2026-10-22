@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { 
   Bus, MapPin, Navigation, Compass, Gamepad2, Volume2, VolumeX, 
   Radio, Gauge, Zap, Flag, Trophy, Smile, Car, Bike, Footprints, 
@@ -123,9 +123,7 @@ export function KidsFunNavigatorSection({ user }) {
 
   // Calculate live route distance
   const routeCalculations = useMemo(() => {
-    let originLat = DAV_KHABRA_COORDINATES.lat;
-    let originLng = DAV_KHABRA_COORDINATES.lng;
-    let originName = 'D.A.V. Public School Khabra';
+    let originLat, originLng, originName;
 
     if (locationPermissionStatus === 'granted' && liveGpsCoords) {
       originLat = liveGpsCoords.lat;
@@ -402,7 +400,7 @@ export function KidsFunNavigatorSection({ user }) {
   // =========================================================================
   // SUB-SECTION 5: CALENDAR APP (DAV SCHOOL CALENDAR & REMINDERS)
   // =========================================================================
-  const [calendarDate, setCalendarDate] = useState(new Date(2026, 9, 22)); // Default Oct 2026
+  const [calendarDate, setCalendarDate] = useState(new Date()); // Default current month
   const [selectedDayEvents, setSelectedDayEvents] = useState(null);
   const [userReminders, setUserReminders] = useState(() => {
     try {
@@ -492,17 +490,21 @@ export function KidsFunNavigatorSection({ user }) {
     return () => clearInterval(timer);
   }, []);
 
-  // Stopwatch state
+  // Stopwatch state — use a ref for the start time to avoid stale closures
   const [swRunning, setSwRunning] = useState(false);
   const [swTime, setSwTime] = useState(0); // in ms
   const [swLaps, setSwLaps] = useState([]);
+  const swStartRef = useRef(null); // stores Date.now() when started
 
   useEffect(() => {
     let interval = null;
     if (swRunning) {
-      const start = Date.now() - swTime;
+      // If we just started (swStartRef null or reset), anchor it
+      if (swStartRef.current === null) {
+        swStartRef.current = Date.now() - swTime;
+      }
       interval = setInterval(() => {
-        setSwTime(Date.now() - start);
+        setSwTime(Date.now() - swStartRef.current);
       }, 30);
     } else {
       clearInterval(interval);
@@ -731,7 +733,10 @@ export function KidsFunNavigatorSection({ user }) {
                       value={selectedPresetId}
                       onChange={(e) => {
                         setSelectedPresetId(e.target.value);
-                        setLocationPermissionStatus('preset');
+                        // Only clear GPS mode if live coords not available
+                        if (locationPermissionStatus !== 'granted') {
+                          setLocationPermissionStatus('denied');
+                        }
                         playFx('pop');
                       }}
                       className="bg-stone-900 text-white font-bold text-xs py-3 px-3 rounded-xl border border-amber-400 focus:outline-none cursor-pointer"
@@ -1327,34 +1332,45 @@ export function KidsFunNavigatorSection({ user }) {
                 </div>
 
                 <div className="grid grid-cols-7 gap-2 mt-3">
-                  {Array.from({ length: 35 }).map((_, i) => {
-                    const dayNum = i + 1;
-                    const isVisible = dayNum <= 31;
-                    const dateStr = `2026-10-${dayNum < 10 ? '0' + dayNum : dayNum}`;
-                    const hasDavEvent = DAV_SCHOOL_CALENDAR_EVENTS.find(e => e.date === dateStr);
-                    const hasUserReminder = userReminders.find(r => r.date === dateStr);
-                    const isToday = dayNum === 22;
+                  {(() => {
+                    const year = calendarDate.getFullYear();
+                    const month = calendarDate.getMonth();
+                    const daysInMonth = new Date(year, month + 1, 0).getDate();
+                    const firstDayOfWeek = new Date(year, month, 1).getDay(); // 0=Sun
+                    const today = new Date();
+                    const cells = [];
 
-                    return (
-                      <div
-                        key={i}
-                        className={`min-h-[60px] sm:min-h-[80px] p-2 rounded-2xl border transition flex flex-col justify-between ${
-                          !isVisible
-                            ? 'opacity-20 border-transparent'
-                            : isToday
-                            ? 'bg-amber-400 text-stone-950 font-black border-white ring-2 ring-amber-300 shadow-lg'
-                            : hasDavEvent
-                            ? 'bg-purple-900/40 border-purple-400 text-purple-200'
-                            : 'bg-stone-900 border-slate-800 text-slate-200 hover:border-slate-600'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between text-xs font-bold">
-                          <span>{isVisible ? dayNum : ''}</span>
-                          {isToday && <span className="text-[9px] bg-stone-950 text-amber-300 px-1 rounded">TODAY</span>}
-                        </div>
+                    // Leading empty cells for offset
+                    for (let i = 0; i < firstDayOfWeek; i++) {
+                      cells.push(<div key={`empty-${i}`} className="min-h-[60px] sm:min-h-[80px]" />);
+                    }
 
-                        {isVisible && (
-                          <div className="text-[10px] space-y-0.5 truncate">
+                    for (let d = 1; d <= daysInMonth; d++) {
+                      const mm = String(month + 1).padStart(2, '0');
+                      const dd = String(d).padStart(2, '0');
+                      const dateStr = `${year}-${mm}-${dd}`;
+                      const hasDavEvent = DAV_SCHOOL_CALENDAR_EVENTS.find(e => e.date === dateStr);
+                      const hasUserReminder = userReminders.find(r => r.date === dateStr);
+                      const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+
+                      cells.push(
+                        <div
+                          key={d}
+                          className={`min-h-[60px] sm:min-h-[80px] p-2 rounded-2xl border transition flex flex-col justify-between ${
+                            isToday
+                              ? 'bg-amber-400 text-stone-950 font-black border-white ring-2 ring-amber-300 shadow-lg'
+                              : hasDavEvent
+                              ? 'bg-purple-900/40 border-purple-400 text-purple-200'
+                              : hasUserReminder
+                              ? 'bg-emerald-900/40 border-emerald-500 text-emerald-200'
+                              : 'bg-stone-900 border-slate-800 text-slate-200 hover:border-slate-600'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between text-xs font-bold">
+                            <span>{d}</span>
+                            {isToday && <span className="text-[9px] bg-stone-950 text-amber-300 px-1 rounded">TODAY</span>}
+                          </div>
+                          <div className="text-[10px] space-y-0.5 truncate mt-1">
                             {hasDavEvent && (
                               <div className="truncate font-black text-amber-300">
                                 {hasDavEvent.icon} {hasDavEvent.title}
@@ -1366,10 +1382,19 @@ export function KidsFunNavigatorSection({ user }) {
                               </div>
                             )}
                           </div>
-                        )}
-                      </div>
-                    );
-                  })}
+                        </div>
+                      );
+                    }
+
+                    // Trailing empties to fill last row
+                    const total = firstDayOfWeek + daysInMonth;
+                    const trailing = total % 7 === 0 ? 0 : 7 - (total % 7);
+                    for (let i = 0; i < trailing; i++) {
+                      cells.push(<div key={`trail-${i}`} className="min-h-[60px] sm:min-h-[80px]" />);
+                    }
+
+                    return cells;
+                  })()}
                 </div>
               </div>
 
@@ -1622,6 +1647,10 @@ export function KidsFunNavigatorSection({ user }) {
                   <div className="flex items-center justify-center gap-3">
                     <button
                       onClick={() => {
+                        if (!swRunning) {
+                          // Resuming: anchor start ref
+                          swStartRef.current = Date.now() - swTime;
+                        }
                         setSwRunning(r => !r);
                         playFx('pop');
                       }}
@@ -1650,6 +1679,7 @@ export function KidsFunNavigatorSection({ user }) {
                       onClick={() => {
                         setSwRunning(false);
                         setSwTime(0);
+                        swStartRef.current = null;
                         setSwLaps([]);
                         playFx('pop');
                       }}
