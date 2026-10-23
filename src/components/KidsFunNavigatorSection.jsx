@@ -250,13 +250,14 @@ export function KidsFunNavigatorSection({ user }) {
 
   // =========================================================================
   // SUB-SECTION 3: WEATHER APP (OPEN-METEO LIVE REAL WEATHER)
+  // City Order: 1. Patna, 2. New Delhi, 3. Lucknow, 4. DAV Khabra, 5. My exact GPS
   // =========================================================================
   const [weatherData, setWeatherData] = useState(null);
   const [weatherLoading, setWeatherLoading] = useState(true);
-  const [weatherCityName, setWeatherCityName] = useState('Khabra, Muzaffarpur');
+  const [weatherCityName, setWeatherCityName] = useState('Patna');
   const [weatherSearchInput, setWeatherSearchInput] = useState('');
 
-  const fetchLiveWeather = async (lat = 26.073, lon = 85.373, name = 'Khabra, Muzaffarpur') => {
+  const fetchLiveWeather = async (lat = 25.5941, lon = 85.1376, name = 'Patna') => {
     setWeatherLoading(true);
     try {
       const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relativehumidity_2m&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto`);
@@ -281,23 +282,59 @@ export function KidsFunNavigatorSection({ user }) {
     }
   };
 
+  const handleWeatherGpsClick = () => {
+    playFx('pop');
+    if (locationPermissionStatus === 'granted' && liveGpsCoords) {
+      fetchLiveWeather(liveGpsCoords.lat, liveGpsCoords.lng, `My Live GPS (${liveGpsCoords.lat.toFixed(2)}°N, ${liveGpsCoords.lng.toFixed(2)}°E)`);
+    } else {
+      if (!navigator.geolocation) {
+        alert('Geolocation is not supported by your browser.');
+        return;
+      }
+      setIsGpsLoading(true);
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setIsGpsLoading(false);
+          setLocationPermissionStatus('granted');
+          const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          setLiveGpsCoords(coords);
+          fetchLiveWeather(coords.lat, coords.lng, `My Exact GPS (${coords.lat.toFixed(2)}°N, ${coords.lng.toFixed(2)}°E)`);
+          playFx('victory');
+        },
+        (err) => {
+          setIsGpsLoading(false);
+          setLocationPermissionStatus('denied');
+          alert('Could not access live GPS. Please allow location permissions in your browser.');
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    }
+  };
+
   useEffect(() => {
     if (activeSubSection === 'weather') {
-      if (locationPermissionStatus === 'granted' && liveGpsCoords) {
-        fetchLiveWeather(liveGpsCoords.lat, liveGpsCoords.lng, 'My Live Current Area');
-      } else {
-        fetchLiveWeather(26.073, 85.373, 'Khabra, Muzaffarpur');
-      }
+      fetchLiveWeather(25.5941, 85.1376, 'Patna');
     }
-  }, [activeSubSection, locationPermissionStatus, liveGpsCoords]);
+  }, [activeSubSection]);
 
   // =========================================================================
   // SUB-SECTION 4: 100% WORKING CALCULATOR (STANDARD + SCIENTIFIC + KEYBOARD)
+  // Clean 4-column layout that NEVER breaks on mobile!
   // =========================================================================
   const [calcDisplay, setCalcDisplay] = useState('0');
   const [calcPrevDisplay, setCalcPrevDisplay] = useState('');
   const [calcHistory, setCalcHistory] = useState([]);
   const [isNewCalc, setIsNewCalc] = useState(true);
+  const [calcMode, setCalcMode] = useState('standard'); // 'standard' | 'scientific'
+  const [copiedCalc, setCopiedCalc] = useState(false);
+
+  const calculateFactorial = (n) => {
+    if (n < 0 || n > 170) return NaN;
+    if (n === 0 || n === 1) return 1;
+    let res = 1;
+    for (let i = 2; i <= Math.floor(n); i++) res *= i;
+    return res;
+  };
 
   const handleCalcInput = (btn) => {
     playFx('beep');
@@ -322,7 +359,8 @@ export function KidsFunNavigatorSection({ user }) {
           .replace(/×/g, '*')
           .replace(/÷/g, '/')
           .replace(/π/g, 'Math.PI')
-          .replace(/e/g, 'Math.E');
+          .replace(/e/g, 'Math.E')
+          .replace(/\^/g, '**');
         
         // Evaluate safely with Function
         const sanitized = expr.replace(/[^0-9+\-*/().MathPIEsqrtcossintaexp]/g, '');
@@ -343,11 +381,38 @@ export function KidsFunNavigatorSection({ user }) {
       return;
     }
 
+    // Direct mathematical functions
+    if (btn === '%') {
+      try {
+        const val = parseFloat(calcDisplay);
+        const res = (val / 100).toString();
+        setCalcPrevDisplay(`${calcDisplay}% =`);
+        setCalcDisplay(res);
+        setIsNewCalc(true);
+      } catch (e) {
+        setCalcDisplay('Error');
+      }
+      return;
+    }
+
     if (btn === 'sqrt' || btn === '√') {
       try {
         const val = parseFloat(calcDisplay);
         const res = Math.sqrt(val).toString();
         setCalcPrevDisplay(`√(${calcDisplay}) =`);
+        setCalcDisplay(res);
+        setIsNewCalc(true);
+      } catch (e) {
+        setCalcDisplay('Error');
+      }
+      return;
+    }
+
+    if (btn === 'cbrt' || btn === '∛') {
+      try {
+        const val = parseFloat(calcDisplay);
+        const res = Math.cbrt(val).toString();
+        setCalcPrevDisplay(`∛(${calcDisplay}) =`);
         setCalcDisplay(res);
         setIsNewCalc(true);
       } catch (e) {
@@ -369,6 +434,107 @@ export function KidsFunNavigatorSection({ user }) {
       return;
     }
 
+    if (btn === 'cube' || btn === 'x³') {
+      try {
+        const val = parseFloat(calcDisplay);
+        const res = (val * val * val).toString();
+        setCalcPrevDisplay(`cube(${calcDisplay}) =`);
+        setCalcDisplay(res);
+        setIsNewCalc(true);
+      } catch (e) {
+        setCalcDisplay('Error');
+      }
+      return;
+    }
+
+    if (btn === 'sin') {
+      try {
+        const rad = (parseFloat(calcDisplay) * Math.PI) / 180;
+        const res = (Math.round(Math.sin(rad) * 1000000) / 1000000).toString();
+        setCalcPrevDisplay(`sin(${calcDisplay}°) =`);
+        setCalcDisplay(res);
+        setIsNewCalc(true);
+      } catch (e) { setCalcDisplay('Error'); }
+      return;
+    }
+
+    if (btn === 'cos') {
+      try {
+        const rad = (parseFloat(calcDisplay) * Math.PI) / 180;
+        const res = (Math.round(Math.cos(rad) * 1000000) / 1000000).toString();
+        setCalcPrevDisplay(`cos(${calcDisplay}°) =`);
+        setCalcDisplay(res);
+        setIsNewCalc(true);
+      } catch (e) { setCalcDisplay('Error'); }
+      return;
+    }
+
+    if (btn === 'tan') {
+      try {
+        const rad = (parseFloat(calcDisplay) * Math.PI) / 180;
+        const res = (Math.round(Math.tan(rad) * 1000000) / 1000000).toString();
+        setCalcPrevDisplay(`tan(${calcDisplay}°) =`);
+        setCalcDisplay(res);
+        setIsNewCalc(true);
+      } catch (e) { setCalcDisplay('Error'); }
+      return;
+    }
+
+    if (btn === 'log') {
+      try {
+        const val = parseFloat(calcDisplay);
+        const res = Math.log10(val).toString();
+        setCalcPrevDisplay(`log₁₀(${calcDisplay}) =`);
+        setCalcDisplay(res);
+        setIsNewCalc(true);
+      } catch (e) { setCalcDisplay('Error'); }
+      return;
+    }
+
+    if (btn === 'ln') {
+      try {
+        const val = parseFloat(calcDisplay);
+        const res = Math.log(val).toString();
+        setCalcPrevDisplay(`ln(${calcDisplay}) =`);
+        setCalcDisplay(res);
+        setIsNewCalc(true);
+      } catch (e) { setCalcDisplay('Error'); }
+      return;
+    }
+
+    if (btn === '1/x') {
+      try {
+        const val = parseFloat(calcDisplay);
+        const res = (1 / val).toString();
+        setCalcPrevDisplay(`1/(${calcDisplay}) =`);
+        setCalcDisplay(res);
+        setIsNewCalc(true);
+      } catch (e) { setCalcDisplay('Error'); }
+      return;
+    }
+
+    if (btn === 'abs' || btn === '|x|') {
+      try {
+        const val = parseFloat(calcDisplay);
+        const res = Math.abs(val).toString();
+        setCalcPrevDisplay(`|${calcDisplay}| =`);
+        setCalcDisplay(res);
+        setIsNewCalc(true);
+      } catch (e) { setCalcDisplay('Error'); }
+      return;
+    }
+
+    if (btn === 'fact' || btn === 'n!') {
+      try {
+        const val = parseFloat(calcDisplay);
+        const res = calculateFactorial(val).toString();
+        setCalcPrevDisplay(`${calcDisplay}! =`);
+        setCalcDisplay(res);
+        setIsNewCalc(true);
+      } catch (e) { setCalcDisplay('Error'); }
+      return;
+    }
+
     if (btn === '+/-') {
       if (calcDisplay !== '0' && calcDisplay !== 'Error') {
         setCalcDisplay(calcDisplay.startsWith('-') ? calcDisplay.slice(1) : '-' + calcDisplay);
@@ -376,8 +542,20 @@ export function KidsFunNavigatorSection({ user }) {
       return;
     }
 
+    if (btn === 'π') {
+      setCalcDisplay(Math.PI.toString());
+      setIsNewCalc(true);
+      return;
+    }
+
+    if (btn === 'e') {
+      setCalcDisplay(Math.E.toString());
+      setIsNewCalc(true);
+      return;
+    }
+
     // Number or operator
-    if (isNewCalc && !['+', '-', '×', '÷', '%'].includes(btn)) {
+    if (isNewCalc && !['+', '-', '×', '÷', '%', '^'].includes(btn)) {
       setCalcDisplay(btn === '.' ? '0.' : btn);
       setIsNewCalc(false);
     } else {
@@ -388,6 +566,13 @@ export function KidsFunNavigatorSection({ user }) {
       }
       setIsNewCalc(false);
     }
+  };
+
+  const copyCalcResult = () => {
+    navigator.clipboard?.writeText(calcDisplay);
+    setCopiedCalc(true);
+    setTimeout(() => setCopiedCalc(false), 2000);
+    playFx('ding');
   };
 
   // Keyboard listener for calculator
@@ -414,9 +599,11 @@ export function KidsFunNavigatorSection({ user }) {
   }, [activeSubSection, calcDisplay, isNewCalc]);
 
   // =========================================================================
-  // SUB-SECTION 5: CALENDAR APP (DAV SCHOOL CALENDAR & REMINDERS)
+  // SUB-SECTION 5: CALENDAR APP (MULTI-YEAR: JAN 2026 TO OCT 2047)
+  // Full Gregorian Day-of-Week Engine & Custom Student Reminders
   // =========================================================================
-  const [calendarDate, setCalendarDate] = useState(new Date()); // Default current month
+  const [calendarYear, setCalendarYear] = useState(2026);
+  const [calendarMonth, setCalendarMonth] = useState(9); // 0-indexed: 9 = October
   const [selectedDayEvents, setSelectedDayEvents] = useState(null);
   const [userReminders, setUserReminders] = useState(() => {
     try {
@@ -455,32 +642,84 @@ export function KidsFunNavigatorSection({ user }) {
     playFx('pop');
   };
 
+  const handlePrevMonth = () => {
+    playFx('pop');
+    if (calendarYear === 2026 && calendarMonth === 0) return; // Clamped Jan 2026
+    if (calendarMonth === 0) {
+      setCalendarYear(y => y - 1);
+      setCalendarMonth(11);
+    } else {
+      setCalendarMonth(m => m - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    playFx('pop');
+    if (calendarYear === 2047 && calendarMonth === 9) return; // Clamped Oct 2047
+    if (calendarMonth === 11) {
+      setCalendarYear(y => y + 1);
+      setCalendarMonth(0);
+    } else {
+      setCalendarMonth(m => m + 1);
+    }
+  };
+
   // =========================================================================
   // SUB-SECTION 6: COMPASS (360° LIVE GYRO & SCHOOL BEARING)
+  // Sensor Calibration for iOS & Android Chrome + Manual Dial Fallback
   // =========================================================================
   const [compassHeading, setCompassHeading] = useState(0);
   const [compassManual, setCompassManual] = useState(false);
+  const [sensorStatus, setSensorStatus] = useState('tap_to_enable'); // 'tap_to_enable' | 'active' | 'unsupported'
 
-  useEffect(() => {
-    if (activeSubSection !== 'compass') return;
+  const attachCompassListeners = useCallback(() => {
     const handleOrientation = (e) => {
-      if (e.webkitCompassHeading !== undefined) {
+      if (e.webkitCompassHeading !== undefined && e.webkitCompassHeading !== null) {
         setCompassHeading(Math.round(e.webkitCompassHeading));
         setCompassManual(false);
-      } else if (e.alpha !== null) {
+        setSensorStatus('active');
+      } else if (e.alpha !== null && e.alpha !== undefined) {
         setCompassHeading(Math.round(360 - e.alpha));
         setCompassManual(false);
+        setSensorStatus('active');
       }
     };
-    if (window.DeviceOrientationEvent) {
-      window.addEventListener('deviceorientation', handleOrientation);
-    }
+
+    window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+    window.addEventListener('deviceorientation', handleOrientation, true);
+
     return () => {
-      if (window.DeviceOrientationEvent) {
-        window.removeEventListener('deviceorientation', handleOrientation);
-      }
+      window.removeEventListener('deviceorientationabsolute', handleOrientation, true);
+      window.removeEventListener('deviceorientation', handleOrientation, true);
     };
-  }, [activeSubSection]);
+  }, []);
+
+  const enableCompassSensors = async () => {
+    playFx('pop');
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+      try {
+        const response = await DeviceOrientationEvent.requestPermission();
+        if (response === 'granted') {
+          setSensorStatus('active');
+          attachCompassListeners();
+          playFx('victory');
+        } else {
+          setSensorStatus('unsupported');
+        }
+      } catch (err) {
+        setSensorStatus('unsupported');
+      }
+    } else {
+      setSensorStatus('active');
+      attachCompassListeners();
+    }
+  };
+
+  useEffect(() => {
+    if (activeSubSection === 'compass') {
+      attachCompassListeners();
+    }
+  }, [activeSubSection, attachCompassListeners]);
 
   const cardinalDirection = useMemo(() => {
     const deg = (compassHeading % 360 + 360) % 360;
@@ -495,10 +734,14 @@ export function KidsFunNavigatorSection({ user }) {
   }, [compassHeading]);
 
   // =========================================================================
-  // SUB-SECTION 7: CLOCK (ANALOG, NEON DIGITAL, STOPWATCH & COUNTDOWN TIMER)
+  // SUB-SECTION 7: CLOCK (12H/24H TOGGLE, WORLD COUNTRIES & TIMEZONES, CUSTOM TIMER)
+  // India (default), Australia, Nepal, USA, China, Pakistan, Sri Lanka, Bhutan, Russia
   // =========================================================================
   const [clockMode, setClockMode] = useState('digital_analog'); // 'digital_analog' | 'stopwatch' | 'timer'
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [is24HourFormat, setIs24HourFormat] = useState(false);
+  const [selectedCountryId, setSelectedCountryId] = useState('india');
+  const [selectedTimezoneId, setSelectedTimezoneId] = useState('ist');
 
   // Clock tick
   useEffect(() => {
@@ -506,16 +749,24 @@ export function KidsFunNavigatorSection({ user }) {
     return () => clearInterval(timer);
   }, []);
 
-  // Stopwatch state — use a ref for the start time to avoid stale closures
+  // Selected Country and Timezone lookup
+  const activeCountry = useMemo(() => {
+    return WORLD_COUNTRIES_TIMEZONES.find(c => c.id === selectedCountryId) || WORLD_COUNTRIES_TIMEZONES[0];
+  }, [selectedCountryId]);
+
+  const activeTimezone = useMemo(() => {
+    return activeCountry.timezones.find(z => z.id === selectedTimezoneId) || activeCountry.timezones[0];
+  }, [activeCountry, selectedTimezoneId]);
+
+  // Stopwatch state
   const [swRunning, setSwRunning] = useState(false);
   const [swTime, setSwTime] = useState(0); // in ms
   const [swLaps, setSwLaps] = useState([]);
-  const swStartRef = useRef(null); // stores Date.now() when started
+  const swStartRef = useRef(null);
 
   useEffect(() => {
     let interval = null;
     if (swRunning) {
-      // If we just started (swStartRef null or reset), anchor it
       if (swStartRef.current === null) {
         swStartRef.current = Date.now() - swTime;
       }
@@ -528,10 +779,35 @@ export function KidsFunNavigatorSection({ user }) {
     return () => clearInterval(interval);
   }, [swRunning]);
 
-  // Timer state
-  const [timerInputMins, setTimerInputMins] = useState(5);
+  // Timer state (Custom inputs for Hours, Minutes, Seconds + Presets)
   const [timerSecondsLeft, setTimerSecondsLeft] = useState(300);
+  const [timerTotalDuration, setTimerTotalDuration] = useState(300);
   const [timerRunning, setTimerRunning] = useState(false);
+  const [customHours, setCustomHours] = useState(0);
+  const [customMins, setCustomMins] = useState(5);
+  const [customSecs, setCustomSecs] = useState(0);
+
+  const applyCustomTimer = () => {
+    const total = (Math.max(0, parseInt(customHours) || 0) * 3600) +
+                  (Math.max(0, parseInt(customMins) || 0) * 60) +
+                  Math.max(0, parseInt(customSecs) || 0);
+    if (total <= 0) return;
+    setTimerTotalDuration(total);
+    setTimerSecondsLeft(total);
+    setTimerRunning(false);
+    playFx('ding');
+  };
+
+  const applyPresetTimer = (mins) => {
+    const total = mins * 60;
+    setTimerTotalDuration(total);
+    setTimerSecondsLeft(total);
+    setCustomHours(Math.floor(mins / 60));
+    setCustomMins(mins % 60);
+    setCustomSecs(0);
+    setTimerRunning(false);
+    playFx('pop');
+  };
 
   useEffect(() => {
     let interval = null;
@@ -561,27 +837,37 @@ export function KidsFunNavigatorSection({ user }) {
       <div className="w-full bg-stone-950/90 backdrop-blur-md border-b-2 border-amber-400 px-4 sm:px-8 py-3 sticky top-0 z-40 shadow-2xl">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
           
-          {/* Left: Arcade Mascot & Section Title */}
+          {/* Left: Futuristic High-Tech Kids Gadgets Emblem Logo */}
           <div className="flex items-center gap-3">
             <div 
               onClick={() => playFx('horn')}
-              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-400 to-amber-500 border-2 border-amber-300 shadow-lg flex items-center justify-center text-stone-950 font-black text-2xl cursor-pointer hover:scale-105 active:scale-95 transition"
-              title="Click to Honk!"
+              className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-900 via-stone-950 to-slate-900 border-2 border-cyan-400 shadow-xl shadow-cyan-500/20 flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 transition group overflow-hidden"
+              title="DAV Khabra High-Tech Kids Gadgets Suite • Click to Beep!"
             >
-              🚌
+              {/* Animated Cyber Ring */}
+              <div className="absolute inset-0 rounded-2xl border border-dashed border-cyan-300/60 animate-spin-slow pointer-events-none" />
+              {/* Glowing Pulse Aura */}
+              <div className="absolute inset-1 rounded-xl bg-gradient-to-tr from-cyan-500/20 via-amber-400/20 to-purple-500/20 animate-pulse pointer-events-none" />
+              {/* High-Tech Shield Insignia */}
+              <div className="relative z-10 flex flex-col items-center justify-center">
+                <span className="text-xl drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]">⚡</span>
+                <span className="text-[7px] font-black tracking-widest text-cyan-300 -mt-1 font-mono">DAV-7</span>
+              </div>
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-amber-400 text-stone-950 shadow-xs">
+                <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-stone-950 shadow-xs">
                   SECTION 7 • KIDS GAMING & GADGETS HUB
                 </span>
-                <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold text-amber-300 bg-stone-900 px-2 py-0.5 rounded-full border border-amber-500/40">
+                <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold text-cyan-300 bg-stone-900 px-2 py-0.5 rounded-full border border-cyan-500/40">
                   <Flame className="w-3 h-3 text-orange-400 animate-pulse" />
                   Full-Page Arcade Mode
                 </span>
               </div>
               <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2 mt-0.5">
-                <span>D.A.V. KHABRA KIDS ADVENTURE SUITE</span>
+                <span className="bg-gradient-to-r from-white via-cyan-100 to-amber-200 bg-clip-text text-transparent">
+                  D.A.V. KHABRA KIDS ADVENTURE SUITE
+                </span>
                 <span className="text-base animate-bounce">🎮</span>
               </h1>
             </div>
@@ -794,20 +1080,20 @@ export function KidsFunNavigatorSection({ user }) {
                       <span className="text-white font-mono">{routeCalculations.roadKm} KM</span>
                     </div>
 
-                    {/* 4 CALCULATED MODE TILES (BUS, CAR, BICYCLE, WALK) */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* 5 CALCULATED MODE TILES (SCHOOL BUS, CAR, TAXI, BICYCLE, KID WALKING) */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
                       
-                      {/* Bus Mode */}
+                      {/* School Bus Mode */}
                       <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
                         <div className="flex items-center justify-between text-amber-300 text-xs font-black uppercase">
                           <span className="flex items-center gap-1.5">
                             <Bus className="w-4 h-4" />
                             <span>School Bus</span>
                           </span>
-                          <span className="text-[10px] bg-amber-400 text-stone-950 px-2 py-0.5 rounded font-black">~35 km/h</span>
+                          <span className="text-[10px] bg-amber-400 text-stone-950 px-2 py-0.5 rounded font-black">~32 km/h</span>
                         </div>
-                        <div className="text-3xl font-black text-white mt-2">
-                          {routeCalculations.roadKm} <span className="text-sm text-amber-200">KM</span>
+                        <div className="text-2xl sm:text-3xl font-black text-white mt-2">
+                          {routeCalculations.roadKm} <span className="text-xs text-amber-200">KM</span>
                         </div>
                         <div className="text-xs font-bold text-emerald-300 mt-1">
                           Time: ~{routeCalculations.busMins} mins
@@ -819,29 +1105,46 @@ export function KidsFunNavigatorSection({ user }) {
                         <div className="flex items-center justify-between text-cyan-300 text-xs font-black uppercase">
                           <span className="flex items-center gap-1.5">
                             <Car className="w-4 h-4" />
-                            <span>Car / Taxi</span>
+                            <span>Car</span>
                           </span>
-                          <span className="text-[10px] bg-cyan-400 text-stone-950 px-2 py-0.5 rounded font-black">~45 km/h</span>
+                          <span className="text-[10px] bg-cyan-400 text-stone-950 px-2 py-0.5 rounded font-black">~42 km/h</span>
                         </div>
-                        <div className="text-3xl font-black text-white mt-2">
-                          {routeCalculations.roadKm} <span className="text-sm text-cyan-200">KM</span>
+                        <div className="text-2xl sm:text-3xl font-black text-white mt-2">
+                          {routeCalculations.roadKm} <span className="text-xs text-cyan-200">KM</span>
                         </div>
                         <div className="text-xs font-bold text-emerald-300 mt-1">
                           Time: ~{routeCalculations.carMins} mins
                         </div>
                       </div>
 
-                      {/* Bicycle Mode */}
+                      {/* Taxi Mode */}
                       <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
                         <div className="flex items-center justify-between text-yellow-300 text-xs font-black uppercase">
+                          <span className="flex items-center gap-1.5">
+                            <Car className="w-4 h-4 text-yellow-400" />
+                            <span>Taxi</span>
+                          </span>
+                          <span className="text-[10px] bg-yellow-400 text-stone-950 px-2 py-0.5 rounded font-black">~45 km/h</span>
+                        </div>
+                        <div className="text-2xl sm:text-3xl font-black text-white mt-2">
+                          {routeCalculations.roadKm} <span className="text-xs text-yellow-200">KM</span>
+                        </div>
+                        <div className="text-xs font-bold text-emerald-300 mt-1">
+                          Time: ~{routeCalculations.taxiMins} mins
+                        </div>
+                      </div>
+
+                      {/* Bicycle Mode */}
+                      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
+                        <div className="flex items-center justify-between text-emerald-300 text-xs font-black uppercase">
                           <span className="flex items-center gap-1.5">
                             <Bike className="w-4 h-4" />
                             <span>Bicycle</span>
                           </span>
-                          <span className="text-[10px] bg-yellow-400 text-stone-950 px-2 py-0.5 rounded font-black">~15 km/h</span>
+                          <span className="text-[10px] bg-emerald-400 text-stone-950 px-2 py-0.5 rounded font-black">~16 km/h</span>
                         </div>
-                        <div className="text-3xl font-black text-white mt-2">
-                          {routeCalculations.roadKm} <span className="text-sm text-yellow-200">KM</span>
+                        <div className="text-2xl sm:text-3xl font-black text-white mt-2">
+                          {routeCalculations.roadKm} <span className="text-xs text-emerald-200">KM</span>
                         </div>
                         <div className="text-xs font-bold text-emerald-300 mt-1">
                           Time: ~{routeCalculations.bikeMins} mins
@@ -855,10 +1158,10 @@ export function KidsFunNavigatorSection({ user }) {
                             <Footprints className="w-4 h-4" />
                             <span>Kid Walking</span>
                           </span>
-                          <span className="text-[10px] bg-pink-400 text-stone-950 px-2 py-0.5 rounded font-black">~4 km/h</span>
+                          <span className="text-[10px] bg-pink-400 text-stone-950 px-2 py-0.5 rounded font-black">~4.5 km/h</span>
                         </div>
-                        <div className="text-3xl font-black text-white mt-2">
-                          {routeCalculations.roadKm} <span className="text-sm text-pink-200">KM</span>
+                        <div className="text-2xl sm:text-3xl font-black text-white mt-2">
+                          {routeCalculations.roadKm} <span className="text-xs text-pink-200">KM</span>
                         </div>
                         <div className="text-xs font-bold text-emerald-300 mt-1">
                           Time: ~{routeCalculations.walkMins} mins
@@ -889,41 +1192,6 @@ export function KidsFunNavigatorSection({ user }) {
                   </div>
                 </div>
 
-              </div>
-            </div>
-
-            {/* PREVIEW OF TARGET GOOGLE MAPS SCREEN (AS UPLOADED BY USER) */}
-            <div className="w-full bg-stone-900 rounded-3xl p-6 sm:p-8 border-2 border-slate-800 shadow-xl">
-              <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-                <div>
-                  <h3 className="text-xl font-black text-white flex items-center gap-2">
-                    <span>TARGET GOOGLE MAPS NAVIGATION SCREEN</span>
-                    <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/40">
-                      Ideal Reference
-                    </span>
-                  </h3>
-                  <p className="text-xs text-slate-400">
-                    When you click the button above, your phone will launch this exact Google Maps turn-by-turn navigation mode!
-                  </p>
-                </div>
-                <a
-                  href={googleMapsDirectionsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition"
-                >
-                  <span>Open in Google Maps</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </a>
-              </div>
-
-              {/* Sample Target Screenshot Display */}
-              <div className="max-w-md mx-auto rounded-2xl overflow-hidden border-4 border-stone-950 shadow-2xl bg-black">
-                <img 
-                  src="/ideal_go_to_dav_khabra.jpeg" 
-                  alt="DAV Khabra Google Maps Live Navigation"
-                  className="w-full h-auto object-cover"
-                />
               </div>
             </div>
 
@@ -1188,10 +1456,10 @@ export function KidsFunNavigatorSection({ user }) {
                 <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-white/20">
                   <span className="text-xs font-black uppercase text-cyan-200">Quick City Switcher:</span>
                   {[
-                    { name: 'Khabra, Muzaffarpur', lat: 26.073, lng: 85.373, emoji: '🏫' },
-                    { name: 'Patna City', lat: 25.609, lng: 85.123, emoji: '🏛️' },
-                    { name: 'Darbhanga', lat: 26.152, lng: 85.897, emoji: '🏰' },
-                    { name: 'New Delhi', lat: 28.613, lng: 77.209, emoji: '🇮🇳' }
+                    { name: 'Patna', lat: 25.5941, lng: 85.1376, emoji: '🏛️' },
+                    { name: 'New Delhi', lat: 28.6139, lng: 77.2090, emoji: '🇮🇳' },
+                    { name: 'Lucknow', lat: 26.8467, lng: 80.9462, emoji: '🕌' },
+                    { name: 'DAV Khabra', lat: 26.0730, lng: 85.3735, emoji: '🏫' }
                   ].map((city, idx) => (
                     <button
                       key={idx}
@@ -1208,21 +1476,19 @@ export function KidsFunNavigatorSection({ user }) {
                       <span>{city.emoji} {city.name}</span>
                     </button>
                   ))}
-                  {locationPermissionStatus === 'granted' && liveGpsCoords && (
-                    <button
-                      onClick={() => {
-                        fetchLiveWeather(liveGpsCoords.lat, liveGpsCoords.lng, 'My Live Current Area');
-                        playFx('pop');
-                      }}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer border ${
-                        weatherCityName === 'My Live Current Area'
-                          ? 'bg-emerald-400 text-stone-950 font-black border-white shadow-md'
-                          : 'bg-emerald-950/60 text-emerald-200 border-emerald-400/50'
-                      }`}
-                    >
-                      <span>📍 My Exact GPS</span>
-                    </button>
-                  )}
+
+                  {/* 5. My Exact GPS Switcher Button */}
+                  <button
+                    onClick={handleWeatherGpsClick}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer border flex items-center gap-1.5 ${
+                      weatherCityName.startsWith('My')
+                        ? 'bg-emerald-400 text-stone-950 font-black border-white shadow-md'
+                        : 'bg-emerald-950/80 text-emerald-200 border-emerald-400/60 hover:bg-emerald-900'
+                    }`}
+                  >
+                    <Navigation className={`w-3.5 h-3.5 ${isGpsLoading ? 'animate-spin' : ''}`} />
+                    <span>{isGpsLoading ? 'Detecting GPS...' : '📍 My Exact GPS'}</span>
+                  </button>
                 </div>
               </div>
 
@@ -1312,66 +1578,171 @@ export function KidsFunNavigatorSection({ user }) {
                 </div>
               </div>
 
-              {/* Calculator Body */}
-              <div className="max-w-2xl mx-auto mt-8 bg-stone-950 rounded-3xl p-6 sm:p-8 border-4 border-emerald-400 shadow-2xl space-y-4">
+              {/* Calculator Mode Switcher & Tools */}
+              <div className="flex flex-wrap items-center justify-between gap-3 mt-6 max-w-xl mx-auto">
+                <div className="flex items-center gap-1.5 bg-stone-950 p-1 rounded-2xl border border-emerald-400/40">
+                  <button
+                    onClick={() => { setCalcMode('standard'); playFx('pop'); }}
+                    className={`px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer ${
+                      calcMode === 'standard' ? 'bg-emerald-500 text-stone-950 shadow-md' : 'text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    Standard
+                  </button>
+                  <button
+                    onClick={() => { setCalcMode('scientific'); playFx('pop'); }}
+                    className={`px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer ${
+                      calcMode === 'scientific' ? 'bg-purple-500 text-white shadow-md' : 'text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    Scientific & Functions
+                  </button>
+                </div>
+
+                <button
+                  onClick={copyCalcResult}
+                  className="px-3.5 py-2 rounded-xl bg-stone-950 hover:bg-stone-900 border border-emerald-400/40 text-emerald-300 font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                  <span>{copiedCalc ? 'Copied!' : 'Copy Result'}</span>
+                </button>
+              </div>
+
+              {/* Calculator Body - 100% Mobile Safe 4-Column Standard Grid */}
+              <div className="max-w-md mx-auto mt-4 bg-stone-950 rounded-3xl p-5 sm:p-7 border-4 border-emerald-400 shadow-2xl space-y-4">
                 
                 {/* Screen Display */}
-                <div className="bg-stone-900 rounded-2xl p-5 border-2 border-emerald-500/40 text-right shadow-inner">
+                <div className="bg-stone-900/90 rounded-2xl p-4 sm:p-5 border-2 border-emerald-500/40 text-right shadow-inner">
                   <div className="text-xs font-mono text-slate-400 min-h-[18px]">
                     {calcPrevDisplay}
                   </div>
-                  <div className="text-4xl sm:text-5xl font-black text-emerald-400 font-mono tracking-wider overflow-x-auto truncate mt-1">
+                  <div className="text-3xl sm:text-5xl font-black text-emerald-400 font-mono tracking-wider overflow-x-auto truncate mt-1">
                     {calcDisplay}
                   </div>
                 </div>
 
-                {/* Keypad Grid */}
-                <div className="grid grid-cols-4 sm:grid-cols-5 gap-2.5">
-                  {[
-                    { label: 'C', val: 'C', color: 'bg-rose-700 hover:bg-rose-600 text-white' },
-                    { label: '⌫', val: '⌫', color: 'bg-stone-800 hover:bg-stone-700 text-amber-300' },
-                    { label: '√', val: 'sqrt', color: 'bg-stone-800 hover:bg-stone-700 text-emerald-300' },
-                    { label: 'x²', val: 'sq', color: 'bg-stone-800 hover:bg-stone-700 text-emerald-300' },
-                    { label: '÷', val: '÷', color: 'bg-amber-600 hover:bg-amber-500 text-white font-black' },
+                {/* Optional Scientific Functions Grid (When in Scientific Mode) */}
+                {calcMode === 'scientific' && (
+                  <div className="grid grid-cols-4 gap-2 pt-1 pb-2 border-b border-slate-800">
+                    {[
+                      { label: 'sin', val: 'sin', color: 'bg-purple-950/80 hover:bg-purple-900 text-purple-200' },
+                      { label: 'cos', val: 'cos', color: 'bg-purple-950/80 hover:bg-purple-900 text-purple-200' },
+                      { label: 'tan', val: 'tan', color: 'bg-purple-950/80 hover:bg-purple-900 text-purple-200' },
+                      { label: 'π', val: 'π', color: 'bg-purple-950/80 hover:bg-purple-900 text-amber-300 font-mono' },
 
-                    { label: '7', val: '7', color: 'bg-stone-800 hover:bg-stone-700 text-white' },
-                    { label: '8', val: '8', color: 'bg-stone-800 hover:bg-stone-700 text-white' },
-                    { label: '9', val: '9', color: 'bg-stone-800 hover:bg-stone-700 text-white' },
-                    { label: '×', val: '×', color: 'bg-amber-600 hover:bg-amber-500 text-white font-black' },
-                    { label: '(', val: '(', color: 'bg-stone-800 hover:bg-stone-700 text-cyan-300' },
+                      { label: 'log', val: 'log', color: 'bg-purple-950/80 hover:bg-purple-900 text-purple-200' },
+                      { label: 'ln', val: 'ln', color: 'bg-purple-950/80 hover:bg-purple-900 text-purple-200' },
+                      { label: '√', val: 'sqrt', color: 'bg-teal-950/80 hover:bg-teal-900 text-teal-200' },
+                      { label: 'x²', val: 'sq', color: 'bg-teal-950/80 hover:bg-teal-900 text-teal-200' },
 
-                    { label: '4', val: '4', color: 'bg-stone-800 hover:bg-stone-700 text-white' },
-                    { label: '5', val: '5', color: 'bg-stone-800 hover:bg-stone-700 text-white' },
-                    { label: '6', val: '6', color: 'bg-stone-800 hover:bg-stone-700 text-white' },
-                    { label: '-', val: '-', color: 'bg-amber-600 hover:bg-amber-500 text-white font-black' },
-                    { label: ')', val: ')', color: 'bg-stone-800 hover:bg-stone-700 text-cyan-300' },
+                      { label: 'x³', val: 'cube', color: 'bg-teal-950/80 hover:bg-teal-900 text-teal-200' },
+                      { label: 'xʸ', val: '^', color: 'bg-teal-950/80 hover:bg-teal-900 text-teal-200' },
+                      { label: 'n!', val: 'fact', color: 'bg-purple-950/80 hover:bg-purple-900 text-purple-200' },
+                      { label: '1/x', val: '1/x', color: 'bg-purple-950/80 hover:bg-purple-900 text-purple-200' },
 
-                    { label: '1', val: '1', color: 'bg-stone-800 hover:bg-stone-700 text-white' },
-                    { label: '2', val: '2', color: 'bg-stone-800 hover:bg-stone-700 text-white' },
-                    { label: '3', val: '3', color: 'bg-stone-800 hover:bg-stone-700 text-white' },
-                    { label: '+', val: '+', color: 'bg-amber-600 hover:bg-amber-500 text-white font-black' },
-                    { label: 'π', val: 'π', color: 'bg-stone-800 hover:bg-stone-700 text-purple-300' },
+                      { label: '(', val: '(', color: 'bg-stone-900 hover:bg-stone-800 text-cyan-300' },
+                      { label: ')', val: ')', color: 'bg-stone-900 hover:bg-stone-800 text-cyan-300' },
+                      { label: '|x|', val: 'abs', color: 'bg-purple-950/80 hover:bg-purple-900 text-purple-200' },
+                      { label: 'e', val: 'e', color: 'bg-purple-950/80 hover:bg-purple-900 text-amber-300 font-mono' }
+                    ].map((btn, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => handleCalcInput(btn.val)}
+                        className={`p-2.5 rounded-xl text-xs sm:text-sm font-black transition cursor-pointer active:scale-95 border border-purple-500/30 flex items-center justify-center ${btn.color}`}
+                      >
+                        {btn.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
 
-                    { label: '±', val: '+/-', color: 'bg-stone-800 hover:bg-stone-700 text-white' },
-                    { label: '0', val: '0', color: 'bg-stone-800 hover:bg-stone-700 text-white' },
-                    { label: '.', val: '.', color: 'bg-stone-800 hover:bg-stone-700 text-white' },
-                    { label: '=', val: '=', color: 'bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black sm:col-span-2' }
-                  ].map((btn, idx) => (
+                {/* Standard 4-Column Keypad Grid (Always 4 columns, perfectly matching iOS/Android standard layout) */}
+                <div className="grid grid-cols-4 gap-2.5">
+                  {/* Row 1 */}
+                  <button onClick={() => handleCalcInput('C')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-rose-600 hover:bg-rose-500 text-white cursor-pointer active:scale-95 shadow">C</button>
+                  <button onClick={() => handleCalcInput('⌫')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-stone-800 hover:bg-stone-700 text-amber-300 cursor-pointer active:scale-95 shadow">⌫</button>
+                  <button onClick={() => handleCalcInput('%')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-stone-800 hover:bg-stone-700 text-cyan-300 cursor-pointer active:scale-95 shadow">%</button>
+                  <button onClick={() => handleCalcInput('÷')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-amber-500 hover:bg-amber-400 text-stone-950 cursor-pointer active:scale-95 shadow">÷</button>
+
+                  {/* Row 2 */}
+                  <button onClick={() => handleCalcInput('7')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-stone-850 hover:bg-stone-750 text-white cursor-pointer active:scale-95 shadow">7</button>
+                  <button onClick={() => handleCalcInput('8')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-stone-850 hover:bg-stone-750 text-white cursor-pointer active:scale-95 shadow">8</button>
+                  <button onClick={() => handleCalcInput('9')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-stone-850 hover:bg-stone-750 text-white cursor-pointer active:scale-95 shadow">9</button>
+                  <button onClick={() => handleCalcInput('×')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-amber-500 hover:bg-amber-400 text-stone-950 cursor-pointer active:scale-95 shadow">×</button>
+
+                  {/* Row 3 */}
+                  <button onClick={() => handleCalcInput('4')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-stone-850 hover:bg-stone-750 text-white cursor-pointer active:scale-95 shadow">4</button>
+                  <button onClick={() => handleCalcInput('5')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-stone-850 hover:bg-stone-750 text-white cursor-pointer active:scale-95 shadow">5</button>
+                  <button onClick={() => handleCalcInput('6')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-stone-850 hover:bg-stone-750 text-white cursor-pointer active:scale-95 shadow">6</button>
+                  <button onClick={() => handleCalcInput('-')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-amber-500 hover:bg-amber-400 text-stone-950 cursor-pointer active:scale-95 shadow">-</button>
+
+                  {/* Row 4 */}
+                  <button onClick={() => handleCalcInput('1')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-stone-850 hover:bg-stone-750 text-white cursor-pointer active:scale-95 shadow">1</button>
+                  <button onClick={() => handleCalcInput('2')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-stone-850 hover:bg-stone-750 text-white cursor-pointer active:scale-95 shadow">2</button>
+                  <button onClick={() => handleCalcInput('3')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-stone-850 hover:bg-stone-750 text-white cursor-pointer active:scale-95 shadow">3</button>
+                  <button onClick={() => handleCalcInput('+')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-amber-500 hover:bg-amber-400 text-stone-950 cursor-pointer active:scale-95 shadow">+</button>
+
+                  {/* Row 5 */}
+                  <button onClick={() => handleCalcInput('+/-')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-stone-800 hover:bg-stone-700 text-slate-300 cursor-pointer active:scale-95 shadow">±</button>
+                  <button onClick={() => handleCalcInput('0')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-stone-850 hover:bg-stone-750 text-white cursor-pointer active:scale-95 shadow">0</button>
+                  <button onClick={() => handleCalcInput('.')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-stone-800 hover:bg-stone-700 text-white cursor-pointer active:scale-95 shadow">.</button>
+                  <button onClick={() => handleCalcInput('=')} className="p-3.5 sm:p-4 rounded-2xl text-lg font-black bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-400 hover:to-green-400 text-stone-950 cursor-pointer active:scale-95 shadow-lg border-2 border-emerald-300">=</button>
+                </div>
+
+                {/* DAV Quick Formulas Bar */}
+                <div className="pt-3 border-t border-slate-800">
+                  <div className="text-[10px] font-black uppercase text-amber-300 mb-1.5 flex items-center justify-between">
+                    <span>DAV Quick Formulas:</span>
+                    <span className="text-slate-400">Class 6–8 Math</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1.5 text-[11px]">
                     <button
-                      key={idx}
-                      onClick={() => handleCalcInput(btn.val)}
-                      className={`p-3.5 sm:p-4 rounded-2xl text-base sm:text-lg font-black transition cursor-pointer active:scale-95 shadow-md flex items-center justify-center ${btn.color}`}
+                      onClick={() => {
+                        const r = parseFloat(calcDisplay) || 5;
+                        const area = Math.round(Math.PI * r * r * 100) / 100;
+                        setCalcPrevDisplay(`Area Circle (r=${r}): π·r²`);
+                        setCalcDisplay(area.toString());
+                        setIsNewCalc(true);
+                        playFx('ding');
+                      }}
+                      className="bg-stone-900 hover:bg-stone-800 text-slate-300 p-1.5 rounded-lg border border-slate-800 text-center cursor-pointer"
                     >
-                      {btn.label}
+                      ⚪ Circle: π·r²
                     </button>
-                  ))}
+                    <button
+                      onClick={() => {
+                        const p = parseFloat(calcDisplay) || 1000;
+                        const si = (p * 5 * 2) / 100;
+                        setCalcPrevDisplay(`S.I. (P=${p}, R=5%, T=2y)`);
+                        setCalcDisplay(si.toString());
+                        setIsNewCalc(true);
+                        playFx('ding');
+                      }}
+                      className="bg-stone-900 hover:bg-stone-800 text-slate-300 p-1.5 rounded-lg border border-slate-800 text-center cursor-pointer"
+                    >
+                      💰 S.I: (P·R·T)/100
+                    </button>
+                    <button
+                      onClick={() => {
+                        const val = parseFloat(calcDisplay) || 80;
+                        const pct = Math.round((val / 100) * 100);
+                        setCalcPrevDisplay(`Percent of 100 (${val}/100)`);
+                        setCalcDisplay(`${pct}%`);
+                        setIsNewCalc(true);
+                        playFx('ding');
+                      }}
+                      className="bg-stone-900 hover:bg-stone-800 text-slate-300 p-1.5 rounded-lg border border-slate-800 text-center cursor-pointer"
+                    >
+                      📊 % Solver
+                    </button>
+                  </div>
                 </div>
 
                 {/* Calculation History Tape */}
                 {calcHistory.length > 0 && (
-                  <div className="pt-4 border-t border-slate-800">
+                  <div className="pt-3 border-t border-slate-800">
                     <div className="text-[11px] font-black uppercase text-slate-400 mb-2 flex items-center justify-between">
-                      <span>Recent History (Click to reuse):</span>
+                      <span>Recent History:</span>
                       <button
                         onClick={() => setCalcHistory([])}
                         className="text-[10px] text-rose-400 hover:underline cursor-pointer"
@@ -1379,8 +1750,8 @@ export function KidsFunNavigatorSection({ user }) {
                         Clear
                       </button>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      {calcHistory.map((h, i) => (
+                    <div className="flex flex-wrap gap-1.5">
+                      {calcHistory.slice(0, 5).map((h, i) => (
                         <button
                           key={i}
                           onClick={() => {
@@ -1388,7 +1759,7 @@ export function KidsFunNavigatorSection({ user }) {
                             setIsNewCalc(true);
                             playFx('pop');
                           }}
-                          className="bg-stone-900 hover:bg-stone-800 text-xs text-slate-300 py-1 px-2.5 rounded-xl border border-slate-700 cursor-pointer"
+                          className="bg-stone-900 hover:bg-stone-800 text-xs text-slate-300 py-1 px-2 rounded-xl border border-slate-800 cursor-pointer"
                         >
                           {h.expr} = <span className="font-black text-emerald-400">{h.res}</span>
                         </button>
@@ -1424,27 +1795,74 @@ export function KidsFunNavigatorSection({ user }) {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2">
+                {/* Multi-Year Jump Controls (2026 to 2047) */}
+                <div className="flex flex-wrap items-center gap-2">
                   <button
-                    onClick={() => {
-                      setCalendarDate(new Date(calendarDate.getFullYear(), calendarDate.getMonth() - 1, 1));
-                      playFx('pop');
-                    }}
-                    className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white cursor-pointer"
+                    onClick={handlePrevMonth}
+                    disabled={calendarYear === 2026 && calendarMonth === 0}
+                    className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                    title="Previous Month"
                   >
-                    ◀ Prev
+                    ◀
                   </button>
-                  <div className="text-base font-black px-4 py-2 bg-stone-950/60 rounded-xl border border-purple-300">
-                    {calendarDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                  </div>
-                  <button
-                    onClick={() => {
-                      setCalendarDate(new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 1));
+
+                  {/* Month Selector Dropdown */}
+                  <select
+                    value={calendarMonth}
+                    onChange={(e) => {
+                      const m = parseInt(e.target.value, 10);
+                      // Cap 2047 to October (month index 9)
+                      if (calendarYear === 2047 && m > 9) setCalendarMonth(9);
+                      else setCalendarMonth(m);
                       playFx('pop');
                     }}
-                    className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white cursor-pointer"
+                    className="bg-stone-950 text-white font-black text-xs py-2 px-3 rounded-xl border border-purple-400 focus:outline-none cursor-pointer"
                   >
-                    Next ▶
+                    {[
+                      'January', 'February', 'March', 'April', 'May', 'June',
+                      'July', 'August', 'September', 'October', 'November', 'December'
+                    ].map((name, idx) => {
+                      if (calendarYear === 2047 && idx > 9) return null;
+                      return (
+                        <option key={idx} value={idx}>{name}</option>
+                      );
+                    })}
+                  </select>
+
+                  {/* Year Selector Dropdown (Jan 2026 to Oct 2047) */}
+                  <select
+                    value={calendarYear}
+                    onChange={(e) => {
+                      const y = parseInt(e.target.value, 10);
+                      setCalendarYear(y);
+                      if (y === 2047 && calendarMonth > 9) setCalendarMonth(9);
+                      playFx('pop');
+                    }}
+                    className="bg-stone-950 text-amber-300 font-black text-xs py-2 px-3 rounded-xl border border-purple-400 focus:outline-none cursor-pointer"
+                  >
+                    {Array.from({ length: 22 }, (_, i) => 2026 + i).map(year => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
+
+                  <button
+                    onClick={handleNextMonth}
+                    disabled={calendarYear === 2047 && calendarMonth === 9}
+                    className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                    title="Next Month"
+                  >
+                    ▶
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setCalendarYear(2026);
+                      setCalendarMonth(9); // Oct 2026
+                      playFx('pop');
+                    }}
+                    className="px-2.5 py-1.5 rounded-xl bg-purple-950 text-purple-200 border border-purple-400/50 hover:bg-purple-900 text-[11px] font-bold cursor-pointer"
+                  >
+                    Oct 2026
                   </button>
                 </div>
               </div>
@@ -1457,8 +1875,8 @@ export function KidsFunNavigatorSection({ user }) {
 
                 <div className="grid grid-cols-7 gap-2 mt-3">
                   {(() => {
-                    const year = calendarDate.getFullYear();
-                    const month = calendarDate.getMonth();
+                    const year = calendarYear;
+                    const month = calendarMonth;
                     const daysInMonth = new Date(year, month + 1, 0).getDate();
                     const firstDayOfWeek = new Date(year, month, 1).getDay(); // 0=Sun
                     const today = new Date();
@@ -1593,13 +2011,24 @@ export function KidsFunNavigatorSection({ user }) {
                   </p>
                 </div>
 
-                <div className="text-right">
-                  <div className="text-4xl sm:text-5xl font-black text-amber-300 font-mono">
-                    {compassHeading}°
+                <div className="flex flex-col items-end gap-2">
+                  <div className="text-right">
+                    <div className="text-4xl sm:text-5xl font-black text-amber-300 font-mono">
+                      {compassHeading}°
+                    </div>
+                    <div className="text-sm font-extrabold text-white mt-0.5">
+                      {cardinalDirection}
+                    </div>
                   </div>
-                  <div className="text-sm font-extrabold text-white mt-1">
-                    {cardinalDirection}
-                  </div>
+
+                  {/* Enable Mobile Compass Sensors Button */}
+                  <button
+                    onClick={enableCompassSensors}
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-stone-950 font-black text-xs flex items-center gap-1.5 shadow-md border border-white/40 cursor-pointer active:scale-95 transition"
+                  >
+                    <Compass className="w-4 h-4 animate-spin-slow" />
+                    <span>{sensorStatus === 'active' ? '✓ Sensor Active' : '🧭 Calibrate & Enable Mobile Sensor'}</span>
+                  </button>
                 </div>
               </div>
 
@@ -1629,11 +2058,11 @@ export function KidsFunNavigatorSection({ user }) {
                 </div>
               </div>
 
-              {/* Desktop Manual Heading Slider */}
-              <div className="max-w-md mx-auto bg-stone-950 p-4 rounded-2xl border border-amber-400/50">
-                <div className="flex items-center justify-between text-xs font-bold text-amber-300 mb-1">
-                  <span>Manual Heading Dial (For Desktop Users):</span>
-                  <span>{compassHeading}°</span>
+              {/* Manual Heading Dial & Quick Direction Buttons */}
+              <div className="max-w-md mx-auto bg-stone-950 p-4 rounded-2xl border border-amber-400/50 space-y-3">
+                <div className="flex items-center justify-between text-xs font-bold text-amber-300">
+                  <span>Manual Heading Dial (Rotate Anytime):</span>
+                  <span className="font-mono text-white font-black">{compassHeading}° ({cardinalDirection})</span>
                 </div>
                 <input
                   type="range"
@@ -1646,6 +2075,28 @@ export function KidsFunNavigatorSection({ user }) {
                   }}
                   className="w-full accent-amber-400 cursor-pointer"
                 />
+
+                {/* Quick Cardinal Direction Snaps */}
+                <div className="grid grid-cols-4 gap-2 pt-1">
+                  {[
+                    { label: 'North (0°)', deg: 0 },
+                    { label: 'East (90°)', deg: 90 },
+                    { label: 'South (180°)', deg: 180 },
+                    { label: 'West (270°)', deg: 270 }
+                  ].map(btn => (
+                    <button
+                      key={btn.deg}
+                      onClick={() => {
+                        setCompassHeading(btn.deg);
+                        setCompassManual(true);
+                        playFx('pop');
+                      }}
+                      className="py-1 px-2 rounded-lg bg-stone-900 hover:bg-stone-800 text-slate-300 text-[10px] font-bold border border-slate-700 cursor-pointer"
+                    >
+                      {btn.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* School Bearing Info */}
@@ -1702,57 +2153,168 @@ export function KidsFunNavigatorSection({ user }) {
                 </div>
               </div>
 
-              {/* Mode 1: Digital & Analog Clock */}
-              {clockMode === 'digital_analog' && (
-                <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                  
-                  {/* Big Neon Digital Clock */}
-                  <div className="bg-stone-950 rounded-3xl p-6 sm:p-8 border-2 border-indigo-400 text-center shadow-2xl">
-                    <div className="text-xs uppercase font-black text-amber-300 tracking-widest">
-                      Current Indian Standard Time (IST)
+              {/* Mode 1: Digital & Analog Clock with 12H/24H and World Country Timezones */}
+              {clockMode === 'digital_analog' && (() => {
+                const tz = activeTimezone.zone;
+                let formattedTimeStr = '';
+                let tzHour = 0, tzMin = 0, tzSec = 0;
+                try {
+                  formattedTimeStr = new Intl.DateTimeFormat('en-US', {
+                    timeZone: tz,
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: !is24HourFormat
+                  }).format(currentTime);
+
+                  const parts = new Intl.DateTimeFormat('en-US', {
+                    timeZone: tz,
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric',
+                    hourCycle: 'h23'
+                  }).formatToParts(currentTime);
+                  tzHour = parseInt(parts.find(p => p.type === 'hour')?.value || '0', 10);
+                  tzMin = parseInt(parts.find(p => p.type === 'minute')?.value || '0', 10);
+                  tzSec = parseInt(parts.find(p => p.type === 'second')?.value || '0', 10);
+                } catch (e) {
+                  formattedTimeStr = currentTime.toLocaleTimeString();
+                  tzHour = currentTime.getHours();
+                  tzMin = currentTime.getMinutes();
+                  tzSec = currentTime.getSeconds();
+                }
+
+                return (
+                  <div className="mt-6 space-y-6">
+                    {/* Controls Bar: 12H/24H Toggle + Country Selector + Timezone Selector */}
+                    <div className="bg-stone-950/80 rounded-2xl p-4 border border-indigo-400/40 flex flex-wrap items-center justify-between gap-3">
+                      
+                      {/* Left: Country Selector */}
+                      <div className="flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-cyan-300" />
+                        <span className="text-xs font-black uppercase text-amber-300">Country:</span>
+                        <select
+                          value={selectedCountryId}
+                          onChange={(e) => {
+                            const newCountryId = e.target.value;
+                            setSelectedCountryId(newCountryId);
+                            const found = WORLD_COUNTRIES_TIMEZONES.find(c => c.id === newCountryId);
+                            if (found && found.timezones.length > 0) {
+                              setSelectedTimezoneId(found.timezones[0].id);
+                            }
+                            playFx('pop');
+                          }}
+                          className="bg-stone-900 text-white font-black text-xs py-2 px-3 rounded-xl border border-indigo-400/60 focus:outline-none cursor-pointer"
+                        >
+                          {WORLD_COUNTRIES_TIMEZONES.map(c => (
+                            <option key={c.id} value={c.id}>
+                              {c.flag} {c.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Middle: Timezone Selector (if multiple timezones like Russia, USA, Australia) */}
+                      {activeCountry.timezones.length > 1 && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-slate-300">Zone:</span>
+                          <select
+                            value={selectedTimezoneId}
+                            onChange={(e) => {
+                              setSelectedTimezoneId(e.target.value);
+                              playFx('pop');
+                            }}
+                            className="bg-stone-900 text-cyan-300 font-bold text-xs py-2 px-3 rounded-xl border border-cyan-400/60 focus:outline-none cursor-pointer"
+                          >
+                            {activeCountry.timezones.map(z => (
+                              <option key={z.id} value={z.id}>
+                                {z.name} ({z.offset})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+
+                      {/* Right: 12-Hour vs 24-Hour Format Toggle */}
+                      <div className="flex items-center gap-1.5 bg-stone-900 p-1 rounded-xl border border-indigo-300/40">
+                        <span className="text-[10px] uppercase font-bold text-slate-400 px-1.5">Format:</span>
+                        <button
+                          onClick={() => { setIs24HourFormat(false); playFx('pop'); }}
+                          className={`px-3 py-1 rounded-lg text-xs font-black transition cursor-pointer ${
+                            !is24HourFormat ? 'bg-amber-400 text-stone-950 shadow' : 'text-slate-300 hover:text-white'
+                          }`}
+                        >
+                          12-Hour (AM/PM)
+                        </button>
+                        <button
+                          onClick={() => { setIs24HourFormat(true); playFx('pop'); }}
+                          className={`px-3 py-1 rounded-lg text-xs font-black transition cursor-pointer ${
+                            is24HourFormat ? 'bg-amber-400 text-stone-950 shadow' : 'text-slate-300 hover:text-white'
+                          }`}
+                        >
+                          24-Hour (Military)
+                        </button>
+                      </div>
+
                     </div>
-                    <div className="text-5xl sm:text-7xl font-black text-indigo-400 font-mono tracking-wider mt-2">
-                      {currentTime.toLocaleTimeString()}
+
+                    {/* Clock Displays Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                      
+                      {/* Big Neon Digital Clock */}
+                      <div className="bg-stone-950 rounded-3xl p-6 sm:p-8 border-2 border-indigo-400 text-center shadow-2xl relative overflow-hidden">
+                        <div className="text-xs uppercase font-black text-amber-300 tracking-widest flex items-center justify-center gap-1.5">
+                          <span>{activeCountry.flag}</span>
+                          <span>{activeCountry.name} • {activeTimezone.name}</span>
+                        </div>
+                        <div className="text-4xl sm:text-6xl font-black text-indigo-400 font-mono tracking-wider mt-3">
+                          {formattedTimeStr}
+                        </div>
+                        <div className="text-xs sm:text-sm font-extrabold text-white mt-2">
+                          {currentTime.toLocaleDateString('en-US', { timeZone: tz, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                        </div>
+                        <div className="mt-3 text-[11px] font-bold text-cyan-300 bg-cyan-950/40 py-1 px-3 rounded-full border border-cyan-500/30 inline-block">
+                          UTC Offset: {activeTimezone.offset} • Format: {is24HourFormat ? '24-Hour' : '12-Hour'}
+                        </div>
+                      </div>
+
+                      {/* Analog Clock Dial */}
+                      <div className="flex items-center justify-center">
+                        <div className="w-64 h-64 rounded-full bg-stone-950 border-6 border-indigo-400 shadow-2xl relative flex items-center justify-center">
+                          {/* Hour numbers */}
+                          <span className="absolute top-2 font-black text-sm text-amber-300">12</span>
+                          <span className="absolute right-3 font-black text-sm text-slate-400">3</span>
+                          <span className="absolute bottom-2 font-black text-sm text-slate-400">6</span>
+                          <span className="absolute left-3 font-black text-sm text-slate-400">9</span>
+
+                          {/* Hour Hand */}
+                          <div 
+                            className="w-1.5 h-16 bg-white rounded-full absolute bottom-1/2 left-1/2 origin-bottom -translate-x-1/2 shadow-lg"
+                            style={{ transform: `rotate(${(tzHour % 12 + tzMin / 60) * 30}deg)` }}
+                          />
+
+                          {/* Minute Hand */}
+                          <div 
+                            className="w-1 h-24 bg-amber-400 rounded-full absolute bottom-1/2 left-1/2 origin-bottom -translate-x-1/2 shadow-lg"
+                            style={{ transform: `rotate(${tzMin * 6}deg)` }}
+                          />
+
+                          {/* Second Hand */}
+                          <div 
+                            className="w-0.5 h-28 bg-rose-500 rounded-full absolute bottom-1/2 left-1/2 origin-bottom -translate-x-1/2"
+                            style={{ transform: `rotate(${tzSec * 6}deg)` }}
+                          />
+
+                          {/* Center Point */}
+                          <div className="w-4 h-4 rounded-full bg-amber-400 border-2 border-stone-950 absolute z-10" />
+                        </div>
+                      </div>
+
                     </div>
-                    <div className="text-sm font-extrabold text-white mt-2">
-                      {currentTime.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                    </div>
+
                   </div>
-
-                  {/* Analog Clock Dial */}
-                  <div className="flex items-center justify-center">
-                    <div className="w-64 h-64 rounded-full bg-stone-950 border-6 border-indigo-400 shadow-2xl relative flex items-center justify-center">
-                      {/* Hour numbers */}
-                      <span className="absolute top-2 font-black text-sm text-amber-300">12</span>
-                      <span className="absolute right-3 font-black text-sm text-slate-400">3</span>
-                      <span className="absolute bottom-2 font-black text-sm text-slate-400">6</span>
-                      <span className="absolute left-3 font-black text-sm text-slate-400">9</span>
-
-                      {/* Hour Hand */}
-                      <div 
-                        className="w-1.5 h-16 bg-white rounded-full absolute bottom-1/2 left-1/2 origin-bottom -translate-x-1/2"
-                        style={{ transform: `rotate(${(currentTime.getHours() % 12 + currentTime.getMinutes() / 60) * 30}deg)` }}
-                      />
-
-                      {/* Minute Hand */}
-                      <div 
-                        className="w-1 h-24 bg-amber-400 rounded-full absolute bottom-1/2 left-1/2 origin-bottom -translate-x-1/2"
-                        style={{ transform: `rotate(${currentTime.getMinutes() * 6}deg)` }}
-                      />
-
-                      {/* Second Hand */}
-                      <div 
-                        className="w-0.5 h-28 bg-rose-500 rounded-full absolute bottom-1/2 left-1/2 origin-bottom -translate-x-1/2"
-                        style={{ transform: `rotate(${currentTime.getSeconds() * 6}deg)` }}
-                      />
-
-                      {/* Center Point */}
-                      <div className="w-4 h-4 rounded-full bg-amber-400 border-2 border-stone-950 absolute z-10" />
-                    </div>
-                  </div>
-
-                </div>
-              )}
+                );
+              })()}
 
               {/* Mode 2: Stopwatch */}
               {clockMode === 'stopwatch' && (
@@ -1772,7 +2334,6 @@ export function KidsFunNavigatorSection({ user }) {
                     <button
                       onClick={() => {
                         if (!swRunning) {
-                          // Resuming: anchor start ref
                           swStartRef.current = Date.now() - swTime;
                         }
                         setSwRunning(r => !r);
@@ -1826,64 +2387,129 @@ export function KidsFunNavigatorSection({ user }) {
                 </div>
               )}
 
-              {/* Mode 3: Countdown Timer */}
-              {clockMode === 'timer' && (
-                <div className="mt-8 max-w-xl mx-auto bg-stone-950 rounded-3xl p-6 sm:p-8 border-2 border-indigo-400 text-center shadow-2xl space-y-6">
-                  <div className="text-xs uppercase font-black text-amber-300 tracking-widest">
-                    Study Countdown Timer
-                  </div>
+              {/* Mode 3: Countdown Timer with Custom Inputs (Hours, Minutes, Seconds) + Presets */}
+              {clockMode === 'timer' && (() => {
+                const h = Math.floor(timerSecondsLeft / 3600);
+                const m = Math.floor((timerSecondsLeft % 3600) / 60);
+                const s = timerSecondsLeft % 60;
+                const formattedTimer = h > 0 
+                  ? `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+                  : `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 
-                  <div className="text-5xl sm:text-6xl font-black text-emerald-400 font-mono">
-                    {Math.floor(timerSecondsLeft / 60).toString().padStart(2, '0')}:
-                    {(timerSecondsLeft % 60).toString().padStart(2, '0')}
-                  </div>
+                return (
+                  <div className="mt-8 max-w-xl mx-auto bg-stone-950 rounded-3xl p-6 sm:p-8 border-2 border-indigo-400 text-center shadow-2xl space-y-6">
+                    <div className="text-xs uppercase font-black text-amber-300 tracking-widest">
+                      Custom Study Countdown Timer
+                    </div>
 
-                  <div className="flex items-center justify-center gap-2">
-                    {[1, 5, 10, 25].map(m => (
+                    {/* Big Timer Digits */}
+                    <div className="text-5xl sm:text-7xl font-black text-emerald-400 font-mono tracking-tight">
+                      {formattedTimer}
+                    </div>
+
+                    {/* Quick Access Presets */}
+                    <div>
+                      <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Quick Presets:</span>
+                      <div className="flex flex-wrap items-center justify-center gap-2 mt-2">
+                        {[
+                          { mins: 1, label: '1 min' },
+                          { mins: 5, label: '5 min' },
+                          { mins: 10, label: '10 min' },
+                          { mins: 25, label: '25 min' },
+                          { mins: 45, label: '45 min' }
+                        ].map(p => (
+                          <button
+                            key={p.mins}
+                            onClick={() => applyPresetTimer(p.mins)}
+                            className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-stone-900 hover:bg-stone-800 text-amber-300 border border-slate-700 cursor-pointer active:scale-95"
+                          >
+                            {p.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Custom Timer Input: Hours, Minutes, Seconds */}
+                    <div className="bg-stone-900/90 p-4 rounded-2xl border border-indigo-500/30">
+                      <div className="text-xs font-black uppercase text-slate-300 mb-2">
+                        Set Your Custom Timer:
+                      </div>
+                      <div className="flex items-center justify-center gap-3">
+                        <div className="text-center">
+                          <label className="text-[10px] text-slate-400 font-bold block mb-1">Hours</label>
+                          <input
+                            type="number"
+                            min="0"
+                            max="23"
+                            value={customHours}
+                            onChange={(e) => setCustomHours(e.target.value)}
+                            className="w-16 bg-stone-950 text-white font-mono text-center font-black py-2 rounded-xl border border-slate-700 text-sm focus:outline-none focus:border-amber-400"
+                          />
+                        </div>
+                        <span className="text-lg font-black text-slate-500 pt-4">:</span>
+                        <div className="text-center">
+                          <label className="text-[10px] text-slate-400 font-bold block mb-1">Minutes</label>
+                          <input
+                            type="number"
+                            min="0"
+                            max="59"
+                            value={customMins}
+                            onChange={(e) => setCustomMins(e.target.value)}
+                            className="w-16 bg-stone-950 text-white font-mono text-center font-black py-2 rounded-xl border border-slate-700 text-sm focus:outline-none focus:border-amber-400"
+                          />
+                        </div>
+                        <span className="text-lg font-black text-slate-500 pt-4">:</span>
+                        <div className="text-center">
+                          <label className="text-[10px] text-slate-400 font-bold block mb-1">Seconds</label>
+                          <input
+                            type="number"
+                            min="0"
+                            max="59"
+                            value={customSecs}
+                            onChange={(e) => setCustomSecs(e.target.value)}
+                            className="w-16 bg-stone-950 text-white font-mono text-center font-black py-2 rounded-xl border border-slate-700 text-sm focus:outline-none focus:border-amber-400"
+                          />
+                        </div>
+                        <div className="pt-4">
+                          <button
+                            onClick={applyCustomTimer}
+                            className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs cursor-pointer shadow"
+                          >
+                            Set Timer
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Timer Controls */}
+                    <div className="flex items-center justify-center gap-3">
                       <button
-                        key={m}
                         onClick={() => {
-                          setTimerInputMins(m);
-                          setTimerSecondsLeft(m * 60);
-                          setTimerRunning(false);
+                          setTimerRunning(r => !r);
                           playFx('pop');
                         }}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${
-                          timerInputMins === m ? 'bg-amber-400 text-stone-950 font-black' : 'bg-stone-900 text-slate-300'
+                        className={`px-6 py-3.5 rounded-2xl font-black text-sm flex items-center gap-2 cursor-pointer shadow-lg transition active:scale-95 ${
+                          timerRunning ? 'bg-rose-600 hover:bg-rose-500 text-white' : 'bg-emerald-500 hover:bg-emerald-400 text-stone-950'
                         }`}
                       >
-                        {m} min
+                        {timerRunning ? <Pause className="w-4 h-4 fill-white" /> : <Play className="w-4 h-4 fill-stone-950" />}
+                        <span>{timerRunning ? 'Pause' : 'Start Timer'}</span>
                       </button>
-                    ))}
-                  </div>
 
-                  <div className="flex items-center justify-center gap-3">
-                    <button
-                      onClick={() => {
-                        setTimerRunning(r => !r);
-                        playFx('pop');
-                      }}
-                      className={`px-6 py-3 rounded-2xl font-black text-sm flex items-center gap-2 cursor-pointer ${
-                        timerRunning ? 'bg-rose-600 hover:bg-rose-500 text-white' : 'bg-emerald-500 hover:bg-emerald-400 text-stone-950'
-                      }`}
-                    >
-                      {timerRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                      <span>{timerRunning ? 'Pause' : 'Start Timer'}</span>
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        setTimerRunning(false);
-                        setTimerSecondsLeft(timerInputMins * 60);
-                        playFx('pop');
-                      }}
-                      className="px-5 py-3 rounded-2xl bg-stone-800 hover:bg-stone-700 text-slate-300 font-bold text-sm cursor-pointer"
-                    >
-                      Reset
-                    </button>
+                      <button
+                        onClick={() => {
+                          setTimerRunning(false);
+                          setTimerSecondsLeft(timerTotalDuration);
+                          playFx('pop');
+                        }}
+                        className="px-5 py-3.5 rounded-2xl bg-stone-800 hover:bg-stone-700 text-slate-300 font-bold text-sm cursor-pointer shadow"
+                      >
+                        Reset
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
             </div>
 

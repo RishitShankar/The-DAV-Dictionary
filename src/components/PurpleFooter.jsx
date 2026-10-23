@@ -18,7 +18,7 @@ export function PurpleFooter({ onSelectSection }) {
     },
     {
       q: 'How can I support or donate to developer Rishit Shankar?',
-      a: 'Visit Section 8: Support & Donate to Developer. You can donate via UPI (9470033984@upi), Paytm, School in-hand cash, or card. Every donation immediately issues an official verified receipt and bill!'
+      a: 'Visit Section 10: Support & Donate to Developer. You can donate via UPI (9470033984@upi), Paytm, School in-hand cash, or card. Every donation immediately issues an official verified receipt and bill!'
     },
     {
       q: 'What is Shankar AI and how does it help me in exams?',
@@ -190,9 +190,11 @@ export function PurpleFooter({ onSelectSection }) {
                 { id: 2, name: 'Section 2: Official Textbooks (LKG-8)' },
                 { id: 3, name: 'Section 3: Questions & Answers' },
                 { id: 6, name: 'Section 6: Video Explanations & PYQs' },
-                { id: 8, name: 'Section 8: Donate to Developer' },
+                { id: 7, name: 'Section 7: Kids Fun & Gadgets' },
+                { id: 8, name: 'Section 8: Study Leaderboard & Focus' },
                 { id: 9, name: 'Section 9: Student Personal Profile' },
-                { id: 10, name: 'Section 10: About Creator Rishit' }
+                { id: 10, name: 'Section 10: Donate to Developer' },
+                { id: 11, name: 'Section 11: About Creator Rishit' }
               ].map(sec => (
                 <button
                   key={sec.id}
@@ -207,11 +209,11 @@ export function PurpleFooter({ onSelectSection }) {
 
             <div className="pt-2">
               <button
-                onClick={() => onSelectSection?.(8)}
+                onClick={() => onSelectSection?.(10)}
                 className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-stone-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md transition cursor-pointer"
               >
                 <Heart className="w-3.5 h-3.5 text-red-950 fill-red-950" />
-                <span>Support Rishit on Section 8</span>
+                <span>Support Rishit on Section 10</span>
               </button>
             </div>
           </div>

@@ -20,6 +20,7 @@ import { DonationSection } from './components/DonationSection';
 import { TeachersSection } from './components/TeachersSection';
 import { ChapterExplanationsSection } from './components/ChapterExplanationsSection';
 import { KidsFunNavigatorSection } from './components/KidsFunNavigatorSection';
+import { StudyLeaderboardSection } from './components/StudyLeaderboardSection';
 import { PurpleFooter } from './components/PurpleFooter';
 import { SectionErrorBoundary } from './components/SectionErrorBoundary';
 import { 
@@ -350,10 +351,12 @@ export function App() {
         ) : activeSection === 7 ? (
           <KidsFunNavigatorSection user={user} />
         ) : activeSection === 8 ? (
-          <DonationSection currentUser={user} />
+          <StudyLeaderboardSection user={user} />
         ) : activeSection === 9 ? (
           <StudentProfileSection user={user} />
         ) : activeSection === 10 ? (
+          <DonationSection currentUser={user} />
+        ) : activeSection === 11 ? (
           <AboutCreatorSection />
         ) : (
           <UntitledSection sectionNumber={activeSection} />
@@ -361,8 +364,8 @@ export function App() {
         </SectionErrorBoundary>
       </main>
 
-      {/* Official Purple Footer displayed ONLY on Section 9 & 10 as requested by the user */}
-      {(activeSection === 9 || activeSection === 10) && (
+      {/* Official Purple Footer displayed on Section 9, 10 & 11 */}
+      {(activeSection === 9 || activeSection === 10 || activeSection === 11) && (
         <PurpleFooter onSelectSection={(secId) => setActiveSection(secId)} />
       )}
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { 
   BookOpen, Layers, X, Sparkles, User, ChevronRight, 
   PanelLeftClose, Award, CheckCircle2, LogOut, Lock, Compass, HelpCircle, Heart,
-  ClipboardList, MessageSquareMore, Video, CheckSquare, UserCheck, Bus
+  ClipboardList, MessageSquareMore, Video, CheckSquare, UserCheck, Bus, Trophy
 } from 'lucide-react';
 
 export function GeminiSidebar({ 
@@ -30,9 +30,10 @@ export function GeminiSidebar({
     { id: 5, name: 'Section 5: Dimension 5 Faculty OS', icon: Award, status: 'Teachers OS' },
     { id: 6, name: 'Section 6: Video Explanations & PYQs', icon: Video, status: 'Lectures & PYQs' },
     { id: 7, name: 'Section 7: Kids Fun & Live Bus GPS', icon: Bus, status: 'Kids Portal' },
-    { id: 8, name: 'Section 8: Donate to Developer', icon: Heart, status: 'Support & Bills' },
+    { id: 8, name: 'Section 8: Study Leaderboard & Focus Mode', icon: Trophy, status: 'Study Ranks & OS' },
     { id: 9, name: 'Section 9: Student Personal Profile', icon: User, status: 'Smart ID Vault' },
-    { id: 10, name: 'Section 10: About Creator Rishit Shankar', icon: User, status: 'Head Boy Profile' },
+    { id: 10, name: 'Section 10: Donate to Developer', icon: Heart, status: 'Support & Bills' },
+    { id: 11, name: 'Section 11: About Creator Rishit Shankar', icon: Award, status: 'Head Boy Profile' },
   ];
 
   const teacherSubSections = [

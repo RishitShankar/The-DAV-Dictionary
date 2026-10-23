@@ -3,7 +3,7 @@ import {
   BookOpen, Brain, Award, FileText, User, 
   HelpCircle, Bell, Compass, ArrowRight, Sparkles, 
   Layers, School, Heart, CheckCircle2, Star, Zap, Flame,
-  BookmarkCheck, MessageCircle, ShieldCheck, Video, Bus, Navigation, MapPin
+  BookmarkCheck, MessageCircle, ShieldCheck, Video, Bus, Navigation, MapPin, Trophy
 } from 'lucide-react';
 
 export function SectionOverview({ onSelectSection }) {
@@ -104,16 +104,16 @@ export function SectionOverview({ onSelectSection }) {
     },
     {
       id: 8,
-      title: 'Section 8: Donate to Developer & Support Hub',
-      shortTitle: 'Donate & Support',
-      icon: Heart,
-      emoji: '❤️',
-      color: 'from-rose-600 to-pink-700',
-      cardBg: 'from-rose-500/10 via-pink-50/80 to-white',
-      borderHover: 'hover:border-rose-500',
-      tag: 'UPI / Paytm / Bills',
-      tagColor: 'bg-rose-100 text-rose-900 border-rose-300',
-      description: 'Support Rishit Shankar with continuous server maintenance, AI compute, and development. Donate via UPI (9470033984@upi), Paytm, Cash, or Card with instant official downloadable invoices!'
+      title: 'Section 8: Study Time Leaderboard & Deep Study Focus Mode',
+      shortTitle: 'Study Arena & Focus',
+      icon: Trophy,
+      emoji: '🏆',
+      color: 'from-amber-500 to-yellow-600',
+      cardBg: 'from-amber-500/10 via-yellow-50/80 to-white',
+      borderHover: 'hover:border-amber-500',
+      tag: 'Live Ranks • Focus Mode',
+      tagColor: 'bg-amber-100 text-amber-950 border-amber-300 font-black',
+      description: 'Track your real study time, earn campus ranks on the live DAV Khabra student leaderboard, and enter strict deep study focus mode with ambient audio, streak tracking, and anti-tab switch protection!'
     },
     {
       id: 9,
@@ -130,7 +130,20 @@ export function SectionOverview({ onSelectSection }) {
     },
     {
       id: 10,
-      title: 'Section 10: About Creator Rishit Shankar',
+      title: 'Section 10: Donate to Developer & Support Hub',
+      shortTitle: 'Donate & Support',
+      icon: Heart,
+      emoji: '❤️',
+      color: 'from-rose-600 to-pink-700',
+      cardBg: 'from-rose-500/10 via-pink-50/80 to-white',
+      borderHover: 'hover:border-rose-500',
+      tag: 'UPI / Paytm / Bills',
+      tagColor: 'bg-rose-100 text-rose-900 border-rose-300',
+      description: 'Support Rishit Shankar with continuous server maintenance, AI compute, and development. Donate via UPI (9470033984@upi), Paytm, Cash, or Card with instant official downloadable invoices!'
+    },
+    {
+      id: 11,
+      title: 'Section 11: About Creator Rishit Shankar',
       shortTitle: 'Head Boy Story',
       icon: Sparkles,
       emoji: '🌟',
@@ -245,11 +258,11 @@ export function SectionOverview({ onSelectSection }) {
               </button>
 
               <button
-                onClick={() => onSelectSection(8)}
+                onClick={() => onSelectSection(10)}
                 className="px-6 py-3 rounded-2xl bg-rose-900/80 hover:bg-rose-800 text-white border border-rose-400/40 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition"
               >
                 <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" />
-                <span>Support Developer on Section 8</span>
+                <span>Support Developer on Section 10</span>
               </button>
             </div>
 
