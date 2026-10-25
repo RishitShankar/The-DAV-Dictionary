@@ -16,12 +16,12 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
           <div className="p-2 sm:p-3 rounded-3xl bg-white/10 backdrop-blur-md border border-amber-400/40 shadow-2xl inline-flex items-center gap-4 pr-6">
             <img 
               src="/logo.png" 
-              alt="The DAV Dictionary" 
+              alt="DAV Dictionary" 
               className="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-2xl hover:scale-105 transition-transform"
             />
             <div className="text-left">
               <div className="text-xs font-black uppercase tracking-wider text-amber-300">Official Release</div>
-              <div className="text-lg sm:text-xl font-extrabold text-white">The DAV Dictionary</div>
+              <div className="text-lg sm:text-xl font-extrabold text-white">DAV Dictionary</div>
               <div className="text-[11px] text-amber-200/80 font-mono">Founded by Head Boy Rishit Shankar</div>
             </div>
           </div>
@@ -30,12 +30,12 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
         {/* Modern Pill Badge */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-amber-300 text-xs font-semibold mb-6 shadow-inner">
           <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-          <span>Shaping Modern India • The DAV Dictionary (Classes 1 to 8)</span>
+          <span>Shaping Modern India • DAV Dictionary (Classes 1 to 8)</span>
         </div>
 
         {/* Big Bold Headline */}
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-tight">
-          Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500">The DAV Dictionary</span>
+          Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500">DAV Dictionary</span>
         </h1>
 
         {/* Subtitle */}

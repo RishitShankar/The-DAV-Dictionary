@@ -232,7 +232,7 @@ export function SectionOverview({ onSelectSection }) {
               <div>
                 <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold mb-2 border border-amber-400/40">
                   <School className="w-3.5 h-3.5" />
-                  <span>The DAV Dictionary • 10 Dimensions of Academic Excellence</span>
+                  <span>DAV Dictionary • 10 Dimensions of Academic Excellence</span>
                 </div>
                 <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
                   Website Overview &amp; 10 Dimensions Hub
@@ -388,7 +388,7 @@ export function SectionOverview({ onSelectSection }) {
             </div>
             <div>
               <h3 className="font-black text-lg text-slate-900">
-                The Story Behind the 10 Dimensions of The DAV Dictionary
+                The Story Behind the 10 Dimensions of DAV Dictionary
               </h3>
               <p className="text-xs text-slate-500">
                 Authored by Rishit Shankar (Head Boy, Class 8 DAV Public School, Khabra)
@@ -401,7 +401,7 @@ export function SectionOverview({ onSelectSection }) {
               "When I started preparing for my Class 8 board and term examinations, I noticed many students struggled to find complete, uncorrupted textbook scans, back-of-chapter answers, and instant revision solutions. Carrying heavy sets of books everywhere was inconvenient."
             </p>
             <p>
-              "To solve this, I designed <strong>The DAV Dictionary</strong> across 10 structured dimensions. From LKG to Class 8, every textbook is organized with high-definition digital rendering, real-time highlighting that persists across devices, an AI academic tutor (Rishi AI) tuned to our syllabus, and instant self-testing quizzes."
+              "To solve this, I designed <strong>DAV Dictionary</strong> across 10 structured dimensions. From LKG to Class 8, every textbook is organized with high-definition digital rendering, real-time highlighting that persists across devices, an AI academic tutor (Rishi AI) tuned to our syllabus, and instant self-testing quizzes."
             </p>
             <p className="font-bold text-red-900">
               "Every single feature has been hand-coded with love and dedication for our schoolmates. I hope this platform helps you learn faster, score 95%+, and enjoy your studies every day!"

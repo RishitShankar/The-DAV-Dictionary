@@ -1,4 +1,4 @@
-// Pre-configured Verified Database Accounts for The DAV Dictionary
+// Pre-configured Verified Database Accounts for DAV Dictionary
 // Dimension 4: Master Developer & Administrator (Rishit Shankar)
 // Paid students start at 0 until registered by the administrator in the Developer Panel.
 

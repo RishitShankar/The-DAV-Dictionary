@@ -799,7 +799,7 @@ export const PRICING_TIERS = [
     period: 'Preview Mode',
     badge: 'Demo Access',
     badgeColor: 'bg-slate-200 text-slate-800',
-    description: 'Preview the DAV Dictionary layout and curriculum structure.',
+    description: 'Preview DAV Dictionary layout and curriculum structure.',
     features: [
       'Access to DAV Class 1 to 8 syllabus overview',
       'Preview books and chapter outlines',

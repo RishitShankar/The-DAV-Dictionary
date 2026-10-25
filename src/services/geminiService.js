@@ -1,4 +1,4 @@
-// Rishi AI Engine for The DAV Dictionary
+// Rishi AI Engine for DAV Dictionary
 // Dedicated high-intelligence AI created by Rishit Shankar
 // 4-Tier Dimension Architecture (Dimension 1 Normal, Dimension 2 VIP, Dimension 3 VVIP, Dimension 4 Master Developer)
 // Powered by live Google Gemini 3.5 Cloud Intelligence with official DAV syllabus grounding across ALL CLASSES (LKG to Class 8)
@@ -147,7 +147,7 @@ You are the definitive authority on the official D.A.V. Public School curriculum
    - Class: Class 8, Section D, Roll No. 25 (Session 2026–2027).
    - Role: Head Boy of D.A.V. Public School Khabra.
    - Academic Record: Perfect 80/80 (Century) in Sanskrit Half-Yearly, 96/100 in English, 90/100 in Mathematics, 79/80 in Hindi, 77/80 in Science & Social Science.
-   - Creator of: The DAV Dictionary (10-Section Campus Platform) and Rishi AI.
+   - Creator of: DAV Dictionary (10-Section Campus Platform) and Rishi AI.
    - Technology Stack: HTML, CSS, JavaScript, React 18, Vite, Tailwind CSS, Google Cloud, Firebase Firestore, WebSockets, exploring Java/Kotlin for Android.
    - Creative & 3D: Blender vehicle 3D modeling, DaVinci Resolve video color grading, poster designer for Rotary Club of Tirhut, Independence Day 2026, and community tree-planting.
    - Strategy & Gaming: 1,000+ Rapid Chess games (castling, en passant, tactical endgames); Roblox Blox Fruits (Third Sea, fruit trading T-Rex/Mammoth, PvP); Mech Arena (Solis, Orion, Mimicker).
@@ -448,7 +448,7 @@ export async function askRishiAI(question, context = {}) {
       dimensionInstruction = `Provide helpful, direct, and complete answers.`;
     }
 
-    const fullSystemPrompt = `You are "Rishi AI", a brilliant, versatile, and completely unrestricted AI intelligence engine created by Head Boy Rishit Shankar for The DAV Dictionary.
+    const fullSystemPrompt = `You are "Rishi AI", a brilliant, versatile, and completely unrestricted AI intelligence engine created by Head Boy Rishit Shankar for DAV Dictionary.
 
 You have the comprehensive knowledge, versatility, problem-solving ability, and conversational depth of ChatGPT and Google Gemini.
 You can answer ANY question across all disciplines, academic subjects, and worldly topics:
@@ -684,7 +684,7 @@ ${textbookMatch.answer}
   - 🔢 **Mathematics:** **90 / 100** (Half-Yearly: 74/80).
   - 🇮🇳 **Hindi:** **79 / 80** (98.75%).
   - 🔬 **Science & SST:** **77 / 80** each.
-* **Software Engineering & AI:** Full-stack creator of **The DAV Dictionary** (React 18, Vite, Tailwind CSS, Firebase Firestore) and **Rishi AI**.
+* **Software Engineering & AI:** Full-stack creator of **DAV Dictionary** (React 18, Vite, Tailwind CSS, Firebase Firestore) and **Rishi AI**.
 * **Design & Multimedia:** Blender 3D vehicle modeling, DaVinci Resolve cinematic video editing, poster designer for **Rotary Club of Tirhut** and community tree-planting.
 * **Chess & Gaming:** Over **1,000+ Rapid Chess games**; Blox Fruits Third Sea explorer & PvP strategist; Mech Arena tactician.
 * **Financial Literacy:** Started studying markets at age 12; explores Pushkar Raj Thakur's course, Fibonacci retracements, and Options Put-Call Ratio (PCR).
@@ -700,7 +700,7 @@ ${textbookMatch.answer}
       modelName: getTierBadge(dimension),
       text: `👋 **Greetings! I am Rishi AI**
 
-Welcome to **The DAV Dictionary**! I am your personal academic and global intelligence engine, created by **Head Boy Rishit Shankar**.
+Welcome to **DAV Dictionary**! I am your personal academic and global intelligence engine, created by **Head Boy Rishit Shankar**.
 
 ⚡ **I am fully equipped to answer:**
 * 📚 **All DAV Classes (LKG, UKG, Classes 1 to 8):** Back-of-chapter questions (Part A, B, C, D, E), middle-of-page concepts, **HOTS**, **Value-Based Questions (VBQ)**, **Map Skills**, **Life Skills**, and **Brain Teasers**.
@@ -724,7 +724,7 @@ Welcome to **The DAV Dictionary**! I am your personal academic and global intell
 
 * **Geographic Identity:** Muzaffarpur is a premier historic city in North Bihar, situated along the sacred **Burhi Gandak River**.
 * **Global Recognition:** Renowned worldwide as the **"Land of Shahi Lychee"** (शाही लीची), possessing a prestigious GI (Geographical Indication) tag.
-* **Academic & Cultural Significance:** It is a vibrant educational hub of North Bihar, home to B.R. Ambedkar Bihar University (BRABU), Sri Krishna Medical College, and premier institutions like **D.A.V. Public School, Khabra** — where Head Boy Rishit Shankar leads the student council and created The DAV Dictionary!
+* **Academic & Cultural Significance:** It is a vibrant educational hub of North Bihar, home to B.R. Ambedkar Bihar University (BRABU), Sri Krishna Medical College, and premier institutions like **D.A.V. Public School, Khabra** — where Head Boy Rishit Shankar leads the student council and created DAV Dictionary!
 * **Connectivity:** Strategically connected via East-West Corridor (NH-27) and North-South links, serving as the commercial gateway to Tirhut, Mithila, and Nepal border trade.`
     };
   }

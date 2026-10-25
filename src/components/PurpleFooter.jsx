@@ -48,12 +48,12 @@ export function PurpleFooter({ onSelectSection }) {
           <div className="flex items-center gap-3.5">
             <img 
               src="/logo.png" 
-              alt="The DAV Dictionary Logo" 
+              alt="DAV Dictionary Logo" 
               className="w-14 h-14 object-contain drop-shadow-md"
             />
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-lg font-black tracking-tight text-white">THE DAV DICTIONARY</span>
+                <span className="text-lg font-black tracking-tight text-white">DAV DICTIONARY</span>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-400 text-purple-950 uppercase">
                   10 Dimensions
                 </span>
@@ -224,7 +224,7 @@ export function PurpleFooter({ onSelectSection }) {
         {/* Bottommost Copyright Bar */}
         <div className="pt-8 border-t border-purple-500/20 flex flex-col sm:flex-row items-center justify-between text-[11px] text-purple-300/80 gap-3">
           <div>
-            © 2026 The DAV Dictionary • Built with excellence by <strong>Rishit Shankar</strong> (Head Boy, DAV Public School).
+            © 2026 DAV Dictionary • Built with excellence by <strong>Rishit Shankar</strong> (Head Boy, DAV Public School).
           </div>
           <div className="flex items-center gap-2">
             <span>Class 8-D • 96% Scholar • 100/100 Sanskrit • Digital India 🇮🇳</span>

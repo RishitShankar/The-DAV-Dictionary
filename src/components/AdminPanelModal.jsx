@@ -362,10 +362,10 @@ export function AdminPanelModal({ isOpen, onClose, currentUser, onOpenDbGuide })
       cleanPhone = `91${cleanPhone}`;
     }
 
-    const message = `🎓 *THE DAV DICTIONARY - OFFICIAL STUDENT PASS*
+    const message = `🎓 *DAV DICTIONARY - OFFICIAL STUDENT PASS*
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Dear *${acc.name}*,
-Welcome to The DAV Dictionary! Your student access has been officially activated by Head Boy & Lead Developer *Rishit Shankar*.
+Welcome to DAV Dictionary! Your student access has been officially activated by Head Boy & Lead Developer *Rishit Shankar*.
 
 👤 *Student Name:* ${acc.name}
 🏫 *Class & Section:* Class ${acc.classNum}-${acc.section || 'A'}
@@ -401,10 +401,10 @@ _Keep your password safe. Have a great study session!_`;
       cleanPhone = `91${cleanPhone}`;
     }
 
-    const message = `❤️ *THE DAV DICTIONARY - OFFICIAL DONATION RECEIPT*
+    const message = `❤️ *DAV DICTIONARY - OFFICIAL DONATION RECEIPT*
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Dear *${donation.studentName || 'Generous Supporter'}*,
-Thank you very much for your voluntary donation to The DAV Dictionary! Your contribution helps keep our cloud servers, Rishi AI Gemini API, and verified textbook solutions live for all DAV Public School students.
+Thank you very much for your voluntary donation to DAV Dictionary! Your contribution helps keep our cloud servers, Rishi AI Gemini API, and verified textbook solutions live for all DAV Public School students.
 
 👤 *Donor Name:* ${donation.studentName}
 💰 *Donation Amount:* ₹${donation.donationAmount || donation.totalAmount}

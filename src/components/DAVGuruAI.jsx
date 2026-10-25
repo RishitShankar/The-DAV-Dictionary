@@ -10,7 +10,7 @@ export function DAVGuruAI({ isOpen, onClose, initialPrompt = '' }) {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      text: `Namaste! 🙏 I am **DAV Guru AI**, your official textbook-grounded study companion for The DAV Dictionary (Classes 1 to 8).
+      text: `Namaste! 🙏 I am **DAV Guru AI**, your official textbook-grounded study companion for DAV Dictionary (Classes 1 to 8).
 
 🎯 **100% Textbook Verified Mode Active:**
 I answer questions directly from your DAV textbooks (Class 1 to 8)—including back-of-chapter questions (like Part D/E Question 5) and concepts from the middle of pages.

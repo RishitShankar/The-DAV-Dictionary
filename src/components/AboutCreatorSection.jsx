@@ -61,7 +61,7 @@ export function AboutCreatorSection() {
   };
 
   const handleCopyBio = () => {
-    const bioText = `Rishit Shankar (रीशीत शंकर) • Age 14 • Class 8 DAV Khabra Head Boy, Roll 25. Full-Stack Developer of The DAV Dictionary & Rishi AI. 96% in Class 8 Half-Yearly Exams (100/100 in Sanskrit, 99 in Hindi, 97 in Science & SST). Gold Medal in Chess Cluster 3. Trader, Chess Competitor (1000+ Games), 3D Modeler (Blender), and Video Editor (DaVinci Resolve). WhatsApp: +91 94700 33984 • Call: +91 80922 61750.`;
+    const bioText = `Rishit Shankar (रीशीत शंकर) • Age 14 • Class 8 DAV Khabra Head Boy, Roll 25. Full-Stack Developer of DAV Dictionary & Rishi AI. 96% in Class 8 Half-Yearly Exams (100/100 in Sanskrit, 99 in Hindi, 97 in Science & SST). Gold Medal in Chess Cluster 3. Trader, Chess Competitor (1000+ Games), 3D Modeler (Blender), and Video Editor (DaVinci Resolve). WhatsApp: +91 94700 33984 • Call: +91 80922 61750.`;
     navigator.clipboard.writeText(bioText);
     setCopiedBio(true);
     setTimeout(() => setCopiedBio(false), 2000);
@@ -161,7 +161,7 @@ export function AboutCreatorSection() {
               <span>🎊</span>
             </div>
             <p className="text-xs sm:text-sm font-bold text-stone-950 mt-1">
-              Class 8 DAV Khabra Head Boy • 96% in Class 8 Half-Yearly Exams • 100/100 in Sanskrit • Founder of The DAV Dictionary!
+              Class 8 DAV Khabra Head Boy • 96% in Class 8 Half-Yearly Exams • 100/100 in Sanskrit • Founder of DAV Dictionary!
             </p>
           </div>
         </div>
@@ -254,7 +254,7 @@ export function AboutCreatorSection() {
               </p>
 
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl mx-auto lg:mx-0 mb-6">
-                Class 8 DAV Khabra Head Boy, full-stack software developer, 96% in Class 8 half-yearly exams, and creator of <strong>The DAV Dictionary</strong> and <strong>Rishi AI</strong>. Driven to unite disciplined learning and cutting-edge artificial intelligence to empower students across India.
+                Class 8 DAV Khabra Head Boy, full-stack software developer, 96% in Class 8 half-yearly exams, and creator of <strong>DAV Dictionary</strong> and <strong>Rishi AI</strong>. Driven to unite disciplined learning and cutting-edge artificial intelligence to empower students across India.
               </p>
 
               {/* Key Quick Facts Pills */}
@@ -277,7 +277,7 @@ export function AboutCreatorSection() {
                 </div>
                 <div className="px-3 py-1.5 rounded-xl bg-stone-800/80 border border-stone-700 text-stone-200 flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-                  <span>Founder: The DAV Dictionary</span>
+                  <span>Founder: DAV Dictionary</span>
                 </div>
               </div>
 
@@ -628,7 +628,7 @@ export function AboutCreatorSection() {
             {/* Architecture Vision Banner */}
             <div className="p-5 rounded-2xl bg-gradient-to-r from-slate-900 to-stone-900 text-white flex items-center justify-between gap-4">
               <div>
-                <div className="text-xs font-bold text-amber-400 uppercase tracking-wider">The DAV Dictionary System</div>
+                <div className="text-xs font-bold text-amber-400 uppercase tracking-wider">DAV Dictionary System</div>
                 <div className="text-sm font-extrabold text-white mt-0.5">10 Integrated Sections Serving LKG to Class 8</div>
               </div>
               <span className="px-3 py-1 rounded-full bg-amber-400 text-stone-950 text-xs font-black shrink-0">

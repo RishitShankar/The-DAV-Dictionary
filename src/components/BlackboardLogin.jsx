@@ -174,12 +174,12 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
         <div className="flex items-center gap-3">
           <img
             src="/logo.png"
-            alt="The DAV Dictionary Logo"
+            alt="DAV Dictionary Logo"
             className="w-14 h-14 sm:w-16 sm:h-16 object-contain drop-shadow-md"
           />
           <div>
             <h1 className="text-base sm:text-lg font-black tracking-tight text-white flex items-center gap-2">
-              <span>The DAV Dictionary</span>
+              <span>DAV Dictionary</span>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-400 text-stone-950 uppercase">
                 Official Portal
               </span>
@@ -343,7 +343,7 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
                   {loggedInUser?.dimensionName || (loggedInUser?.isAdmin ? '★ Dimension 4: Master Developer' : '● Verified DAV Student')}
                 </div>
                 <p className="text-slate-200/80 text-[11px] sm:text-sm">
-                  Authentication successful. Ready to enter The DAV Dictionary.
+                  Authentication successful. Ready to enter DAV Dictionary.
                 </p>
 
                 <div className="flex gap-2 w-full justify-center pt-1">

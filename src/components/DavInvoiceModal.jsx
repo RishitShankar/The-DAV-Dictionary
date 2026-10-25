@@ -28,7 +28,7 @@ export function DavInvoiceModal({
     totalAmount = 0,
     paymentMode = 'UPI (9470033984@upi)',
     transactionId = `TXN-${Date.now().toString().slice(-8)}`,
-    note = 'Thank you for supporting the continuous development of The DAV Dictionary!'
+    note = 'Thank you for supporting the continuous development of DAV Dictionary!'
   } = invoiceData;
 
   const calculatedTotal = totalAmount || (Number(baseAmount) + Number(donationAmount));
@@ -56,9 +56,9 @@ export function DavInvoiceModal({
 ✅ *Status:* Verified & Authorized
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 👨‍💻 *Authorized Signatory:* Rishit Shankar
-(Head Boy & Lead Developer, The DAV Dictionary)
+(Head Boy & Lead Developer, DAV Dictionary)
 📞 WhatsApp: +91 94700 33984 | Call: +91 80922 61750
-🌐 Portal: The DAV Dictionary (Digital India 🇮🇳)`;
+🌐 Portal: DAV Dictionary (Digital India 🇮🇳)`;
 
     navigator.clipboard.writeText(text);
     setCopied(true);
@@ -66,7 +66,7 @@ export function DavInvoiceModal({
   };
 
   const handleSendWhatsApp = () => {
-    const text = encodeURIComponent(`🧾 *OFFICIAL RECEIPT - THE DAV DICTIONARY*
+    const text = encodeURIComponent(`🧾 *OFFICIAL RECEIPT - DAV DICTIONARY*
 Bill No: ${invoiceNumber}
 Student: ${studentName} (${studentId})
 Total Paid: ₹${calculatedTotal}
@@ -132,7 +132,7 @@ Verified by Developer Rishit Shankar. Thank you for your support!`);
               />
               <div>
                 <h2 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
-                  THE DAV DICTIONARY
+                  DAV DICTIONARY
                 </h2>
                 <p className="text-xs font-bold text-red-800 uppercase tracking-wider">
                   Academic Digital Reference Campus • Official Invoice

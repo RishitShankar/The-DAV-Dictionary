@@ -10,7 +10,7 @@ const DEFAULT_REVIEWS = [
     studentName: 'Saharsh Shankar',
     studentId: 'saharsh_vvip',
     classNum: '8-D',
-    reviewText: 'The DAV Dictionary and Smart Portal created by Rishit Shankar is absolutely revolutionary. Having our entire DAV curriculum, chapter-wise questions, and Rishi AI integrated in one single application makes revision effortless. Super proud of my brother Rishit!',
+    reviewText: 'DAV Dictionary and Smart Portal created by Rishit Shankar is absolutely revolutionary. Having our entire DAV curriculum, chapter-wise questions, and Rishi AI integrated in one single application makes revision effortless. Super proud of my brother Rishit!',
     wordCount: 36,
     rating: 5,
     voiceAudioUrl: null,

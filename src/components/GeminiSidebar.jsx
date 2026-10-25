@@ -69,12 +69,12 @@ export function GeminiSidebar({
           <div className="flex items-center gap-3">
             <img 
               src="/logo.png" 
-              alt="The DAV Dictionary Logo" 
+              alt="DAV Dictionary Logo" 
               className="w-14 h-14 object-contain drop-shadow-md" 
             />
             <div>
               <div className="font-extrabold text-sm text-white tracking-tight flex items-center gap-1.5">
-                <span>The DAV Dictionary</span>
+                <span>DAV Dictionary</span>
                 <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono font-bold ${
                   isTeacher ? 'bg-purple-900/80 text-purple-200' : 'bg-red-900/80 text-amber-300'
                 }`}>

@@ -170,7 +170,7 @@ export function CloudDbModal({ isOpen, onClose }) {
                   <span className="w-6 h-6 rounded-full bg-emerald-700 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
                   <div className="text-xs text-slate-700">
                     <div className="font-bold text-slate-900 mb-0.5">Create a New Project</div>
-                    Click <strong>"+ New Project"</strong>. Enter Name: <code>The DAV Dictionary</code>, set a database password, and pick Region: <strong>Central India (Mumbai)</strong>. Click "Create".
+                    Click <strong>"+ New Project"</strong>. Enter Name: <code>DAV Dictionary</code>, set a database password, and pick Region: <strong>Central India (Mumbai)</strong>. Click "Create".
                   </div>
                 </div>
 

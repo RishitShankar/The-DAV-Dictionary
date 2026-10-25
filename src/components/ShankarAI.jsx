@@ -129,7 +129,7 @@ export function RishiAI({ isOpen, onClose, initialPrompt = '', user, isSectionVi
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      text: `👋 **Welcome to Rishi AI** — the proprietary full-screen intelligence engine of The DAV Dictionary!
+      text: `👋 **Welcome to Rishi AI** — the proprietary full-screen intelligence engine of DAV Dictionary!
 
 Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system architecture:
 

@@ -86,7 +86,7 @@ export function Navbar({
       {/* Top Banner - Head Boy Dedication */}
       <div className="bg-gradient-to-r from-amber-600 via-rose-900 to-amber-700 text-amber-100 text-xs py-1.5 px-4 text-center font-medium flex items-center justify-center gap-2">
         <Award className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-        <span>Official DAV Modern Digital Initiative • The DAV Dictionary • Dedicated by Head Boy Rishit Shankar for Digital India 🇮🇳</span>
+        <span>Official DAV Modern Digital Initiative • DAV Dictionary • Dedicated by Head Boy Rishit Shankar for Digital India 🇮🇳</span>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -110,12 +110,12 @@ export function Navbar({
             <div className="flex items-center gap-3 cursor-pointer">
               <img 
                 src="/logo.png" 
-                alt="The DAV Dictionary Official Logo" 
+                alt="DAV Dictionary Official Logo" 
                 className="w-16 h-16 object-contain drop-shadow-md hover:scale-105 transition-transform shrink-0"
               />
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-extrabold text-lg sm:text-xl text-slate-900 tracking-tight">The DAV Dictionary</span>
+                  <span className="font-extrabold text-lg sm:text-xl text-slate-900 tracking-tight">DAV Dictionary</span>
                   <span className={`px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase rounded-full border ${
                     isTeacher 
                       ? 'bg-purple-100 text-purple-800 border-purple-200' 

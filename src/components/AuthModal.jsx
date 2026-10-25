@@ -111,14 +111,14 @@ export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGu
           <div className="flex items-center gap-3">
             <img 
               src="/logo.jpg" 
-              alt="The DAV Dictionary" 
+              alt="DAV Dictionary" 
               className="w-10 h-10 rounded-xl object-cover border border-amber-400"
             />
             <div>
               <h3 className="font-extrabold text-lg text-white">
-                {user ? 'Admin & Student Profile' : (isRegister ? 'Student Registration' : 'The DAV Dictionary Portal')}
+                {user ? 'Admin & Student Profile' : (isRegister ? 'Student Registration' : 'DAV Dictionary Portal')}
               </h3>
-              <p className="text-xs text-slate-300">The DAV Dictionary • Official Reference</p>
+              <p className="text-xs text-slate-300">DAV Dictionary • Official Reference</p>
             </div>
           </div>
           <button

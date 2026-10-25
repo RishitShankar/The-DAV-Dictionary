@@ -252,7 +252,7 @@ export function App() {
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
             <Sparkles className="w-4 h-4 text-stone-950" />
-            <span>🚀 Demo Preview Mode Active • Exploring The DAV Dictionary • Full Unrestricted Access with Student ID &amp; Password</span>
+            <span>🚀 Demo Preview Mode Active • Exploring DAV Dictionary • Full Unrestricted Access with Student ID &amp; Password</span>
           </div>
           <button
             onClick={() => {

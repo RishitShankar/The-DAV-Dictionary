@@ -22,7 +22,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
     setOpenFaqIndex(openFaqIndex === idx ? null : idx);
   };
 
-  // The 11 Core Features / Dimensions of The DAV Dictionary Platform
+  // The 11 Core Features / Dimensions of DAV Dictionary Platform
   const allDimensions = [
     {
       num: 1,
@@ -233,8 +233,8 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
 
   const faqs = [
     {
-      q: "What is The DAV Dictionary & Smart Digital Campus?",
-      a: "The DAV Dictionary is an all-in-one next-generation educational ecosystem engineered specifically for students, parents, and faculty of DAV Public Schools. Across 11 super-dimensions, it hosts the complete digital curriculum of 70+ verified DAV textbooks (LKG to Class 8), paired with Rishi AI, daily homework tracking, online CBT exam simulation, live video classrooms, student attendance, study focus timer, and campus utilities."
+      q: "What is DAV Dictionary & Smart Digital Campus?",
+      a: "DAV Dictionary is an all-in-one next-generation educational ecosystem engineered specifically for students, parents, and faculty of DAV Public Schools. Across 11 super-dimensions, it hosts the complete digital curriculum of 70+ verified DAV textbooks (LKG to Class 8), paired with Rishi AI, daily homework tracking, online CBT exam simulation, live video classrooms, student attendance, study focus timer, and campus utilities."
     },
     {
       q: "What does 'Have a Demo Preview' allow me to do?",
@@ -249,7 +249,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
       a: "Click on 'Register Now / Student Login' at the top of this page. You will enter the authentic Blackboard Login Gatekeeper where you can sign in with your ID and password or click Free Preview."
     },
     {
-      q: "Who is the developer of The DAV Dictionary?",
+      q: "Who is the developer of DAV Dictionary?",
       a: "The platform was conceived, designed, and developed by Rishit Shankar (Head Boy, Class 8 DAV Khabra, Roll 25). He scored 96% in his Class 8 exams (with 100/100 in Sanskrit and 99/100 in Hindi) and is a Chess Cluster 3 Gold Medalist. He engineered this platform as a student-led initiative to empower every DAVian."
     }
   ];
@@ -271,14 +271,14 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
               <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 to-orange-500 rounded-2xl blur-xs opacity-75 group-hover:opacity-100 transition duration-300" />
               <img 
                 src="/logo.png" 
-                alt="The DAV Dictionary Logo" 
+                alt="DAV Dictionary Logo" 
                 className="relative w-12 h-12 object-contain rounded-xl bg-stone-950 p-1 border border-amber-500/40"
               />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-black text-lg sm:text-xl tracking-tight text-white flex items-center gap-1.5">
-                  The DAV Dictionary
+                  DAV Dictionary
                 </span>
                 <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-gradient-to-r from-amber-400 to-orange-500 text-stone-950 shadow-xs">
                   <Sparkles className="w-2.5 h-2.5 text-stone-950 fill-current" />
@@ -547,7 +547,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
               All 11 Super-Dimensions Explained
             </h2>
             <p className="mt-4 text-stone-300 text-sm sm:text-base leading-relaxed">
-              The DAV Dictionary is not just a digital library. It is an all-inclusive digital campus featuring 11 distinct dimensions designed to take every DAVian to the top.
+              DAV Dictionary is not just a digital library. It is an all-inclusive digital campus featuring 11 distinct dimensions designed to take every DAVian to the top.
             </p>
 
             {/* Filter Tabs */}
@@ -799,7 +799,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
                 </h2>
 
                 <p className="text-stone-300 text-xs sm:text-sm leading-relaxed">
-                  As Head Boy at DAV Khabra, I observed students frequently struggling with heavy bags, forgotten books, or lack of instant explanations while studying at home. I engineered <strong>The DAV Dictionary</strong> into an all-in-one digital companion—expanding from a digital library into 11 comprehensive dimensions uniting Rishi AI, homework tracking, CBT exams, bus radar, and deep focus technology.
+                  As Head Boy at DAV Khabra, I observed students frequently struggling with heavy bags, forgotten books, or lack of instant explanations while studying at home. I engineered <strong>DAV Dictionary</strong> into an all-in-one digital companion—expanding from a digital library into 11 comprehensive dimensions uniting Rishi AI, homework tracking, CBT exams, bus radar, and deep focus technology.
                 </p>
 
                 {/* Developer Highlights */}
@@ -974,9 +974,9 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
           
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="The DAV Dictionary" className="w-10 h-10 object-contain rounded-lg" />
+            <img src="/logo.png" alt="DAV Dictionary" className="w-10 h-10 object-contain rounded-lg" />
             <div>
-              <span className="font-bold text-white text-sm">The DAV Dictionary</span>
+              <span className="font-bold text-white text-sm">DAV Dictionary</span>
               <p className="text-[10px] text-stone-400">तमसो मा ज्योतिर्गमय • Lead me from darkness to light</p>
             </div>
           </div>
