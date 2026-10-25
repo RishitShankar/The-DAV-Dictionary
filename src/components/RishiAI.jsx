@@ -119,8 +119,8 @@ export function RishiAI({ isOpen, onClose, initialPrompt = '', user, isSectionVi
 
   // Cascading Academic Selections
   const [selectedClass, setSelectedClass] = useState('8');
-  const [selectedSubject, setSelectedSubject] = useState('sst');
-  const [selectedChapter, setSelectedChapter] = useState('16');
+  const [selectedSubject, setSelectedSubject] = useState('hin8_gs');
+  const [selectedChapter, setSelectedChapter] = useState('1');
 
   // Interactive Quiz View
   const [showQuiz, setShowQuiz] = useState(false);
@@ -624,7 +624,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
                 <span>🧠 HOTS</span>
               </button>
 
-              {selectedSubject === 'sst' && (
+              {String(selectedSubject).toLowerCase().includes('sst') && (
                 <button
                   onClick={() => handleAcademicsAction('map_skills')}
                   className="px-3 py-1 rounded-lg bg-stone-950 hover:bg-orange-950 text-orange-200 hover:text-white border border-orange-500/40 transition font-bold text-xs flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs"
@@ -1047,13 +1047,22 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
                               : 'bg-stone-950 hover:bg-stone-800 text-stone-200 border-stone-800 font-bold'
                           }`}
                         >
-                          <div>
-                            <div className="text-xs sm:text-sm">{s.name}</div>
+                          <div className="flex-1 pr-2">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-xs sm:text-sm font-bold">{s.name}</span>
+                              {s.badge && (
+                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                                  isSelected ? 'bg-stone-950/20 text-stone-950 border border-stone-950/30' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                                }`}>
+                                  {s.badge}
+                                </span>
+                              )}
+                            </div>
                             <div className={`text-[10px] mt-0.5 font-mono ${isSelected ? 'text-stone-900' : 'text-stone-400'}`}>
-                              PDF: {s.pdf}
+                              Official Book: {s.pdf}
                             </div>
                           </div>
-                          {isSelected && <Check className="w-4 h-4 text-stone-950" />}
+                          {isSelected && <Check className="w-4 h-4 text-stone-950 shrink-0" />}
                         </button>
                       );
                     })}
@@ -1111,9 +1120,14 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
                             <span className={`px-2 py-0.5 rounded font-mono font-bold text-[10px] ${isSelected ? 'bg-stone-950 text-amber-300' : 'bg-stone-800 text-amber-400'}`}>
                               Ch {ch.num}
                             </span>
-                            <span className="truncate max-w-sm sm:max-w-md">{ch.title}</span>
+                            <span className="truncate max-w-xs sm:max-w-sm">{ch.title}</span>
+                            {ch.part && (
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full shrink-0 font-medium ${isSelected ? 'bg-stone-950/20 text-stone-950 font-bold' : 'bg-stone-800 text-amber-300/80 border border-amber-500/20'}`}>
+                                {ch.part}
+                              </span>
+                            )}
                           </div>
-                          {isSelected && <Check className="w-4 h-4 text-stone-950" />}
+                          {isSelected && <Check className="w-4 h-4 text-stone-950 shrink-0" />}
                         </button>
                       );
                     })}
