@@ -456,3 +456,70 @@ export function subscribeCloudLiveBroadcasts(onUpdate) {
     return () => {};
   }
 }
+
+
+// =========================================================================
+// REAL-TIME 1-ON-1 VIDEO CALL SIGNALING (SUPABASE REALTIME BROADCAST + CROSS-TAB)
+// =========================================================================
+let callSignalingChannelInstance = null;
+
+export function getCallSignalingChannel() {
+  const client = getSupabaseClient();
+  if (!client) return null;
+  if (!callSignalingChannelInstance) {
+    try {
+      callSignalingChannelInstance = client.channel('dav_whatsapp_video_calls', {
+        config: { broadcast: { ack: false } }
+      });
+      callSignalingChannelInstance.subscribe();
+    } catch (e) {
+      console.warn('Call signaling channel init error:', e);
+    }
+  }
+  return callSignalingChannelInstance;
+}
+
+export function broadcastCallSignal(signalData) {
+  const payload = { ...signalData, timestamp: Date.now() };
+  try {
+    const ch = getCallSignalingChannel();
+    if (ch) {
+      ch.send({
+        type: 'broadcast',
+        event: 'call_signal',
+        payload
+      }).catch(() => {});
+    }
+  } catch (e) {}
+
+  // Cross-tab storage fallback for local browser testing
+  try {
+    localStorage.setItem('dav_active_call_signal_event', JSON.stringify(payload));
+  } catch (e) {}
+}
+
+export function subscribeCallSignals(onSignal) {
+  if (typeof onSignal !== 'function') return () => {};
+
+  const ch = getCallSignalingChannel();
+  if (ch) {
+    ch.on('broadcast', { event: 'call_signal' }, ({ payload }) => {
+      if (payload) onSignal(payload);
+    });
+  }
+
+  // Same-browser cross-tab listener
+  const handleStorage = (e) => {
+    if (e.key === 'dav_active_call_signal_event' && e.newValue) {
+      try {
+        const parsed = JSON.parse(e.newValue);
+        onSignal(parsed);
+      } catch (err) {}
+    }
+  };
+  window.addEventListener('storage', handleStorage);
+
+  return () => {
+    window.removeEventListener('storage', handleStorage);
+  };
+}
