@@ -272,7 +272,7 @@ export function StudentProfileSection({ user }) {
             </h3>
 
             {/* Authentic DAV Student ID Card */}
-            <div className="p-6 rounded-3xl bg-gradient-to-br from-amber-600 via-orange-700 to-amber-900 text-stone-950 shadow-2xl border-2 border-amber-300 relative overflow-hidden">
+            <div className="p-6 rounded-3xl bg-gradient-to-br from-amber-600 via-orange-700 to-amber-900 text-stone-950 shadow-2xl border-2 border-amber-300 relative overflow-hidden card-super-interactive ultra-shimmer border-halo-gold">
               
               {/* Background watermark */}
               <div className="absolute -right-12 -bottom-12 opacity-10 pointer-events-none">

@@ -540,7 +540,7 @@ export function QuestionsAnswersSection({
             {/* 3. VVIP Plan Card (Highlighted / Recommended) */}
             <div 
               onClick={() => handleSelectPlan('vvip')}
-              className={`p-6 rounded-3xl border-2 transition-all transform hover:-translate-y-1.5 cursor-pointer relative overflow-hidden ${
+              className={`p-6 rounded-3xl border-2 transition-all transform hover:-translate-y-1.5 cursor-pointer relative overflow-hidden card-super-interactive ultra-shimmer border-halo-gold ${
                 activePlan === 'vvip'
                   ? 'bg-gradient-to-b from-purple-900/90 to-purple-950 border-amber-400 shadow-2xl shadow-amber-500/30 ring-2 ring-amber-400/50'
                   : 'bg-purple-950/50 border-purple-800/60 hover:border-purple-500'

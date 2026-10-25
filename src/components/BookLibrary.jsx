@@ -409,7 +409,7 @@ export function BookLibrary({
           return (
             <div
               key={sub.id}
-              className="bg-white rounded-3xl border-2 border-slate-200/90 hover:border-amber-500/60 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col justify-between group relative"
+              className="bg-white rounded-3xl border-2 border-slate-200/90 hover:border-amber-500/60 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col justify-between group relative card-super-interactive ultra-shimmer"
             >
               {/* Top Accent Stripe */}
               <div className={`h-1.5 w-full bg-gradient-to-r ${sub.color}`} />

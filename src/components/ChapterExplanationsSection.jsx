@@ -611,7 +611,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                   </div>
 
                   {/* VIDEO PLAYER CARD */}
-                  <div className="bg-stone-950 rounded-3xl border border-stone-800 overflow-hidden shadow-2xl">
+                  <div className="bg-stone-950 rounded-3xl border border-stone-800 overflow-hidden shadow-2xl card-super-interactive border-halo-gold">
                     {/* Player Header Bar */}
                     <div className="p-4 bg-stone-900 border-b border-stone-800 flex flex-wrap items-center justify-between gap-3">
                       <div className="flex items-center gap-2.5">

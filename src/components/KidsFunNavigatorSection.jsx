@@ -968,7 +968,7 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
           <div className="w-full space-y-6">
 
             {/* GIANT HERO BANNER: GO TO DAV KHABRA */}
-            <div className="w-full bg-gradient-to-br from-red-600 via-rose-700 to-amber-600 rounded-3xl p-6 sm:p-12 text-white shadow-2xl border-4 border-amber-300 relative overflow-hidden">
+            <div className="w-full bg-gradient-to-br from-red-600 via-rose-700 to-amber-600 rounded-3xl p-6 sm:p-12 text-white shadow-2xl border-4 border-amber-300 relative overflow-hidden card-super-interactive ultra-shimmer">
               <div className="absolute top-0 right-0 w-96 h-96 bg-yellow-400/20 rounded-full blur-3xl pointer-events-none" />
               <div className="absolute bottom-0 left-0 w-96 h-96 bg-red-400/20 rounded-full blur-3xl pointer-events-none" />
 

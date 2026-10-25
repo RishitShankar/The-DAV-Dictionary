@@ -467,7 +467,7 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
       <div className="w-full bg-stone-950/95 backdrop-blur-md border-b-2 border-amber-400 px-4 sm:px-8 py-5 shadow-2xl">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 via-yellow-500 to-orange-500 border-2 border-amber-300 shadow-xl flex items-center justify-center text-stone-950 font-black text-2xl shrink-0">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 via-yellow-500 to-orange-500 border-2 border-amber-300 shadow-xl flex items-center justify-center text-stone-950 font-black text-2xl shrink-0 animate-trophy">
               🏆
             </div>
             <div>
@@ -524,7 +524,7 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
           <div className="space-y-6">
 
             {/* MY STATS HERO BAR */}
-            <div className="w-full bg-gradient-to-r from-amber-600/30 via-purple-900/40 to-slate-900 rounded-3xl p-6 border-2 border-amber-400/60 shadow-2xl backdrop-blur-md">
+            <div className="w-full bg-gradient-to-r from-amber-600/30 via-purple-900/40 to-slate-900 rounded-3xl p-6 border-2 border-amber-400/60 shadow-2xl backdrop-blur-md card-super-interactive border-halo-gold">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-2xl bg-amber-400 text-stone-950 font-black flex items-center justify-center text-xl shadow-lg border-2 border-white">
@@ -609,7 +609,7 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
 
               {/* 1st Place: Gold Crown */}
               {leaderboardList[0] && (
-                <div className="order-1 md:order-2 bg-gradient-to-b from-amber-500/30 via-stone-900 to-stone-900 rounded-3xl p-6 border-4 border-amber-400 shadow-2xl text-center relative overflow-hidden transform md:-translate-y-2 flex flex-col justify-between">
+                <div className="order-1 md:order-2 bg-gradient-to-b from-amber-500/30 via-stone-900 to-stone-900 rounded-3xl p-6 border-4 border-amber-400 shadow-2xl text-center relative overflow-hidden transform md:-translate-y-2 flex flex-col justify-between card-super-interactive border-halo-gold">
                   <div className="absolute top-3 right-3 text-3xl font-black text-amber-300 animate-bounce">👑 #1</div>
                   <div className="pt-2">
                     <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-yellow-300 via-amber-400 to-yellow-500 text-stone-950 font-black text-3xl flex items-center justify-center mx-auto shadow-xl border-4 border-white">
