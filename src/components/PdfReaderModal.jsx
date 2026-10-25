@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { BlackDogLogo } from './BlackDogLogo';
 import { GoogleDriveIcon } from './GoogleDriveIcon';
-import { askShankarAI } from '../services/geminiService';
+import { askRishiAI } from '../services/geminiService';
 import { saveCloudPdfAnnotation, loadCloudPdfAnnotation } from '../services/supabaseClient';
 
 // DAV Chapter-to-Page Index Guide for automatic AI navigation & quick jumping
@@ -678,11 +678,11 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     }
   };
 
-  // Shankar AI Page Companion State
+  // Rishi AI Page Companion State
   const [aiMessages, setAiMessages] = useState([
     {
       role: 'assistant',
-      text: `👋 I am your **Shankar AI Page Guide** for **"${book.title}"** (Class ${book.classNum || 8}).
+      text: `👋 I am your **Rishi AI Page Guide** for **"${book.title}"** (Class ${book.classNum || 8}).
 
 ⚡ **Instant Page Flip:**
 * Type **"Go to page 100"**, **"Open page 50"**, or enter any number in the top bar to flip immediately.
@@ -747,7 +747,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
       }
 
       const promptWithBookContext = `Student is reading the DAV textbook: "${book.title}" (Class ${book.classNum || 8} ${book.subject || ''}) at Page ${currentPage}.\n\nQuestion: ${q}`;
-      const response = await askShankarAI(promptWithBookContext, {
+      const response = await askRishiAI(promptWithBookContext, {
         classNum: book.classNum || 8,
         subject: book.subject || 'sst',
         chapter: book.chapter || 1
@@ -985,7 +985,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                 ? 'bg-amber-500 text-stone-950 border-amber-400 font-black shadow-lg shadow-amber-500/20'
                 : 'bg-stone-800 hover:bg-stone-700 text-amber-300 border-orange-500/40'
             }`}
-            title="Toggle Shankar AI Page Guide"
+            title="Toggle Rishi AI Page Guide"
           >
             <BlackDogLogo className="w-3.5 h-3.5" bgClassName="bg-stone-950" />
             <span className="hidden sm:inline">AI Guide</span>
@@ -1407,7 +1407,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
         </div>
 
-        {/* Right: Collapsible Shankar AI Page Guide Sidebar */}
+        {/* Right: Collapsible Rishi AI Page Guide Sidebar */}
         {showAiCompanion && (
           <aside className="w-80 sm:w-88 md:w-96 bg-stone-900 border-l border-stone-800 flex flex-col shrink-0 z-30 shadow-2xl">
             {/* AI Header */}
@@ -1416,7 +1416,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                 <BlackDogLogo className="w-4 h-4" bgClassName="bg-amber-500" />
                 <div>
                   <h4 className="text-xs font-black text-white flex items-center gap-1.5">
-                    <span>Shankar AI Page Guide</span>
+                    <span>Rishi AI Page Guide</span>
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   </h4>
                   <p className="text-[10px] text-amber-300/80">

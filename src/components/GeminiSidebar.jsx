@@ -27,7 +27,7 @@ export function GeminiSidebar({
     { id: 1, name: 'Section 1: Master Overview & Hub', icon: Compass, status: '10 Sections Hub' },
     { id: 2, name: 'Section 2: Official DAV Textbooks (LKG–8)', icon: BookOpen, status: 'Digital Library' },
     { id: 3, name: 'Section 3: Questions & Answers', icon: HelpCircle, status: 'Reserved' },
-    { id: 4, name: 'Section 4: Shankar AI Companion', icon: Sparkles, status: 'AI Workspace' },
+    { id: 4, name: 'Section 4: Rishi AI Companion', icon: Sparkles, status: 'AI Workspace' },
     { id: 5, name: 'Section 5: Dimension 5 Faculty OS', icon: Award, status: 'Teachers OS' },
     { id: 6, name: 'Section 6: Video Explanations & PYQs', icon: Video, status: 'Lectures & PYQs' },
     { id: 7, name: 'Section 7: Kids Fun & Live Bus GPS', icon: Bus, status: 'Kids Portal' },

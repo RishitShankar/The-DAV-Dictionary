@@ -1,5 +1,5 @@
 // DAV Smart Portal - Complete Official Curriculum Data (DAVCMC / DAVCAE)
-// Comprehensive directory of classes, subjects, and official textbooks for Shankar AI & Section 2 Digital Library
+// Comprehensive directory of classes, subjects, and official textbooks for Rishi AI & Section 2 Digital Library
 
 export const DAV_CLASSES = [
   { id: '8', label: 'Class 8 (Senior Flagship)' },

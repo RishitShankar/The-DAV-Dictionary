@@ -803,7 +803,7 @@ export const PRICING_TIERS = [
     features: [
       'Access to DAV Class 1 to 8 syllabus overview',
       'Preview books and chapter outlines',
-      'Standard Shankar AI search'
+      'Standard Rishi AI search'
     ],
     cta: 'Current Plan',
     ctaClass: 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -819,7 +819,7 @@ export const PRICING_TIERS = [
     features: [
       'Complete DAV Class 1–8 e-Books & Real PDFs',
       'In-browser full-screen PDF reader',
-      'Shankar AI Textbook Q&A Solver'
+      'Rishi AI Textbook Q&A Solver'
     ],
     cta: 'Select Normal (₹33)',
     ctaClass: 'bg-emerald-600 hover:bg-emerald-700 text-white'
@@ -835,7 +835,7 @@ export const PRICING_TIERS = [
     features: [
       'Everything in Normal Plan',
       'Full Solved Q&A Bank with model answers',
-      'High-speed Shankar AI Textbook Grounding'
+      'High-speed Rishi AI Textbook Grounding'
     ],
     popular: true,
     cta: 'Select VIP (₹66)',
@@ -848,10 +848,10 @@ export const PRICING_TIERS = [
     period: 'Full Academic Year',
     badge: 'Head Boy Elite 🏆',
     badgeColor: 'bg-purple-100 text-purple-800 border border-purple-300',
-    description: 'Unlimited 24/7 Shankar AI mentor, custom tests, geopolitics & world knowledge.',
+    description: 'Unlimited 24/7 Rishi AI mentor, custom tests, geopolitics & world knowledge.',
     features: [
       'Everything in VIP Plan',
-      'Unlimited 24/7 Shankar AI (Textbook + World)',
+      'Unlimited 24/7 Rishi AI (Textbook + World)',
       'DAV Board Exam sample papers & answer keys',
       'Priority access to Section 10 creator features'
     ],

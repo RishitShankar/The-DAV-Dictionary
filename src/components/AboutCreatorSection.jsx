@@ -61,7 +61,7 @@ export function AboutCreatorSection() {
   };
 
   const handleCopyBio = () => {
-    const bioText = `Rishit Shankar (रीशीत शंकर) • Age 14 • Class 8 DAV Khabra Head Boy, Roll 25. Full-Stack Developer of The DAV Dictionary & Shankar AI. 96% in Class 8 Half-Yearly Exams (100/100 in Sanskrit, 99 in Hindi, 97 in Science & SST). Gold Medal in Chess Cluster 3. Trader, Chess Competitor (1000+ Games), 3D Modeler (Blender), and Video Editor (DaVinci Resolve). WhatsApp: +91 94700 33984 • Call: +91 80922 61750.`;
+    const bioText = `Rishit Shankar (रीशीत शंकर) • Age 14 • Class 8 DAV Khabra Head Boy, Roll 25. Full-Stack Developer of The DAV Dictionary & Rishi AI. 96% in Class 8 Half-Yearly Exams (100/100 in Sanskrit, 99 in Hindi, 97 in Science & SST). Gold Medal in Chess Cluster 3. Trader, Chess Competitor (1000+ Games), 3D Modeler (Blender), and Video Editor (DaVinci Resolve). WhatsApp: +91 94700 33984 • Call: +91 80922 61750.`;
     navigator.clipboard.writeText(bioText);
     setCopiedBio(true);
     setTimeout(() => setCopiedBio(false), 2000);
@@ -254,7 +254,7 @@ export function AboutCreatorSection() {
               </p>
 
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl mx-auto lg:mx-0 mb-6">
-                Class 8 DAV Khabra Head Boy, full-stack software developer, 96% in Class 8 half-yearly exams, and creator of <strong>The DAV Dictionary</strong> and <strong>Shankar AI</strong>. Driven to unite disciplined learning and cutting-edge artificial intelligence to empower students across India.
+                Class 8 DAV Khabra Head Boy, full-stack software developer, 96% in Class 8 half-yearly exams, and creator of <strong>The DAV Dictionary</strong> and <strong>Rishi AI</strong>. Driven to unite disciplined learning and cutting-edge artificial intelligence to empower students across India.
               </p>
 
               {/* Key Quick Facts Pills */}
@@ -610,7 +610,7 @@ export function AboutCreatorSection() {
 
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
                 <div className="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1">Artificial Intelligence</div>
-                <h4 className="font-black text-slate-900 text-sm mb-1.5">Shankar AI Engine</h4>
+                <h4 className="font-black text-slate-900 text-sm mb-1.5">Rishi AI Engine</h4>
                 <p className="text-xs text-slate-600">
                   Architected dual-mode intelligence with automatic textbook grounding and outer world knowledge.
                 </p>

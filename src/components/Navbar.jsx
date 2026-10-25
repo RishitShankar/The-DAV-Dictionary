@@ -200,7 +200,7 @@ export function Navbar({
                   ) : activeSection === 4 ? (
                     <>
                       <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                      <span>Section 4: Shankar AI Companion</span>
+                      <span>Section 4: Rishi AI Companion</span>
                     </>
                   ) : activeSection === 5 ? (
                     <>
@@ -305,15 +305,15 @@ export function Navbar({
               </button>
             </div>
             
-            {/* Launch Shankar AI Button */}
+            {/* Launch Rishi AI Button */}
             {onOpenAI && (
               <button
                 onClick={onOpenAI}
                 className="py-1.5 px-3 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md shadow-orange-500/20 border border-orange-400 transition-all cursor-pointer"
-                title="Launch Full-Screen Shankar AI"
+                title="Launch Full-Screen Rishi AI"
               >
                 <BlackDogLogo className="w-4 h-4" bgClassName="bg-stone-950" />
-                <span className="hidden sm:inline">Shankar AI</span>
+                <span className="hidden sm:inline">Rishi AI</span>
               </button>
             )}
 

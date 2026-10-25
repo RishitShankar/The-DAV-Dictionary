@@ -52,8 +52,8 @@ export function SectionOverview({ onSelectSection }) {
     },
     {
       id: 4,
-      title: 'Section 4: Shankar AI Academic Companion',
-      shortTitle: 'Shankar AI Tutor',
+      title: 'Section 4: Rishi AI Academic Companion',
+      shortTitle: 'Rishi AI Tutor',
       icon: Brain,
       emoji: '⚡',
       color: 'from-orange-500 to-amber-600',
@@ -74,7 +74,7 @@ export function SectionOverview({ onSelectSection }) {
       borderHover: 'hover:border-purple-500',
       tag: 'Dimension 5: Faculty OS',
       tagColor: 'bg-purple-100 text-purple-950 border-purple-400 font-bold',
-      description: 'Exclusive 5th Dimension Faculty Operating System for Teachers. Features daily homework dispatch, WhatsApp doubt clearing, live online classes, test creation, Shankar AI lesson planner, and student weakness radar across Nursery to Class 8.'
+      description: 'Exclusive 5th Dimension Faculty Operating System for Teachers. Features daily homework dispatch, WhatsApp doubt clearing, live online classes, test creation, Rishi AI lesson planner, and student weakness radar across Nursery to Class 8.'
     },
     {
       id: 6,
@@ -238,7 +238,7 @@ export function SectionOverview({ onSelectSection }) {
                   Website Overview &amp; 10 Dimensions Hub
                 </h1>
                 <p className="text-xs sm:text-sm text-stone-300 mt-2 max-w-2xl leading-relaxed">
-                  "तमसो मा ज्योतिर्गमय — Lead us from darkness to light." Designed by Head Boy <strong>Rishit Shankar</strong> to empower every DAV student with interactive textbooks, Shankar AI, quizzes, and digital study tools.
+                  "तमसो मा ज्योतिर्गमय — Lead us from darkness to light." Designed by Head Boy <strong>Rishit Shankar</strong> to empower every DAV student with interactive textbooks, Rishi AI, quizzes, and digital study tools.
                 </p>
 
                 {/* Badges Row */}
@@ -401,7 +401,7 @@ export function SectionOverview({ onSelectSection }) {
               "When I started preparing for my Class 8 board and term examinations, I noticed many students struggled to find complete, uncorrupted textbook scans, back-of-chapter answers, and instant revision solutions. Carrying heavy sets of books everywhere was inconvenient."
             </p>
             <p>
-              "To solve this, I designed <strong>The DAV Dictionary</strong> across 10 structured dimensions. From LKG to Class 8, every textbook is organized with high-definition digital rendering, real-time highlighting that persists across devices, an AI academic tutor (Shankar AI) tuned to our syllabus, and instant self-testing quizzes."
+              "To solve this, I designed <strong>The DAV Dictionary</strong> across 10 structured dimensions. From LKG to Class 8, every textbook is organized with high-definition digital rendering, real-time highlighting that persists across devices, an AI academic tutor (Rishi AI) tuned to our syllabus, and instant self-testing quizzes."
             </p>
             <p className="font-bold text-red-900">
               "Every single feature has been hand-coded with love and dedication for our schoolmates. I hope this platform helps you learn faster, score 95%+, and enjoy your studies every day!"

@@ -207,7 +207,7 @@ export function PricingModal({ isOpen, onClose, currentPlan, onUpgradePlan }) {
                 Your account is now upgraded to <span className="font-bold text-emerald-700">{selectedPlan?.name}</span>.
               </p>
               <div className="text-xs text-slate-400 mt-4">
-                Enjoy full access to DAV books, notes, and unlimited Shankar AI!
+                Enjoy full access to DAV books, notes, and unlimited Rishi AI!
               </div>
             </div>
           )}

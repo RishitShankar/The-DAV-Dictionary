@@ -1,5 +1,5 @@
 // DAV Textbook Grounded Knowledge Base (Classes 1 to 8)
-// Specially curated for The DAV Dictionary and Shankar AI
+// Specially curated for The DAV Dictionary and Rishi AI
 // Enables 100% textbook-accurate answers citing exact chapters, pages, topics, and question numbers.
 
 /**

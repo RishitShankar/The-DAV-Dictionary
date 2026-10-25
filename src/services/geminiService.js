@@ -1,11 +1,11 @@
-// Shankar AI Engine for The DAV Dictionary
+// Rishi AI Engine for The DAV Dictionary
 // Dedicated high-intelligence AI created by Rishit Shankar
 // 4-Tier Dimension Architecture (Dimension 1 Normal, Dimension 2 VIP, Dimension 3 VVIP, Dimension 4 Master Developer)
 // Powered by live Google Gemini 3.5 Cloud Intelligence with official DAV syllabus grounding across ALL CLASSES (LKG to Class 8)
 
 import { lookupTextbookDatabase, DAV_CLASS_8_SYLLABUS_INDEX, DAV_TEXTBOOK_DATABASE } from '../data/davTextbookDatabase.js';
 
-const STORAGE_KEY = 'shankar_ai_api_key';
+const STORAGE_KEY = 'rishi_ai_api_key';
 // Built-in intelligent engine key decoded at runtime for automatic zero-configuration AI access
 const BUILTIN_KEY_B64 = 'QVEuQWI4Uk42SWtBb090SkZuOHlBQUlCMW5YQ1FDQmhYYjhBTTZJaWhIRWVOVmpJMERGWkE=';
 const getBuiltinKey = () => {
@@ -147,7 +147,7 @@ You are the definitive authority on the official D.A.V. Public School curriculum
    - Class: Class 8, Section D, Roll No. 25 (Session 2026–2027).
    - Role: Head Boy of D.A.V. Public School Khabra.
    - Academic Record: Perfect 80/80 (Century) in Sanskrit Half-Yearly, 96/100 in English, 90/100 in Mathematics, 79/80 in Hindi, 77/80 in Science & Social Science.
-   - Creator of: The DAV Dictionary (10-Section Campus Platform) and Shankar AI.
+   - Creator of: The DAV Dictionary (10-Section Campus Platform) and Rishi AI.
    - Technology Stack: HTML, CSS, JavaScript, React 18, Vite, Tailwind CSS, Google Cloud, Firebase Firestore, WebSockets, exploring Java/Kotlin for Android.
    - Creative & 3D: Blender vehicle 3D modeling, DaVinci Resolve video color grading, poster designer for Rotary Club of Tirhut, Independence Day 2026, and community tree-planting.
    - Strategy & Gaming: 1,000+ Rapid Chess games (castling, en passant, tactical endgames); Roblox Blox Fruits (Third Sea, fruit trading T-Rex/Mammoth, PvP); Mech Arena (Solis, Orion, Mimicker).
@@ -214,10 +214,10 @@ async function queryLiveGemini(apiKey, systemPrompt, userPrompt, targetModel = '
         }
       } else {
         const errJson = await res.json().catch(() => ({}));
-        console.warn(`[Shankar AI Live] Model ${model} returned ${res.status}:`, errJson.error?.message);
+        console.warn(`[Rishi AI Live] Model ${model} returned ${res.status}:`, errJson.error?.message);
       }
     } catch (err) {
-      console.warn(`[Shankar AI Live] Error querying ${model}:`, err.message);
+      console.warn(`[Rishi AI Live] Error querying ${model}:`, err.message);
     }
   }
 
@@ -322,7 +322,7 @@ ${qList.length > 0 ? qList.map(q => `### Question ${q.id || `${q.section || 'D'}
 
 ✍️ **Model Answer:**
 ${q.answer}
-`).join('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n') : `*Please ask any specific question number (e.g. D.1, E.2) for this chapter and Shankar AI will provide the exact model textbook answer!*`}
+`).join('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n') : `*Please ask any specific question number (e.g. D.1, E.2) for this chapter and Rishi AI will provide the exact model textbook answer!*`}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ✨ *Curriculum Verified:* 100% compliant with DAV College Managing Committee (DAVCMC) evaluation rubrics.`
@@ -333,12 +333,12 @@ ${q.answer}
 }
 
 /**
- * Dynamically generate a 10-Question Interactive Chapter Test using live Shankar AI
+ * Dynamically generate a 10-Question Interactive Chapter Test using live Rishi AI
  */
 export async function generateChapterQuiz(classNum, subject, chapterNum, chapterTitle) {
   const apiKey = getSavedApiKey();
   const cNum = typeof classNum === 'string' ? classNum : `Class ${classNum}`;
-  const prompt = `You are Shankar AI, the official DAV curriculum examination board setter.
+  const prompt = `You are Rishi AI, the official DAV curriculum examination board setter.
 Generate exactly 10 high-quality, 100% textbook-accurate multiple choice questions (MCQs) for:
 - Class: ${cNum}
 - Subject: ${subject}
@@ -369,7 +369,7 @@ Return ONLY a valid JSON array of exactly 10 objects with this exact structure:
 Do NOT include any markdown fences or extra prose. Return ONLY the raw JSON array.`;
 
   try {
-    const res = await queryLiveGemini(apiKey, 'You are Shankar AI examination generator. Output strictly valid JSON.', prompt, 'gemini-3.5-flash-lite', 3500);
+    const res = await queryLiveGemini(apiKey, 'You are Rishi AI examination generator. Output strictly valid JSON.', prompt, 'gemini-3.5-flash-lite', 3500);
     if (res.success && res.text) {
       let cleaned = res.text.trim();
       if (cleaned.startsWith('```json')) cleaned = cleaned.replace(/^```json\s*/, '').replace(/\s*```$/, '');
@@ -385,15 +385,15 @@ Do NOT include any markdown fences or extra prose. Return ONLY the raw JSON arra
       }
     }
   } catch (err) {
-    console.warn('[Shankar AI Quiz] Error generating dynamic quiz:', err.message);
+    console.warn('[Rishi AI Quiz] Error generating dynamic quiz:', err.message);
   }
   return null;
 }
 
 /**
- * Main query function for Shankar AI with 4-Dimension Tier Support & All-Class Intelligence
+ * Main query function for Rishi AI with 4-Dimension Tier Support & All-Class Intelligence
  */
-export async function askShankarAI(question, context = {}) {
+export async function askRishiAI(question, context = {}) {
   const trimmedQ = question.trim();
   const lowerQ = trimmedQ.toLowerCase();
   const isOuterWorld = context.mode === 'outer_world';
@@ -448,7 +448,7 @@ export async function askShankarAI(question, context = {}) {
       dimensionInstruction = `Provide helpful, direct, and complete answers.`;
     }
 
-    const fullSystemPrompt = `You are "Shankar AI", a brilliant, versatile, and completely unrestricted AI intelligence engine created by Head Boy Rishit Shankar for The DAV Dictionary.
+    const fullSystemPrompt = `You are "Rishi AI", a brilliant, versatile, and completely unrestricted AI intelligence engine created by Head Boy Rishit Shankar for The DAV Dictionary.
 
 You have the comprehensive knowledge, versatility, problem-solving ability, and conversational depth of ChatGPT and Google Gemini.
 You can answer ANY question across all disciplines, academic subjects, and worldly topics:
@@ -684,7 +684,7 @@ ${textbookMatch.answer}
   - 🔢 **Mathematics:** **90 / 100** (Half-Yearly: 74/80).
   - 🇮🇳 **Hindi:** **79 / 80** (98.75%).
   - 🔬 **Science & SST:** **77 / 80** each.
-* **Software Engineering & AI:** Full-stack creator of **The DAV Dictionary** (React 18, Vite, Tailwind CSS, Firebase Firestore) and **Shankar AI**.
+* **Software Engineering & AI:** Full-stack creator of **The DAV Dictionary** (React 18, Vite, Tailwind CSS, Firebase Firestore) and **Rishi AI**.
 * **Design & Multimedia:** Blender 3D vehicle modeling, DaVinci Resolve cinematic video editing, poster designer for **Rotary Club of Tirhut** and community tree-planting.
 * **Chess & Gaming:** Over **1,000+ Rapid Chess games**; Blox Fruits Third Sea explorer & PvP strategist; Mech Arena tactician.
 * **Financial Literacy:** Started studying markets at age 12; explores Pushkar Raj Thakur's course, Fibonacci retracements, and Options Put-Call Ratio (PCR).
@@ -698,7 +698,7 @@ ${textbookMatch.answer}
       source: 'shankar-conversational',
       isTextbookGrounded: false,
       modelName: getTierBadge(dimension),
-      text: `👋 **Greetings! I am Shankar AI**
+      text: `👋 **Greetings! I am Rishi AI**
 
 Welcome to **The DAV Dictionary**! I am your personal academic and global intelligence engine, created by **Head Boy Rishit Shankar**.
 
@@ -865,18 +865,18 @@ The official DAV Board curriculum for Class 8 uses the following prescribed text
     source: 'shankar-no-key',
     isTextbookGrounded: false,
     modelName: getTierBadge(dimension),
-    text: `🔑 **Shankar AI — API Key Required**
+    text: `🔑 **Rishi AI — API Key Required**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-To get real, live answers from Shankar AI, please add your **Google Gemini API Key**:
+To get real, live answers from Rishi AI, please add your **Google Gemini API Key**:
 
-1. Click the **⚙️ Engine Key** button in the Shankar AI interface.
+1. Click the **⚙️ Engine Key** button in the Rishi AI interface.
 2. Enter your API key (starts with \`AIzaSy...\`).
 3. Click **Save** — then ask your question again!
 
 **Your Question:** *"${trimmedQ}"*
 
-Once your key is configured, Shankar AI will answer this and any other question — academic, general knowledge, or world affairs — with complete, real, intelligent responses powered by Google Gemini.
+Once your key is configured, Rishi AI will answer this and any other question — academic, general knowledge, or world affairs — with complete, real, intelligent responses powered by Google Gemini.
 
 *(💡 Get a free API key at [aistudio.google.com](https://aistudio.google.com))*`
   };
@@ -887,12 +887,15 @@ function getTierBadge(dimension) {
     case 4:
       return '💎 Master Developer Dimension (Rishit Shankar)';
     case 3:
-      return '👑 Shankar AI VVIP Ultra Plan';
+      return '👑 Rishi AI VVIP Ultra Plan';
     case 2:
-      return '⭐ Shankar AI VIP Plan';
+      return '⭐ Rishi AI VIP Plan';
     case 1:
-      return '⚡ Shankar AI Normal Plan';
+      return '⚡ Rishi AI Normal Plan';
     default:
-      return '🔒 Shankar AI Free Preview Mode';
+      return '🔒 Rishi AI Free Preview Mode';
   }
 }
+
+// Backward compatibility alias
+export const askShankarAI = askRishiAI;

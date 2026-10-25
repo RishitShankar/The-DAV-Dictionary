@@ -9,7 +9,7 @@ import { BookLibrary } from './components/BookLibrary';
 import { UntitledSection } from './components/UntitledSection';
 import { AboutCreatorSection } from './components/AboutCreatorSection';
 import { StudentProfileSection } from './components/StudentProfileSection';
-import { ShankarAI } from './components/ShankarAI';
+import { RishiAI } from './components/RishiAI';
 import { PdfReaderModal } from './components/PdfReaderModal';
 import { PricingModal } from './components/PricingModal';
 import { AuthModal } from './components/AuthModal';
@@ -365,7 +365,7 @@ export function App() {
             onRequireLogin={handleRequireLogin}
           />
         ) : activeSection === 4 ? (
-          <ShankarAI 
+          <RishiAI 
             isSectionView={true} 
             user={user} 
             onRequireLogin={handleRequireLogin}
@@ -466,8 +466,8 @@ export function App() {
         currentUser={user}
       />
 
-      {/* Shankar AI Engine Component */}
-      <ShankarAI
+      {/* Rishi AI Engine Component */}
+      <RishiAI
         isOpen={isAIOpen}
         onClose={() => setIsAIOpen(false)}
         initialPrompt={aiPrompt}

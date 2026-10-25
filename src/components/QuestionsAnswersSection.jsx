@@ -1320,7 +1320,7 @@ export function QuestionsAnswersSection({
                 </p>
               </div>
 
-              {/* Instant Shankar AI trigger */}
+              {/* Instant Rishi AI trigger */}
               <button
                 type="button"
                 onClick={() => {
@@ -1332,7 +1332,7 @@ export function QuestionsAnswersSection({
                 className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs flex items-center gap-2 shadow-md transition whitespace-nowrap cursor-pointer"
               >
                 <Brain className="w-4 h-4 text-amber-300" />
-                <span>Ask Shankar AI Instantly</span>
+                <span>Ask Rishi AI Instantly</span>
               </button>
             </div>
 

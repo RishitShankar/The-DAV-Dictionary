@@ -14,7 +14,7 @@ import {
   ChevronLeft, Compass, Palette, Trash2, Trophy, Share,
   Camera, UploadCloud, Edit3, Music, Film, FileCheck, Printer, PenTool
 } from 'lucide-react';
-import { ShankarAILogo } from './ShankarAILogo';
+import { RishiAILogo } from './RishiAILogo';
 import { getAllTeachers } from '../data/davTeachers50';
 import { getRegisteredUsers, MASTER_DEVELOPER_ACCOUNT } from '../data/preloadedUsers';
 

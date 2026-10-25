@@ -207,7 +207,7 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion, onRequi
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
-  // Send Chapter to Shankar AI
+  // Send Chapter to Rishi AI
   const handleAskAIAboutChapter = () => {
     if (onOpenAIWithQuestion) {
       const prompt = `Please explain DAV Class ${selectedClass} ${currentSubjectObj.name} Chapter ${currentChapterObj.num}: "${currentChapterObj.title}". Provide:
@@ -219,7 +219,7 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion, onRequi
     }
   };
 
-  // Solve specific worksheet with Shankar AI
+  // Solve specific worksheet with Rishi AI
   const handleAskAIAboutWorksheet = () => {
     if (onOpenAIWithQuestion) {
       const prompt = `Please provide complete step-by-step solutions for DAV Class ${selectedClass} ${currentSubjectObj.name} Chapter ${currentChapterObj.num} ("${currentChapterObj.title}") — ${selectedPartObj.label}.
@@ -391,7 +391,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                 Video Lessons for Class {selectedClass} are in Production!
               </h2>
               <p className="text-sm text-stone-300 mt-2 max-w-lg mx-auto leading-relaxed">
-                Our DAV educators and animators are creating vibrant, cartoon-illustrated video stories for our young learners. In the meantime, you can explore the complete colorful picture textbooks in the Digital Library or learn interactively with Shankar AI!
+                Our DAV educators and animators are creating vibrant, cartoon-illustrated video stories for our young learners. In the meantime, you can explore the complete colorful picture textbooks in the Digital Library or learn interactively with Rishi AI!
               </p>
               <div className="flex flex-wrap items-center justify-center gap-3 mt-7">
                 <a
@@ -414,7 +414,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                   className="px-5 py-3 rounded-2xl bg-stone-800 hover:bg-stone-700 text-white font-bold text-xs flex items-center gap-2 border border-stone-700 transition cursor-pointer"
                 >
                   <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span>Fun Learning with Shankar AI</span>
+                  <span>Fun Learning with Rishi AI</span>
                 </button>
               </div>
             </div>
@@ -523,7 +523,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                     })}
                   </div>
 
-                  {/* Ask Shankar AI About This Chapter */}
+                  {/* Ask Rishi AI About This Chapter */}
                   <div className="mt-4 pt-4 border-t border-stone-800">
                     <button
                       onClick={handleAskAIAboutChapter}
@@ -531,7 +531,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                     >
                       <span className="flex items-center gap-2">
                         <Sparkles className="w-4 h-4 text-amber-400 group-hover:rotate-12 transition-transform" />
-                        <span>Ask Shankar AI About Chapter {currentChapterObj.num}</span>
+                        <span>Ask Rishi AI About Chapter {currentChapterObj.num}</span>
                       </span>
                       <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                     </button>
@@ -797,7 +797,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                             Specific Solution Video for {selectedPartObj.label}
                           </h3>
                           <p className="text-xs sm:text-sm text-stone-300 max-w-md mt-2 leading-relaxed">
-                            We strictly ensure explanation videos are not played for solutions. You can search YouTube directly for this teacher's solution video or let Shankar AI solve it step-by-step for you!
+                            We strictly ensure explanation videos are not played for solutions. You can search YouTube directly for this teacher's solution video or let Rishi AI solve it step-by-step for you!
                           </p>
                           <div className="flex flex-wrap items-center justify-center gap-3 mt-5">
                             <a
@@ -814,7 +814,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                               className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xs flex items-center gap-2 transition shadow-md cursor-pointer"
                             >
                               <Sparkles className="w-3.5 h-3.5" />
-                              <span>Solve with Shankar AI</span>
+                              <span>Solve with Rishi AI</span>
                             </button>
                           </div>
                         </div>
@@ -1085,7 +1085,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                 className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black flex items-center gap-1.5 transition shrink-0 cursor-pointer shadow-md"
               >
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Generate Questions with Shankar AI</span>
+                <span>Generate Questions with Rishi AI</span>
               </button>
             </div>
           </div>
@@ -1214,7 +1214,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                 className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1.5 transition shrink-0 cursor-pointer shadow-md"
               >
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Create Test with Shankar AI</span>
+                <span>Create Test with Rishi AI</span>
               </button>
             </div>
           </div>

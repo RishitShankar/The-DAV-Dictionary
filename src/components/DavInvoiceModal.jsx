@@ -184,7 +184,7 @@ Verified by Developer Rishit Shankar. Thank you for your support!`);
               <tbody className="divide-y divide-slate-100 bg-white">
                 <tr>
                   <td className="py-3 px-4 font-semibold text-slate-800">
-                    <div>{planName} - Digital Library &amp; Shankar AI Access</div>
+                    <div>{planName} - Digital Library &amp; Rishi AI Access</div>
                     <div className="text-[10px] text-slate-400">Class 1-8 verified curriculum textbooks &amp; 24/7 AI guide</div>
                   </td>
                   <td className="py-3 px-4 text-center text-slate-500 font-medium">Subscription</td>

@@ -264,7 +264,7 @@ export function DonationSection({ currentUser, onRequireLogin }) {
                   Support &amp; Donate to Developer (Rishit Shankar)
                 </h1>
                 <p className="text-sm sm:text-base text-stone-300 mt-2 leading-relaxed">
-                  Every voluntary contribution fuels continuous cloud servers, Shankar AI Gemini API speed, verified DAV textbook scans, and new digital features for all DAV Public School students.
+                  Every voluntary contribution fuels continuous cloud servers, Rishi AI Gemini API speed, verified DAV textbook scans, and new digital features for all DAV Public School students.
                 </p>
 
                 <div className="flex flex-wrap items-center gap-4 mt-5 text-xs text-amber-200">

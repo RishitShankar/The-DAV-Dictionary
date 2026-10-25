@@ -14,15 +14,15 @@ export function PurpleFooter({ onSelectSection }) {
   const faqs = [
     {
       q: 'How do I access and read all DAV textbooks online?',
-      a: 'Go to Section 2: Official DAV Textbooks and pick your class (LKG, UKG, or Classes 1 to 8). You can open verified PDFs with our built-in 10-color neon highlighter, pen, movable notes, and Shankar AI page guide!'
+      a: 'Go to Section 2: Official DAV Textbooks and pick your class (LKG, UKG, or Classes 1 to 8). You can open verified PDFs with our built-in 10-color neon highlighter, pen, movable notes, and Rishi AI page guide!'
     },
     {
       q: 'How can I support or donate to developer Rishit Shankar?',
       a: 'Visit Section 10: Support & Donate to Developer. You can donate via UPI (9470033984@upi), Paytm, School in-hand cash, or card. Every donation immediately issues an official verified receipt and bill!'
     },
     {
-      q: 'What is Shankar AI and how does it help me in exams?',
-      a: 'Shankar AI is our custom academic companion tuned on DAV syllabus textbooks. It solves chapter exercises, answers 5-mark examination questions, summarizes textbook pages, and teleports directly to chapters.'
+      q: 'What is Rishi AI and how does it help me in exams?',
+      a: 'Rishi AI is our custom academic companion tuned on DAV syllabus textbooks. It solves chapter exercises, answers 5-mark examination questions, summarizes textbook pages, and teleports directly to chapters.'
     },
     {
       q: 'How do I upload and synchronize my personal profile photo?',
@@ -81,7 +81,7 @@ export function PurpleFooter({ onSelectSection }) {
               <span>About My Organization</span>
             </h4>
             <p className="text-purple-100 leading-relaxed text-xs">
-              <strong>The DAV Digital Academic Initiative</strong> was founded by Rishit Shankar to provide every student across LKG, UKG, and Classes 1 to 8 with free, verified digital textbooks, 24/7 AI tutoring via Shankar AI, chapter exercise solutions, and modern educational tools.
+              <strong>The DAV Digital Academic Initiative</strong> was founded by Rishit Shankar to provide every student across LKG, UKG, and Classes 1 to 8 with free, verified digital textbooks, 24/7 AI tutoring via Rishi AI, chapter exercise solutions, and modern educational tools.
             </p>
             <div className="pt-2 text-[11px] text-purple-300 space-y-1">
               <div>🏫 <strong>Campus:</strong> DAV Public School, Khabra, Muzaffarpur</div>

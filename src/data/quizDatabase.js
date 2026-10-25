@@ -1,6 +1,6 @@
 // DAV Interactive Quiz Database & Generator
 // Provides 100% textbook-accurate, multiple-choice questions (MCQs) for all classes and chapters.
-// Created for Shankar AI & The DAV Dictionary by Head Boy Rishit Shankar.
+// Created for Rishi AI & The DAV Dictionary by Head Boy Rishit Shankar.
 
 export const CHAPTER_QUIZZES = {
   // --------------------------------------------------------------------------

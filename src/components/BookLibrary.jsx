@@ -323,7 +323,7 @@ export function BookLibrary({
                 <button
                   onClick={() => onOpenAIWithQuestion(`Explain the key concepts and chapters in DAV Class 8 ${currentBook?.title || sub.name}`)}
                   className="p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 transition cursor-pointer"
-                  title="Ask Shankar AI about this book"
+                  title="Ask Rishi AI about this book"
                 >
                   <Brain className="w-4 h-4 text-amber-700" />
                 </button>

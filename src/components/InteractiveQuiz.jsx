@@ -103,7 +103,7 @@ export function InteractiveQuiz({
         </div>
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-950/80 border border-orange-500/40 text-amber-300 text-xs font-bold mb-3 shadow-xs">
           <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-          Shankar AI Active Test Synthesizer
+          Rishi AI Active Test Synthesizer
         </div>
         <h3 className="text-xl sm:text-2xl font-black text-white mb-2">
           Generating 10-Question Examination Test...
@@ -391,7 +391,7 @@ export function InteractiveQuiz({
                 className="px-5 py-2.5 rounded-xl bg-stone-800 hover:bg-orange-950 text-orange-200 hover:text-white font-bold text-xs flex items-center gap-2 border border-orange-500/40 transition cursor-pointer"
               >
                 <Sparkles className="w-4 h-4 text-amber-300" />
-                <span>Ask Shankar AI for Notes</span>
+                <span>Ask Rishi AI for Notes</span>
               </button>
 
               <button

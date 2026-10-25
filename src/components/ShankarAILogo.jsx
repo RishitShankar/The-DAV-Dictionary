@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export function ShankarAILogo({ className = 'w-10 h-10', bgClassName = 'bg-stone-950 border-2 border-amber-400' }) {
+export function RishiAILogo({ className = 'w-10 h-10', bgClassName = 'bg-stone-950 border-2 border-amber-400' }) {
   const [imageError, setImageError] = useState(false);
 
   return (
@@ -11,7 +11,7 @@ export function ShankarAILogo({ className = 'w-10 h-10', bgClassName = 'bg-stone
       {!imageError ? (
         <img 
           src="/shankar-ai-logo.jpg" 
-          alt="Shankar AI Official Logo" 
+          alt="Rishi AI Official Logo" 
           onError={() => setImageError(true)}
           className="w-full h-full object-contain p-0.5 relative z-10 drop-shadow-md select-none"
         />
@@ -68,4 +68,6 @@ export function ShankarAILogo({ className = 'w-10 h-10', bgClassName = 'bg-stone
   );
 }
 
-export default ShankarAILogo;
+export default RishiAILogo;
+
+export const ShankarAILogo = RishiAILogo;

@@ -40,7 +40,7 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
 
         {/* Subtitle */}
         <p className="mt-5 text-base sm:text-lg text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed">
-          Crafted with pride by Head Boy Rishit Shankar. The official digital reference and textbook archive for DAV Public School students. Complete Class 1–8 curriculum, chapter notes, and Shankar AI.
+          Crafted with pride by Head Boy Rishit Shankar. The official digital reference and textbook archive for DAV Public School students. Complete Class 1–8 curriculum, chapter notes, and Rishi AI.
         </p>
 
         {/* Action Buttons */}
@@ -62,7 +62,7 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
             className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-black text-sm sm:text-base flex items-center gap-2.5 transition-all transform hover:-translate-y-0.5 shadow-lg shadow-orange-600/30 border border-orange-400/50 cursor-pointer"
           >
             <BlackDogLogo className="w-6 h-6" bgClassName="bg-stone-950" />
-            <span>Chat with Shankar AI</span>
+            <span>Chat with Rishi AI</span>
             <span className="bg-stone-950 text-amber-300 text-xs px-2 py-0.5 rounded-full font-black border border-amber-400/40">ONLINE</span>
           </button>
         </div>
@@ -78,7 +78,7 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
             <div className="text-xs text-slate-400 mt-1">Summaries & Solved Q&A Bank</div>
           </div>
           <div className="p-3 rounded-lg bg-white/5 border border-white/10">
-            <div className="text-xl sm:text-2xl font-black text-orange-400">Shankar AI</div>
+            <div className="text-xl sm:text-2xl font-black text-orange-400">Rishi AI</div>
             <div className="text-xs text-slate-400 mt-1">DAV Custom Intelligence Engine</div>
           </div>
           <div className="p-3 rounded-lg bg-white/5 border border-white/10">

@@ -10,6 +10,7 @@ import {
   UserCheck as UserCheckIcon, Shield, Zap, ExternalLink, Rocket
 } from 'lucide-react';
 import { WhatsAppLogo, InstagramLogo, LinkedInLogo, SnapchatLogo } from './SocialLogos';
+import { RangoliCursorEffect } from './RangoliCursorEffect';
 
 export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
   const [activeGradeFilter, setActiveGradeFilter] = useState('8');
@@ -70,10 +71,10 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
     },
     {
       num: 4,
-      id: 'shankar_ai',
+      id: 'rishi_ai',
       category: 'ai',
-      name: 'Shankar AI Companion',
-      shortName: 'Shankar AI',
+      name: 'Rishi AI Companion',
+      shortName: 'Rishi AI',
       tagline: 'Curriculum-Trained Dual Engine (Academics & Outer World)',
       icon: Brain,
       color: 'from-amber-400 via-orange-500 to-yellow-500',
@@ -233,15 +234,15 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
   const faqs = [
     {
       q: "What is The DAV Dictionary & Smart Digital Campus?",
-      a: "The DAV Dictionary is an all-in-one next-generation educational ecosystem engineered specifically for students, parents, and faculty of DAV Public Schools. Across 11 super-dimensions, it hosts the complete digital curriculum of 70+ verified DAV textbooks (LKG to Class 8), paired with Shankar AI, daily homework tracking, online CBT exam simulation, live video classrooms, student attendance, study focus timer, and campus utilities."
+      a: "The DAV Dictionary is an all-in-one next-generation educational ecosystem engineered specifically for students, parents, and faculty of DAV Public Schools. Across 11 super-dimensions, it hosts the complete digital curriculum of 70+ verified DAV textbooks (LKG to Class 8), paired with Rishi AI, daily homework tracking, online CBT exam simulation, live video classrooms, student attendance, study focus timer, and campus utilities."
     },
     {
       q: "What does 'Have a Demo Preview' allow me to do?",
-      a: "The Demo Preview gives you instant, 1-click access to the entire 11-dimension platform without needing to register or enter credentials first! You can explore the Overview Hub, view the complete 70+ textbook library, test chapter Q&A selectors, try Shankar AI interfaces, inspect daily homework and attendance, run the scientific calculator, weather, and compass, explore deep study focus modes, and chat directly with Head Boy Rishit Shankar. Full textbook PDF viewing and AI chatting unlock as soon as you sign in."
+      a: "The Demo Preview gives you instant, 1-click access to the entire 11-dimension platform without needing to register or enter credentials first! You can explore the Overview Hub, view the complete 70+ textbook library, test chapter Q&A selectors, try Rishi AI interfaces, inspect daily homework and attendance, run the scientific calculator, weather, and compass, explore deep study focus modes, and chat directly with Head Boy Rishit Shankar. Full textbook PDF viewing and AI chatting unlock as soon as you sign in."
     },
     {
-      q: "Is access to the textbooks, Shankar AI, and Homework Hub free?",
-      a: "Yes, 100%! The core textbooks, Shankar AI questions, daily homework hub, attendance tracker, and school utilities are completely free for all students. There are also specialized VIP and VVIP scholarship tiers with expanded multi-device sync and premium study vaults."
+      q: "Is access to the textbooks, Rishi AI, and Homework Hub free?",
+      a: "Yes, 100%! The core textbooks, Rishi AI questions, daily homework hub, attendance tracker, and school utilities are completely free for all students. There are also specialized VIP and VVIP scholarship tiers with expanded multi-device sync and premium study vaults."
     },
     {
       q: "How do I register or log in with my Student ID?",
@@ -255,6 +256,8 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-amber-400 selection:text-stone-950 relative overflow-x-hidden">
+      {/* Festive Rangoli Color Particle Cursor & Scroll Effect */}
+      <RangoliCursorEffect />
       
       {/* =========================================================================
           TOP NAVIGATION BAR (FUTURISTIC GLASS & AMBIENT GLOW)
@@ -283,7 +286,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
                 </span>
               </div>
               <p className="text-[11px] text-amber-300/80 font-medium hidden xs:block">
-                DAV Public School Digital Campus &amp; Shankar AI Super-App
+                DAV Public School Digital Campus &amp; Rishi AI Super-App
               </p>
             </div>
           </div>
@@ -352,7 +355,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
             <Brain className="w-6 h-6 text-cyan-400" />
           </div>
           <div className="text-left">
-            <div className="text-xs font-black text-white">Shankar AI Engine</div>
+            <div className="text-xs font-black text-white">Rishi AI Engine</div>
             <div className="text-[10px] text-cyan-300/80">Academic &amp; Outer World AI</div>
           </div>
         </div>
@@ -378,7 +381,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
 
           {/* Subtitle */}
           <p className="mt-6 text-base sm:text-xl text-stone-300 max-w-3xl mx-auto leading-relaxed">
-            Welcome to the new era of DAV education. Built by students for students, featuring <strong>11 comprehensive dimensions</strong>: 70+ official textbooks, Shankar AI companion, daily homework hub, CBT exam simulation, live campus utilities, and deep focus technology.
+            Welcome to the new era of DAV education. Built by students for students, featuring <strong>11 comprehensive dimensions</strong>: 70+ official textbooks, Rishi AI companion, daily homework hub, CBT exam simulation, live campus utilities, and deep focus technology.
           </p>
 
           {/* =========================================================================
@@ -439,7 +442,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
               {[
                 { idx: 0, label: 'Dim 1: Overview', icon: Layers },
                 { idx: 1, label: 'Dim 2: 70+ Books', icon: BookOpen },
-                { idx: 3, label: 'Dim 4: Shankar AI', icon: Brain },
+                { idx: 3, label: 'Dim 4: Rishi AI', icon: Brain },
                 { idx: 4, label: 'Dim 5: Smart ERP', icon: School },
                 { idx: 6, label: 'Dim 7: Utilities', icon: Compass },
                 { idx: 7, label: 'Dim 8: Deep Focus', icon: Trophy }
@@ -517,7 +520,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
             </div>
             <div className="p-4 rounded-2xl bg-stone-900/60 border border-stone-800 hover:border-cyan-400/50 hover:bg-stone-900/90 transition-all duration-300 shadow-lg group">
               <div className="text-3xl sm:text-4xl font-black text-cyan-400 group-hover:scale-110 transition-transform">24/7</div>
-              <div className="text-xs text-stone-400 font-bold mt-1">Shankar AI Tutor</div>
+              <div className="text-xs text-stone-400 font-bold mt-1">Rishi AI Tutor</div>
               <div className="text-[10px] text-cyan-400 font-medium mt-0.5">DAV Grounded</div>
             </div>
             <div className="p-4 rounded-2xl bg-stone-900/60 border border-stone-800 hover:border-emerald-400/50 hover:bg-stone-900/90 transition-all duration-300 shadow-lg group">
@@ -552,7 +555,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
               {[
                 { id: 'all', label: 'All 11 Dimensions' },
                 { id: 'academics', label: 'Core Academics & Books' },
-                { id: 'ai', label: 'Shankar AI Intelligence' },
+                { id: 'ai', label: 'Rishi AI Intelligence' },
                 { id: 'erp', label: 'Smart School ERP Desk' },
                 { id: 'utilities', label: 'Campus Utilities & Focus' },
                 { id: 'community', label: 'Patron & Community' }
@@ -796,7 +799,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
                 </h2>
 
                 <p className="text-stone-300 text-xs sm:text-sm leading-relaxed">
-                  As Head Boy at DAV Khabra, I observed students frequently struggling with heavy bags, forgotten books, or lack of instant explanations while studying at home. I engineered <strong>The DAV Dictionary</strong> into an all-in-one digital companion—expanding from a digital library into 11 comprehensive dimensions uniting Shankar AI, homework tracking, CBT exams, bus radar, and deep focus technology.
+                  As Head Boy at DAV Khabra, I observed students frequently struggling with heavy bags, forgotten books, or lack of instant explanations while studying at home. I engineered <strong>The DAV Dictionary</strong> into an all-in-one digital companion—expanding from a digital library into 11 comprehensive dimensions uniting Rishi AI, homework tracking, CBT exams, bus radar, and deep focus technology.
                 </p>
 
                 {/* Developer Highlights */}

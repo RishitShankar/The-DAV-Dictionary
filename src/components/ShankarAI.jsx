@@ -7,9 +7,9 @@ import {
   Bookmark, Paperclip, Mic, MicOff, Image as ImageIcon, ChevronDown, ListChecks, HelpCircle,
   ArrowRight, ArrowLeft, RotateCcw
 } from 'lucide-react';
-import { ShankarAILogo } from './ShankarAILogo';
+import { RishiAILogo } from './RishiAILogo';
 import { BlackDogLogo } from './BlackDogLogo';
-import { askShankarAI, getSavedApiKey, saveApiKey } from '../services/geminiService';
+import { askRishiAI, getSavedApiKey, saveApiKey } from '../services/geminiService';
 import { InteractiveQuiz } from './InteractiveQuiz';
 import { 
   DAV_CLASSES, 
@@ -110,7 +110,7 @@ function renderFormattedMessage(text, isUser) {
   );
 }
 
-export function ShankarAI({ isOpen, onClose, initialPrompt = '', user, isSectionView = false, onRequireLogin }) {
+export function RishiAI({ isOpen, onClose, initialPrompt = '', user, isSectionView = false, onRequireLogin }) {
   // Modes: 'academics' | 'outer_world'
   const [activeMode, setActiveMode] = useState('academics');
 
@@ -129,7 +129,7 @@ export function ShankarAI({ isOpen, onClose, initialPrompt = '', user, isSection
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      text: `👋 **Welcome to Shankar AI** — the proprietary full-screen intelligence engine of The DAV Dictionary!
+      text: `👋 **Welcome to Rishi AI** — the proprietary full-screen intelligence engine of The DAV Dictionary!
 
 Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system architecture:
 
@@ -308,7 +308,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
       if (onRequireLogin) {
         onRequireLogin(
           'Login to Continue',
-          'You are currently exploring in Free Demo Preview. Please log in or register with your Student ID & Password to ask questions, solve homework doubts, and generate AI chapter quizzes with Shankar AI.'
+          'You are currently exploring in Free Demo Preview. Please log in or register with your Student ID & Password to ask questions, solve homework doubts, and generate AI chapter quizzes with Rishi AI.'
         );
       }
       return;
@@ -333,7 +333,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
     setLoading(true);
 
     try {
-      const response = await askShankarAI(question, {
+      const response = await askRishiAI(question, {
         mode: activeMode,
         classNum: selectedClass === 'UKG' || selectedClass === 'LKG' ? selectedClass : Number(selectedClass),
         subject: currentSubjectObj?.name || selectedSubject,
@@ -407,11 +407,11 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
         
         {/* Left: Branding & Mascot */}
         <div className="flex items-center gap-2.5 sm:gap-3">
-          <ShankarAILogo className="w-10 h-10 sm:w-11 sm:h-11" bgClassName="bg-stone-950 border-2 border-amber-400" />
+          <RishiAILogo className="w-10 h-10 sm:w-11 sm:h-11" bgClassName="bg-stone-950 border-2 border-amber-400" />
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-black text-lg sm:text-xl text-white tracking-tight uppercase flex items-center gap-1.5">
-                <span>Shankar AI</span>
+                <span>Rishi AI</span>
                   <span className="text-amber-400 font-mono text-xs px-2 py-0.5 rounded-md bg-stone-950 border border-amber-400/40">
                     MASTER
                   </span>
@@ -498,7 +498,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
               <button
                 onClick={onClose}
                 className="p-1.5 sm:p-2 rounded-xl bg-stone-800 hover:bg-rose-900 text-stone-300 hover:text-white border border-stone-700 transition cursor-pointer"
-                title="Close Shankar AI"
+                title="Close Rishi AI"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -512,7 +512,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
             <div className="flex items-center justify-between mb-2">
               <div className="font-bold text-amber-300 flex items-center gap-1.5">
                 <Key className="w-4 h-4" />
-                <span>Shankar AI Proprietary Cloud Token Configuration</span>
+                <span>Rishi AI Proprietary Cloud Token Configuration</span>
               </div>
               <span className="text-[10px] text-stone-300 font-mono bg-stone-900 px-2 py-0.5 rounded border border-orange-500/30">
                 Status: {apiKey ? 'Live Neural Cloud Active' : 'Master Offline Engine (100% Armed & Ready)'}
@@ -694,7 +694,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
                   className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
                 >
                   {!isUser && (
-                    <ShankarAILogo className="w-9 h-9 shrink-0 mt-1" bgClassName="bg-stone-950 border border-amber-400" />
+                    <RishiAILogo className="w-9 h-9 shrink-0 mt-1" bgClassName="bg-stone-950 border border-amber-400" />
                   )}
                   
                   <div
@@ -709,7 +709,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
                       <div className="mb-3 pb-2 border-b border-orange-200 flex items-center justify-between text-orange-950 font-bold text-xs bg-amber-100/90 -mx-4 -mt-4 px-4 pt-3 rounded-t-2xl flex-wrap gap-1">
                         <span className="flex items-center gap-1.5 text-orange-900 font-extrabold">
                           <Flame className="w-4 h-4 text-orange-600 fill-orange-500 animate-pulse" />
-                          <span>{msg.modelName || 'Shankar AI Master Intelligence'}</span>
+                          <span>{msg.modelName || 'Rishi AI Master Intelligence'}</span>
                         </span>
                         {msg.chapterInfo && (
                           <span className="text-[10px] bg-amber-200 px-2 py-0.5 rounded-full text-stone-950 font-mono font-bold flex items-center gap-1">
@@ -734,13 +734,13 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
 
             {loading && (
               <div className="flex gap-3 items-center">
-                <ShankarAILogo className="w-9 h-9 shrink-0 animate-pulse" bgClassName="bg-stone-950 border border-amber-400" />
+                <RishiAILogo className="w-9 h-9 shrink-0 animate-pulse" bgClassName="bg-stone-950 border border-amber-400" />
                 <div className="bg-stone-50 p-4 rounded-2xl border border-slate-200 flex items-center gap-2.5 text-xs text-slate-700 shadow-xs">
                   <RefreshCw className="w-4 h-4 animate-spin text-orange-600" />
                   <span>
                     {activeMode === 'academics' 
-                      ? `Shankar AI is synthesizing answer directly from Class ${selectedClass} ${currentSubjectObj?.name} Ch ${selectedChapter}...`
-                      : 'Shankar AI is synthesizing global intelligence from the outer world neural engine...'}
+                      ? `Rishi AI is synthesizing answer directly from Class ${selectedClass} ${currentSubjectObj?.name} Ch ${selectedChapter}...`
+                      : 'Rishi AI is synthesizing global intelligence from the outer world neural engine...'}
                   </span>
                 </div>
               </div>
@@ -771,7 +771,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
               <div className="flex items-center gap-2 text-blue-300 font-medium">
                 <Globe className="w-3.5 h-3.5 text-blue-400" />
                 <span>
-                  Mode: <strong>Shankar AI Outer World Master Intelligence</strong> (Unconstrained Knowledge)
+                  Mode: <strong>Rishi AI Outer World Master Intelligence</strong> (Unconstrained Knowledge)
                 </span>
               </div>
             )}
@@ -852,7 +852,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
                   ? "🎙️ Listening... Speak your question now..."
                   : activeMode === 'academics'
                   ? `Ask anything from Class ${selectedClass} ${currentSubjectObj?.name || 'SST'} Ch ${selectedChapter} (e.g. Question D.1, middle page concepts, 5-mark notes)...`
-                  : 'Ask Shankar AI anything about outer world, geopolitics, space, weather, coding, chess...'
+                  : 'Ask Rishi AI anything about outer world, geopolitics, space, weather, coding, chess...'
               }
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -869,7 +869,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
           </form>
 
           <div className="text-[11px] text-orange-200/70 text-center mt-2 flex items-center justify-center gap-2">
-            <span>Shankar AI Proprietary Architecture</span>
+            <span>Rishi AI Proprietary Architecture</span>
             <span>•</span>
             <span>DAV Classes LKG to 8 Textbook Grounded</span>
             <span>•</span>
@@ -897,7 +897,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
               {wizardStep === 'select_mode' && (
                 <div className="space-y-6 text-center">
                   <div className="w-16 h-16 mx-auto rounded-2xl bg-stone-950 border-2 border-amber-400 flex items-center justify-center text-stone-950 shadow-lg">
-                    <ShankarAILogo className="w-12 h-12" bgClassName="bg-transparent" />
+                    <RishiAILogo className="w-12 h-12" bgClassName="bg-transparent" />
                   </div>
 
                   <div>
@@ -1090,7 +1090,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
                       Choose Chapter for {currentSubjectObj?.name}
                     </h2>
                     <p className="text-xs text-stone-300 mt-1">
-                      This chapter will be locked into Shankar AI for 100% textbook-accurate answers and quizzes.
+                      This chapter will be locked into Rishi AI for 100% textbook-accurate answers and quizzes.
                     </p>
                   </div>
 
@@ -1161,4 +1161,5 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
     );
   }
 
-export default ShankarAI;
+export const ShankarAI = RishiAI;
+export default RishiAI;

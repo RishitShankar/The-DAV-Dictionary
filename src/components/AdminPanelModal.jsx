@@ -404,7 +404,7 @@ _Keep your password safe. Have a great study session!_`;
     const message = `❤️ *THE DAV DICTIONARY - OFFICIAL DONATION RECEIPT*
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Dear *${donation.studentName || 'Generous Supporter'}*,
-Thank you very much for your voluntary donation to The DAV Dictionary! Your contribution helps keep our cloud servers, Shankar AI Gemini API, and verified textbook solutions live for all DAV Public School students.
+Thank you very much for your voluntary donation to The DAV Dictionary! Your contribution helps keep our cloud servers, Rishi AI Gemini API, and verified textbook solutions live for all DAV Public School students.
 
 👤 *Donor Name:* ${donation.studentName}
 💰 *Donation Amount:* ₹${donation.donationAmount || donation.totalAmount}
