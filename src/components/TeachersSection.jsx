@@ -2608,7 +2608,7 @@ export function TeachersSection({
                       >
                         <Video className="w-4 h-4 text-slate-950" />
                         <span>Launch WebRTC Live Classroom Portal</span>
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight className="w-4 h-4 animate-att-absent-stamp" />
                       </button>
                     </div>
                   )}
@@ -2657,7 +2657,7 @@ export function TeachersSection({
                     className={`inline-flex items-center justify-center gap-3 px-6 sm:px-14 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r ${currentMeta.buttonGradient || 'from-amber-400 to-orange-500 text-stone-950'} font-black text-sm sm:text-base shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer border-2 border-white/40 card-real-3d min-h-[48px] w-full sm:w-auto`}
                   >
                     <span>{currentMeta.centralButtonText}</span>
-                    <ArrowRight className="w-5 h-5" />
+                    <ArrowRight className="w-5 h-5 animate-live-confetti-clap" />
                   </button>
                   <p className={`text-[11px] ${currentMeta.accentText || 'text-amber-300/80'} font-mono text-center`}>
                     {currentMeta.centralButtonSub}
@@ -2947,7 +2947,7 @@ export function TeachersSection({
                                 {hw.subject}
                               </span>
                               <span className="px-3 py-1 rounded-full bg-red-950/80 text-red-300 font-mono text-xs border border-red-500/40 flex items-center gap-1.5 animate-hw-deadline-beacon">
-                                <Clock className="w-3 h-3 text-red-400" />
+                                <Clock className="w-3 h-3 text-red-400 animate-hw-calendar-spin" />
                                 <span>Due: {hw.dueDate}</span>
                               </span>
                             </div>
@@ -3354,7 +3354,7 @@ export function TeachersSection({
                   {/* WhatsApp Desktop Top App Bar (Title Bar) */}
                   <div className="h-10 bg-[#f0f2f5] border-b border-[#d1d7db] px-4 flex items-center justify-between select-none shrink-0">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-5 h-5 rounded-full bg-[#25d366] flex items-center justify-center text-white shadow-xs">
+                      <div className="w-5 h-5 rounded-full bg-[#25d366] flex items-center justify-center text-white shadow-xs animate-chat-avatar-glow">
                         <MessageSquare className="w-3 h-3 fill-current" />
                       </div>
                       <span className="text-xs font-bold text-[#111b21] tracking-tight">WhatsApp</span>
@@ -3396,11 +3396,11 @@ export function TeachersSection({
                         <button 
                           type="button"
                           onClick={() => setMobileChatTab('roster')}
-                          className="relative p-2 rounded-xl bg-[#d9fdd3] text-[#008069] shadow-xs cursor-pointer transition"
+                          className="relative p-2 rounded-xl bg-[#d9fdd3] text-[#008069] shadow-xs cursor-pointer transition animate-chat-bubble-pop"
                           title="Chats"
                         >
                           <MessageSquare className="w-5 h-5 fill-current" />
-                          <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-[#25d366] text-white text-[9px] font-black shadow-xs">
+                          <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-[#25d366] text-white text-[9px] font-black shadow-xs animate-chat-radar-ping">
                             {chatContactsList.filter(c => isUserOnline(c)).length || 2}
                           </span>
                         </button>
@@ -3411,7 +3411,7 @@ export function TeachersSection({
                           className="p-2 rounded-xl text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21] transition cursor-pointer"
                           title="Calls"
                         >
-                          <Phone className="w-5 h-5" />
+                          <Phone className="w-5 h-5 animate-chat-mic-record" />
                         </button>
 
                         {/* Status */}
@@ -3420,7 +3420,7 @@ export function TeachersSection({
                           className="p-2 rounded-xl text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21] transition cursor-pointer"
                           title="Status"
                         >
-                          <Radio className="w-5 h-5" />
+                          <Radio className="w-5 h-5 animate-chat-typing-dots" />
                         </button>
 
                         {/* Channels */}
@@ -3445,7 +3445,7 @@ export function TeachersSection({
                         <button 
                           type="button"
                           onClick={handleInstantAIAnswer}
-                          className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-[1.5px] cursor-pointer hover:scale-105 transition shadow-sm"
+                          className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-[1.5px] cursor-pointer hover:scale-105 transition shadow-sm animate-chat-instant-ai"
                           title="Rishi AI Chat Assistant"
                         >
                           <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
@@ -3624,7 +3624,7 @@ export function TeachersSection({
                                       <p className="text-xs text-[#667781] truncate font-medium flex items-center gap-1">
                                         {lastMsg ? (
                                           <>
-                                            <CheckCheck className="w-3.5 h-3.5 text-[#53bdeb] shrink-0" />
+                                            <CheckCheck className="w-3.5 h-3.5 text-[#53bdeb] shrink-0 animate-chat-badge-verified" />
                                             <span className="truncate">{lastMsg.text || (lastMsg.media ? `[${lastMsg.media.type}]` : 'Message')}</span>
                                           </>
                                         ) : (
@@ -3736,7 +3736,7 @@ export function TeachersSection({
                                     onClick={() => handleClearAllChat(activeContact)}
                                     className="w-full px-4 py-2.5 text-left hover:bg-rose-50 text-rose-600 flex items-center gap-2 cursor-pointer transition"
                                   >
-                                    <Trash2 className="w-4 h-4" />
+                                    <Trash2 className="w-4 h-4 animate-chat-delete-fade" />
                                     <span>Delete all chat (Clear)</span>
                                   </button>
                                   <button
@@ -3910,7 +3910,7 @@ export function TeachersSection({
                           {pendingMedia && (
                             <div className="px-4 py-2 bg-white border-t border-[#d1d7db] flex items-center justify-between gap-3 text-xs">
                               <div className="flex items-center gap-2 text-[#00a884] font-bold">
-                                <Paperclip className="w-4 h-4" />
+                                <Paperclip className="w-4 h-4 animate-chat-attachment-spring" />
                                 <span className="truncate max-w-xs">{pendingMedia.name}</span>
                                 <span className="text-[10px] uppercase text-[#667781]">({pendingMedia.type})</span>
                               </div>
@@ -4019,7 +4019,7 @@ export function TeachersSection({
                               className="w-10 h-10 rounded-full bg-[#00a884] hover:bg-[#008f6f] text-white flex items-center justify-center shrink-0 shadow-md transition disabled:opacity-40 cursor-pointer"
                               title="Send Message"
                             >
-                              <Send className="w-4 h-4 ml-0.5" />
+                              <Send className="w-4 h-4 ml-0.5 animate-chat-send-fly" />
                             </button>
                           </div>
                         </>
@@ -4262,10 +4262,10 @@ export function TeachersSection({
                 
                 {/* Real-Time Live Broadcast Pulsing Alert (Prominently displayed for all students) */}
                 {scheduledLiveClasses.some(c => c.status === 'live') && (
-                  <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-rose-950 via-purple-950 to-slate-950 border-2 border-rose-500 shadow-2xl flex items-center justify-between flex-wrap gap-4 animate-pulse">
+                  <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-rose-950 via-purple-950 to-slate-950 border-2 border-rose-500 shadow-2xl flex items-center justify-between flex-wrap gap-4 animate-live-room-pulse">
                     <div className="flex items-center gap-3.5">
                       <div className="w-12 h-12 rounded-2xl bg-rose-600/30 border border-rose-400 flex items-center justify-center text-rose-400 shrink-0">
-                        <Video className="w-6 h-6 animate-pulse" />
+                        <Video className="w-6 h-6 animate-pulse animate-live-on-air" />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
@@ -4294,7 +4294,7 @@ export function TeachersSection({
                           playSoundChime('sent');
                         }
                       }}
-                      className="px-6 py-3 rounded-2xl bg-gradient-to-r from-rose-500 via-fuchsia-500 to-teal-400 hover:from-rose-400 hover:to-teal-300 text-slate-950 font-black text-xs sm:text-sm flex items-center gap-2 shadow-xl cursor-pointer hover:scale-105 transition transform"
+                      className="px-6 py-3 rounded-2xl bg-gradient-to-r from-rose-500 via-fuchsia-500 to-teal-400 hover:from-rose-400 hover:to-teal-300 text-slate-950 font-black text-xs sm:text-sm flex items-center gap-2 shadow-xl cursor-pointer hover:scale-105 transition transform animate-live-camera-glow"
                     >
                       <Play className="w-4 h-4 fill-slate-950" />
                       <span>Join Live Class Now (Instant Video)</span>
@@ -4328,7 +4328,7 @@ export function TeachersSection({
                       if (displayedList.length === 0) {
                         return (
                           <div className="col-span-full p-8 rounded-2xl bg-slate-900/60 border border-purple-900/60 text-center space-y-2">
-                            <Video className="w-8 h-8 text-rose-400 mx-auto opacity-50" />
+                            <Video className="w-8 h-8 text-rose-400 mx-auto opacity-50 animate-live-room-pulse" />
                             <p className="text-sm font-bold text-white">No active lectures right now for Class {selectedLiveClassNum}.</p>
                             <p className="text-xs text-purple-300">When your teacher starts a live class, it will instantly appear here across all devices.</p>
                           </div>
@@ -4385,7 +4385,7 @@ export function TeachersSection({
                       <div className="flex items-center justify-between pb-4 border-b border-purple-800">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-2xl bg-gradient-to-r from-rose-600 to-teal-400 flex items-center justify-center text-slate-950 font-black shadow-lg">
-                            <Video className="w-5 h-5" />
+                            <Video className="w-5 h-5 animate-live-mic-levels" />
                           </div>
                           <div>
                             <h2 className="text-lg md:text-xl font-black text-white">
@@ -4509,12 +4509,12 @@ export function TeachersSection({
                         >
                           {copiedLiveLink ? (
                             <>
-                              <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                              <CheckCircle className="w-3.5 h-3.5 text-emerald-400 animate-live-hand-raise" />
                               <span>Copied Invite Link!</span>
                             </>
                           ) : (
                             <>
-                              <Share2 className="w-3.5 h-3.5 text-emerald-400" />
+                              <Share2 className="w-3.5 h-3.5 text-emerald-400 animate-live-screen-share" />
                               <span className="hidden sm:inline">Invite Link</span>
                             </>
                           )}
@@ -4527,7 +4527,7 @@ export function TeachersSection({
                           className="px-3 py-1.5 rounded-xl border border-blue-500/60 bg-blue-950/60 text-blue-300 hover:bg-blue-900 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
                           title="Open in new browser tab or mobile app"
                         >
-                          <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
+                          <ExternalLink className="w-3.5 h-3.5 text-blue-400 animate-live-dock-hover" />
                           <span className="hidden sm:inline">New Tab</span>
                         </a>
 
@@ -4567,7 +4567,7 @@ export function TeachersSection({
                             }}
                             className="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-black text-xs flex items-center gap-1.5 shadow-md cursor-pointer transition border border-purple-700"
                           >
-                            <PhoneOff className="w-3.5 h-3.5 text-rose-400" />
+                            <PhoneOff className="w-3.5 h-3.5 text-rose-400 animate-live-hangup-shake" />
                             <span>Leave Class</span>
                           </button>
                         )}
@@ -4587,7 +4587,7 @@ export function TeachersSection({
                           </div>
                           <div className="flex-1 bg-slate-950 rounded-2xl border border-purple-900 relative flex items-center justify-center overflow-hidden p-4">
                             <div className="text-center space-y-3">
-                              <PenTool className="w-12 h-12 text-teal-400 mx-auto animate-bounce" />
+                              <PenTool className="w-12 h-12 text-teal-400 mx-auto animate-bounce animate-live-whiteboard-draw" />
                               <h5 className="text-sm font-bold text-white">Teacher's Digital Smart Board Active</h5>
                               <p className="text-xs text-purple-300 max-w-sm">
                                 Draw ray diagrams, write math formulas, or annotate class diagrams live with your students.
@@ -4669,7 +4669,7 @@ export function TeachersSection({
                         }}
                         className="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-500 via-purple-600 to-teal-400 hover:from-amber-400 hover:to-teal-300 text-slate-950 font-black text-xs md:text-sm flex items-center gap-2 shadow-xl shadow-amber-500/30 transition transform hover:scale-105 active:scale-95 cursor-pointer"
                       >
-                        <Trophy className="w-4 h-4 text-slate-950" />
+                        <Trophy className="w-4 h-4 text-slate-950 animate-cbt-timer-tick" />
                         <span>Check Test Leaderboard</span>
                         <ArrowRight className="w-4 h-4" />
                       </button>
@@ -4695,9 +4695,9 @@ export function TeachersSection({
                             setDeployedShareCode(null);
                             playSoundChime('sent');
                           }}
-                          className="px-6 py-3 rounded-2xl bg-purple-900 border-2 border-teal-400 text-teal-300 hover:text-white font-black text-xs md:text-sm flex items-center gap-2 transition cursor-pointer shadow-xl hover:scale-105"
+                          className="px-6 py-3 rounded-2xl bg-purple-900 border-2 border-teal-400 text-teal-300 hover:text-white font-black text-xs md:text-sm flex items-center gap-2 transition cursor-pointer shadow-xl hover:scale-105 animate-cbt-deploy-burst"
                         >
-                          <Plus className="w-4 h-4 text-teal-300" />
+                          <Plus className="w-4 h-4 text-teal-300 animate-att-enroll-modal" />
                           <span>Create &amp; Deploy New Examination (Faculty)</span>
                         </button>
                       )}
@@ -4709,7 +4709,7 @@ export function TeachersSection({
                 <div className="w-full space-y-4">
                   <div className="flex items-center justify-between pb-1 flex-wrap gap-2">
                     <h3 className="text-sm md:text-base font-black text-white flex items-center gap-2">
-                      <CheckSquare className="w-4 h-4 text-amber-400" />
+                      <CheckSquare className="w-4 h-4 text-amber-400 animate-cbt-palette-flip" />
                       <span>Active Verified Unit Tests for Class {selectedTestClass} - Section {selectedTestSection}</span>
                     </h3>
                     <span className="text-xs text-amber-300 font-mono">
@@ -4766,7 +4766,7 @@ export function TeachersSection({
                                   }}
                                   className="w-full py-2 rounded-xl bg-purple-900/80 border border-teal-400/80 text-teal-300 hover:text-white font-black text-xs cursor-pointer shadow-md hover:opacity-95 flex items-center justify-center gap-1.5"
                                 >
-                                  <Trophy className="w-3.5 h-3.5 text-teal-300" />
+                                  <Trophy className="w-3.5 h-3.5 text-teal-300 animate-cbt-score-count" />
                                   <span>Check Test Leaderboard</span>
                                 </button>
                                 {!isDimension5 && (windowActive ? (
@@ -4833,7 +4833,7 @@ export function TeachersSection({
                                   : 'bg-slate-900 border-purple-800 text-purple-200 hover:border-purple-600'
                               }`}
                             >
-                              <GraduationCap className="w-4 h-4" />
+                              <GraduationCap className="w-4 h-4 animate-cbt-badge-stat" />
                               <span>{c.name}</span>
                             </button>
                           ))}
@@ -5010,7 +5010,7 @@ export function TeachersSection({
                       <div className="flex items-center justify-between pb-4 border-b border-purple-800">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-2xl bg-gradient-to-r from-teal-400 to-purple-600 flex items-center justify-center text-slate-950 font-black shadow-lg">
-                            <Plus className="w-5 h-5" />
+                            <Plus className="w-5 h-5 animate-cbt-submit-lock" />
                           </div>
                           <div>
                             <h2 className="text-lg md:text-xl font-black text-white">
@@ -5281,7 +5281,7 @@ export function TeachersSection({
                                       htmlFor={`mcq-q-img-${qIdx}`}
                                       className="px-3 py-1.5 rounded-xl bg-purple-950 border border-purple-700 text-teal-300 font-bold cursor-pointer hover:bg-purple-900 transition flex items-center gap-1.5 text-[11px]"
                                     >
-                                      <ImageIcon className="w-3.5 h-3.5 text-teal-300" />
+                                      <ImageIcon className="w-3.5 h-3.5 text-teal-300 animate-cbt-photo-inspect" />
                                       <span>📷 Attach Question Diagram / Image</span>
                                     </label>
                                     {q.questionImage && (
@@ -5355,7 +5355,7 @@ export function TeachersSection({
                                         htmlFor={`mcq-diagram-file-${q.id || qIdx}`}
                                         className="px-3 py-1.5 rounded-xl bg-purple-900/80 hover:bg-purple-800 border border-teal-400 text-teal-300 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition"
                                       >
-                                        <Paperclip className="w-3.5 h-3.5" />
+                                        <Paperclip className="w-3.5 h-3.5 animate-cbt-option-select" />
                                         <span>{q.diagramUrl ? 'Change Diagram' : 'Attach Diagram / Image'}</span>
                                       </label>
 
@@ -5378,7 +5378,7 @@ export function TeachersSection({
 
                                     {q.diagramUrl && (
                                       <span className="text-[11px] font-mono font-bold text-teal-300 flex items-center gap-1">
-                                        <CheckCircle2 className="w-3.5 h-3.5 text-teal-400" />
+                                        <CheckCircle2 className="w-3.5 h-3.5 text-teal-400 animate-cbt-review-flag" />
                                         <span>Diagram Attached</span>
                                       </span>
                                     )}
@@ -5609,7 +5609,7 @@ export function TeachersSection({
                       ) : (
                         /* Result Scorecard View */
                         <div className="p-8 rounded-3xl bg-slate-900 border-2 border-teal-400 text-center space-y-4">
-                          <Trophy className="w-16 h-16 text-amber-400 mx-auto" />
+                          <Trophy className="w-16 h-16 text-amber-400 mx-auto animate-cbt-leaderboard-ribbon" />
                           <h3 className="text-xl font-black text-white">Examination Completed Successfully!</h3>
                           <div className="text-2xl font-black text-teal-300 font-mono">
                             Score: {examResultScore.totalScoreObtained} / {examResultScore.maxMarks} ({examResultScore.percentage}%)
@@ -5646,7 +5646,7 @@ export function TeachersSection({
 
                   <div className="relative z-10 max-w-4xl space-y-3">
                     <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/50 text-xs font-mono font-bold text-cyan-300">
-                      <UserCheck className="w-3.5 h-3.5 text-cyan-300" />
+                      <UserCheck className="w-3.5 h-3.5 text-cyan-300 animate-att-gauge-sweep" />
                       <span>PAGE 5 - DIGITAL ATTENDANCE REGISTRY</span>
                     </div>
 
@@ -5666,7 +5666,7 @@ export function TeachersSection({
                         }}
                         className="px-6 py-3 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-600 to-teal-400 hover:from-cyan-300 hover:to-teal-300 text-slate-950 font-black text-xs md:text-sm flex items-center gap-2 shadow-xl shadow-cyan-500/30 transition transform hover:scale-105 active:scale-95 cursor-pointer"
                       >
-                        <UserCheck className="w-4 h-4 text-slate-950" />
+                        <UserCheck className="w-4 h-4 text-slate-950 animate-att-present-stamp" />
                         <span>Filter Class &amp; Section Roster</span>
                         <ArrowRight className="w-4 h-4" />
                       </button>
@@ -5699,7 +5699,7 @@ export function TeachersSection({
                   <div className="p-4 rounded-2xl bg-slate-900 border border-purple-800 flex items-center justify-between flex-wrap gap-3">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-black">
-                        <UserCheck className="w-5 h-5" />
+                        <UserCheck className="w-5 h-5 animate-att-summary-ring" />
                       </div>
                       <div>
                         <h3 className="text-sm font-black text-white">
@@ -5728,12 +5728,12 @@ export function TeachersSection({
                             }}
                             className="px-4 py-2 rounded-xl bg-purple-900 border border-teal-400 text-teal-300 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-md hover:scale-105 transition"
                           >
-                            <Plus className="w-3.5 h-3.5" />
+                            <Plus className="w-3.5 h-3.5 animate-att-calendar-flip" />
                             <span>Add Student</span>
                           </button>
                           <button
                             onClick={handleSaveAttendance}
-                            className="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-teal-400 text-slate-950 font-black text-xs cursor-pointer shadow-md hover:scale-105 transition"
+                            className="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-teal-400 text-slate-950 font-black text-xs cursor-pointer shadow-md hover:scale-105 transition animate-att-export-excel"
                           >
                             Save &amp; Sync Register
                           </button>
@@ -5752,7 +5752,7 @@ export function TeachersSection({
                   <div className="w-full rounded-2xl bg-slate-900 border border-purple-800 overflow-hidden">
                     {currentAttRoster.length === 0 ? (
                       <div className="p-12 text-center space-y-3">
-                        <Users className="w-12 h-12 text-purple-400 mx-auto opacity-50" />
+                        <Users className="w-12 h-12 text-purple-400 mx-auto opacity-50 animate-att-roll-row-slide" />
                         <h4 className="text-sm font-bold text-white">
                           No students enrolled yet for Class {selectedAttClass} - Section {selectedAttSection}
                         </h4>
@@ -5819,7 +5819,7 @@ export function TeachersSection({
                                       title="Remove student"
                                       className="p-1 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 cursor-pointer"
                                     >
-                                      <Trash2 className="w-4 h-4" />
+                                      <Trash2 className="w-4 h-4 animate-att-warning-flag" />
                                     </button>
                                   </td>
                                 )}
@@ -5913,7 +5913,7 @@ export function TeachersSection({
                                   : 'bg-slate-900 border-purple-800 text-purple-200 hover:border-purple-600'
                               }`}
                             >
-                              <GraduationCap className="w-4 h-4" />
+                              <GraduationCap className="w-4 h-4 animate-att-sync-cloud" />
                               <span>{c.name}</span>
                             </button>
                           ))}
@@ -5977,7 +5977,7 @@ export function TeachersSection({
 
                   <div className="relative z-10 max-w-4xl space-y-3">
                     <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-950/80 border border-indigo-500/50 text-xs font-mono font-bold text-indigo-300">
-                      <Award className="w-3.5 h-3.5 text-indigo-300" />
+                      <Award className="w-3.5 h-3.5 text-indigo-300 animate-marks-crown-float" />
                       <span>PAGE 6 - STUDENT EXAMINATION MARKS LEADERBOARD</span>
                     </div>
 
@@ -5997,7 +5997,7 @@ export function TeachersSection({
                         }}
                         className="px-6 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-600 to-teal-400 hover:from-indigo-400 hover:to-teal-300 text-slate-950 font-black text-xs md:text-sm flex items-center gap-2 shadow-xl shadow-indigo-500/30 transition transform hover:scale-105 active:scale-95 cursor-pointer"
                       >
-                        <Award className="w-4 h-4 text-slate-950" />
+                        <Award className="w-4 h-4 text-slate-950 animate-marks-grade-pop" />
                         <span>Select Term, Class &amp; Section</span>
                         <ArrowRight className="w-4 h-4" />
                       </button>
@@ -6033,7 +6033,7 @@ export function TeachersSection({
                             onClick={handleSaveMarksLedger}
                             className="px-6 py-3 rounded-2xl bg-gradient-to-r from-teal-400 to-indigo-500 text-slate-950 font-black text-xs md:text-sm flex items-center gap-2 transition cursor-pointer shadow-lg hover:scale-105"
                           >
-                            <FileCheck className="w-4 h-4" />
+                            <FileCheck className="w-4 h-4 animate-marks-calc-stream" />
                             <span>Save Marks Ledger (Faculty Authorization)</span>
                           </button>
                         </>
@@ -6092,7 +6092,7 @@ export function TeachersSection({
                 <div className="w-full rounded-2xl bg-slate-900 border border-purple-800 overflow-hidden shadow-2xl">
                   {currentMarksRoster.length === 0 ? (
                     <div className="p-12 text-center space-y-3">
-                      <Award className="w-12 h-12 text-purple-400 mx-auto opacity-50" />
+                      <Award className="w-12 h-12 text-purple-400 mx-auto opacity-50 animate-marks-subject-tab" />
                       <h4 className="text-sm font-bold text-white">
                         No students enrolled yet for Class {selectedMarksClass} - Section {selectedMarksSection}
                       </h4>
@@ -6201,7 +6201,7 @@ export function TeachersSection({
                                       }}
                                       className="px-2.5 py-1 rounded-xl bg-purple-900/60 hover:bg-purple-800 border border-purple-600 text-purple-200 hover:text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer"
                                     >
-                                      <Printer className="w-3 h-3 text-teal-300" />
+                                      <Printer className="w-3 h-3 text-teal-300 animate-marks-save-beacon" />
                                       <span>Report</span>
                                     </button>
                                     {isDimension5 && (
@@ -6210,7 +6210,7 @@ export function TeachersSection({
                                         title="Remove student from roster"
                                         className="p-1 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 cursor-pointer"
                                       >
-                                        <Trash2 className="w-3.5 h-3.5" />
+                                        <Trash2 className="w-3.5 h-3.5 animate-marks-max-gear" />
                                       </button>
                                     )}
                                   </div>
@@ -6232,7 +6232,7 @@ export function TeachersSection({
                       <div className="flex items-center justify-between pb-4 border-b border-purple-800">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-2xl bg-gradient-to-r from-indigo-500 to-teal-400 flex items-center justify-center text-slate-950 font-black shadow-lg">
-                            <Award className="w-5 h-5" />
+                            <Award className="w-5 h-5 animate-marks-podium-shine" />
                           </div>
                           <div>
                             <h2 className="text-lg md:text-xl font-black text-white">
@@ -6272,7 +6272,7 @@ export function TeachersSection({
                                   : 'bg-slate-900 border-purple-800 text-purple-200 hover:border-purple-600'
                               }`}
                             >
-                              <GraduationCap className="w-4 h-4" />
+                              <GraduationCap className="w-4 h-4 animate-marks-roll-hover" />
                               <span>{c.name}</span>
                             </button>
                           ))}
@@ -6494,7 +6494,7 @@ export function TeachersSection({
                             type="submit"
                             className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-400 via-cyan-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-slate-950 font-black cursor-pointer shadow-lg hover:scale-105 transition flex items-center gap-2"
                           >
-                            <UserCheck className="w-4 h-4 text-slate-950" />
+                            <UserCheck className="w-4 h-4 text-slate-950 animate-marks-rank-coin" />
                             <span>Confirm &amp; Enroll Student</span>
                           </button>
                         </div>
@@ -6626,7 +6626,7 @@ export function TeachersSection({
                           onClick={() => window.print()}
                           className="px-6 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs flex items-center gap-2 cursor-pointer shadow-md"
                         >
-                          <Printer className="w-4 h-4" />
+                          <Printer className="w-4 h-4 animate-marks-stat-ring" />
                           <span>Print Official Report Card</span>
                         </button>
                       </div>
