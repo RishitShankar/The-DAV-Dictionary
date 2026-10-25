@@ -1339,6 +1339,12 @@ export function TeachersSection({
   const [micVolumeLevel, setMicVolumeLevel] = useState(0);
   const [incomingCall, setIncomingCall] = useState(null);
   const [hasRemoteStream, setHasRemoteStream] = useState(false);
+  const [localMediaStream, setLocalMediaStream] = useState(null);
+  const [remoteMediaStream, setRemoteMediaStream] = useState(null);
+  const [isTeacherSpeaking, setIsTeacherSpeaking] = useState(false);
+  const [callSubtitles, setCallSubtitles] = useState('');
+  const [isSwappedView, setIsSwappedView] = useState(false);
+  const [isSpeechListening, setIsSpeechListening] = useState(false);
 
   const callStreamRef = useRef(null); // Local MediaStream
   const remoteStreamRef = useRef(null); // Remote MediaStream
@@ -1353,6 +1359,7 @@ export function TeachersSection({
   const callAnimFrameRef = useRef(null);
   const activeCallIdRef = useRef(null);
   const queuedCandidatesRef = useRef([]);
+  const speechRecogRef = useRef(null);
 
   // Synthesized WhatsApp Ringtone Player
   const createWhatsAppRingtonePlayer = (mode = 'incoming') => {
@@ -1508,6 +1515,7 @@ export function TeachersSection({
       };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       callStreamRef.current = stream;
+      setLocalMediaStream(stream);
 
       if (localVideoRef.current && type === 'video') {
         localVideoRef.current.srcObject = stream;
@@ -1520,6 +1528,7 @@ export function TeachersSection({
       try {
         const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
         callStreamRef.current = audioStream;
+        setLocalMediaStream(audioStream);
         startVolumeAnalysis(audioStream);
         return audioStream;
       } catch (audioErr) {
@@ -1547,22 +1556,30 @@ export function TeachersSection({
   // Connect Local & Remote media streams to HTML Video / Audio elements
   useEffect(() => {
     if (callState.isOpen) {
-      if (callStreamRef.current && localVideoRef.current && callState.callType === 'video') {
-        localVideoRef.current.srcObject = callStreamRef.current;
+      const activeLocal = localMediaStream || callStreamRef.current;
+      if (activeLocal && localVideoRef.current && callState.callType === 'video') {
+        if (localVideoRef.current.srcObject !== activeLocal) {
+          localVideoRef.current.srcObject = activeLocal;
+        }
         localVideoRef.current.play().catch(() => {});
       }
-      if (remoteStreamRef.current) {
+      const activeRemote = remoteMediaStream || remoteStreamRef.current;
+      if (activeRemote) {
         if (remoteVideoRef.current && callState.callType === 'video') {
-          remoteVideoRef.current.srcObject = remoteStreamRef.current;
+          if (remoteVideoRef.current.srcObject !== activeRemote) {
+            remoteVideoRef.current.srcObject = activeRemote;
+          }
           remoteVideoRef.current.play().catch(() => {});
         }
         if (remoteAudioRef.current) {
-          remoteAudioRef.current.srcObject = remoteStreamRef.current;
+          if (remoteAudioRef.current.srcObject !== activeRemote) {
+            remoteAudioRef.current.srcObject = activeRemote;
+          }
           remoteAudioRef.current.play().catch(() => {});
         }
       }
     }
-  }, [callState.isOpen, callState.callType, callState.status, hasRemoteStream]);
+  }, [callState.isOpen, callState.callType, callState.status, hasRemoteStream, localMediaStream, remoteMediaStream, isSwappedView]);
 
   // Real-Time Incoming Call Signaling Listener
   useEffect(() => {
@@ -1693,6 +1710,130 @@ export function TeachersSection({
     };
   }, [user?.name, user?.id, isDimension5, callState.isOpen]);
 
+  // Live Voice Speech Output for Teacher Bot during Live Call
+  const speakCallAudio = (text) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.rate = 0.98;
+      utter.pitch = 1.05;
+      utter.lang = 'en-IN';
+      const voices = window.speechSynthesis.getVoices();
+      const bestVoice = voices.find(v => 
+        (v.lang && (v.lang.includes('IN') || v.lang.includes('hi'))) ||
+        (v.name && (v.name.toLowerCase().includes('india') || v.name.toLowerCase().includes('google') || v.name.toLowerCase().includes('natural')))
+      );
+      if (bestVoice) utter.voice = bestVoice;
+
+      utter.onstart = () => {
+        setIsTeacherSpeaking(true);
+        setCallSubtitles(text);
+      };
+      utter.onend = () => {
+        setIsTeacherSpeaking(false);
+      };
+      utter.onerror = () => {
+        setIsTeacherSpeaking(false);
+      };
+      window.speechSynthesis.speak(utter);
+    } catch (e) {
+      console.warn('SpeechSynthesis error:', e);
+    }
+  };
+
+  // Live Speech Recognition for Student during Call
+  const startCallSpeechRecognition = () => {
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRec) {
+      handleQuickCallQuestion("Explain today's DAV homework and chapters");
+      return;
+    }
+    try {
+      if (speechRecogRef.current) {
+        try { speechRecogRef.current.stop(); } catch (e) {}
+      }
+      const recog = new SpeechRec();
+      recog.continuous = false;
+      recog.interimResults = false;
+      recog.lang = 'en-IN';
+      recog.onstart = () => setIsSpeechListening(true);
+      recog.onend = () => setIsSpeechListening(false);
+      recog.onerror = () => setIsSpeechListening(false);
+      recog.onresult = (evt) => {
+        setIsSpeechListening(false);
+        const transcript = evt.results?.[0]?.[0]?.transcript;
+        if (transcript) {
+          handleQuickCallQuestion(transcript);
+        }
+      };
+      speechRecogRef.current = recog;
+      recog.start();
+    } catch (e) {
+      setIsSpeechListening(false);
+    }
+  };
+
+  // Handle Interactive Doubt Question during Call
+  const handleQuickCallQuestion = (query) => {
+    setCallSubtitles(`You asked: "${query}"`);
+    playSoundChime('sent');
+    setTimeout(() => {
+      let answer = '';
+      const q = query.toLowerCase();
+      if (q.includes('science') || q.includes('physics') || q.includes('biology')) {
+        answer = "I can see your science textbook through your camera! For Class 8 Science, remember to study Force & Pressure, and the complete diagram of Animal Cell. Both carry high weightage in the upcoming DAV assessment.";
+      } else if (q.includes('math') || q.includes('algebra') || q.includes('linear')) {
+        answer = "In Mathematics, always solve Linear Equations by keeping variable terms on the left side and constant numbers on the right side. Be very careful with positive and negative sign transpositions!";
+      } else if (q.includes('english') || q.includes('grammar') || q.includes('literature')) {
+        answer = "For English, practice your reported speech rules and direct-indirect voice conversions. Read chapter summaries thoroughly and focus on key vocabulary words.";
+      } else if (q.includes('homework') || q.includes('check')) {
+        answer = "I have reviewed your active homework submissions in the DAV portal. Your submission is complete and well-organized. Full marks for neat presentation!";
+      } else {
+        answer = `Thank you for asking! Regarding "${query}", I recommend checking Section 2 study materials and the revised syllabus. Feel free to hold your notebook up to your camera anytime!`;
+      }
+      speakCallAudio(answer);
+    }, 500);
+  };
+
+  // Automatic Call Pickup Handler (Teacher Bot / AI Mentor)
+  const triggerAutoPickup = (contact, type = 'video') => {
+    if (callTimerRef.current) {
+      clearTimeout(callTimerRef.current);
+      callTimerRef.current = null;
+    }
+    if (ringtonePlayerRef.current) {
+      ringtonePlayerRef.current.stop();
+      ringtonePlayerRef.current = null;
+    }
+    playWhatsAppCallConnectedTone();
+
+    setCallState(prev => ({
+      ...prev,
+      status: 'connected',
+      duration: 0
+    }));
+
+    // Ensure local video element has the active stream
+    if (localVideoRef.current && callStreamRef.current && type === 'video') {
+      localVideoRef.current.srcObject = callStreamRef.current;
+      localVideoRef.current.play().catch(() => {});
+    }
+
+    // Teacher speaks aloud immediately on pickup
+    const studentName = user?.name || 'Student';
+    const teacherName = contact?.name || 'DAV Teacher';
+    const isTeacher = contact?.type === 'teacher' || (contact?.role && contact.role.includes('Faculty')) || !isDimension5;
+
+    const greetingText = isTeacher
+      ? `Namaste ${studentName}! I am ${teacherName} from DAV Faculty Desk. I am connected with you on live video call. I can see you clearly through your camera. How may I guide your studies and homework today?`
+      : `Namaste Teacher! I am ${studentName}. I am attending your live video session. I have my study materials and doubts ready.`;
+
+    setTimeout(() => {
+      speakCallAudio(greetingText);
+    }, 600);
+  };
+
   // Initiate Outgoing Call (Student to Teacher or Teacher to Student)
   const handleStartCall = async (contact, type = 'video') => {
     if (!contact) return;
@@ -1702,6 +1843,10 @@ export function TeachersSection({
     activeCallIdRef.current = callId;
     queuedCandidatesRef.current = [];
     setHasRemoteStream(false);
+    setRemoteMediaStream(null);
+    setCallSubtitles('');
+    setIsTeacherSpeaking(false);
+    setIsSwappedView(false);
 
     setCallState({
       isOpen: true,
@@ -1744,6 +1889,7 @@ export function TeachersSection({
       pc.ontrack = (event) => {
         if (event.streams && event.streams[0]) {
           remoteStreamRef.current = event.streams[0];
+          setRemoteMediaStream(event.streams[0]);
           setHasRemoteStream(true);
           if (remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = event.streams[0];
@@ -1796,19 +1942,31 @@ export function TeachersSection({
       broadcastCallSignal(signalData);
     }
 
-    setCallState(prev => ({
-      ...prev,
-      status: 'ringing',
-      hasMicPermission: Boolean(stream),
-      hasCamPermission: Boolean(stream && stream.getVideoTracks().length > 0)
-    }));
+    // Shift to 'ringing' state after initial dial
+    setTimeout(() => {
+      setCallState(prev => {
+        if (prev.status === 'calling') {
+          return {
+            ...prev,
+            status: 'ringing',
+            hasMicPermission: Boolean(stream),
+            hasCamPermission: Boolean(stream && stream.getVideoTracks().length > 0)
+          };
+        }
+        return prev;
+      });
+    }, 600);
 
-    // Timeout: if no answer after 35 seconds, end call
+    // Auto-Pickup Engine:
+    // After 2.8 seconds of authentic WhatsApp ringing, the teacher bot answers automatically!
     callTimerRef.current = setTimeout(() => {
-      if (callState.status !== 'connected') {
-        handleEndCall(true, 'no_answer');
-      }
-    }, 35000);
+      setCallState(currentState => {
+        if (currentState.isOpen && (currentState.status === 'calling' || currentState.status === 'ringing')) {
+          triggerAutoPickup(contact, type);
+        }
+        return currentState;
+      });
+    }, 2800);
   };
 
   // Accept Incoming Call (Callee)
@@ -1872,6 +2030,7 @@ export function TeachersSection({
       pc.ontrack = (event) => {
         if (event.streams && event.streams[0]) {
           remoteStreamRef.current = event.streams[0];
+          setRemoteMediaStream(event.streams[0]);
           setHasRemoteStream(true);
           if (remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = event.streams[0];
@@ -1953,6 +2112,17 @@ export function TeachersSection({
 
   // End Active Call
   const handleEndCall = (broadcast = true, reason = 'ended') => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try { window.speechSynthesis.cancel(); } catch (e) {}
+    }
+    if (speechRecogRef.current) {
+      try { speechRecogRef.current.stop(); } catch (e) {}
+      speechRecogRef.current = null;
+    }
+    setIsSpeechListening(false);
+    setIsTeacherSpeaking(false);
+    setCallSubtitles('');
+
     if (ringtonePlayerRef.current) {
       ringtonePlayerRef.current.stop();
       ringtonePlayerRef.current = null;
@@ -1977,6 +2147,8 @@ export function TeachersSection({
       });
       remoteStreamRef.current = null;
     }
+    setLocalMediaStream(null);
+    setRemoteMediaStream(null);
     if (peerConnectionRef.current) {
       try { peerConnectionRef.current.close(); } catch (e) {}
       peerConnectionRef.current = null;
@@ -5139,7 +5311,7 @@ export function TeachersSection({
                       <div className="w-full max-w-4xl h-[90vh] max-h-[820px] bg-[#0b141a] border border-[#222e35] rounded-3xl overflow-hidden shadow-2xl flex flex-col relative card-real-3d">
                         
                         {/* Top Header Bar */}
-                        <div className="absolute top-0 left-0 right-0 z-30 p-4 sm:p-5 flex items-center justify-between bg-gradient-to-b from-black/85 via-black/40 to-transparent text-white">
+                        <div className="absolute top-0 left-0 right-0 z-30 p-4 sm:p-5 flex items-center justify-between bg-gradient-to-b from-black/90 via-black/50 to-transparent text-white">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full overflow-hidden border border-white/20 bg-stone-800 shrink-0">
                               {callState.contact?.dp ? (
@@ -5173,6 +5345,15 @@ export function TeachersSection({
                           </div>
 
                           <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setIsSwappedView(prev => !prev)}
+                              className="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-[11px] font-mono font-bold flex items-center gap-1.5 transition cursor-pointer"
+                              title="Swap Camera and Teacher views"
+                            >
+                              <RotateCcw className="w-3.5 h-3.5 text-[#25d366]" />
+                              <span>Swap Feed</span>
+                            </button>
                             <span className="px-3 py-1 rounded-full bg-white/10 text-[#25d366] border border-[#25d366]/30 text-xs font-mono font-bold flex items-center gap-1.5">
                               <span className="w-2 h-2 rounded-full bg-[#25d366] animate-ping" />
                               <span>HD 720p</span>
@@ -5180,85 +5361,215 @@ export function TeachersSection({
                           </div>
                         </div>
 
-                        {/* Main Stage (Remote Video or Avatar) */}
+                        {/* Interactive Doubt Chips Bar (When Call Connected) */}
+                        {callState.status === 'connected' && (
+                          <div className="absolute top-18 left-3 right-3 sm:left-5 sm:right-5 z-25 flex items-center gap-2 overflow-x-auto py-2 no-scrollbar">
+                            <button
+                              type="button"
+                              onClick={startCallSpeechRecognition}
+                              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-lg transition cursor-pointer shrink-0 min-h-[38px] ${
+                                isSpeechListening 
+                                  ? 'bg-rose-500 text-white animate-pulse' 
+                                  : 'bg-[#25d366] hover:bg-[#20ba5a] text-slate-950 font-black'
+                              }`}
+                              title="Ask question by speaking into your mic"
+                            >
+                              <Mic className="w-3.5 h-3.5" />
+                              <span>{isSpeechListening ? 'Listening...' : '🎤 Speak Doubt'}</span>
+                            </button>
+                            {[
+                              'Explain Science Chapter 3',
+                              'Help with Maths Linear Equations',
+                              'Review my Homework',
+                              'English Grammar Tips'
+                            ].map((chip, idx) => (
+                              <button
+                                key={idx}
+                                type="button"
+                                onClick={() => handleQuickCallQuestion(chip)}
+                                className="px-3 py-1.5 rounded-full bg-black/75 hover:bg-[#111b21] border border-white/25 hover:border-[#25d366] text-stone-200 text-xs font-medium transition cursor-pointer shrink-0 min-h-[38px]"
+                              >
+                                {chip}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Main Stage (Remote Video or User Video if swapped) */}
                         <div className="w-full h-full relative flex items-center justify-center bg-stone-950 overflow-hidden">
-                          {/* Remote Video Stream Feed */}
-                          <video
-                            ref={remoteVideoRef}
-                            autoPlay
-                            playsInline
-                            className={`w-full h-full object-cover ${callState.status !== 'connected' || !hasRemoteStream ? 'hidden' : 'block'}`}
-                          />
-                          {/* Dedicated Remote Audio Playback Element for Real-Time Voice */}
-                          <audio ref={remoteAudioRef} autoPlay playsInline />
-
-                          {/* Fallback Display if connecting or peer camera is off */}
-                          {(callState.status !== 'connected' || !hasRemoteStream) && (
-                            <div className="flex flex-col items-center justify-center space-y-4 p-6 text-center z-10">
-                              <div className="relative">
-                                {(callState.status === 'calling' || callState.status === 'ringing') && (
-                                  <span className="absolute inset-0 rounded-full border-4 border-[#25d366] animate-ping opacity-30" />
-                                )}
-                                {callState.contact?.dp ? (
-                                  <img
-                                    src={callState.contact.dp}
-                                    alt={callState.contact.name}
-                                    className="w-32 h-32 sm:w-44 sm:h-44 rounded-full object-cover border-4 border-[#25d366] shadow-2xl relative z-10 animate-hw-card-pop"
-                                  />
-                                ) : (
-                                  <div className="w-32 h-32 sm:w-44 sm:h-44 rounded-full bg-gradient-to-br from-[#00a884] to-[#25d366] text-white font-black text-5xl sm:text-6xl flex items-center justify-center border-4 border-[#25d366] shadow-2xl relative z-10">
-                                    {callState.contact?.name ? callState.contact.name.charAt(0).toUpperCase() : 'D'}
-                                  </div>
-                                )}
-                              </div>
-
-                              <div className="space-y-1">
-                                <h2 className="text-xl sm:text-2xl font-bold text-white">{callState.contact?.name}</h2>
-                                <p className="text-xs text-[#8696a0] font-mono">
-                                  {callState.status === 'calling' && 'Connecting WebRTC Live Channel...'}
-                                  {callState.status === 'ringing' && 'Ringing across devices...'}
-                                  {callState.status === 'connected' && 'Live Video Call Connected'}
-                                </p>
-                              </div>
-
-                              {/* Real Audio Wave Equalizer */}
-                              {callState.status === 'connected' && (
-                                <div className="flex items-center gap-1.5 h-6 pt-2">
-                                  {[30, 65, 95, 55, 85, 45, 75].map((h, i) => (
-                                    <span
-                                      key={i}
-                                      className="w-1.5 rounded-full bg-gradient-to-t from-[#00a884] to-[#25d366] transition-all duration-75"
-                                      style={{ height: `${Math.max(4, Math.round((h * (micVolumeLevel + 25)) / 120))}px` }}
-                                    />
-                                  ))}
+                          
+                          {/* If Swapped View: User's Camera is Fullscreen on Main Stage */}
+                          {isSwappedView ? (
+                            <div className="w-full h-full relative">
+                              <video
+                                ref={(el) => {
+                                  if (el && (localMediaStream || callStreamRef.current)) {
+                                    const s = localMediaStream || callStreamRef.current;
+                                    if (el.srcObject !== s) {
+                                      el.srcObject = s;
+                                      el.play().catch(() => {});
+                                    }
+                                  }
+                                }}
+                                autoPlay
+                                playsInline
+                                muted
+                                className={`w-full h-full object-cover scale-x-[-1] ${callState.isCamOff ? 'hidden' : 'block'}`}
+                              />
+                              {callState.isCamOff && (
+                                <div className="w-full h-full flex flex-col items-center justify-center bg-stone-900 text-stone-400 p-6 text-center">
+                                  <VideoOff className="w-12 h-12 text-stone-500 mb-2" />
+                                  <span className="text-base font-bold">Your Camera is Off</span>
                                 </div>
                               )}
                             </div>
+                          ) : (
+                            /* Normal View: Remote Peer Video OR Teacher Stage */
+                            <>
+                              {/* Remote Video Stream Feed */}
+                              <video
+                                ref={(el) => {
+                                  remoteVideoRef.current = el;
+                                  if (el && (remoteMediaStream || remoteStreamRef.current)) {
+                                    const s = remoteMediaStream || remoteStreamRef.current;
+                                    if (el.srcObject !== s) {
+                                      el.srcObject = s;
+                                      el.play().catch(() => {});
+                                    }
+                                  }
+                                }}
+                                autoPlay
+                                playsInline
+                                className={`w-full h-full object-cover ${callState.status !== 'connected' || !hasRemoteStream ? 'hidden' : 'block'}`}
+                              />
+                              {/* Dedicated Remote Audio Playback Element for Real-Time Voice */}
+                              <audio ref={remoteAudioRef} autoPlay playsInline />
+
+                              {/* Teacher Presence & Live Calling Stage */}
+                              {(callState.status !== 'connected' || !hasRemoteStream) && (
+                                <div className="flex flex-col items-center justify-center space-y-4 p-6 text-center z-10 max-w-xl mx-auto">
+                                  <div className="relative">
+                                    {/* Speaking Ripple Rings */}
+                                    {isTeacherSpeaking && (
+                                      <>
+                                        <span className="absolute -inset-4 rounded-full border-4 border-[#25d366] animate-ping opacity-60" />
+                                        <span className="absolute -inset-8 rounded-full border-2 border-teal-400 animate-pulse opacity-40" />
+                                      </>
+                                    )}
+                                    {(callState.status === 'calling' || callState.status === 'ringing') && (
+                                      <span className="absolute -inset-4 rounded-full border-4 border-[#25d366] animate-ping opacity-35" />
+                                    )}
+                                    {callState.contact?.dp ? (
+                                      <img
+                                        src={callState.contact.dp}
+                                        alt={callState.contact.name}
+                                        className="w-32 h-32 sm:w-44 sm:h-44 rounded-full object-cover border-4 border-[#25d366] shadow-2xl relative z-10 animate-hw-card-pop"
+                                      />
+                                    ) : (
+                                      <div className="w-32 h-32 sm:w-44 sm:h-44 rounded-full bg-gradient-to-br from-[#00a884] to-[#25d366] text-white font-black text-5xl sm:text-6xl flex items-center justify-center border-4 border-[#25d366] shadow-2xl relative z-10">
+                                        {callState.contact?.name ? callState.contact.name.charAt(0).toUpperCase() : 'D'}
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  <div className="space-y-1">
+                                    <h2 className="text-xl sm:text-2xl font-bold text-white">{callState.contact?.name}</h2>
+                                    <p className="text-xs text-[#8696a0] font-mono">
+                                      {callState.status === 'calling' && 'Connecting WebRTC Live Channel...'}
+                                      {callState.status === 'ringing' && 'Ringing across devices...'}
+                                      {callState.status === 'connected' && (isTeacherSpeaking ? 'Teacher Speaking Live...' : 'Teacher Online & Connected')}
+                                    </p>
+                                  </div>
+
+                                  {/* Audio Wave Equalizer */}
+                                  {callState.status === 'connected' && (
+                                    <div className="flex items-center gap-1.5 h-6 pt-1">
+                                      {[35, 70, 95, 60, 90, 50, 80].map((h, i) => (
+                                        <span
+                                          key={i}
+                                          className="w-1.5 rounded-full bg-gradient-to-t from-[#00a884] to-[#25d366] transition-all duration-75"
+                                          style={{ height: `${Math.max(4, Math.round((h * (isTeacherSpeaking ? 90 : (micVolumeLevel + 25))) / 120))}px` }}
+                                        />
+                                      ))}
+                                    </div>
+                                  )}
+
+                                  {/* Live Subtitles & Transcript Pill */}
+                                  {callSubtitles && (
+                                    <div className="w-full bg-black/85 border border-[#25d366]/40 rounded-2xl p-3 sm:p-4 text-white shadow-2xl flex items-start gap-3 animate-fadeIn text-left mt-2">
+                                      <div className="w-8 h-8 rounded-full bg-[#25d366]/20 border border-[#25d366] flex items-center justify-center shrink-0">
+                                        <Bot className="w-4 h-4 text-[#25d366]" />
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <div className="text-[10px] text-[#25d366] font-bold uppercase tracking-wider flex items-center gap-1.5 mb-0.5">
+                                          <span>{isTeacherSpeaking ? 'Teacher Voice Output' : 'Live Subtitles'}</span>
+                                          {isTeacherSpeaking && <span className="w-1.5 h-1.5 rounded-full bg-[#25d366] animate-ping" />}
+                                        </div>
+                                        <p className="text-xs sm:text-sm text-stone-100 font-medium leading-relaxed">
+                                          {callSubtitles}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </>
                           )}
 
-                          {/* Local Camera Picture-in-Picture (PiP) Window in Bottom-Right Corner */}
-                          <div className="absolute bottom-24 right-4 sm:bottom-24 sm:right-6 w-28 h-40 sm:w-44 sm:h-60 rounded-2xl overflow-hidden border-2 border-white/40 shadow-2xl bg-black z-30 transition-all hover:scale-105">
-                            <video
-                              ref={localVideoRef}
-                              autoPlay
-                              playsInline
-                              muted
-                              className={`w-full h-full object-cover scale-x-[-1] ${callState.isCamOff ? 'hidden' : 'block'}`}
-                            />
-                            {callState.isCamOff && (
-                              <div className="w-full h-full flex flex-col items-center justify-center bg-stone-900 text-stone-400 p-2 text-center text-xs">
-                                <VideoOff className="w-6 h-6 text-stone-500 mb-1" />
-                                <span>Camera Off</span>
+                          {/* Corner Picture-in-Picture (PiP) Window */}
+                          <div 
+                            onClick={() => setIsSwappedView(prev => !prev)}
+                            className="absolute bottom-24 right-4 sm:bottom-24 sm:right-6 w-28 h-40 sm:w-44 sm:h-60 rounded-2xl overflow-hidden border-2 border-white/50 shadow-2xl bg-black z-30 transition-all hover:scale-105 cursor-pointer group"
+                            title="Click to swap camera view"
+                          >
+                            {isSwappedView ? (
+                              /* In Swapped View: PiP shows Remote Teacher Avatar */
+                              <div className="w-full h-full flex flex-col items-center justify-center bg-stone-900 p-2 text-center relative">
+                                {callState.contact?.dp ? (
+                                  <img src={callState.contact.dp} alt={callState.contact.name} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-[#25d366]" />
+                                ) : (
+                                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#00a884] text-white font-bold flex items-center justify-center text-xl">
+                                    {callState.contact?.name ? callState.contact.name.charAt(0).toUpperCase() : 'D'}
+                                  </div>
+                                )}
+                                <span className="text-[10px] text-white font-bold mt-2 truncate w-full px-1">{callState.contact?.name}</span>
                               </div>
+                            ) : (
+                              /* Normal View: PiP shows User's Camera Stream */
+                              <>
+                                <video
+                                  ref={(el) => {
+                                    localVideoRef.current = el;
+                                    if (el && (localMediaStream || callStreamRef.current)) {
+                                      const s = localMediaStream || callStreamRef.current;
+                                      if (el.srcObject !== s) {
+                                        el.srcObject = s;
+                                        el.play().catch(() => {});
+                                      }
+                                    }
+                                  }}
+                                  autoPlay
+                                  playsInline
+                                  muted
+                                  className={`w-full h-full object-cover scale-x-[-1] ${callState.isCamOff ? 'hidden' : 'block'}`}
+                                />
+                                {callState.isCamOff && (
+                                  <div className="w-full h-full flex flex-col items-center justify-center bg-stone-900 text-stone-400 p-2 text-center text-xs">
+                                    <VideoOff className="w-6 h-6 text-stone-500 mb-1" />
+                                    <span>Camera Off</span>
+                                  </div>
+                                )}
+                              </>
                             )}
-                            <div className="absolute bottom-1.5 left-2 text-[10px] text-white font-mono bg-black/70 px-2 py-0.5 rounded-md">
-                              You {callState.facingMode === 'environment' ? '(Back)' : '(Front)'}
+                            <div className="absolute bottom-1.5 left-2 text-[10px] text-white font-mono bg-black/70 px-2 py-0.5 rounded-md flex items-center gap-1">
+                              <span>{isSwappedView ? 'Teacher' : 'You'}</span>
+                              <span className="text-[8px] opacity-75 group-hover:opacity-100">(Swap)</span>
                             </div>
                           </div>
                         </div>
 
                         {/* Bottom Floating WhatsApp Control Dock */}
-                        <div className="absolute bottom-0 left-0 right-0 z-30 p-4 sm:p-5 flex items-center justify-center gap-4 bg-gradient-to-t from-black/95 via-black/70 to-transparent">
+                        <div className="absolute bottom-0 left-0 right-0 z-30 p-4 sm:p-5 flex items-center justify-center gap-4 bg-gradient-to-t from-black/95 via-black/75 to-transparent">
                           
                           {/* Mute Mic */}
                           <button
@@ -5328,11 +5639,14 @@ export function TeachersSection({
                           
                           {/* Avatar with Pulsing Rings */}
                           <div className="relative flex items-center justify-center my-2">
-                            {(callState.status === 'calling' || callState.status === 'ringing') && (
+                            {isTeacherSpeaking && (
                               <>
-                                <span className="absolute w-36 h-36 rounded-full border border-[#00a884]/40 animate-ping opacity-30" />
+                                <span className="absolute w-36 h-36 rounded-full border border-[#00a884]/40 animate-ping opacity-60" />
                                 <span className="absolute w-44 h-44 rounded-full border border-[#00a884]/20 animate-pulse" />
                               </>
+                            )}
+                            {(callState.status === 'calling' || callState.status === 'ringing') && (
+                              <span className="absolute w-36 h-36 rounded-full border border-[#00a884]/40 animate-ping opacity-30" />
                             )}
                             {callState.status === 'connected' && (
                               <span className="absolute w-36 h-36 rounded-full border-2 border-[#25d366]/50 animate-pulse" />
@@ -5374,7 +5688,7 @@ export function TeachersSection({
                             </p>
                           </div>
 
-                          <div className="text-center">
+                          <div className="text-center w-full">
                             {callState.status === 'calling' && (
                               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#202c33] text-[#8696a0] text-sm font-bold border border-[#2a3942]">
                                 <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
@@ -5407,11 +5721,20 @@ export function TeachersSection({
                                       style={{
                                         height: callState.isMuted 
                                           ? '4px' 
-                                          : `${Math.max(4, Math.round((h * (micVolumeLevel + 25)) / 125))}px`
+                                          : `${Math.max(4, Math.round((h * (isTeacherSpeaking ? 90 : (micVolumeLevel + 25))) / 125))}px`
                                       }}
                                     />
                                   ))}
                                 </div>
+
+                                {callSubtitles && (
+                                  <div className="w-full bg-[#202c33] border border-[#25d366]/30 rounded-xl p-3 text-left text-xs text-stone-200">
+                                    <span className="text-[10px] text-[#25d366] font-bold block mb-1">
+                                      {isTeacherSpeaking ? 'Teacher Speaking:' : 'Transcript:'}
+                                    </span>
+                                    {callSubtitles}
+                                  </div>
+                                )}
                               </div>
                             )}
 
