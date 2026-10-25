@@ -312,7 +312,7 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
     <div className="space-y-8 animate-fadeIn">
       
       {/* Top Banner explaining Page 2 Review features */}
-      <div className="rounded-3xl bg-gradient-to-r from-red-950 via-slate-900 to-amber-950 text-white p-6 sm:p-8 shadow-xl border border-amber-500/30 relative overflow-hidden">
+      <div className="rounded-3xl bg-gradient-to-r from-red-950 via-slate-900 to-amber-950 text-white p-6 sm:p-8 shadow-xl border border-amber-500/30 relative overflow-hidden card-super-interactive border-halo-gold ultra-shimmer">
         <div className="relative z-10 max-w-3xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold mb-3 border border-amber-400/30">
             <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />

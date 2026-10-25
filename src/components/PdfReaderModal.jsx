@@ -290,16 +290,52 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     });
   };
 
-  // Lock body overflow so background website NEVER scrolls while reading PDF
+  // Robust unlock helper to ensure scroll ALWAYS works when modal closes
+  const unlockScroll = () => {
+    if (typeof document !== 'undefined') {
+      try {
+        document.body.style.removeProperty('overflow');
+        document.documentElement.style.removeProperty('overflow');
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.height = '';
+        document.documentElement.style.height = '';
+        document.body.classList.remove('overflow-hidden');
+      } catch (e) {}
+    }
+  };
+
+  // Lock body overflow so background website NEVER scrolls while reading PDF, and GUARANTEE unlock on close
   useEffect(() => {
     if (isOpen) {
-      const origOverflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
       return () => {
-        document.body.style.overflow = origOverflow;
+        unlockScroll();
       };
+    } else {
+      unlockScroll();
     }
   }, [isOpen]);
+
+  // Handle ESC key to safely exit reader and restore scrolling
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        unlockScroll();
+        if (onClose) onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  const handleModalClose = () => {
+    unlockScroll();
+    if (onClose) onClose();
+  };
 
   // Ensure current page resets properly when book changes
   useEffect(() => {
@@ -1007,7 +1043,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
           {/* Close Modal */}
           <button
-            onClick={onClose}
+            onClick={handleModalClose}
             className="p-1.5 sm:p-2 rounded-xl bg-stone-800 hover:bg-rose-900 text-stone-300 hover:text-white border border-stone-700 transition cursor-pointer"
             title="Close Fullscreen Reader"
           >

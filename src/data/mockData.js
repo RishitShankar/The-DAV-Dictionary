@@ -7,7 +7,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen', 
       color: 'from-blue-600 to-indigo-700',
       books: [
-        { id: 'eng_lit', title: 'English Literature', type: 'Literature Reader', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%208/english-literature.pdf', size: '32.5 MB' }
+        { id: 'eng_lit', title: 'English Literature', type: 'English', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%208/english-literature.pdf', size: '32.5 MB' }
       ]
     },
     { 
@@ -17,7 +17,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen', 
       color: 'from-indigo-600 to-blue-800',
       books: [
-        { id: 'eng_reader', title: 'English Reader', type: 'Coursebook Reader', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%208/english-reader.pdf', size: '31 MB' }
+        { id: 'eng_reader', title: 'English Reader', type: 'English', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%208/english-reader.pdf', size: '31 MB' }
       ]
     },
     { 
@@ -27,7 +27,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen', 
       color: 'from-sky-600 to-cyan-700',
       books: [
-        { id: 'eng_prac', title: 'Practice Book', type: 'Grammar & Exercises', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%208/english-practice.pdf', size: '30.3 MB' }
+        { id: 'eng_prac', title: 'Practice Book', type: 'English', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%208/english-practice.pdf', size: '30.3 MB' }
       ]
     },
     { 
@@ -37,7 +37,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages', 
       color: 'from-amber-600 to-orange-700',
       books: [
-        { id: 'hin_gyan', title: 'ज्ञान सागर (Gyan Sagar)', type: 'Literature / साहित्य', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%208/hindi-gyan-sagar.pdf', size: '37.9 MB' }
+        { id: 'hin_gyan', title: 'ज्ञान सागर (Gyan Sagar)', type: 'Hindi', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%208/hindi-gyan-sagar.pdf', size: '37.9 MB' }
       ]
     },
     { 
@@ -47,7 +47,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages', 
       color: 'from-orange-600 to-red-700',
       books: [
-        { id: 'hin_abhyas', title: 'अभ्यास सागर (Abhyas Sagar)', type: 'Grammar Practice / व्याकरण अभ्यास', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%208/hindi-abhyas-sagar.pdf', size: '39.9 MB' }
+        { id: 'hin_abhyas', title: 'अभ्यास सागर (Abhyas Sagar)', type: 'Hindi', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%208/hindi-abhyas-sagar.pdf', size: '39.9 MB' }
       ]
     },
     { 
@@ -57,7 +57,7 @@ export const DAV_SUBJECTS = {
       icon: 'Calculator', 
       color: 'from-emerald-600 to-teal-700',
       books: [
-        { id: 'math_main', title: 'DAV Secondary Mathematics (Class 8)', type: 'Complete Textbook', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%208/mathematics.pdf', size: '62.2 MB' }
+        { id: 'math_main', title: 'DAV Secondary Mathematics (Class 8)', type: 'Math', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%208/mathematics.pdf', size: '62.2 MB' }
       ]
     },
     { 
@@ -67,7 +67,7 @@ export const DAV_SUBJECTS = {
       icon: 'Sparkles', 
       color: 'from-green-600 to-emerald-800',
       books: [
-        { id: 'sci_main', title: 'Science & Technology (The Living World)', type: 'Complete Textbook', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%208/science.pdf', size: '149.4 MB' }
+        { id: 'sci_main', title: 'Science & Technology (The Living World)', type: 'Science', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%208/science.pdf', size: '149.4 MB' }
       ]
     },
     { 
@@ -77,7 +77,7 @@ export const DAV_SUBJECTS = {
       icon: 'Compass', 
       color: 'from-purple-600 to-indigo-800',
       books: [
-        { id: 'sst_main', title: 'We and Our World (Social Science)', type: 'Integrated Social Science', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%208/social-science.pdf', size: '108.3 MB' }
+        { id: 'sst_main', title: 'We and Our World (Social Science)', type: 'Social Science', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%208/social-science.pdf', size: '108.3 MB' }
       ]
     },
     { 
@@ -87,7 +87,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages', 
       color: 'from-orange-500 to-amber-700',
       books: [
-        { id: 'sans_main', title: 'संस्कृत सुरभि (Surbhi)', type: 'Textbook & Vyakaran', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%208/sanskrit.pdf', size: '43.4 MB' }
+        { id: 'sans_main', title: 'संस्कृत सुरभि (Surbhi)', type: 'Sanskrit', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%208/sanskrit.pdf', size: '43.4 MB' }
       ]
     },
     { 
@@ -97,7 +97,7 @@ export const DAV_SUBJECTS = {
       icon: 'Cpu', 
       color: 'from-cyan-600 to-blue-700',
       books: [
-        { id: 'comp_main', title: 'Hands on Computer (Class 8)', type: 'Computer Science & ICT', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%208/computer.pdf', size: '66.3 MB' }
+        { id: 'comp_main', title: 'Hands on Computer (Class 8)', type: 'Computer', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%208/computer.pdf', size: '66.3 MB' }
       ]
     }
   ],
@@ -109,7 +109,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen',
       color: 'from-blue-500 to-indigo-600',
       books: [
-        { id: 'lkg_eng_book', title: 'Fun with English (Pages 1-49)', type: 'Workbook & Phonics', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/LKG/Fun-With-English.pdf', size: '38.2 MB' }
+        { id: 'lkg_eng_book', title: 'Fun with English (Pages 1-49)', type: 'English', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/LKG/Fun-With-English.pdf', size: '38.2 MB' }
       ]
     },
     {
@@ -119,7 +119,7 @@ export const DAV_SUBJECTS = {
       icon: 'Calculator',
       color: 'from-purple-500 to-indigo-600',
       books: [
-        { id: 'lkg_math_book', title: 'Fun with Maths (LKG)', type: 'Early Numeracy Activity Book', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/LKG/Fun-With-Maths.pdf', size: '20.0 MB' }
+        { id: 'lkg_math_book', title: 'Fun with Maths (LKG)', type: 'Math', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/LKG/Fun-With-Maths.pdf', size: '20.0 MB' }
       ]
     },
     {
@@ -129,7 +129,7 @@ export const DAV_SUBJECTS = {
       icon: 'Globe',
       color: 'from-emerald-500 to-teal-600',
       books: [
-        { id: 'lkg_evs_book', title: 'EVS for Beginners (LKG)', type: 'Illustrated EVS Reader', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/LKG/EVS.pdf', size: '14.5 MB' }
+        { id: 'lkg_evs_book', title: 'EVS for Beginners (LKG)', type: 'EVS', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/LKG/EVS.pdf', size: '14.5 MB' }
       ]
     },
     {
@@ -139,7 +139,7 @@ export const DAV_SUBJECTS = {
       icon: 'Sparkles',
       color: 'from-amber-500 to-orange-600',
       books: [
-        { id: 'lkg_act_book', title: 'Integrated Activity Book LKG', type: 'Creative Activity Book', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/LKG/Integrated-Activity-Book.pdf', size: '15.3 MB' }
+        { id: 'lkg_act_book', title: 'Integrated Activity Book LKG', type: 'Activity', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/LKG/Integrated-Activity-Book.pdf', size: '15.3 MB' }
       ]
     }
   ],
@@ -151,7 +151,7 @@ export const DAV_SUBJECTS = {
       icon: 'Calculator',
       color: 'from-emerald-600 to-teal-700',
       books: [
-        { id: 'ukg_math_book', title: 'UKG Mathematics & Number Work', type: 'Complete Activity Textbook', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/UKG/Mathematics.pdf', size: '38.6 MB' }
+        { id: 'ukg_math_book', title: 'UKG Mathematics & Number Work', type: 'Math', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/UKG/Mathematics.pdf', size: '38.6 MB' }
       ]
     },
     {
@@ -161,7 +161,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen',
       color: 'from-blue-600 to-indigo-700',
       books: [
-        { id: 'ukg_eng_book', title: 'English Activity Coursebook (UKG)', type: 'Coursebook & Phonics', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/UKG/English.pdf', size: '32.0 MB' }
+        { id: 'ukg_eng_book', title: 'English Activity Coursebook (UKG)', type: 'English', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/UKG/English.pdf', size: '32.0 MB' }
       ]
     },
     {
@@ -171,7 +171,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages',
       color: 'from-amber-600 to-orange-700',
       books: [
-        { id: 'ukg_bm_book', title: 'बाल माधुरी (UKG Hindi)', type: 'सचित्र बाल साहित्य', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/UKG/Bal-Madhuri-Hindi.pdf', size: '38.4 MB' }
+        { id: 'ukg_bm_book', title: 'बाल माधुरी (UKG Hindi)', type: 'Hindi', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/UKG/Bal-Madhuri-Hindi.pdf', size: '38.4 MB' }
       ]
     },
     {
@@ -181,7 +181,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages',
       color: 'from-orange-600 to-red-700',
       books: [
-        { id: 'ukg_sa_book', title: 'शब्द अभ्यास (UKG Practice Book)', type: 'हिन्दी लेखन एवं अभ्यास', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/UKG/Shabd-Abhyas-Hindi.pdf', size: '9.2 MB' }
+        { id: 'ukg_sa_book', title: 'शब्द अभ्यास (UKG Practice Book)', type: 'English', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/UKG/Shabd-Abhyas-Hindi.pdf', size: '9.2 MB' }
       ]
     },
     {
@@ -191,7 +191,7 @@ export const DAV_SUBJECTS = {
       icon: 'Sparkles',
       color: 'from-purple-600 to-indigo-700',
       books: [
-        { id: 'ukg_act_book', title: 'Integrated Activity Book (UKG)', type: 'Multi-Disciplinary Workbook', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/UKG/Integrated-Activity-Book.pdf', size: '44.6 MB' }
+        { id: 'ukg_act_book', title: 'Integrated Activity Book (UKG)', type: 'Activity', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/UKG/Integrated-Activity-Book.pdf', size: '44.6 MB' }
       ]
     },
     {
@@ -201,7 +201,7 @@ export const DAV_SUBJECTS = {
       icon: 'HeartHandshake',
       color: 'from-pink-500 to-rose-600',
       books: [
-        { id: 'ukg_art_book', title: 'Art & Drawing Book (UKG)', type: 'Creative Art & Coloring', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/UKG/Drawing-Art.pdf', size: '12.3 MB' }
+        { id: 'ukg_art_book', title: 'Art & Drawing Book (UKG)', type: 'Art & Craft', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/UKG/Drawing-Art.pdf', size: '12.3 MB' }
       ]
     }
   ],
@@ -213,7 +213,7 @@ export const DAV_SUBJECTS = {
       icon: 'Calculator',
       color: 'from-emerald-600 to-teal-700',
       books: [
-        { id: 'math1_book', title: 'Primary Mathematics (Class 1)', type: 'Complete Textbook', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%201/Primary-Mathematics.pdf', size: '16.8 MB' }
+        { id: 'math1_book', title: 'Primary Mathematics (Class 1)', type: 'Math', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%201/Primary-Mathematics.pdf', size: '16.8 MB' }
       ]
     },
     {
@@ -223,7 +223,7 @@ export const DAV_SUBJECTS = {
       icon: 'Globe',
       color: 'from-teal-600 to-green-700',
       books: [
-        { id: 'evs1_book', title: 'My Living World (Class 1 EVS)', type: 'Integrated EVS Coursebook', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%201/My-Living-World-EVS.pdf', size: '15.6 MB' }
+        { id: 'evs1_book', title: 'My Living World (Class 1 EVS)', type: 'EVS', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%201/My-Living-World-EVS.pdf', size: '15.6 MB' }
       ]
     },
     {
@@ -233,7 +233,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen',
       color: 'from-blue-600 to-indigo-700',
       books: [
-        { id: 'eng1_prac', title: 'English Practice Book (Class 1)', type: 'Grammar & Activity Book', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%201/English-Practice-Book.pdf', size: '18.0 MB' }
+        { id: 'eng1_prac', title: 'English Practice Book (Class 1)', type: 'English', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%201/English-Practice-Book.pdf', size: '18.0 MB' }
       ]
     },
     {
@@ -243,7 +243,7 @@ export const DAV_SUBJECTS = {
       icon: 'Cpu',
       color: 'from-cyan-600 to-blue-700',
       books: [
-        { id: 'comp1_book', title: 'Online with Computers (Class 1)', type: 'Digital Literacy', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%201/Online-With-Computers.pdf', size: '16.1 MB' }
+        { id: 'comp1_book', title: 'Online with Computers (Class 1)', type: 'Computer', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%201/Online-With-Computers.pdf', size: '16.1 MB' }
       ]
     },
     {
@@ -253,7 +253,7 @@ export const DAV_SUBJECTS = {
       icon: 'Sparkles',
       color: 'from-amber-500 to-yellow-600',
       books: [
-        { id: 'gk1_book', title: 'Wow GK (Class 1)', type: 'General Awareness & Quizzes', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%201/Wow-GK.pdf', size: '7.7 MB' }
+        { id: 'gk1_book', title: 'Wow GK (Class 1)', type: 'General Knowledge', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%201/Wow-GK.pdf', size: '7.7 MB' }
       ]
     }
   ],
@@ -265,7 +265,7 @@ export const DAV_SUBJECTS = {
       icon: 'Calculator',
       color: 'from-emerald-600 to-teal-700',
       books: [
-        { id: 'math2_book', title: 'Primary Mathematics (Class 2)', type: 'Complete Textbook', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%202/Mathematics.pdf', size: '21.5 MB' }
+        { id: 'math2_book', title: 'Primary Mathematics (Class 2)', type: 'Math', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%202/Mathematics.pdf', size: '21.5 MB' }
       ]
     },
     {
@@ -275,7 +275,7 @@ export const DAV_SUBJECTS = {
       icon: 'Globe',
       color: 'from-teal-600 to-green-700',
       books: [
-        { id: 'evs2_book', title: 'My Living World (Class 2 EVS)', type: 'Integrated EVS', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%202/My-Living-World-EVS.pdf', size: '20.0 MB' }
+        { id: 'evs2_book', title: 'My Living World (Class 2 EVS)', type: 'EVS', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%202/My-Living-World-EVS.pdf', size: '20.0 MB' }
       ]
     },
     {
@@ -285,7 +285,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages',
       color: 'from-amber-600 to-orange-700',
       books: [
-        { id: 'hin2_abhyas_book', title: 'भाषा अभ्यास (Class 2)', type: 'व्याकरण अभ्यास पुस्तिका', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%202/Bhasha-Abhyas-Hindi.pdf', size: '10.6 MB' }
+        { id: 'hin2_abhyas_book', title: 'भाषा अभ्यास (Class 2)', type: 'Hindi', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%202/Bhasha-Abhyas-Hindi.pdf', size: '10.6 MB' }
       ]
     },
     {
@@ -295,7 +295,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen',
       color: 'from-blue-600 to-indigo-700',
       books: [
-        { id: 'eng2_reader_book', title: 'My English Reader (Class 2)', type: 'Coursebook & Stories', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%202/My-English-Reader.pdf', size: '56.2 MB' }
+        { id: 'eng2_reader_book', title: 'My English Reader (Class 2)', type: 'English', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%202/My-English-Reader.pdf', size: '56.2 MB' }
       ]
     },
     {
@@ -305,7 +305,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen',
       color: 'from-indigo-600 to-blue-800',
       books: [
-        { id: 'eng2_prac_book', title: 'English Practice Book (Class 2)', type: 'Grammar Worksheets', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%202/English-Practice-Book.pdf', size: '15.3 MB' }
+        { id: 'eng2_prac_book', title: 'English Practice Book (Class 2)', type: 'English', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%202/English-Practice-Book.pdf', size: '15.3 MB' }
       ]
     },
     {
@@ -315,7 +315,7 @@ export const DAV_SUBJECTS = {
       icon: 'Cpu',
       color: 'from-cyan-600 to-blue-700',
       books: [
-        { id: 'comp2_book', title: 'Online with Computers (Class 2)', type: 'Computer Science & ICT', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%202/Online-With-Computers.pdf', size: '11.1 MB' }
+        { id: 'comp2_book', title: 'Online with Computers (Class 2)', type: 'Computer', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%202/Online-With-Computers.pdf', size: '11.1 MB' }
       ]
     }
   ],
@@ -327,7 +327,7 @@ export const DAV_SUBJECTS = {
       icon: 'Calculator',
       color: 'from-emerald-600 to-teal-700',
       books: [
-        { id: 'math3_book', title: 'Primary Mathematics (STD-III)', type: 'Complete Textbook', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%203/Primary-Mathematics.pdf', size: '47.5 MB' }
+        { id: 'math3_book', title: 'Primary Mathematics (STD-III)', type: 'Math', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%203/Primary-Mathematics.pdf', size: '47.5 MB' }
       ]
     },
     {
@@ -337,7 +337,7 @@ export const DAV_SUBJECTS = {
       icon: 'Sparkles',
       color: 'from-green-600 to-emerald-800',
       books: [
-        { id: 'sci3_book', title: 'My Living World (Class 3 Science)', type: 'General Science Coursebook', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%203/Science.pdf', size: '34.5 MB' }
+        { id: 'sci3_book', title: 'My Living World (Class 3 Science)', type: 'Science', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%203/Science.pdf', size: '34.5 MB' }
       ]
     },
     {
@@ -347,7 +347,7 @@ export const DAV_SUBJECTS = {
       icon: 'Compass',
       color: 'from-purple-600 to-indigo-800',
       books: [
-        { id: 'evs3_book', title: 'We and Our World (Std 3 EVS)', type: 'Social Studies & Environment', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%203/We-And-Our-World-EVS.pdf', size: '18.3 MB' }
+        { id: 'evs3_book', title: 'We and Our World (Std 3 EVS)', type: 'EVS', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%203/We-And-Our-World-EVS.pdf', size: '18.3 MB' }
       ]
     },
     {
@@ -357,7 +357,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages',
       color: 'from-amber-600 to-orange-700',
       books: [
-        { id: 'hin3_bm_book', title: 'भाषा माधुरी (Class 3)', type: 'हिन्दी पाठ्यपुस्तक', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%203/Hindi-Bhasha-Madhuri.pdf', size: '24.8 MB' }
+        { id: 'hin3_bm_book', title: 'भाषा माधुरी (Class 3)', type: 'Hindi', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%203/Hindi-Bhasha-Madhuri.pdf', size: '24.8 MB' }
       ]
     },
     {
@@ -367,7 +367,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages',
       color: 'from-orange-600 to-red-700',
       books: [
-        { id: 'hin3_ba_book', title: 'भाषा अभ्यास (Class 3)', type: 'व्याकरण अभ्यास पुस्तिका', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%203/Bhasha-Abhyas-Hindi.pdf', size: '6.7 MB' }
+        { id: 'hin3_ba_book', title: 'भाषा अभ्यास (Class 3)', type: 'Hindi', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%203/Bhasha-Abhyas-Hindi.pdf', size: '6.7 MB' }
       ]
     },
     {
@@ -377,7 +377,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen',
       color: 'from-blue-600 to-indigo-700',
       books: [
-        { id: 'eng3_reader_book', title: 'My English Reader (Class 3)', type: 'Literature & Coursebook', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%203/My-English-Reader.pdf', size: '50.1 MB' }
+        { id: 'eng3_reader_book', title: 'My English Reader (Class 3)', type: 'English', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%203/My-English-Reader.pdf', size: '50.1 MB' }
       ]
     },
     {
@@ -387,7 +387,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen',
       color: 'from-indigo-600 to-blue-800',
       books: [
-        { id: 'eng3_prac_book', title: 'English Practice Book (Class 3)', type: 'Grammar Drills & Exercises', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%203/English-Practice-Book.pdf', size: '24.1 MB' }
+        { id: 'eng3_prac_book', title: 'English Practice Book (Class 3)', type: 'English', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%203/English-Practice-Book.pdf', size: '24.1 MB' }
       ]
     },
     {
@@ -397,7 +397,7 @@ export const DAV_SUBJECTS = {
       icon: 'Cpu',
       color: 'from-cyan-600 to-blue-700',
       books: [
-        { id: 'comp3_book', title: 'Hands On in Computer (Class 3)', type: 'ICT & Practical Skills', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%203/Hands-On-Computer.pdf', size: '23.7 MB' }
+        { id: 'comp3_book', title: 'Hands On in Computer (Class 3)', type: 'Computer', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%203/Hands-On-Computer.pdf', size: '23.7 MB' }
       ]
     },
     {
@@ -407,7 +407,7 @@ export const DAV_SUBJECTS = {
       icon: 'Sparkles',
       color: 'from-yellow-600 to-amber-700',
       books: [
-        { id: 'gk3_book', title: 'Kid Wiz (Std 3 GK)', type: 'General Knowledge & Quizzes', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%203/Kid-Wiz-GK.pdf', size: '17.1 MB' }
+        { id: 'gk3_book', title: 'Kid Wiz (Std 3 GK)', type: 'General Knowledge', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%203/Kid-Wiz-GK.pdf', size: '17.1 MB' }
       ]
     }
   ],
@@ -419,7 +419,7 @@ export const DAV_SUBJECTS = {
       icon: 'Calculator',
       color: 'from-emerald-600 to-teal-700',
       books: [
-        { id: 'math4_book', title: 'Primary Mathematics (STD-IV)', type: 'Complete Textbook', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%204/Primary-Mathematics.pdf', size: '51.9 MB' }
+        { id: 'math4_book', title: 'Primary Mathematics (STD-IV)', type: 'Math', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%204/Primary-Mathematics.pdf', size: '51.9 MB' }
       ]
     },
     {
@@ -429,7 +429,7 @@ export const DAV_SUBJECTS = {
       icon: 'Sparkles',
       color: 'from-green-600 to-emerald-800',
       books: [
-        { id: 'sci4_book', title: 'The Living World (Class-IV Science)', type: 'Complete Science Textbook', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%204/Science-The-Living-World.pdf', size: '34.5 MB' }
+        { id: 'sci4_book', title: 'The Living World (Class-IV Science)', type: 'Science', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%204/Science-The-Living-World.pdf', size: '34.5 MB' }
       ]
     },
     {
@@ -439,7 +439,7 @@ export const DAV_SUBJECTS = {
       icon: 'Compass',
       color: 'from-purple-600 to-indigo-800',
       books: [
-        { id: 'sst4_book', title: 'We and Our World (STD-IV SST)', type: 'Social Science Textbook', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%204/We-And-Our-World-SST.pdf', size: '60.7 MB' }
+        { id: 'sst4_book', title: 'We and Our World (STD-IV SST)', type: 'Social Science', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%204/We-And-Our-World-SST.pdf', size: '60.7 MB' }
       ]
     },
     {
@@ -449,7 +449,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages',
       color: 'from-amber-600 to-orange-700',
       books: [
-        { id: 'hin4_bm_book', title: 'भाषा माधुरी (STD-IV)', type: 'हिन्दी साहित्य पाठ्यपुस्तक', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%204/Hindi-Bhasha-Madhuri.pdf', size: '43.8 MB' }
+        { id: 'hin4_bm_book', title: 'भाषा माधुरी (STD-IV)', type: 'Hindi', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%204/Hindi-Bhasha-Madhuri.pdf', size: '43.8 MB' }
       ]
     },
     {
@@ -459,7 +459,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen',
       color: 'from-blue-600 to-indigo-700',
       books: [
-        { id: 'eng4_reader_book', title: 'My English Reader (STD-IV)', type: 'Coursebook & Stories', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%204/My-English-Reader.pdf', size: '50.2 MB' }
+        { id: 'eng4_reader_book', title: 'My English Reader (STD-IV)', type: 'English', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%204/My-English-Reader.pdf', size: '50.2 MB' }
       ]
     },
     {
@@ -469,7 +469,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen',
       color: 'from-indigo-600 to-blue-800',
       books: [
-        { id: 'eng4_prac_book', title: 'English Practice Book (STD-IV)', type: 'Grammar & Worksheets', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%204/English-Practice-Book.pdf', size: '46.7 MB' }
+        { id: 'eng4_prac_book', title: 'English Practice Book (STD-IV)', type: 'English', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%204/English-Practice-Book.pdf', size: '46.7 MB' }
       ]
     },
     {
@@ -479,7 +479,7 @@ export const DAV_SUBJECTS = {
       icon: 'Cpu',
       color: 'from-cyan-600 to-blue-700',
       books: [
-        { id: 'comp4_book', title: 'Hands On in Computer (STD-IV)', type: 'Computer Science & ICT', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%204/Hands-On-Computer.pdf', size: '62.1 MB' }
+        { id: 'comp4_book', title: 'Hands On in Computer (STD-IV)', type: 'Computer', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%204/Hands-On-Computer.pdf', size: '62.1 MB' }
       ]
     }
   ],
@@ -491,7 +491,7 @@ export const DAV_SUBJECTS = {
       icon: 'Calculator',
       color: 'from-emerald-600 to-teal-700',
       books: [
-        { id: 'math5_book', title: 'Primary Mathematics (Class 5)', type: 'Complete Textbook', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%205/Primary-Mathematics.pdf', size: '42.5 MB' }
+        { id: 'math5_book', title: 'Primary Mathematics (Class 5)', type: 'Math', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%205/Primary-Mathematics.pdf', size: '42.5 MB' }
       ]
     },
     {
@@ -501,7 +501,7 @@ export const DAV_SUBJECTS = {
       icon: 'Sparkles',
       color: 'from-green-600 to-emerald-800',
       books: [
-        { id: 'sci5_book', title: 'My Living World (Std 5 Science)', type: 'Complete Science Textbook', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%205/My-Living-World-Science.pdf', size: '27.8 MB' }
+        { id: 'sci5_book', title: 'My Living World (Std 5 Science)', type: 'Science', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%205/My-Living-World-Science.pdf', size: '27.8 MB' }
       ]
     },
     {
@@ -511,7 +511,7 @@ export const DAV_SUBJECTS = {
       icon: 'Compass',
       color: 'from-purple-600 to-indigo-800',
       books: [
-        { id: 'sst5_book', title: 'We and Our World (STD 5 SST)', type: 'Integrated Social Science', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%205/We-And-Our-World-SST.pdf', size: '53.1 MB' }
+        { id: 'sst5_book', title: 'We and Our World (STD 5 SST)', type: 'Social Science', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%205/We-And-Our-World-SST.pdf', size: '53.1 MB' }
       ]
     },
     {
@@ -521,7 +521,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages',
       color: 'from-amber-600 to-orange-700',
       books: [
-        { id: 'hin5_bm_book', title: 'भाषा माधुरी (Class 5)', type: 'हिन्दी साहित्य पाठ्यपुस्तक', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%205/Hindi-Bhasha-Madhuri.pdf', size: '35.5 MB' }
+        { id: 'hin5_bm_book', title: 'भाषा माधुरी (Class 5)', type: 'Hindi', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%205/Hindi-Bhasha-Madhuri.pdf', size: '35.5 MB' }
       ]
     },
     {
@@ -531,7 +531,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages',
       color: 'from-orange-600 to-red-700',
       books: [
-        { id: 'hin5_ba_book', title: 'भाषा अभ्यास (Class 5)', type: 'व्याकरण अभ्यास पुस्तिका', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%205/Hindi-Bhasha-Abhyas.pdf', size: '13.7 MB' }
+        { id: 'hin5_ba_book', title: 'भाषा अभ्यास (Class 5)', type: 'Hindi', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%205/Hindi-Bhasha-Abhyas.pdf', size: '13.7 MB' }
       ]
     },
     {
@@ -541,7 +541,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen',
       color: 'from-blue-600 to-indigo-700',
       books: [
-        { id: 'eng5_reader_book', title: 'My English Reader (Class 5)', type: 'Literature & Coursebook', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%205/English-Reader.pdf', size: '40.3 MB' }
+        { id: 'eng5_reader_book', title: 'My English Reader (Class 5)', type: 'English', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%205/English-Reader.pdf', size: '40.3 MB' }
       ]
     },
     {
@@ -551,7 +551,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen',
       color: 'from-indigo-600 to-blue-800',
       books: [
-        { id: 'eng5_prac_book', title: 'English Practice Book (Class 5)', type: 'Grammar & Worksheets', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%205/English-Practice-Book.pdf', size: '37.6 MB' }
+        { id: 'eng5_prac_book', title: 'English Practice Book (Class 5)', type: 'English', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%205/English-Practice-Book.pdf', size: '37.6 MB' }
       ]
     },
     {
@@ -561,7 +561,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages',
       color: 'from-orange-500 to-amber-700',
       books: [
-        { id: 'sans5_book', title: 'सुरभि संस्कृत (Class 5)', type: 'संस्कृत पाठ्यपुस्तक', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%205/Surabhi-Sanskrit.pdf', size: '23.7 MB' }
+        { id: 'sans5_book', title: 'सुरभि संस्कृत (Class 5)', type: 'Sanskrit', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%205/Surabhi-Sanskrit.pdf', size: '23.7 MB' }
       ]
     },
     {
@@ -571,7 +571,7 @@ export const DAV_SUBJECTS = {
       icon: 'Sparkles',
       color: 'from-yellow-600 to-amber-700',
       books: [
-        { id: 'gk5_book', title: 'Kid Wiz (Std 5 GK)', type: 'General Awareness & Quizzes', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%205/Kid-Wiz-GK.pdf', size: '11.4 MB' }
+        { id: 'gk5_book', title: 'Kid Wiz (Std 5 GK)', type: 'General Knowledge', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%205/Kid-Wiz-GK.pdf', size: '11.4 MB' }
       ]
     }
   ],
@@ -583,7 +583,7 @@ export const DAV_SUBJECTS = {
       icon: 'Calculator',
       color: 'from-emerald-600 to-teal-700',
       books: [
-        { id: 'math6_book', title: 'Secondary Mathematics (Class 6)', type: 'Complete Textbook', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%206/Secondary-Mathematics.pdf', size: '62.2 MB' }
+        { id: 'math6_book', title: 'Secondary Mathematics (Class 6)', type: 'Math', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%206/Secondary-Mathematics.pdf', size: '62.2 MB' }
       ]
     },
     {
@@ -593,7 +593,7 @@ export const DAV_SUBJECTS = {
       icon: 'Sparkles',
       color: 'from-green-600 to-emerald-800',
       books: [
-        { id: 'sci6_book', title: 'The Living World (Class 6 Science)', type: 'Complete Science Textbook', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%206/The-Living-World-Science.pdf', size: '64.7 MB' }
+        { id: 'sci6_book', title: 'The Living World (Class 6 Science)', type: 'Science', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%206/The-Living-World-Science.pdf', size: '64.7 MB' }
       ]
     },
     {
@@ -603,7 +603,7 @@ export const DAV_SUBJECTS = {
       icon: 'Compass',
       color: 'from-purple-600 to-indigo-800',
       books: [
-        { id: 'sst6_book', title: 'We and Our World (Class 6 SST)', type: 'Integrated Social Science', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%206/We-And-Our-World-SST.pdf', size: '70.7 MB' }
+        { id: 'sst6_book', title: 'We and Our World (Class 6 SST)', type: 'Social Science', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%206/We-And-Our-World-SST.pdf', size: '70.7 MB' }
       ]
     },
     {
@@ -613,7 +613,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages',
       color: 'from-amber-600 to-orange-700',
       books: [
-        { id: 'hin6_gs_book', title: 'ज्ञान सागर (Hindi Gyan Sagar Class 6)', type: 'हिन्दी पाठ्यपुस्तक', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%206/Hindi-Gyan-Sagar.pdf', size: '37.9 MB' }
+        { id: 'hin6_gs_book', title: 'ज्ञान सागर (Hindi Gyan Sagar Class 6)', type: 'Hindi', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%206/Hindi-Gyan-Sagar.pdf', size: '37.9 MB' }
       ]
     },
     {
@@ -623,7 +623,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages',
       color: 'from-orange-600 to-red-700',
       books: [
-        { id: 'hin6_as_book', title: 'अभ्यास सागर (Hindi Abhyas Sagar Class 6)', type: 'व्याकरण अभ्यास पुस्तिका', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%206/Hindi-Abhyas-Sagar.pdf', size: '39.9 MB' }
+        { id: 'hin6_as_book', title: 'अभ्यास सागर (Hindi Abhyas Sagar Class 6)', type: 'Hindi', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%206/Hindi-Abhyas-Sagar.pdf', size: '39.9 MB' }
       ]
     },
     {
@@ -633,7 +633,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen',
       color: 'from-blue-600 to-indigo-700',
       books: [
-        { id: 'eng6_lit_book', title: 'English Literature Reader (Class 6)', type: 'Literature Reader', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%206/English-Literature.pdf', size: '32.5 MB' }
+        { id: 'eng6_lit_book', title: 'English Literature Reader (Class 6)', type: 'English', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%206/English-Literature.pdf', size: '32.5 MB' }
       ]
     },
     {
@@ -643,7 +643,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen',
       color: 'from-indigo-600 to-blue-800',
       books: [
-        { id: 'eng6_reader_book', title: 'My English Reader (Class 6)', type: 'Coursebook', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%206/My-English-Reader.pdf', size: '31.0 MB' }
+        { id: 'eng6_reader_book', title: 'My English Reader (Class 6)', type: 'English', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%206/My-English-Reader.pdf', size: '31.0 MB' }
       ]
     },
     {
@@ -653,7 +653,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen',
       color: 'from-sky-600 to-cyan-700',
       books: [
-        { id: 'eng6_prac_book', title: 'English Practice Book (Class 6)', type: 'Comprehensive Grammar', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%206/English-Practice-Book.pdf', size: '5.7 MB' }
+        { id: 'eng6_prac_book', title: 'English Practice Book (Class 6)', type: 'English', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%206/English-Practice-Book.pdf', size: '5.7 MB' }
       ]
     },
     {
@@ -663,7 +663,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages',
       color: 'from-orange-500 to-amber-700',
       books: [
-        { id: 'sans6_book', title: 'सुरभि संस्कृत (STD-6 Sanskrit)', type: 'संस्कृत पाठ्यपुस्तक एवं व्याकरण', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%206/Surabhi-Sanskrit.pdf', size: '35.1 MB' }
+        { id: 'sans6_book', title: 'सुरभि संस्कृत (STD-6 Sanskrit)', type: 'Sanskrit', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%206/Surabhi-Sanskrit.pdf', size: '35.1 MB' }
       ]
     },
     {
@@ -673,7 +673,7 @@ export const DAV_SUBJECTS = {
       icon: 'Sparkles',
       color: 'from-yellow-600 to-amber-700',
       books: [
-        { id: 'gk6_book', title: 'Kid Wiz (STD-6 GK)', type: 'Quizzes & Olympiad Preparation', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%206/Kid-Wiz-GK.pdf', size: '33.3 MB' }
+        { id: 'gk6_book', title: 'Kid Wiz (STD-6 GK)', type: 'General Knowledge', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%206/Kid-Wiz-GK.pdf', size: '33.3 MB' }
       ]
     }
   ],
@@ -685,7 +685,7 @@ export const DAV_SUBJECTS = {
       icon: 'Calculator',
       color: 'from-emerald-600 to-teal-700',
       books: [
-        { id: 'math7_book', title: 'Secondary Mathematics (Class 7)', type: 'Complete Textbook', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%207/Secondary-Mathematics.pdf', size: '55.0 MB' }
+        { id: 'math7_book', title: 'Secondary Mathematics (Class 7)', type: 'Math', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%207/Secondary-Mathematics.pdf', size: '55.0 MB' }
       ]
     },
     {
@@ -695,7 +695,7 @@ export const DAV_SUBJECTS = {
       icon: 'Sparkles',
       color: 'from-green-600 to-emerald-800',
       books: [
-        { id: 'sci7_book', title: 'The Living World (SCIENCE STD 7)', type: 'Complete Science Textbook', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%207/The-Living-World-Science.pdf', size: '37.9 MB' }
+        { id: 'sci7_book', title: 'The Living World (SCIENCE STD 7)', type: 'Science', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%207/The-Living-World-Science.pdf', size: '37.9 MB' }
       ]
     },
     {
@@ -705,7 +705,7 @@ export const DAV_SUBJECTS = {
       icon: 'Compass',
       color: 'from-purple-600 to-indigo-800',
       books: [
-        { id: 'sst7_book', title: 'We and Our World (SST STD-7)', type: 'Integrated Social Science', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%207/We-And-Our-World-SST.pdf', size: '91.0 MB' }
+        { id: 'sst7_book', title: 'We and Our World (SST STD-7)', type: 'Social Science', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%207/We-And-Our-World-SST.pdf', size: '91.0 MB' }
       ]
     },
     {
@@ -715,7 +715,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages',
       color: 'from-amber-600 to-orange-700',
       books: [
-        { id: 'hin7_gs_book', title: 'ज्ञान सागर (Hindi Gyan Sagar STD 7)', type: 'हिन्दी साहित्य पाठ्यपुस्तक', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%207/Hindi-Gyan-Sagar.pdf', size: '103.9 MB' }
+        { id: 'hin7_gs_book', title: 'ज्ञान सागर (Hindi Gyan Sagar STD 7)', type: 'Hindi', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%207/Hindi-Gyan-Sagar.pdf', size: '103.9 MB' }
       ]
     },
     {
@@ -725,7 +725,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages',
       color: 'from-orange-600 to-red-700',
       books: [
-        { id: 'hin7_as_book', title: 'अभ्यास सागर (Hindi Abhyas Sagar STD 7)', type: 'व्याकरण अभ्यास पुस्तिका', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%207/Hindi-Abhyas-Sagar.pdf', size: '42.1 MB' }
+        { id: 'hin7_as_book', title: 'अभ्यास सागर (Hindi Abhyas Sagar STD 7)', type: 'Hindi', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%207/Hindi-Abhyas-Sagar.pdf', size: '42.1 MB' }
       ]
     },
     {
@@ -735,7 +735,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen',
       color: 'from-blue-600 to-indigo-700',
       books: [
-        { id: 'eng7_lit_book', title: 'English Literature (STD 7)', type: 'Literature Reader', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%207/English-Literature.pdf', size: '76.4 MB' }
+        { id: 'eng7_lit_book', title: 'English Literature (STD 7)', type: 'English', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%207/English-Literature.pdf', size: '76.4 MB' }
       ]
     },
     {
@@ -745,7 +745,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen',
       color: 'from-indigo-600 to-blue-800',
       books: [
-        { id: 'eng7_reader_book', title: 'My English Reader (ENG MY READER STD 7)', type: 'Coursebook', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%207/My-English-Reader.pdf', size: '147.6 MB' }
+        { id: 'eng7_reader_book', title: 'My English Reader (ENG MY READER STD 7)', type: 'English', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%207/My-English-Reader.pdf', size: '147.6 MB' }
       ]
     },
     {
@@ -755,7 +755,7 @@ export const DAV_SUBJECTS = {
       icon: 'BookOpen',
       color: 'from-sky-600 to-cyan-700',
       books: [
-        { id: 'eng7_prac_book', title: 'English Practice Book (Grammar STD 7)', type: 'Grammar & Worksheets', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%207/English-Practice-Book.pdf', size: '41.0 MB' }
+        { id: 'eng7_prac_book', title: 'English Practice Book (Grammar STD 7)', type: 'English', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%207/English-Practice-Book.pdf', size: '41.0 MB' }
       ]
     },
     {
@@ -765,7 +765,7 @@ export const DAV_SUBJECTS = {
       icon: 'Languages',
       color: 'from-orange-500 to-amber-700',
       books: [
-        { id: 'sans7_book', title: 'सुरभि संस्कृत (Sanskrit STD 7)', type: 'संस्कृत पाठ्यपुस्तक', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%207/Surabhi-Sanskrit.pdf', size: '20.3 MB' }
+        { id: 'sans7_book', title: 'सुरभि संस्कृत (Sanskrit STD 7)', type: 'Sanskrit', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%207/Surabhi-Sanskrit.pdf', size: '20.3 MB' }
       ]
     },
     {
@@ -775,7 +775,7 @@ export const DAV_SUBJECTS = {
       icon: 'Cpu',
       color: 'from-cyan-600 to-blue-700',
       books: [
-        { id: 'comp7_book', title: 'Hands On Computer (ICT STD 7)', type: 'ICT & Computer Science', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%207/Hands-On-Computer.pdf', size: '121.7 MB' }
+        { id: 'comp7_book', title: 'Hands On Computer (ICT STD 7)', type: 'Computer', pdfUrl: 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public/books/Class%207/Hands-On-Computer.pdf', size: '121.7 MB' }
       ]
     },
     {
@@ -785,7 +785,7 @@ export const DAV_SUBJECTS = {
       icon: 'Sparkles',
       color: 'from-yellow-600 to-amber-700',
       books: [
-        { id: 'gk7_book', title: 'Kid Wiz Quiz Book (STD 7 GK)', type: 'General Knowledge & Quizzes', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%207/Kid-Wiz-GK.pdf', size: '38.6 MB' }
+        { id: 'gk7_book', title: 'Kid Wiz Quiz Book (STD 7 GK)', type: 'General Knowledge', pdfUrl: 'https://trafnmjbnlcexxzcbzqg.supabase.co/storage/v1/object/public/dav-textbooks/Class%207/Kid-Wiz-GK.pdf', size: '38.6 MB' }
       ]
     }
   ]

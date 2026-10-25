@@ -166,7 +166,7 @@ export function DeveloperReviewsSection({ currentUser, onGoToSection }) {
         {/* User Requirement: "First, if I click on section 12, then a page will open in the middle, it will be written check the reviews." */}
         {!hasClickedCheckReviews ? (
           <div className="flex items-center justify-center py-12 sm:py-20 animate-fadeIn">
-            <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-2xl border-2 border-amber-400/60 max-w-lg w-full text-center space-y-6 transform hover:scale-102 transition duration-300">
+            <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-2xl border-2 border-amber-400/60 max-w-lg w-full text-center space-y-6 transform hover:scale-102 transition duration-300 card-super-interactive border-halo-gold ultra-shimmer animate-glow-gold">
               
               <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-amber-500 to-orange-500 text-stone-950 mx-auto flex items-center justify-center shadow-lg shadow-amber-500/30">
                 <MessageSquare className="w-10 h-10 animate-pulse" />

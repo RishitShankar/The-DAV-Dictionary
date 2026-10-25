@@ -10,6 +10,9 @@ const __dirname = path.dirname(__filename)
 export default defineConfig({
   base: './',
   plugins: [react()],
+  build: {
+    emptyOutDir: false
+  },
   server: {
     host: true,
     port: 3000

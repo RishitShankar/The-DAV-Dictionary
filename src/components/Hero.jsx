@@ -13,7 +13,7 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
         
         {/* Official Logo Banner */}
         <div className="flex justify-center mb-6">
-          <div className="p-2 sm:p-3 rounded-3xl bg-white/10 backdrop-blur-md border border-amber-400/40 shadow-2xl inline-flex items-center gap-4 pr-6 animate-float-slow hover:border-amber-400 transition-colors">
+          <div className="p-2 sm:p-3 rounded-3xl bg-white/10 backdrop-blur-md border border-amber-400/40 shadow-2xl inline-flex items-center gap-4 pr-6 animate-float-slow hover:border-amber-400 transition-colors card-super-interactive border-halo-gold ultra-shimmer">
             <img 
               src="/logo.png" 
               alt="DAV Dictionary" 
@@ -82,8 +82,8 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
             <div className="text-xs text-slate-400 mt-1">DAV Custom Intelligence Engine</div>
           </div>
           <div className="p-3 rounded-lg bg-white/5 border border-white/10">
-            <div className="text-xl sm:text-2xl font-black text-blue-400">4 Dimensions</div>
-            <div className="text-xs text-slate-400 mt-1">Normal, VIP, VVIP & Developer</div>
+            <div className="text-xl sm:text-2xl font-black text-blue-400">5 Dimensions</div>
+            <div className="text-xs text-slate-400 mt-1">Normal, VIP, Double VIP, Developer &amp; Teacher</div>
           </div>
         </div>
 

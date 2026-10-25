@@ -212,6 +212,22 @@ export function App() {
     setIsPdfReaderOpen(true);
   };
 
+  const handleClosePdfReader = () => {
+    setIsPdfReaderOpen(false);
+    if (typeof document !== 'undefined') {
+      try {
+        document.body.style.removeProperty('overflow');
+        document.documentElement.style.removeProperty('overflow');
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.height = '';
+        document.documentElement.style.height = '';
+        document.body.classList.remove('overflow-hidden');
+      } catch (e) {}
+    }
+  };
+
   const handleEnterDemoPreview = (targetSection = 1, targetSubSection = null) => {
     const demoUser = {
       id: 'guest_student',
@@ -335,21 +351,7 @@ export function App() {
         onLogout={handleLogout}
       />
 
-      {/* 5th Dimension: Mobile Auto-Detection Indicator Bar */}
-      {deviceDimension === 'mobile' && (
-        <div className="bg-gradient-to-r from-red-900 via-amber-700 to-red-900 text-white text-[11px] font-bold py-1.5 px-4 flex items-center justify-between shadow-sm sticky top-[76px] z-30">
-          <span className="flex items-center gap-1.5">
-            <Smartphone className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-            <span>5th Dimension (Mobile Mode Active) • Auto-Optimized Touch Controls</span>
-          </span>
-          <button
-            onClick={() => setDeviceDimension('pc')}
-            className="text-[10px] underline font-bold text-amber-200 hover:text-white cursor-pointer"
-          >
-            Switch to PC Mode 🖥️
-          </button>
-        </div>
-      )}
+
 
       {/* Main Content Area */}
       <main className={`flex-1 ${deviceDimension === 'mobile' ? 'pb-24' : ''}`}>
@@ -510,7 +512,7 @@ export function App() {
 
       <PdfReaderModal
         isOpen={isPdfReaderOpen}
-        onClose={() => setIsPdfReaderOpen(false)}
+        onClose={handleClosePdfReader}
         book={readerBook}
         currentUser={user}
         onOpenAIWithQuestion={handleOpenAIWithQuestion}

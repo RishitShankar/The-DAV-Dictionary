@@ -281,36 +281,6 @@ export function Navbar({
               </button>
             )}
 
-            {/* 5th Dimension Switcher: PC vs Mobile Mode */}
-            <div className="flex items-center bg-slate-100 p-0.5 sm:p-1 rounded-xl border border-slate-200">
-              <button
-                type="button"
-                onClick={() => onToggleDevice && onToggleDevice('pc')}
-                className={`px-2 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer ${
-                  deviceDimension === 'pc' 
-                    ? 'bg-white text-slate-900 shadow-sm border border-slate-200' 
-                    : 'text-slate-500 hover:text-slate-800'
-                }`}
-                title="PC Dimension: Full Desktop Interface"
-              >
-                <Monitor className="w-3.5 h-3.5 text-blue-600" />
-                <span className="hidden md:inline">PC</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => onToggleDevice && onToggleDevice('mobile')}
-                className={`px-2 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer ${
-                  deviceDimension === 'mobile' 
-                    ? 'bg-gradient-to-r from-red-800 to-amber-600 text-white shadow-sm' 
-                    : 'text-slate-500 hover:text-slate-800'
-                }`}
-                title="5th Dimension: Mobile Dimension (Auto-Optimized Touch UI)"
-              >
-                <Smartphone className="w-3.5 h-3.5 text-amber-300" />
-                <span className="hidden md:inline">5D Mobile</span>
-              </button>
-            </div>
-            
             {/* Launch Rishi AI Button */}
             {onOpenAI && (
               <button

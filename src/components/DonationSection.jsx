@@ -205,9 +205,9 @@ export function DonationSection({ currentUser, onRequireLogin }) {
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Section 10 Two-Page Switcher */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/95 backdrop-blur-md p-3 sm:p-4 rounded-3xl border border-amber-300/80 shadow-lg">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/95 backdrop-blur-md p-3 sm:p-4 rounded-3xl border border-amber-300/80 shadow-lg card-super-interactive border-halo-gold">
           <div className="flex items-center gap-2.5">
-            <span className="w-3 h-3 rounded-full bg-red-800 animate-pulse" />
+            <span className="w-3 h-3 rounded-full bg-red-800 animate-pulse-ring-red" />
             <div>
               <span className="text-xs font-black uppercase tracking-wider text-slate-900 block">
                 Section 10 Navigation
@@ -222,26 +222,26 @@ export function DonationSection({ currentUser, onRequireLogin }) {
             <button
               type="button"
               onClick={() => setActivePage('donate')}
-              className={`flex-1 sm:flex-none px-4 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer ${
+              className={`flex-1 sm:flex-none px-4 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer btn-interactive ${
                 activePage === 'donate'
-                  ? 'bg-gradient-to-r from-red-800 via-rose-700 to-red-900 text-white shadow-md'
+                  ? 'bg-gradient-to-r from-red-800 via-rose-700 to-red-900 text-white shadow-md animate-glow-red'
                   : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
               }`}
             >
-              <Heart className={`w-4 h-4 ${activePage === 'donate' ? 'text-rose-300 fill-rose-300' : 'text-slate-500'}`} />
+              <Heart className={`w-4 h-4 ${activePage === 'donate' ? 'text-rose-300 fill-rose-300 animate-heartbeat' : 'text-slate-500'}`} />
               <span>Page 1: Donate to Developer</span>
             </button>
 
             <button
               type="button"
               onClick={() => setActivePage('review')}
-              className={`flex-1 sm:flex-none px-4 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer ${
+              className={`flex-1 sm:flex-none px-4 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer btn-interactive ${
                 activePage === 'review'
-                  ? 'bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-700 text-stone-950 shadow-md font-black'
+                  ? 'bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-700 text-stone-950 shadow-md font-black animate-glow-gold'
                   : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
               }`}
             >
-              <Star className={`w-4 h-4 ${activePage === 'review' ? 'text-stone-950 fill-stone-950' : 'text-amber-500'}`} />
+              <Star className={`w-4 h-4 ${activePage === 'review' ? 'text-stone-950 fill-stone-950 animate-twinkle' : 'text-amber-500'}`} />
               <span>Page 2: Review (Submit Review)</span>
             </button>
           </div>

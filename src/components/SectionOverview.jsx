@@ -179,6 +179,8 @@ export function SectionOverview({ currentUser, onSelectSection }) {
     }
   ];
 
+  const visibleSections = sectionsList.filter(sec => sec.id !== 12 || isDimension4);
+
   const handleCardClick = (id) => {
     setClickedCardId(id);
     setTimeout(() => {
@@ -322,7 +324,7 @@ export function SectionOverview({ currentUser, onSelectSection }) {
                 <div
                   key={sec.id}
                   onClick={() => handleCardClick(sec.id)}
-                  className={`p-6 sm:p-7 rounded-3xl bg-gradient-to-br ${sec.cardBg} border-2 transition-all duration-300 flex flex-col justify-between shadow-md hover:shadow-2xl cursor-pointer group relative overflow-hidden card-interactive shimmer-overlay ${
+                  className={`p-6 sm:p-7 rounded-3xl bg-gradient-to-br ${sec.cardBg} border-2 transition-all duration-300 flex flex-col justify-between shadow-md hover:shadow-2xl cursor-pointer group relative overflow-hidden card-super-interactive ultra-shimmer ${
                     isCurrent
                       ? 'border-amber-400 ring-4 ring-amber-400/20'
                       : `border-slate-200/80 ${sec.borderHover}`

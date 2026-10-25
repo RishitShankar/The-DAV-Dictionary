@@ -577,8 +577,13 @@ _With heartfelt gratitude from the entire DAV student community!_`;
       {/* ========================================================================= */}
       <header className="bg-gradient-to-r from-stone-950 via-slate-900 to-amber-950/70 border-b border-amber-500/30 px-4 sm:px-6 py-3.5 flex items-center justify-between shrink-0 shadow-xl">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-400/20 border border-amber-400/60 flex items-center justify-center text-amber-300 shadow-inner">
-            <ShieldCheck className="w-6 h-6" />
+          <div className="w-11 h-11 rounded-2xl bg-stone-900 border-2 border-amber-400/80 p-1 flex items-center justify-center shadow-md overflow-hidden shrink-0">
+            <img 
+              src="/logo.png" 
+              alt="DAV Dictionary Official Logo" 
+              className="w-full h-full object-contain"
+              onError={(e) => { e.currentTarget.src = '/new-dav-dictionary-logo.jpg'; }}
+            />
           </div>
           <div>
             <div className="flex items-center gap-2">
