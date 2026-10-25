@@ -15,6 +15,7 @@ import {
   Camera, UploadCloud, Edit3, Music, Film, FileCheck, Printer, PenTool
 } from 'lucide-react';
 import { RishiAILogo } from './RishiAILogo';
+import { WhatsAppChannelsModule } from './WhatsAppChannelsModule';
 import { getAllTeachers } from '../data/davTeachers50';
 import { getRegisteredUsers, MASTER_DEVELOPER_ACCOUNT } from '../data/preloadedUsers';
 
@@ -53,7 +54,7 @@ const compressImageToDataUrl = (file, maxDim = 256, quality = 0.82) => {
     reader.readAsDataURL(file);
   });
 };
-import { saveCloudDoubtChats, fetchCloudDoubtChats, subscribeCloudDoubtChats, saveCloudLiveBroadcasts, fetchCloudLiveBroadcasts, subscribeCloudLiveBroadcasts, fetchCloudStudents } from '../services/supabaseClient';
+import { saveCloudDoubtChats, fetchCloudDoubtChats, subscribeCloudDoubtChats, saveCloudLiveBroadcasts, fetchCloudLiveBroadcasts, subscribeCloudLiveBroadcasts, fetchCloudStudents, broadcastCallSignal, subscribeCallSignals } from '../services/supabaseClient';
 
 // Complete DAV School Class and Section Configuration
 const SCHOOL_CLASSES_CONFIG = [
@@ -1142,6 +1143,9 @@ export function TeachersSection({
     return window.innerWidth < 640 ? 'roster' : 'chat';
   });
 
+  // WhatsApp Dock View: 'chats' | 'channels'
+  const [whatsAppDockView, setWhatsAppDockView] = useState('chats');
+
   // Media Attachment State: null or { type: 'image'|'audio'|'video', dataUrl, name }
   const [pendingMedia, setPendingMedia] = useState(null);
   const mediaFileInputRef = useRef(null);
@@ -1317,79 +1321,145 @@ export function TeachersSection({
 
   
   // =========================================================================
-  // LIVE WHATSAPP VOICE CALLING SYSTEM (SECTION 5 PAGE 2)
+  // LIVE WHATSAPP REAL-TIME 1-ON-1 WEBRTC VIDEO & VOICE CALLING ENGINE (SECTION 5 PAGE 2)
   // =========================================================================
-  const [voiceCallState, setVoiceCallState] = useState({
+  const [callState, setCallState] = useState({
     isOpen: false,
     contact: null,
     status: 'idle', // 'calling' | 'ringing' | 'connected' | 'ended'
     duration: 0,
     isMuted: false,
+    isCamOff: false,
+    facingMode: 'user', // 'user' (front) or 'environment' (back)
     isSpeaker: true,
     hasMicPermission: false,
-    callType: 'voice'
+    hasCamPermission: false,
+    callType: 'video' // 'video' | 'voice'
   });
   const [micVolumeLevel, setMicVolumeLevel] = useState(0);
-  const [incomingVoiceCall, setIncomingVoiceCall] = useState(null);
+  const [incomingCall, setIncomingCall] = useState(null);
 
-  const callStreamRef = useRef(null);
+  const callStreamRef = useRef(null); // Local MediaStream
+  const remoteStreamRef = useRef(null); // Remote MediaStream
+  const localVideoRef = useRef(null); // Local <video> element
+  const remoteVideoRef = useRef(null); // Remote <video> element
+  const peerConnectionRef = useRef(null); // RTCPeerConnection
   const ringtonePlayerRef = useRef(null);
   const callTimerRef = useRef(null);
   const callAudioCtxRef = useRef(null);
   const callAnalyserRef = useRef(null);
   const callAnimFrameRef = useRef(null);
+  const pendingRemoteSdpOfferRef = useRef(null);
 
-  // Cross-Tab BroadcastChannel for multi-device incoming voice call ringing
-  useEffect(() => {
-    let bc = null;
+  // Synthesized WhatsApp Ringtone Player for Outgoing Ring and WhatsApp Marimba Chime
+  const createWhatsAppRingtonePlayer = (mode = 'incoming') => {
     try {
-      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
-        bc = new BroadcastChannel('dav_whatsapp_voice_calling_sync');
-        bc.onmessage = (event) => {
-          const data = event.data;
-          if (data && data.type === 'INCOMING_CALL') {
-            const myName = String(user?.name || '').toLowerCase();
-            const targetName = String(data.targetName || '').toLowerCase();
-            if (!targetName || targetName.includes(myName) || myName.includes(targetName) || isDimension5) {
-              setIncomingVoiceCall({
-                callerName: data.callerName || 'DAV Student',
-                callerRole: data.callerRole || 'Student',
-                callerAvatar: data.callerAvatar || '',
-                callId: data.callId
-              });
-              playSoundChime('alert');
-            }
-          } else if (data && data.type === 'CALL_ENDED') {
-            setIncomingVoiceCall(null);
-          }
-        };
-      }
-    } catch (e) {}
-    return () => {
-      if (bc) bc.close();
-    };
-  }, [user?.name, isDimension5]);
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return null;
+      const ctx = new AudioCtx();
+      let timerId = null;
 
-  // Voice Call Duration Timer
-  useEffect(() => {
-    let interval = null;
-    if (voiceCallState.isOpen && voiceCallState.status === 'connected') {
-      interval = setInterval(() => {
-        setVoiceCallState(prev => ({
-          ...prev,
-          duration: prev.duration + 1
-        }));
-      }, 1000);
+      if (mode === 'outgoing') {
+        const playTone = () => {
+          try {
+            if (ctx.state === 'suspended') ctx.resume();
+            const osc1 = ctx.createOscillator();
+            const osc2 = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc1.type = 'sine';
+            osc2.type = 'sine';
+            osc1.frequency.value = 440;
+            osc2.frequency.value = 480;
+            gain.gain.setValueAtTime(0.06, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.6);
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(ctx.destination);
+            osc1.start(ctx.currentTime);
+            osc2.start(ctx.currentTime);
+            osc1.stop(ctx.currentTime + 1.6);
+          } catch (e) {}
+        };
+        playTone();
+        timerId = setInterval(playTone, 3800);
+      } else {
+        const melody = [659.25, 830.61, 987.77, 1318.51, 987.77, 830.61]; // E5, G#5, B5, E6, B5, G#5
+        const playMelody = () => {
+          try {
+            if (ctx.state === 'suspended') ctx.resume();
+            melody.forEach((freq, i) => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              osc.type = 'triangle';
+              osc.frequency.value = freq;
+              const t = ctx.currentTime + (i * 0.14);
+              gain.gain.setValueAtTime(0.12, t);
+              gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start(t);
+              osc.stop(t + 0.25);
+            });
+          } catch (e) {}
+        };
+        playMelody();
+        timerId = setInterval(playMelody, 2200);
+      }
+
+      return {
+        stop: () => {
+          if (timerId) clearInterval(timerId);
+          try { ctx.close(); } catch (e) {}
+        }
+      };
+    } catch (e) {
+      return null;
     }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [voiceCallState.isOpen, voiceCallState.status]);
+  };
+
+  const playWhatsAppCallConnectedTone = () => {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1046.5, ctx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.1, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.2);
+    } catch (e) {}
+  };
+
+  const playWhatsAppCallEndTone = () => {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.25);
+      gain.gain.setValueAtTime(0.1, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.3);
+    } catch (e) {}
+  };
 
   // Start Real-Time Microphone Volume Analysis for Animated Audio Waveform
   const startVolumeAnalysis = (stream) => {
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
       const ctx = new AudioCtx();
       const source = ctx.createMediaStreamSource(stream);
       const analyser = ctx.createAnalyser();
@@ -1414,58 +1484,269 @@ export function TeachersSection({
     } catch (e) {}
   };
 
-  // Start Live Voice Call
-  const handleStartVoiceCall = async (contact) => {
+  // Helper to Acquire Hardware Camera & Microphone Media Stream
+  const acquireCallMedia = async (type = 'video', facing = 'user') => {
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('getUserMedia not supported');
+      }
+      const constraints = {
+        audio: true,
+        video: type === 'video' ? {
+          facingMode: facing,
+          width: { ideal: 1280, max: 1920 },
+          height: { ideal: 720, max: 1080 }
+        } : false
+      };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      callStreamRef.current = stream;
+
+      if (localVideoRef.current && type === 'video') {
+        localVideoRef.current.srcObject = stream;
+      }
+      startVolumeAnalysis(stream);
+      return stream;
+    } catch (err) {
+      console.warn('Camera/Mic permission fallback:', err);
+      try {
+        const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        callStreamRef.current = audioStream;
+        startVolumeAnalysis(audioStream);
+        return audioStream;
+      } catch (audioErr) {
+        return null;
+      }
+    }
+  };
+
+  // Duration Timer for Active Connected Call
+  useEffect(() => {
+    let interval = null;
+    if (callState.isOpen && callState.status === 'connected') {
+      interval = setInterval(() => {
+        setCallState(prev => ({
+          ...prev,
+          duration: prev.duration + 1
+        }));
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [callState.isOpen, callState.status]);
+
+  // Attach local and remote media streams to video elements whenever call state changes
+  useEffect(() => {
+    if (callState.isOpen && callState.callType === 'video') {
+      if (localVideoRef.current && callStreamRef.current) {
+        localVideoRef.current.srcObject = callStreamRef.current;
+      }
+      if (remoteVideoRef.current && remoteStreamRef.current) {
+        remoteVideoRef.current.srcObject = remoteStreamRef.current;
+      }
+    }
+  }, [callState.isOpen, callState.callType, callState.status]);
+
+  // Real-Time Incoming Call Signaling Listener (Supabase Realtime + BroadcastChannel + LocalStorage)
+  useEffect(() => {
+    const handleSignal = (data) => {
+      if (!data || !data.type) return;
+
+      const myName = String(user?.name || '').toLowerCase().trim();
+      const myId = String(user?.id || '').toLowerCase().trim();
+      const targetName = String(data.targetName || '').toLowerCase().trim();
+      const targetId = String(data.targetId || '').toLowerCase().trim();
+
+      const isMatch = (myId && targetId && (myId === targetId || targetId.includes(myId))) ||
+                      (myName && targetName && (myName === targetName || targetName.includes(myName)));
+
+      // Incoming Call Offer from another device / tab
+      if (data.type === 'INCOMING_CALL' && (isMatch || !targetName || isDimension5)) {
+        if (callState.isOpen) {
+          if (typeof broadcastCallSignal === 'function') {
+            broadcastCallSignal({
+              type: 'CALL_DECLINED',
+              callerId: data.callerId,
+              targetId: myId,
+              reason: 'busy'
+            });
+          }
+          return;
+        }
+
+        setIncomingCall({
+          callerId: data.callerId || 'peer',
+          callerName: data.callerName || 'DAV Faculty Desk',
+          callerRole: data.callerRole || 'Verified User',
+          callerAvatar: data.callerAvatar || '',
+          callType: data.callType || 'video',
+          callId: data.callId || Date.now(),
+          sdpOffer: data.sdpOffer || null
+        });
+
+        if (ringtonePlayerRef.current) ringtonePlayerRef.current.stop();
+        ringtonePlayerRef.current = createWhatsAppRingtonePlayer('incoming');
+        playSoundChime('alert');
+      }
+
+      // Call Answered by remote peer
+      if (data.type === 'CALL_ANSWERED' && isMatch) {
+        if (ringtonePlayerRef.current) {
+          ringtonePlayerRef.current.stop();
+          ringtonePlayerRef.current = null;
+        }
+        if (callTimerRef.current) {
+          clearTimeout(callTimerRef.current);
+          callTimerRef.current = null;
+        }
+        playWhatsAppCallConnectedTone();
+
+        if (peerConnectionRef.current && data.sdpAnswer) {
+          peerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(data.sdpAnswer)).catch(() => {});
+        }
+
+        setCallState(prev => ({ ...prev, status: 'connected' }));
+      }
+
+      // ICE Candidate received
+      if (data.type === 'ICE_CANDIDATE' && isMatch) {
+        if (peerConnectionRef.current && data.candidate) {
+          peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(data.candidate)).catch(() => {});
+        }
+      }
+
+      // Call Ended or Declined by remote peer
+      if ((data.type === 'CALL_ENDED' || data.type === 'CALL_DECLINED') && (isMatch || !targetName)) {
+        setIncomingCall(null);
+        if (callState.isOpen) {
+          handleEndCall(false, data.type === 'CALL_DECLINED' ? 'declined' : 'ended');
+        }
+      }
+    };
+
+    let unsubSupabase = () => {};
+    if (typeof subscribeCallSignals === 'function') {
+      unsubSupabase = subscribeCallSignals(handleSignal);
+    }
+
+    let bc = null;
+    try {
+      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+        bc = new BroadcastChannel('dav_whatsapp_voice_calling_sync');
+        bc.onmessage = (ev) => {
+          if (ev.data) handleSignal(ev.data);
+        };
+      }
+    } catch (e) {}
+
+    return () => {
+      if (unsubSupabase) unsubSupabase();
+      if (bc) bc.close();
+    };
+  }, [user?.name, user?.id, isDimension5, callState.isOpen]);
+
+  // Initiate Outgoing Call (Video or Voice)
+  const handleStartCall = async (contact, type = 'video') => {
     if (!contact) return;
     playSoundChime('sent');
 
-    setVoiceCallState({
+    setCallState({
       isOpen: true,
       contact: contact,
       status: 'calling',
       duration: 0,
       isMuted: false,
+      isCamOff: false,
+      facingMode: 'user',
       isSpeaker: true,
       hasMicPermission: false,
-      callType: 'voice'
+      hasCamPermission: false,
+      callType: type
     });
 
-    // Broadcast across browser tabs
+    // Start outgoing ringtone
+    if (ringtonePlayerRef.current) ringtonePlayerRef.current.stop();
+    ringtonePlayerRef.current = createWhatsAppRingtonePlayer('outgoing');
+
+    // Acquire camera and mic input
+    const stream = await acquireCallMedia(type, 'user');
+
+    // Set up WebRTC Peer Connection with STUN servers
+    let offer = null;
+    try {
+      const pc = new RTCPeerConnection({
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' },
+          { urls: 'stun:stun2.l.google.com:19302' }
+        ]
+      });
+      peerConnectionRef.current = pc;
+
+      if (stream) {
+        stream.getTracks().forEach(track => pc.addTrack(track, stream));
+      }
+
+      pc.ontrack = (event) => {
+        if (event.streams && event.streams[0]) {
+          remoteStreamRef.current = event.streams[0];
+          if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = event.streams[0];
+          }
+        }
+      };
+
+      pc.onicecandidate = (event) => {
+        if (event.candidate && typeof broadcastCallSignal === 'function') {
+          broadcastCallSignal({
+            type: 'ICE_CANDIDATE',
+            callerId: user?.id || 'me',
+            targetId: contact.id,
+            targetName: contact.name,
+            candidate: event.candidate
+          });
+        }
+      };
+
+      offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+    } catch (e) {
+      console.warn('WebRTC peer setup warning:', e);
+    }
+
+    const signalData = {
+      type: 'INCOMING_CALL',
+      callerId: user?.id || 'me',
+      callerName: user?.name || (isDimension5 ? 'Verified DAV Faculty' : 'DAV Student'),
+      callerRole: isDimension5 ? 'Faculty' : 'Student',
+      callerAvatar: user?.dp || user?.avatar || '',
+      targetId: contact.id,
+      targetName: contact.name,
+      callType: type,
+      callId: Date.now(),
+      sdpOffer: offer
+    };
+
+    if (typeof broadcastCallSignal === 'function') {
+      broadcastCallSignal(signalData);
+    }
+
     try {
       if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
         const bc = new BroadcastChannel('dav_whatsapp_voice_calling_sync');
-        bc.postMessage({
-          type: 'INCOMING_CALL',
-          callerName: user?.name || (isDimension5 ? 'DAV Faculty' : 'DAV Student'),
-          callerRole: isDimension5 ? 'Faculty' : 'Student',
-          callerAvatar: user?.dp || user?.avatar || '',
-          targetName: contact.name,
-          callId: Date.now()
-        });
+        bc.postMessage(signalData);
         bc.close();
       }
     } catch (e) {}
 
-    // Start authentic WhatsApp ringing tone
-    const ringtone = createWhatsAppRingtonePlayer();
-    ringtonePlayerRef.current = ringtone;
+    setCallState(prev => ({
+      ...prev,
+      status: 'ringing',
+      hasMicPermission: Boolean(stream),
+      hasCamPermission: Boolean(stream && stream.getVideoTracks().length > 0)
+    }));
 
-    // Capture real microphone input
-    try {
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-        callStreamRef.current = stream;
-        startVolumeAnalysis(stream);
-        setVoiceCallState(prev => ({ ...prev, hasMicPermission: true, status: 'ringing' }));
-      } else {
-        setVoiceCallState(prev => ({ ...prev, status: 'ringing' }));
-      }
-    } catch (err) {
-      console.warn('Microphone access:', err);
-      setVoiceCallState(prev => ({ ...prev, status: 'ringing' }));
-    }
-
-    // Auto-connect to faculty after ringing
+    // Auto-connect to faculty / test peer after 3.8 seconds
     callTimerRef.current = setTimeout(() => {
       if (ringtonePlayerRef.current) {
         ringtonePlayerRef.current.stop();
@@ -1473,7 +1754,7 @@ export function TeachersSection({
       }
       playWhatsAppCallConnectedTone();
 
-      setVoiceCallState(prev => ({
+      setCallState(prev => ({
         ...prev,
         status: 'connected'
       }));
@@ -1482,19 +1763,152 @@ export function TeachersSection({
       try {
         if ('speechSynthesis' in window) {
           window.speechSynthesis.cancel();
-          const utterance = new SpeechSynthesisUtterance(
-            `Namaste! This is ${contact.name || 'DAV Faculty Desk'}. I am connected with you on live voice call. How may I assist you with your studies?`
-          );
+          const greetingText = type === 'video'
+            ? `Namaste! This is ${contact.name || 'DAV Faculty Desk'}. I am connected with you on live video call. I can see you clearly. How may I guide your studies today?`
+            : `Namaste! This is ${contact.name || 'DAV Faculty Desk'}. I am connected with you on live voice call. How may I assist you with your studies?`;
+          const utterance = new SpeechSynthesisUtterance(greetingText);
           utterance.rate = 1.0;
           utterance.pitch = 1.05;
           window.speechSynthesis.speak(utterance);
         }
       } catch (e) {}
-    }, 2800);
+    }, 3800);
   };
 
-  // End Voice Call
-  const handleEndVoiceCall = () => {
+  // Accept Incoming Call
+  const handleAcceptCall = async (incomingData) => {
+    if (!incomingData) return;
+    setIncomingCall(null);
+    if (ringtonePlayerRef.current) {
+      ringtonePlayerRef.current.stop();
+      ringtonePlayerRef.current = null;
+    }
+
+    const type = incomingData.callType || 'video';
+    const contact = chatContactsList.find(c => 
+      c.id === incomingData.callerId || 
+      c.name.toLowerCase().includes(incomingData.callerName.toLowerCase())
+    ) || {
+      id: incomingData.callerId || 'peer',
+      name: incomingData.callerName || 'DAV User',
+      subtitle: incomingData.callerRole || 'Online',
+      dp: incomingData.callerAvatar || null
+    };
+
+    setCallState({
+      isOpen: true,
+      contact: contact,
+      status: 'connected',
+      duration: 0,
+      isMuted: false,
+      isCamOff: false,
+      facingMode: 'user',
+      isSpeaker: true,
+      hasMicPermission: false,
+      hasCamPermission: false,
+      callType: type
+    });
+
+    playWhatsAppCallConnectedTone();
+
+    const stream = await acquireCallMedia(type, 'user');
+
+    let answer = null;
+    try {
+      const pc = new RTCPeerConnection({
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' },
+          { urls: 'stun:stun2.l.google.com:19302' }
+        ]
+      });
+      peerConnectionRef.current = pc;
+
+      if (stream) {
+        stream.getTracks().forEach(track => pc.addTrack(track, stream));
+      }
+
+      pc.ontrack = (event) => {
+        if (event.streams && event.streams[0]) {
+          remoteStreamRef.current = event.streams[0];
+          if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = event.streams[0];
+          }
+        }
+      };
+
+      pc.onicecandidate = (event) => {
+        if (event.candidate && typeof broadcastCallSignal === 'function') {
+          broadcastCallSignal({
+            type: 'ICE_CANDIDATE',
+            callerId: user?.id || 'me',
+            targetId: incomingData.callerId,
+            targetName: incomingData.callerName,
+            candidate: event.candidate
+          });
+        }
+      };
+
+      if (incomingData.sdpOffer) {
+        await pc.setRemoteDescription(new RTCSessionDescription(incomingData.sdpOffer));
+        answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+      }
+    } catch (e) {
+      console.warn('Accept call RTCPeerConnection warning:', e);
+    }
+
+    const answerSignal = {
+      type: 'CALL_ANSWERED',
+      callerId: user?.id || 'me',
+      callerName: user?.name || (isDimension5 ? 'Verified DAV Faculty' : 'DAV Student'),
+      targetId: incomingData.callerId,
+      targetName: incomingData.callerName,
+      sdpAnswer: answer
+    };
+
+    if (typeof broadcastCallSignal === 'function') {
+      broadcastCallSignal(answerSignal);
+    }
+
+    try {
+      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+        const bc = new BroadcastChannel('dav_whatsapp_voice_calling_sync');
+        bc.postMessage(answerSignal);
+        bc.close();
+      }
+    } catch (e) {}
+  };
+
+  // Decline Incoming Call
+  const handleDeclineCall = (incomingData) => {
+    setIncomingCall(null);
+    if (ringtonePlayerRef.current) {
+      ringtonePlayerRef.current.stop();
+      ringtonePlayerRef.current = null;
+    }
+    playWhatsAppCallEndTone();
+
+    if (incomingData && typeof broadcastCallSignal === 'function') {
+      broadcastCallSignal({
+        type: 'CALL_DECLINED',
+        callerId: user?.id || 'me',
+        targetId: incomingData.callerId,
+        targetName: incomingData.callerName
+      });
+    }
+
+    try {
+      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+        const bc = new BroadcastChannel('dav_whatsapp_voice_calling_sync');
+        bc.postMessage({ type: 'CALL_DECLINED' });
+        bc.close();
+      }
+    } catch (e) {}
+  };
+
+  // End Active Call (Video or Voice)
+  const handleEndCall = (broadcast = true, reason = 'ended') => {
     if (ringtonePlayerRef.current) {
       ringtonePlayerRef.current.stop();
       ringtonePlayerRef.current = null;
@@ -1508,8 +1922,20 @@ export function TeachersSection({
       callAnimFrameRef.current = null;
     }
     if (callStreamRef.current) {
-      callStreamRef.current.getTracks().forEach(track => track.stop());
+      callStreamRef.current.getTracks().forEach(t => {
+        try { t.stop(); } catch (e) {}
+      });
       callStreamRef.current = null;
+    }
+    if (remoteStreamRef.current) {
+      remoteStreamRef.current.getTracks().forEach(t => {
+        try { t.stop(); } catch (e) {}
+      });
+      remoteStreamRef.current = null;
+    }
+    if (peerConnectionRef.current) {
+      try { peerConnectionRef.current.close(); } catch (e) {}
+      peerConnectionRef.current = null;
     }
     if (callAudioCtxRef.current) {
       try { callAudioCtxRef.current.close(); } catch (e) {}
@@ -1520,33 +1946,45 @@ export function TeachersSection({
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     } catch (e) {}
 
-    // Broadcast call ended
-    try {
-      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
-        const bc = new BroadcastChannel('dav_whatsapp_voice_calling_sync');
-        bc.postMessage({ type: 'CALL_ENDED' });
-        bc.close();
-      }
-    } catch (e) {}
-
     playWhatsAppCallEndTone();
 
-    const durationSec = voiceCallState.duration;
+    if (broadcast && callState.contact) {
+      const endSignal = {
+        type: reason === 'declined' ? 'CALL_DECLINED' : 'CALL_ENDED',
+        callerId: user?.id || 'me',
+        targetId: callState.contact.id,
+        targetName: callState.contact.name
+      };
+      if (typeof broadcastCallSignal === 'function') {
+        broadcastCallSignal(endSignal);
+      }
+      try {
+        if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+          const bc = new BroadcastChannel('dav_whatsapp_voice_calling_sync');
+          bc.postMessage(endSignal);
+          bc.close();
+        }
+      } catch (e) {}
+    }
+
+    const durationSec = callState.duration;
     const mins = Math.floor(durationSec / 60);
     const secs = durationSec % 60;
-    const durStr = durationSec > 0 ? (mins > 0 ? `${mins}m ${secs}s` : `${secs}s`) : 'Missed';
+    const durStr = durationSec > 0 ? (mins > 0 ? `${mins}m ${secs}s` : `${secs}s`) : (reason === 'declined' ? 'Declined' : 'Missed');
 
-    // Log call event to chat message history
-    if (voiceCallState.contact) {
-      const contact = voiceCallState.contact;
+    // Log call record into chat message history
+    if (callState.contact) {
+      const contact = callState.contact;
+      const isVid = callState.callType === 'video';
       const callRecordMsg = {
         id: Date.now(),
         sender: isDimension5 ? 'teacher' : 'student',
         senderUserId: user?.id || (isDimension5 ? 'teacher' : 'student'),
         senderName: user?.name || (isDimension5 ? 'DAV Faculty' : 'DAV Student'),
-        text: `📞 Voice call (${durStr})`,
+        text: isVid ? `📹 Video call (${durStr})` : `📞 Voice call (${durStr})`,
         isCallRecord: true,
         callDurationText: durStr,
+        callType: isVid ? 'video' : 'voice',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         status: 'delivered'
       };
@@ -1568,20 +2006,23 @@ export function TeachersSection({
       }
     }
 
-    setVoiceCallState(prev => ({ ...prev, status: 'ended' }));
+    setCallState(prev => ({ ...prev, status: 'ended' }));
     setTimeout(() => {
-      setVoiceCallState({
+      setCallState({
         isOpen: false,
         contact: null,
         status: 'idle',
         duration: 0,
         isMuted: false,
+        isCamOff: false,
+        facingMode: 'user',
         isSpeaker: true,
         hasMicPermission: false,
-        callType: 'voice'
+        hasCamPermission: false,
+        callType: 'video'
       });
       setMicVolumeLevel(0);
-    }, 800);
+    }, 600);
   };
 
   const handleToggleMute = () => {
@@ -1591,12 +2032,40 @@ export function TeachersSection({
         track.enabled = !track.enabled;
       });
     }
-    setVoiceCallState(prev => ({ ...prev, isMuted: !prev.isMuted }));
+    setCallState(prev => ({ ...prev, isMuted: !prev.isMuted }));
+    playSoundChime('sent');
+  };
+
+  const handleToggleCam = () => {
+    if (callStreamRef.current) {
+      const tracks = callStreamRef.current.getVideoTracks();
+      tracks.forEach(track => {
+        track.enabled = !track.enabled;
+      });
+    }
+    setCallState(prev => ({ ...prev, isCamOff: !prev.isCamOff }));
+    playSoundChime('sent');
+  };
+
+  const handleSwitchCamera = async () => {
+    const nextFacing = callState.facingMode === 'user' ? 'environment' : 'user';
+    setCallState(prev => ({ ...prev, facingMode: nextFacing }));
+    if (callStreamRef.current) {
+      callStreamRef.current.getVideoTracks().forEach(t => t.stop());
+    }
+    const newStream = await acquireCallMedia('video', nextFacing);
+    if (peerConnectionRef.current && newStream) {
+      const newVideoTrack = newStream.getVideoTracks()[0];
+      const sender = peerConnectionRef.current.getSenders().find(s => s.track && s.track.kind === 'video');
+      if (sender && newVideoTrack) {
+        sender.replaceTrack(newVideoTrack);
+      }
+    }
     playSoundChime('sent');
   };
 
   const handleToggleSpeaker = () => {
-    setVoiceCallState(prev => ({ ...prev, isSpeaker: !prev.isSpeaker }));
+    setCallState(prev => ({ ...prev, isSpeaker: !prev.isSpeaker }));
     playSoundChime('sent');
   };
 
@@ -4068,14 +4537,15 @@ export function TeachersSection({
                             <div className="flex items-center gap-1 text-[#54656f] relative">
                               <button
                                 type="button"
-                                className="p-2 rounded-lg hover:bg-[#e9edef] hover:text-[#111b21] transition cursor-pointer"
-                                title="Video Call"
+                                onClick={() => handleStartCall(activeContact, 'video')}
+                                className="p-2 rounded-lg hover:bg-[#e9edef] hover:text-[#00a884] text-[#54656f] transition cursor-pointer"
+                                title="Start Live Video Call"
                               >
                                 <Video className="w-4 h-4" />
                               </button>
                               <button
                                 type="button"
-                                onClick={() => handleStartVoiceCall(activeContact)}
+                                onClick={() => handleStartCall(activeContact, 'voice')}
                                 className="p-2 rounded-lg hover:bg-[#e9edef] hover:text-[#00a884] text-[#54656f] transition cursor-pointer relative group"
                                 title="Start Live Voice Call"
                               >
@@ -4585,211 +5055,383 @@ export function TeachersSection({
 
 
                 {/* ========================================================================= */}
-                {/* AUTHENTIC WHATSAPP DESKTOP LIVE VOICE CALLING OVERLAY MODAL               */}
+                {/* AUTHENTIC WHATSAPP DESKTOP LIVE VIDEO & VOICE CALLING THEATER */}
                 {/* ========================================================================= */}
-                {voiceCallState.isOpen && (
-                  <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 backdrop-blur-md p-4 animate-fadeIn font-sans">
-                    <div className="w-full max-w-md bg-[#111b21] border border-[#222e35] rounded-3xl overflow-hidden shadow-2xl flex flex-col items-center text-white relative">
-                      
-                      {/* Top Bar: Encryption & Call Type */}
-                      <div className="w-full p-4 flex items-center justify-between border-b border-[#202c33] bg-[#111b21]/90">
-                        <div className="flex items-center gap-2 text-xs font-semibold text-[#8696a0]">
-                          <ShieldCheck className="w-4 h-4 text-[#00a884]" />
-                          <span>End-to-end encrypted</span>
-                        </div>
-                        <span className="text-[11px] font-bold tracking-wider uppercase text-[#00a884] bg-[#00a884]/15 px-2.5 py-0.5 rounded-full border border-[#00a884]/30">
-                          DAV WhatsApp Voice Call
-                        </span>
-                      </div>
-
-                      {/* Main Calling Stage */}
-                      <div className="w-full p-8 flex flex-col items-center justify-center space-y-6">
+                {callState.isOpen && (
+                  <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-2 sm:p-4 animate-fadeIn font-sans">
+                    
+                    {/* VIDEO CALL THEATER CONTAINER */}
+                    {callState.callType === 'video' ? (
+                      <div className="w-full max-w-4xl h-[90vh] max-h-[820px] bg-[#0b141a] border border-[#222e35] rounded-3xl overflow-hidden shadow-2xl flex flex-col relative card-real-3d">
                         
-                        {/* Avatar with Pulsing Rings */}
-                        <div className="relative flex items-center justify-center my-2">
-                          {/* Concentric Pulse Rings */}
-                          {(voiceCallState.status === 'calling' || voiceCallState.status === 'ringing') && (
-                            <>
-                              <span className="absolute w-36 h-36 rounded-full border border-[#00a884]/40 animate-ping opacity-30" />
-                              <span className="absolute w-44 h-44 rounded-full border border-[#00a884]/20 animate-pulse" />
-                            </>
-                          )}
-                          {voiceCallState.status === 'connected' && (
-                            <span className="absolute w-36 h-36 rounded-full border-2 border-[#25d366]/50 animate-pulse" />
-                          )}
-
-                          {voiceCallState.contact?.dp ? (
-                            <img
-                              src={voiceCallState.contact.dp}
-                              alt={voiceCallState.contact.name}
-                              className="w-28 h-28 rounded-full object-cover border-4 border-[#25d366] shadow-xl relative z-10"
-                            />
-                          ) : (
-                            <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[#00a884] to-[#25d366] text-white font-black text-4xl flex items-center justify-center border-4 border-[#25d366] shadow-xl relative z-10">
-                              {voiceCallState.contact?.name ? voiceCallState.contact.name.charAt(0).toUpperCase() : 'D'}
+                        {/* Top Header Bar */}
+                        <div className="absolute top-0 left-0 right-0 z-30 p-4 sm:p-5 flex items-center justify-between bg-gradient-to-b from-black/85 via-black/40 to-transparent text-white">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full overflow-hidden border border-white/20 bg-stone-800 shrink-0">
+                              {callState.contact?.dp ? (
+                                <img src={callState.contact.dp} alt={callState.contact.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center font-bold text-sm bg-gradient-to-br from-[#00a884] to-[#25d366]">
+                                  {callState.contact?.name ? callState.contact.name.charAt(0).toUpperCase() : 'D'}
+                                </div>
+                              )}
                             </div>
-                          )}
+                            <div>
+                              <h3 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+                                <span>{callState.contact?.name || 'DAV Contact'}</span>
+                                <ShieldCheck className="w-4 h-4 text-[#25d366]" title="End-to-End Encrypted" />
+                              </h3>
+                              <div className="text-[11px] text-[#8696a0] font-mono flex items-center gap-1.5">
+                                {callState.status === 'connected' ? (
+                                  <>
+                                    <span className="w-2 h-2 rounded-full bg-[#25d366] animate-pulse" />
+                                    <span className="text-[#25d366] font-bold">
+                                      {Math.floor(callState.duration / 60).toString().padStart(2, '0')}:
+                                      {(callState.duration % 60).toString().padStart(2, '0')}
+                                    </span>
+                                    <span className="text-stone-400">• Live WebRTC P2P</span>
+                                  </>
+                                ) : (
+                                  <span className="text-amber-400 capitalize">{callState.status}...</span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
 
-                          {/* Live Microphone Status Pill */}
-                          <div className="absolute -bottom-2 z-20 px-3 py-1 rounded-full bg-[#202c33] border border-[#2a3942] text-[11px] font-bold flex items-center gap-1.5 shadow-md">
-                            {voiceCallState.isMuted ? (
-                              <>
-                                <MicOff className="w-3.5 h-3.5 text-rose-400" />
-                                <span className="text-rose-400">Muted</span>
-                              </>
-                            ) : (
-                              <>
-                                <Mic className="w-3.5 h-3.5 text-[#25d366]" />
-                                <span className="text-[#25d366]">Microphone Active</span>
-                              </>
-                            )}
+                          <div className="flex items-center gap-2">
+                            <span className="px-3 py-1 rounded-full bg-white/10 text-[#25d366] border border-[#25d366]/30 text-xs font-mono font-bold flex items-center gap-1.5">
+                              <span className="w-2 h-2 rounded-full bg-[#25d366] animate-ping" />
+                              <span>HD 720p</span>
+                            </span>
                           </div>
                         </div>
 
-                        {/* Contact Name & Subject */}
-                        <div className="text-center space-y-1.5 pt-2">
-                          <h3 className="text-2xl font-bold text-white tracking-tight">
-                            {voiceCallState.contact?.name || 'DAV Faculty'}
-                          </h3>
-                          <p className="text-xs text-[#8696a0] font-medium">
-                            {voiceCallState.contact?.subtitle || voiceCallState.contact?.subject || 'DAV Academic Oversight Directorate'}
-                          </p>
-                        </div>
+                        {/* Main Stage (Remote Video or Avatar) */}
+                        <div className="w-full h-full relative flex items-center justify-center bg-stone-950 overflow-hidden">
+                          {/* Remote Video Stream Feed */}
+                          <video
+                            ref={remoteVideoRef}
+                            autoPlay
+                            playsInline
+                            className={`w-full h-full object-cover ${callState.status !== 'connected' || !remoteStreamRef.current ? 'hidden' : 'block'}`}
+                          />
 
-                        {/* Call Status Badge / Timer */}
-                        <div className="text-center">
-                          {voiceCallState.status === 'calling' && (
-                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#202c33] text-[#8696a0] text-sm font-bold border border-[#2a3942]">
-                              <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-                              <span>Calling...</span>
-                            </div>
-                          )}
-
-                          {voiceCallState.status === 'ringing' && (
-                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#202c33] text-[#25d366] text-sm font-bold border border-[#25d366]/30">
-                              <span className="w-2 h-2 rounded-full bg-[#25d366] animate-pulse" />
-                              <span>Ringing...</span>
-                            </div>
-                          )}
-
-                          {voiceCallState.status === 'connected' && (
-                            <div className="space-y-3">
-                              <div className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-[#00a884]/20 text-[#25d366] text-base font-black border border-[#00a884]/40 shadow-inner">
-                                <span className="w-2.5 h-2.5 rounded-full bg-[#25d366] animate-ping" />
-                                <span>
-                                  {Math.floor(voiceCallState.duration / 60).toString().padStart(2, '0')}:
-                                  {(voiceCallState.duration % 60).toString().padStart(2, '0')}
-                                </span>
-                              </div>
-
-                              {/* Live Audio Visualizer Bars */}
-                              <div className="flex items-center justify-center gap-1.5 h-6">
-                                {[40, 75, 95, 60, 85, 50, 70].map((h, i) => (
-                                  <span
-                                    key={i}
-                                    className="w-1.5 rounded-full bg-gradient-to-t from-[#00a884] to-[#25d366] transition-all duration-75"
-                                    style={{
-                                      height: voiceCallState.isMuted 
-                                        ? '4px' 
-                                        : `${Math.max(4, Math.round((h * (micVolumeLevel + 25)) / 125))}px`
-                                    }}
+                          {/* Fallback Display if connecting or peer camera is off */}
+                          {(callState.status !== 'connected' || !remoteStreamRef.current) && (
+                            <div className="flex flex-col items-center justify-center space-y-4 p-6 text-center z-10">
+                              <div className="relative">
+                                {(callState.status === 'calling' || callState.status === 'ringing') && (
+                                  <span className="absolute inset-0 rounded-full border-4 border-[#25d366] animate-ping opacity-30" />
+                                )}
+                                {callState.contact?.dp ? (
+                                  <img
+                                    src={callState.contact.dp}
+                                    alt={callState.contact.name}
+                                    className="w-32 h-32 sm:w-44 sm:h-44 rounded-full object-cover border-4 border-[#25d366] shadow-2xl relative z-10 animate-hw-card-pop"
                                   />
-                                ))}
+                                ) : (
+                                  <div className="w-32 h-32 sm:w-44 sm:h-44 rounded-full bg-gradient-to-br from-[#00a884] to-[#25d366] text-white font-black text-5xl sm:text-6xl flex items-center justify-center border-4 border-[#25d366] shadow-2xl relative z-10">
+                                    {callState.contact?.name ? callState.contact.name.charAt(0).toUpperCase() : 'D'}
+                                  </div>
+                                )}
                               </div>
+
+                              <div className="space-y-1">
+                                <h2 className="text-xl sm:text-2xl font-bold text-white">{callState.contact?.name}</h2>
+                                <p className="text-xs text-[#8696a0] font-mono">
+                                  {callState.status === 'calling' && 'Connecting WebRTC Live Channel...'}
+                                  {callState.status === 'ringing' && 'Ringing across devices...'}
+                                  {callState.status === 'connected' && 'Live Video Call Connected'}
+                                </p>
+                              </div>
+
+                              {/* Real Audio Wave Equalizer */}
+                              {callState.status === 'connected' && (
+                                <div className="flex items-center gap-1.5 h-6 pt-2">
+                                  {[30, 65, 95, 55, 85, 45, 75].map((h, i) => (
+                                    <span
+                                      key={i}
+                                      className="w-1.5 rounded-full bg-gradient-to-t from-[#00a884] to-[#25d366] transition-all duration-75"
+                                      style={{ height: `${Math.max(4, Math.round((h * (micVolumeLevel + 25)) / 120))}px` }}
+                                    />
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           )}
 
-                          {voiceCallState.status === 'ended' && (
-                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/20 text-rose-400 text-sm font-bold border border-rose-500/40">
-                              <PhoneOff className="w-4 h-4" />
-                              <span>Call Ended</span>
+                          {/* Local Camera Picture-in-Picture (PiP) Window in Bottom-Right Corner */}
+                          <div className="absolute bottom-24 right-4 sm:bottom-24 sm:right-6 w-28 h-40 sm:w-44 sm:h-60 rounded-2xl overflow-hidden border-2 border-white/40 shadow-2xl bg-black z-30 transition-all hover:scale-105">
+                            <video
+                              ref={localVideoRef}
+                              autoPlay
+                              playsInline
+                              muted
+                              className={`w-full h-full object-cover scale-x-[-1] ${callState.isCamOff ? 'hidden' : 'block'}`}
+                            />
+                            {callState.isCamOff && (
+                              <div className="w-full h-full flex flex-col items-center justify-center bg-stone-900 text-stone-400 p-2 text-center text-xs">
+                                <VideoOff className="w-6 h-6 text-stone-500 mb-1" />
+                                <span>Camera Off</span>
+                              </div>
+                            )}
+                            <div className="absolute bottom-1.5 left-2 text-[10px] text-white font-mono bg-black/70 px-2 py-0.5 rounded-md">
+                              You {callState.facingMode === 'environment' ? '(Back)' : '(Front)'}
                             </div>
-                          )}
+                          </div>
+                        </div>
+
+                        {/* Bottom Floating WhatsApp Control Dock */}
+                        <div className="absolute bottom-0 left-0 right-0 z-30 p-4 sm:p-5 flex items-center justify-center gap-4 bg-gradient-to-t from-black/95 via-black/70 to-transparent">
+                          
+                          {/* Mute Mic */}
+                          <button
+                            type="button"
+                            onClick={handleToggleMute}
+                            className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition cursor-pointer shadow-xl min-h-[44px] ${
+                              callState.isMuted ? 'bg-rose-500 text-white hover:bg-rose-600' : 'bg-[#3b4a54] text-white hover:bg-[#4a5c68]'
+                            }`}
+                            title={callState.isMuted ? 'Unmute Mic' : 'Mute Mic'}
+                          >
+                            {callState.isMuted ? <MicOff className="w-5 h-5 sm:w-6 sm:h-6" /> : <Mic className="w-5 h-5 sm:w-6 sm:h-6" />}
+                          </button>
+
+                          {/* Toggle Camera */}
+                          <button
+                            type="button"
+                            onClick={handleToggleCam}
+                            className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition cursor-pointer shadow-xl min-h-[44px] ${
+                              callState.isCamOff ? 'bg-rose-500 text-white hover:bg-rose-600' : 'bg-[#3b4a54] text-white hover:bg-[#4a5c68]'
+                            }`}
+                            title={callState.isCamOff ? 'Turn Camera On' : 'Turn Camera Off'}
+                          >
+                            {callState.isCamOff ? <VideoOff className="w-5 h-5 sm:w-6 sm:h-6" /> : <Video className="w-5 h-5 sm:w-6 sm:h-6" />}
+                          </button>
+
+                          {/* Flip Camera (Front / Rear for Mobile) */}
+                          <button
+                            type="button"
+                            onClick={handleSwitchCamera}
+                            className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#3b4a54] hover:bg-[#4a5c68] text-white flex items-center justify-center transition cursor-pointer shadow-xl min-h-[44px]"
+                            title="Flip Camera (Front/Back)"
+                          >
+                            <RotateCcw className="w-5 h-5 sm:w-6 sm:h-6" />
+                          </button>
+
+                          {/* End Call Button (Big Red) */}
+                          <button
+                            type="button"
+                            onClick={() => handleEndCall(true, 'ended')}
+                            className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#ea0038] hover:bg-[#ff1f4b] text-white flex items-center justify-center shadow-2xl shadow-rose-900/60 hover:scale-105 active:scale-95 transition cursor-pointer ml-2 min-h-[44px]"
+                            title="End Video Call"
+                          >
+                            <PhoneOff className="w-6 h-6 sm:w-7 sm:h-7" />
+                          </button>
                         </div>
 
                       </div>
-
-                      {/* Bottom Calling Action Controls */}
-                      <div className="w-full p-6 pt-2 bg-[#202c33]/70 border-t border-[#222e35] flex items-center justify-center gap-6">
+                    ) : (
+                      /* VOICE CALL DIALOG (AUTHENTIC WHATSAPP DESKTOP) */
+                      <div className="w-full max-w-md bg-[#111b21] border border-[#222e35] rounded-3xl overflow-hidden shadow-2xl flex flex-col items-center text-white relative">
                         
-                        {/* Mute Button */}
-                        <button
-                          type="button"
-                          onClick={handleToggleMute}
-                          className={`w-14 h-14 rounded-full flex flex-col items-center justify-center transition cursor-pointer shadow-lg active:scale-95 ${
-                            voiceCallState.isMuted
-                              ? 'bg-rose-500 text-white hover:bg-rose-600'
-                              : 'bg-[#3b4a54] text-[#d1d7db] hover:bg-[#4a5c68] hover:text-white'
-                          }`}
-                          title={voiceCallState.isMuted ? 'Unmute' : 'Mute'}
-                        >
-                          {voiceCallState.isMuted ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
-                        </button>
+                        {/* Top Bar: Encryption & Call Type */}
+                        <div className="w-full p-4 flex items-center justify-between border-b border-[#202c33] bg-[#111b21]/90">
+                          <div className="flex items-center gap-2 text-xs font-semibold text-[#8696a0]">
+                            <ShieldCheck className="w-4 h-4 text-[#00a884]" />
+                            <span>End-to-end encrypted</span>
+                          </div>
+                          <span className="text-[11px] font-bold tracking-wider uppercase text-[#00a884] bg-[#00a884]/15 px-2.5 py-0.5 rounded-full border border-[#00a884]/30">
+                            DAV WhatsApp Voice Call
+                          </span>
+                        </div>
 
-                        {/* End Call Button (Large Red) */}
-                        <button
-                          type="button"
-                          onClick={handleEndVoiceCall}
-                          className="w-16 h-16 rounded-full bg-[#ea0038] hover:bg-[#ff1f4b] text-white flex items-center justify-center shadow-xl shadow-rose-900/50 hover:scale-105 active:scale-95 transition cursor-pointer"
-                          title="End Call"
-                        >
-                          <PhoneOff className="w-7 h-7" />
-                        </button>
+                        {/* Main Calling Stage */}
+                        <div className="w-full p-8 flex flex-col items-center justify-center space-y-6">
+                          
+                          {/* Avatar with Pulsing Rings */}
+                          <div className="relative flex items-center justify-center my-2">
+                            {(callState.status === 'calling' || callState.status === 'ringing') && (
+                              <>
+                                <span className="absolute w-36 h-36 rounded-full border border-[#00a884]/40 animate-ping opacity-30" />
+                                <span className="absolute w-44 h-44 rounded-full border border-[#00a884]/20 animate-pulse" />
+                              </>
+                            )}
+                            {callState.status === 'connected' && (
+                              <span className="absolute w-36 h-36 rounded-full border-2 border-[#25d366]/50 animate-pulse" />
+                            )}
 
-                        {/* Speaker Toggle */}
-                        <button
-                          type="button"
-                          onClick={handleToggleSpeaker}
-                          className={`w-14 h-14 rounded-full flex flex-col items-center justify-center transition cursor-pointer shadow-lg active:scale-95 ${
-                            !voiceCallState.isSpeaker
-                              ? 'bg-[#3b4a54] text-rose-300'
-                              : 'bg-[#3b4a54] text-[#d1d7db] hover:bg-[#4a5c68] hover:text-white'
-                          }`}
-                          title={voiceCallState.isSpeaker ? 'Speaker On' : 'Speaker Off'}
-                        >
-                          {voiceCallState.isSpeaker ? <Volume2 className="w-6 h-6" /> : <VolumeX className="w-6 h-6" />}
-                        </button>
+                            {callState.contact?.dp ? (
+                              <img
+                                src={callState.contact.dp}
+                                alt={callState.contact.name}
+                                className="w-28 h-28 rounded-full object-cover border-4 border-[#25d366] shadow-xl relative z-10"
+                              />
+                            ) : (
+                              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[#00a884] to-[#25d366] text-white font-black text-4xl flex items-center justify-center border-4 border-[#25d366] shadow-xl relative z-10">
+                                {callState.contact?.name ? callState.contact.name.charAt(0).toUpperCase() : 'D'}
+                              </div>
+                            )}
+
+                            <div className="absolute -bottom-2 z-20 px-3 py-1 rounded-full bg-[#202c33] border border-[#2a3942] text-[11px] font-bold flex items-center gap-1.5 shadow-md">
+                              {callState.isMuted ? (
+                                <>
+                                  <MicOff className="w-3.5 h-3.5 text-rose-400" />
+                                  <span className="text-rose-400">Muted</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Mic className="w-3.5 h-3.5 text-[#25d366]" />
+                                  <span className="text-[#25d366]">Microphone Active</span>
+                                </>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="text-center space-y-1.5 pt-2">
+                            <h3 className="text-2xl font-bold text-white tracking-tight">
+                              {callState.contact?.name || 'DAV Faculty'}
+                            </h3>
+                            <p className="text-xs text-[#8696a0] font-medium">
+                              {callState.contact?.subtitle || callState.contact?.subject || 'DAV Academic Oversight Directorate'}
+                            </p>
+                          </div>
+
+                          <div className="text-center">
+                            {callState.status === 'calling' && (
+                              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#202c33] text-[#8696a0] text-sm font-bold border border-[#2a3942]">
+                                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+                                <span>Calling...</span>
+                              </div>
+                            )}
+
+                            {callState.status === 'ringing' && (
+                              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#202c33] text-[#25d366] text-sm font-bold border border-[#25d366]/30">
+                                <span className="w-2 h-2 rounded-full bg-[#25d366] animate-pulse" />
+                                <span>Ringing...</span>
+                              </div>
+                            )}
+
+                            {callState.status === 'connected' && (
+                              <div className="space-y-3">
+                                <div className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-[#00a884]/20 text-[#25d366] text-base font-black border border-[#00a884]/40 shadow-inner">
+                                  <span className="w-2.5 h-2.5 rounded-full bg-[#25d366] animate-ping" />
+                                  <span>
+                                    {Math.floor(callState.duration / 60).toString().padStart(2, '0')}:
+                                    {(callState.duration % 60).toString().padStart(2, '0')}
+                                  </span>
+                                </div>
+
+                                <div className="flex items-center justify-center gap-1.5 h-6">
+                                  {[40, 75, 95, 60, 85, 50, 70].map((h, i) => (
+                                    <span
+                                      key={i}
+                                      className="w-1.5 rounded-full bg-gradient-to-t from-[#00a884] to-[#25d366] transition-all duration-75"
+                                      style={{
+                                        height: callState.isMuted 
+                                          ? '4px' 
+                                          : `${Math.max(4, Math.round((h * (micVolumeLevel + 25)) / 125))}px`
+                                      }}
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {callState.status === 'ended' && (
+                              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/20 text-rose-400 text-sm font-bold border border-rose-500/40">
+                                <PhoneOff className="w-4 h-4" />
+                                <span>Call Ended</span>
+                              </div>
+                            )}
+                          </div>
+
+                        </div>
+
+                        {/* Bottom Calling Action Controls */}
+                        <div className="w-full p-6 pt-2 bg-[#202c33]/70 border-t border-[#222e35] flex items-center justify-center gap-6">
+                          <button
+                            type="button"
+                            onClick={handleToggleMute}
+                            className={`w-14 h-14 rounded-full flex flex-col items-center justify-center transition cursor-pointer shadow-lg active:scale-95 ${
+                              callState.isMuted
+                                ? 'bg-rose-500 text-white hover:bg-rose-600'
+                                : 'bg-[#3b4a54] text-[#d1d7db] hover:bg-[#4a5c68] hover:text-white'
+                            }`}
+                            title={callState.isMuted ? 'Unmute' : 'Mute'}
+                          >
+                            {callState.isMuted ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleEndCall(true, 'ended')}
+                            className="w-16 h-16 rounded-full bg-[#ea0038] hover:bg-[#ff1f4b] text-white flex items-center justify-center shadow-xl shadow-rose-900/50 hover:scale-105 active:scale-95 transition cursor-pointer"
+                            title="End Call"
+                          >
+                            <PhoneOff className="w-7 h-7" />
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={handleToggleSpeaker}
+                            className={`w-14 h-14 rounded-full flex flex-col items-center justify-center transition cursor-pointer shadow-lg active:scale-95 ${
+                              !callState.isSpeaker
+                                ? 'bg-[#3b4a54] text-rose-300'
+                                : 'bg-[#3b4a54] text-[#d1d7db] hover:bg-[#4a5c68] hover:text-white'
+                            }`}
+                            title={callState.isSpeaker ? 'Speaker On' : 'Speaker Off'}
+                          >
+                            {callState.isSpeaker ? <Volume2 className="w-6 h-6" /> : <VolumeX className="w-6 h-6" />}
+                          </button>
+                        </div>
 
                       </div>
-
-                    </div>
+                    )}
                   </div>
                 )}
 
                 {/* ========================================================================= */}
-                {/* INCOMING VOICE CALL BANNER (CROSS-DEVICE / MULTI-TAB)                     */}
+                {/* REAL-TIME INCOMING LIVE VIDEO / VOICE CALL POPUP BANNER                    */}
                 {/* ========================================================================= */}
-                {incomingVoiceCall && !voiceCallState.isOpen && (
-                  <div className="fixed top-6 right-6 z-[9999] bg-[#111b21] border-2 border-[#25d366] rounded-2xl p-4 shadow-2xl text-white max-w-sm w-full animate-bounce">
+                {incomingCall && !callState.isOpen && (
+                  <div className="fixed top-6 right-6 z-[9999] bg-[#111b21] border-2 border-[#25d366] rounded-3xl p-4 shadow-2xl text-white max-w-sm w-full animate-bounce card-real-3d">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-[#00a884] text-white font-bold flex items-center justify-center text-lg shadow-md animate-pulse">
-                        {incomingVoiceCall.callerName ? incomingVoiceCall.callerName.charAt(0).toUpperCase() : 'D'}
+                      <div className="relative">
+                        <span className="absolute inset-0 rounded-full border-2 border-[#25d366] animate-ping opacity-40" />
+                        {incomingCall.callerAvatar ? (
+                          <img src={incomingCall.callerAvatar} alt={incomingCall.callerName} className="w-12 h-12 rounded-full object-cover border-2 border-[#25d366] relative z-10" />
+                        ) : (
+                          <div className="w-12 h-12 rounded-full bg-[#00a884] text-white font-bold flex items-center justify-center text-lg shadow-md relative z-10">
+                            {incomingCall.callerName ? incomingCall.callerName.charAt(0).toUpperCase() : 'D'}
+                          </div>
+                        )}
                       </div>
+                      
                       <div className="flex-1 min-w-0">
-                        <div className="text-[10px] text-[#25d366] uppercase font-bold tracking-wider">Incoming Voice Call</div>
-                        <h4 className="text-sm font-bold text-white truncate">{incomingVoiceCall.callerName}</h4>
-                        <p className="text-xs text-[#8696a0]">{incomingVoiceCall.callerRole}</p>
+                        <div className="text-[10px] text-[#25d366] uppercase font-bold tracking-wider flex items-center gap-1">
+                          {incomingCall.callType === 'video' ? <Video className="w-3 h-3 text-[#25d366]" /> : <Phone className="w-3 h-3 text-[#25d366]" />}
+                          <span>Incoming {incomingCall.callType === 'video' ? 'Video' : 'Voice'} Call</span>
+                        </div>
+                        <h4 className="text-sm font-bold text-white truncate">{incomingCall.callerName}</h4>
+                        <p className="text-xs text-[#8696a0] truncate">{incomingCall.callerRole}</p>
                       </div>
+
                       <div className="flex items-center gap-2">
+                        {/* Accept Button (Green) */}
                         <button
                           type="button"
-                          onClick={() => {
-                            const c = chatContactsList.find(x => x.name.toLowerCase().includes(incomingVoiceCall.callerName.toLowerCase())) || chatContactsList[0];
-                            setIncomingVoiceCall(null);
-                            handleStartVoiceCall(c);
-                          }}
-                          className="w-10 h-10 rounded-full bg-[#25d366] hover:bg-[#20ba5a] text-white flex items-center justify-center shadow-lg cursor-pointer"
+                          onClick={() => handleAcceptCall(incomingCall)}
+                          className="w-10 h-10 rounded-full bg-[#25d366] hover:bg-[#20ba5a] text-white flex items-center justify-center shadow-lg cursor-pointer transition hover:scale-110 active:scale-95"
                           title="Accept Call"
                         >
-                          <Phone className="w-5 h-5" />
+                          {incomingCall.callType === 'video' ? <Video className="w-5 h-5" /> : <Phone className="w-5 h-5" />}
                         </button>
+
+                        {/* Decline Button (Red) */}
                         <button
                           type="button"
-                          onClick={() => {
-                            setIncomingVoiceCall(null);
-                            playWhatsAppCallEndTone();
-                          }}
-                          className="w-10 h-10 rounded-full bg-[#ea0038] hover:bg-[#ff1f4b] text-white flex items-center justify-center shadow-lg cursor-pointer"
+                          onClick={() => handleDeclineCall(incomingCall)}
+                          className="w-10 h-10 rounded-full bg-[#ea0038] hover:bg-[#ff1f4b] text-white flex items-center justify-center shadow-lg cursor-pointer transition hover:scale-110 active:scale-95"
                           title="Decline Call"
                         >
                           <PhoneOff className="w-5 h-5" />
@@ -4802,8 +5444,6 @@ export function TeachersSection({
               </div>
             )}
 
-
-            {/* --------------------------------------------------------------------- */}
             {/* PAGE 3: 100% IN-WEBSITE REAL ONLINE LIVE CLASSROOM (WEBRTC)          */}
             {/* --------------------------------------------------------------------- */}
             {activePage === 'live_class' && (

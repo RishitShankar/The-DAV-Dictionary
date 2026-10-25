@@ -459,16 +459,18 @@ export function subscribeCloudLiveBroadcasts(onUpdate) {
 
 
 // =========================================================================
-// REAL-TIME 1-ON-1 VIDEO CALL SIGNALING (SUPABASE REALTIME BROADCAST + CROSS-TAB)
+// REAL-TIME 1-ON-1 WEBRTC CALL SIGNALING (SUPABASE DB + WEBSOCKET + BROADCAST)
 // =========================================================================
+export const CALL_SIGNAL_VAULT_UUID = '00000000-0000-0000-0000-000000000099';
 let callSignalingChannelInstance = null;
+let broadcastChannelInstance = null;
 
 export function getCallSignalingChannel() {
   const client = getSupabaseClient();
   if (!client) return null;
   if (!callSignalingChannelInstance) {
     try {
-      callSignalingChannelInstance = client.channel('dav_whatsapp_video_calls', {
+      callSignalingChannelInstance = client.channel('dav_whatsapp_real_calls_v2', {
         config: { broadcast: { ack: false } }
       });
       callSignalingChannelInstance.subscribe();
@@ -481,6 +483,23 @@ export function getCallSignalingChannel() {
 
 export function broadcastCallSignal(signalData) {
   const payload = { ...signalData, timestamp: Date.now() };
+
+  // 1. Instant intra-browser BroadcastChannel
+  try {
+    if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+      if (!broadcastChannelInstance) {
+        broadcastChannelInstance = new BroadcastChannel('dav_whatsapp_real_call_signaling');
+      }
+      broadcastChannelInstance.postMessage(payload);
+    }
+  } catch (e) {}
+
+  // 2. Cross-tab storage fallback for local browser testing
+  try {
+    localStorage.setItem('dav_active_call_signal_event', JSON.stringify(payload));
+  } catch (e) {}
+
+  // 3. Supabase Realtime WebSocket Broadcast
   try {
     const ch = getCallSignalingChannel();
     if (ch) {
@@ -492,23 +511,38 @@ export function broadcastCallSignal(signalData) {
     }
   } catch (e) {}
 
-  // Cross-tab storage fallback for local browser testing
+  // 4. Supabase Database Replicated Signal (Works across completely separate devices anywhere in the world)
   try {
-    localStorage.setItem('dav_active_call_signal_event', JSON.stringify(payload));
+    const client = getSupabaseClient();
+    if (client) {
+      client.from('dav_pdf_annotations').upsert({
+        id: CALL_SIGNAL_VAULT_UUID,
+        user_id: 'global_call_signaling_desk',
+        book_title: 'CALL_SIGNAL_DISPATCH',
+        page_number: 1,
+        canvas_data: JSON.stringify(payload),
+        notes: [],
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'id' }).then(() => {}).catch(() => {});
+    }
   } catch (e) {}
 }
 
 export function subscribeCallSignals(onSignal) {
   if (typeof onSignal !== 'function') return () => {};
 
-  const ch = getCallSignalingChannel();
-  if (ch) {
-    ch.on('broadcast', { event: 'call_signal' }, ({ payload }) => {
-      if (payload) onSignal(payload);
-    });
-  }
+  // 1. Listen via BroadcastChannel
+  let bc = null;
+  try {
+    if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+      bc = new BroadcastChannel('dav_whatsapp_real_call_signaling');
+      bc.onmessage = (event) => {
+        if (event.data) onSignal(event.data);
+      };
+    }
+  } catch (e) {}
 
-  // Same-browser cross-tab listener
+  // 2. Listen via LocalStorage
   const handleStorage = (e) => {
     if (e.key === 'dav_active_call_signal_event' && e.newValue) {
       try {
@@ -517,9 +551,59 @@ export function subscribeCallSignals(onSignal) {
       } catch (err) {}
     }
   };
-  window.addEventListener('storage', handleStorage);
+  if (typeof window !== 'undefined') {
+    window.addEventListener('storage', handleStorage);
+  }
+
+  // 3. Listen via Supabase Realtime WebSocket Broadcast
+  const ch = getCallSignalingChannel();
+  if (ch) {
+    ch.on('broadcast', { event: 'call_signal' }, ({ payload }) => {
+      if (payload) onSignal(payload);
+    });
+  }
+
+  // 4. Listen via Supabase Cloud Database Table Changes (Guaranteed cross-network delivery)
+  let dbChannel = null;
+  const client = getSupabaseClient();
+  if (client) {
+    try {
+      dbChannel = client
+        .channel('public:dav_call_signaling_db')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'dav_pdf_annotations',
+            filter: `id=eq.${CALL_SIGNAL_VAULT_UUID}`
+          },
+          (payload) => {
+            try {
+              if (payload.new && payload.new.canvas_data) {
+                const signal = JSON.parse(payload.new.canvas_data);
+                if (signal && Date.now() - (signal.timestamp || 0) < 60000) {
+                  onSignal(signal);
+                }
+              }
+            } catch (err) {}
+          }
+        )
+        .subscribe();
+    } catch (e) {
+      console.warn('DB signal subscribe error:', e);
+    }
+  }
 
   return () => {
-    window.removeEventListener('storage', handleStorage);
+    if (bc) {
+      try { bc.close(); } catch (e) {}
+    }
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('storage', handleStorage);
+    }
+    if (dbChannel && client) {
+      try { client.removeChannel(dbChannel); } catch (e) {}
+    }
   };
 }
