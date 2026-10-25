@@ -1334,7 +1334,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
             >
               {/* PDF Document Loading Spinner for Canvas */}
               {isLoadingPdf && (
-                <div className="my-auto flex flex-col items-center justify-center p-8 text-center bg-stone-900/60 rounded-2xl border border-stone-800 shadow-2xl backdrop-blur-md max-w-sm">
+                <div className="my-auto flex flex-col items-center justify-center p-8 text-center bg-stone-900/60 rounded-2xl border border-stone-800 shadow-2xl max-w-sm">
                   <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-4">
                     <RefreshCw className="w-7 h-7 text-amber-400 animate-spin" />
                   </div>
@@ -1407,7 +1407,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
                   {/* Page Rendering Spinner Overlay */}
                   {isRenderingPage && (
-                    <div className="absolute inset-0 bg-stone-950/20 backdrop-blur-[1px] flex items-center justify-center pointer-events-none z-30">
+                    <div className="absolute inset-0 bg-stone-950/20 -[1px] flex items-center justify-center pointer-events-none z-30">
                       <div className="px-3 py-1.5 rounded-full bg-stone-900/90 text-amber-300 border border-amber-500/40 text-[11px] font-bold flex items-center gap-2 shadow-2xl">
                         <RefreshCw className="w-3.5 h-3.5 animate-spin text-amber-400" />
                         <span>Rendering Page {currentPage}...</span>
@@ -1422,7 +1422,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                 <button
                   type="button"
                   onClick={handlePrevPage}
-                  className="fixed left-4 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-stone-950/80 hover:bg-amber-500 hover:text-stone-950 text-stone-300 border border-stone-700/80 shadow-2xl transition backdrop-blur-md cursor-pointer group"
+                  className="fixed left-4 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-stone-950/80 hover:bg-amber-500 hover:text-stone-950 text-stone-300 border border-stone-700/80 shadow-2xl transition cursor-pointer group"
                   title={`Go back to Page ${currentPage - 1}`}
                 >
                   <ChevronLeft className="w-5 h-5 transition transform group-hover:-translate-x-0.5" />
@@ -1432,7 +1432,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                 <button
                   type="button"
                   onClick={handleNextPage}
-                  className="fixed left-[calc(100%-24rem)] lg:left-auto lg:right-[390px] top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-stone-950/80 hover:bg-amber-500 hover:text-stone-950 text-stone-300 border border-stone-700/80 shadow-2xl transition backdrop-blur-md cursor-pointer group"
+                  className="fixed left-[calc(100%-24rem)] lg:left-auto lg:right-[390px] top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-stone-950/80 hover:bg-amber-500 hover:text-stone-950 text-stone-300 border border-stone-700/80 shadow-2xl transition cursor-pointer group"
                   title={`Go forward to Page ${currentPage + 1}`}
                 >
                   <ChevronRight className="w-5 h-5 transition transform group-hover:translate-x-0.5" />

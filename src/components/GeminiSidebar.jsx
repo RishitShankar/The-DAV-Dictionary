@@ -60,7 +60,7 @@ export function GeminiSidebar({
       {isOpen && (
         <div 
           onClick={onClose}
-          className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 transition-opacity"
+          className="fixed inset-0 bg-slate-950/60 z-50 transition-opacity"
         />
       )}
 

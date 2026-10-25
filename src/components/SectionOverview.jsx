@@ -198,9 +198,9 @@ export function SectionOverview({ currentUser, onSelectSection }) {
     <div className="min-h-screen bg-gradient-to-br from-amber-50/90 via-orange-50/50 to-blue-50/40 py-10 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden">
       
       {/* Playful Floating Decorative Background Elements */}
-      <div className="absolute top-10 left-10 w-48 h-48 bg-amber-300/15 rounded-full blur-2xl pointer-events-none" />
-      <div className="absolute top-1/3 right-10 w-64 h-64 bg-red-400/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 left-1/4 w-72 h-72 bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-10 left-10 w-48 h-48 bg-amber-300/15 rounded-full pointer-events-none" />
+      <div className="absolute top-1/3 right-10 w-64 h-64 bg-red-400/10 rounded-full pointer-events-none" />
+      <div className="absolute bottom-10 left-1/4 w-72 h-72 bg-blue-400/10 rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto space-y-10 relative z-10">
         
@@ -219,7 +219,7 @@ export function SectionOverview({ currentUser, onSelectSection }) {
                 title="Click to activate golden celebration animation!"
               >
                 {/* Glowing Outer Spinning Ring */}
-                <div className="absolute -inset-2 rounded-full bg-gradient-to-tr from-amber-400 via-orange-500 to-yellow-300 opacity-75 blur-sm group-hover:opacity-100 animate-spin" style={{ animationDuration: '10s' }} />
+                <div className="absolute -inset-2 rounded-full bg-gradient-to-tr from-amber-400 via-orange-500 to-yellow-300 opacity-75 group-hover:opacity-100 animate-spin" style={{ animationDuration: '10s' }} />
                 
                 {/* Crest Box */}
                 <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-red-900 via-stone-900 to-amber-950 p-2 border-2 border-amber-400/80 flex flex-col items-center justify-center shadow-2xl group-hover:scale-105 transition-transform duration-300">

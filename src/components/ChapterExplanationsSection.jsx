@@ -252,10 +252,10 @@ Please write each question clearly and show all steps, formulas, and reasoning s
       
       {/* SECTION HEADER: VIBRANT, KID-FRIENDLY & CHEERFUL */}
       <div className="relative overflow-hidden bg-gradient-to-b from-stone-950 via-stone-900 to-stone-900 border-b border-stone-800 pt-8 pb-10">
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/20 rounded-full blur-3xl pointer-events-none animate-float-orb" />
-        <div className="absolute bottom-0 left-10 w-96 h-96 bg-rose-600/15 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-4s' }} />
-        <div className="absolute top-10 left-10 w-80 h-80 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 right-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/20 rounded-full pointer-events-none animate-float-orb" />
+        <div className="absolute bottom-0 left-10 w-96 h-96 bg-rose-600/15 rounded-full pointer-events-none animate-float-orb" style={{ animationDelay: '-4s' }} />
+        <div className="absolute top-10 left-10 w-80 h-80 bg-blue-600/15 rounded-full pointer-events-none" />
+        <div className="absolute -bottom-10 right-10 w-72 h-72 bg-emerald-500/10 rounded-full pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -274,7 +274,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
             </div>
 
             {/* Quick Stats Pill */}
-            <div className="flex items-center gap-3 bg-stone-950/90 p-3.5 rounded-2xl border border-stone-800 shadow-2xl backdrop-blur-sm">
+            <div className="flex items-center gap-3 bg-stone-950/90 p-3.5 rounded-2xl border border-stone-800 shadow-2xl">
               <div className="text-center px-3 border-r border-stone-800">
                 <div className="text-[10px] text-stone-400 font-bold uppercase tracking-wider">Classes</div>
                 <div className="text-xl font-black text-amber-400">3 to 8</div>
@@ -294,7 +294,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
           </div>
 
           {/* SUB-TABS SELECTOR (1: Video Lectures, 2: PYQs, 3: Sample Papers) */}
-          <div className="flex items-center gap-2 mt-8 p-1.5 bg-stone-950/80 rounded-2xl border border-stone-800 max-w-fit shadow-lg backdrop-blur-md">
+          <div className="flex items-center gap-2 mt-8 p-1.5 bg-stone-950/80 rounded-2xl border border-stone-800 max-w-fit shadow-lg">
             <button
               onClick={() => setActiveSubTab('videos')}
               className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition cursor-pointer flex items-center gap-2 ${

@@ -200,12 +200,12 @@ export function DonationSection({ currentUser, onRequireLogin }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50/70 via-rose-50/30 to-slate-100/90 py-10 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden">
       {/* Soft Ambient Floating Orbs */}
-      <div className="absolute top-10 right-10 w-96 h-96 bg-rose-400/15 rounded-full blur-3xl pointer-events-none animate-float-orb" />
-      <div className="absolute bottom-10 left-10 w-96 h-96 bg-amber-400/15 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-4s' }} />
+      <div className="absolute top-10 right-10 w-96 h-96 bg-rose-400/15 rounded-full pointer-events-none animate-float-orb" />
+      <div className="absolute bottom-10 left-10 w-96 h-96 bg-amber-400/15 rounded-full pointer-events-none animate-float-orb" style={{ animationDelay: '-4s' }} />
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Section 10 Two-Page Switcher */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/95 backdrop-blur-md p-3 sm:p-4 rounded-3xl border border-amber-300/80 shadow-lg card-super-interactive border-halo-gold">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/95 p-3 sm:p-4 rounded-3xl border border-amber-300/80 shadow-lg card-super-interactive border-halo-gold">
           <div className="flex items-center gap-2.5">
             <span className="w-3 h-3 rounded-full bg-red-800 animate-pulse-ring-red" />
             <div>

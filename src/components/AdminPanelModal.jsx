@@ -1537,7 +1537,7 @@ _With heartfelt gratitude from the entire DAV student community!_`;
       {/* POP-UP 1: PAYMENT METHOD SELECTOR MODAL (Step 2 of Registration)         */}
       {/* ========================================================================= */}
       {isPaymentModalOpen && pendingAccountData && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 animate-fadeIn">
           <div className="w-full max-w-lg bg-slate-900 border-2 border-amber-500/50 rounded-3xl shadow-2xl overflow-hidden flex flex-col text-slate-100">
             
             {/* Payment Header */}

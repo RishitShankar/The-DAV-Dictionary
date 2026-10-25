@@ -10,10 +10,7 @@
   filter: none !important;
 }
 
-.animate-float-orb {
-  filter: none !important;
-  opacity: 0.12 !important;
-}
+.animate-float-orb { display: none !important; }
 
 @tailwind base;
 @tailwind components;
@@ -360,9 +357,7 @@
   animation: floatSlow 4.5s ease-in-out infinite;
 }
 
-.animate-float-orb {
-  animation: floatOrb 8s ease-in-out infinite;
-}
+.animate-float-orb { display: none !important; }
 
 .animate-spin-slow {
   animation: spinSlowly 20s linear infinite;
@@ -748,8 +743,8 @@
 @keyframes quantumLeapKeyframe {
   0%, 100% { transform: translateY(0); opacity: 1; }
   45% { transform: translateY(-4px) scale(1.02); opacity: 0.95; }
-  50% { transform: translateY(0) scale(0.98); opacity: 0.4; filter: blur(2px); }
-  55% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
+  50% { transform: translateY(0) scale(0.98); opacity: 0.8; filter: none; }
+  55% { transform: translateY(0) scale(1); opacity: 1; filter: none; }
 }
 .animate-quantum-leap { animation: quantumLeapKeyframe 4.5s ease-in-out infinite; }
 
@@ -918,9 +913,9 @@
 
 /* 125. Aurora Borealis Wave */
 @keyframes auroraWaveKeyframe {
-  0% { filter: hue-rotate(0deg) blur(12px); transform: scale(1); }
-  50% { filter: hue-rotate(120deg) blur(20px); transform: scale(1.12); }
-  100% { filter: hue-rotate(240deg) blur(12px); transform: scale(1); }
+  0% { filter: hue-rotate(0deg); transform: scale(1); }
+  50% { filter: hue-rotate(120deg); transform: scale(1.12); }
+  100% { filter: hue-rotate(240deg); transform: scale(1); }
 }
 .animate-aurora-wave { animation: auroraWaveKeyframe 8s ease-in-out infinite; }
 
@@ -1517,4 +1512,499 @@ h1, h2 {
 .animate-cyber-flow {
   background: radial-gradient(circle at top left, #1e1b4b, #0f172a 70%);
   animation: cyberFlowKeyframe 10s ease infinite;
+}
+
+/* =========================================================================
+   SECTION 5: 60 ADVANCED ANIMATIONS (10 PER PAGE FOR 6 ACADEMIC MODULES)
+   100% CRYSTAL CLEAR - ZERO BLUR
+   ========================================================================= */
+
+/* --- PAGE 1: DAILY HOMEWORK HUB (176 - 185) --- */
+/* 176. HW Badge Pulse */
+@keyframes hwBadgePulseKeyframe {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
+  50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(245, 158, 11, 0.8), 0 0 40px rgba(16, 185, 129, 0.4); }
+}
+.animate-hw-badge-pulse { animation: hwBadgePulseKeyframe 2.8s ease-in-out infinite; }
+
+/* 177. HW Card Pop */
+.animate-hw-card-pop {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+}
+.animate-hw-card-pop:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.5), 0 0 25px rgba(245, 158, 11, 0.3);
+}
+
+/* 178. HW Speaker Wave Equalizer */
+@keyframes hwSpeakerWaveKeyframe {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1.4); }
+}
+.animate-hw-speaker-wave { animation: hwSpeakerWaveKeyframe 0.8s ease-in-out infinite; }
+
+/* 179. HW Publish Glow */
+@keyframes hwPublishGlowKeyframe {
+  0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.3); }
+  50% { box-shadow: 0 0 35px rgba(239, 68, 68, 0.8), 0 0 55px rgba(245, 158, 11, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.6); }
+}
+.animate-hw-publish-glow { animation: hwPublishGlowKeyframe 2.4s ease-in-out infinite; }
+
+/* 180. HW Calendar Spin */
+@keyframes hwCalendarSpinKeyframe {
+  0% { transform: rotateY(0deg); }
+  50% { transform: rotateY(180deg) scale(1.1); }
+  100% { transform: rotateY(360deg); }
+}
+.animate-hw-calendar-spin:hover { animation: hwCalendarSpinKeyframe 0.8s ease-in-out; }
+
+/* 181. HW Media Preview Pop */
+@keyframes hwMediaPreviewKeyframe {
+  0% { opacity: 0; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.animate-hw-media-preview { animation: hwMediaPreviewKeyframe 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+/* 182. HW Pill Float */
+@keyframes hwPillFloatKeyframe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.animate-hw-pill-float { animation: hwPillFloatKeyframe 3s ease-in-out infinite; }
+
+/* 183. HW Delete Shake */
+@keyframes hwDeleteShakeKeyframe {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
+}
+.animate-hw-delete-shake:hover { animation: hwDeleteShakeKeyframe 0.3s ease-in-out infinite; }
+
+/* 184. HW Edit Twinkle */
+@keyframes hwEditTwinkleKeyframe {
+  0%, 100% { transform: scale(1) rotate(0deg); filter: brightness(1); }
+  50% { transform: scale(1.15) rotate(15deg); filter: brightness(1.5) drop-shadow(0 0 8px #f59e0b); }
+}
+.animate-hw-edit-twinkle:hover { animation: hwEditTwinkleKeyframe 0.6s ease-in-out; }
+
+/* 185. HW Deadline Beacon */
+@keyframes hwDeadlineBeaconKeyframe {
+  0%, 100% { opacity: 0.7; transform: scale(0.96); }
+  50% { opacity: 1; transform: scale(1.04); filter: drop-shadow(0 0 10px #ef4444); }
+}
+.animate-hw-deadline-beacon { animation: hwDeadlineBeaconKeyframe 2s ease-in-out infinite; }
+
+
+/* --- PAGE 2: FACULTY DIRECT CONSULTATION DESK (186 - 195) --- */
+/* 186. Chat Radar Ping */
+@keyframes chatRadarPingKeyframe {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+.animate-chat-radar-ping { animation: chatRadarPingKeyframe 1.8s cubic-bezier(0, 0, 0.2, 1) infinite; }
+
+/* 187. Chat Bubble Pop */
+@keyframes chatBubblePopKeyframe {
+  0% { opacity: 0; transform: translateY(8px) scale(0.94); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-chat-bubble-pop { animation: chatBubblePopKeyframe 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+/* 188. Chat Mic Record Pulse */
+@keyframes chatMicRecordKeyframe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.8); }
+  50% { box-shadow: 0 0 0 14px rgba(239, 68, 68, 0); }
+}
+.animate-chat-mic-record { animation: chatMicRecordKeyframe 1.4s ease-out infinite; }
+
+/* 189. Chat Typing Wave */
+@keyframes chatTypingWaveKeyframe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-chat-typing-dots { animation: chatTypingWaveKeyframe 1s ease-in-out infinite; }
+
+/* 190. Chat Send Fly */
+.animate-chat-send-fly:hover {
+  transform: translateX(3px) translateY(-3px) scale(1.08);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 191. Chat Avatar Glow */
+@keyframes chatAvatarGlowKeyframe {
+  0%, 100% { box-shadow: 0 0 8px rgba(6, 182, 212, 0.5); }
+  50% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.9), 0 0 35px rgba(59, 130, 246, 0.6); }
+}
+.animate-chat-avatar-glow { animation: chatAvatarGlowKeyframe 2.8s ease-in-out infinite; }
+
+/* 192. Chat Attachment Spring */
+@keyframes chatAttachmentSpringKeyframe {
+  0% { opacity: 0; transform: translateY(12px) scale(0.9); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-chat-attachment-spring { animation: chatAttachmentSpringKeyframe 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+/* 193. Chat Instant AI Starburst */
+@keyframes chatInstantAIKeyframe {
+  0%, 100% { filter: drop-shadow(0 0 4px #a855f7); transform: rotate(0deg); }
+  50% { filter: drop-shadow(0 0 16px #c084fc) drop-shadow(0 0 25px #38bdf8); transform: rotate(8deg) scale(1.08); }
+}
+.animate-chat-instant-ai { animation: chatInstantAIKeyframe 3s ease-in-out infinite; }
+
+/* 194. Chat Delete Fade */
+@keyframes chatDeleteFadeKeyframe {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.85); }
+}
+.animate-chat-delete-fade { animation: chatDeleteFadeKeyframe 0.25s ease forwards; }
+
+/* 195. Chat Verified Badge Shimmer */
+@keyframes chatVerifiedBadgeKeyframe {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.4) drop-shadow(0 0 6px #38bdf8); }
+}
+.animate-chat-badge-verified { animation: chatVerifiedBadgeKeyframe 2.5s ease-in-out infinite; }
+
+
+/* --- PAGE 3: WEBRTC LIVE CLASSROOM (196 - 205) --- */
+/* 196. Live On-Air Broadcast Beacon */
+@keyframes liveOnAirKeyframe {
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 8px #ef4444; }
+  50% { opacity: 0.85; transform: scale(1.08); box-shadow: 0 0 25px #ef4444, 0 0 40px #f43f5e; }
+}
+.animate-live-on-air { animation: liveOnAirKeyframe 1.6s ease-in-out infinite; }
+
+/* 197. Live Camera Glow Frame */
+@keyframes liveCameraGlowKeyframe {
+  0%, 100% { border-color: rgba(239, 68, 68, 0.6); }
+  50% { border-color: rgba(244, 63, 94, 1); box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+}
+.animate-live-camera-glow { animation: liveCameraGlowKeyframe 2.5s ease-in-out infinite; }
+
+/* 198. Live Hand Raise Wave */
+@keyframes liveHandRaiseKeyframe {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-6px) rotate(-10deg); }
+  75% { transform: translateY(-4px) rotate(10deg); }
+}
+.animate-live-hand-raise { animation: liveHandRaiseKeyframe 1.8s ease-in-out infinite; }
+
+/* 199. Live Whiteboard Draw Flare */
+@keyframes liveWhiteboardDrawKeyframe {
+  0%, 100% { filter: drop-shadow(0 0 4px #38bdf8); }
+  50% { filter: drop-shadow(0 0 14px #a855f7) drop-shadow(0 0 22px #ec4899); }
+}
+.animate-live-whiteboard-draw { animation: liveWhiteboardDrawKeyframe 2.2s ease-in-out infinite; }
+
+/* 200. Live Mic Level Visualizer */
+@keyframes liveMicLevelsKeyframe {
+  0%, 100% { transform: scaleY(0.2); }
+  50% { transform: scaleY(1.5); }
+}
+.animate-live-mic-levels { animation: liveMicLevelsKeyframe 0.6s ease-in-out infinite; }
+
+/* 201. Live Room Heartbeat */
+@keyframes liveRoomPulseKeyframe {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.12); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.08); }
+}
+.animate-live-room-pulse { animation: liveRoomPulseKeyframe 2.4s ease-in-out infinite; }
+
+/* 202. Live Screen Share Frame */
+@keyframes liveScreenShareKeyframe {
+  0% { border-color: #38bdf8; }
+  50% { border-color: #a855f7; }
+  100% { border-color: #38bdf8; }
+}
+.animate-live-screen-share { animation: liveScreenShareKeyframe 3s linear infinite; }
+
+/* 203. Live Dock Floating */
+.animate-live-dock-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.animate-live-dock-hover:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* 204. Live Hangup Shake */
+@keyframes liveHangupShakeKeyframe {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+.animate-live-hangup-shake:hover { animation: liveHangupShakeKeyframe 0.25s ease-in-out infinite; }
+
+/* 205. Live Confetti Clap */
+@keyframes liveConfettiClapKeyframe {
+  0% { transform: translateY(0) scale(0.8); opacity: 1; }
+  100% { transform: translateY(-40px) scale(1.4); opacity: 0; }
+}
+.animate-live-confetti-clap { animation: liveConfettiClapKeyframe 1.2s ease-out forwards; }
+
+
+/* --- PAGE 4: CBT ONLINE EXAMINATION SUITE (206 - 215) --- */
+/* 206. CBT Timer Tick */
+@keyframes cbtTimerTickKeyframe {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.06); filter: brightness(1.3) drop-shadow(0 0 10px #ef4444); }
+}
+.animate-cbt-timer-tick { animation: cbtTimerTickKeyframe 1s ease-in-out infinite; }
+
+/* 207. CBT Palette Flip */
+.animate-cbt-palette-flip {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.animate-cbt-palette-flip:hover {
+  transform: perspective(300px) rotateY(180deg) scale(1.1);
+}
+
+/* 208. CBT Option Select */
+.animate-cbt-option-select {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease;
+}
+.animate-cbt-option-select:hover {
+  transform: translateX(6px) scale(1.01);
+}
+
+/* 209. CBT Review Flag */
+@keyframes cbtReviewFlagKeyframe {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(8deg) translateY(-2px); }
+}
+.animate-cbt-review-flag { animation: cbtReviewFlagKeyframe 2.2s ease-in-out infinite; }
+
+/* 210. CBT Submit Lock Glow */
+@keyframes cbtSubmitLockKeyframe {
+  0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
+  50% { box-shadow: 0 0 28px rgba(245, 158, 11, 0.9), 0 0 45px rgba(234, 88, 12, 0.6); }
+}
+.animate-cbt-submit-lock { animation: cbtSubmitLockKeyframe 2.5s ease-in-out infinite; }
+
+/* 211. CBT Photo Inspect Zoom */
+.animate-cbt-photo-inspect {
+  transition: transform 0.3s ease;
+}
+.animate-cbt-photo-inspect:hover {
+  transform: scale(1.08);
+}
+
+/* 212. CBT Deploy Burst */
+@keyframes cbtDeployBurstKeyframe {
+  0%, 100% { filter: drop-shadow(0 0 6px #60a5fa); }
+  50% { filter: drop-shadow(0 0 20px #93c5fd) drop-shadow(0 0 35px #3b82f6); }
+}
+.animate-cbt-deploy-burst { animation: cbtDeployBurstKeyframe 2s ease-in-out infinite; }
+
+/* 213. CBT Score Celebration Count */
+@keyframes cbtScoreCountKeyframe {
+  0% { transform: scale(0.85); opacity: 0; }
+  60% { transform: scale(1.12); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-cbt-score-count { animation: cbtScoreCountKeyframe 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+/* 214. CBT Leaderboard Ribbon */
+@keyframes cbtLeaderboardRibbonKeyframe {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-cbt-leaderboard-ribbon {
+  background: linear-gradient(90deg, transparent 0%, rgba(245, 158, 11, 0.3) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: cbtLeaderboardRibbonKeyframe 3s infinite linear;
+}
+
+/* 215. CBT Badge Stat Bob */
+@keyframes cbtBadgeStatKeyframe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.animate-cbt-badge-stat { animation: cbtBadgeStatKeyframe 3.2s ease-in-out infinite; }
+
+
+/* --- PAGE 5: DIGITAL ATTENDANCE & STATUTORY REGISTER (216 - 225) --- */
+/* 216. Attendance Present Stamp */
+@keyframes attPresentStampKeyframe {
+  0% { transform: scale(1.3) rotate(-10deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.animate-att-present-stamp { animation: attPresentStampKeyframe 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+/* 217. Attendance Absent Stamp */
+@keyframes attAbsentStampKeyframe {
+  0% { transform: scale(1.3) rotate(10deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.animate-att-absent-stamp { animation: attAbsentStampKeyframe 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+/* 218. Attendance Gauge Sweep */
+@keyframes attGaugeSweepKeyframe {
+  0%, 100% { filter: drop-shadow(0 0 6px #10b981); }
+  50% { filter: drop-shadow(0 0 20px #34d399) drop-shadow(0 0 30px #059669); }
+}
+.animate-att-gauge-sweep { animation: attGaugeSweepKeyframe 3s ease-in-out infinite; }
+
+/* 219. Attendance Roll Row Slide */
+.animate-att-roll-row-slide {
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.animate-att-roll-row-slide:hover {
+  transform: translateX(4px);
+}
+
+/* 220. Attendance Enroll Modal Spring */
+@keyframes attEnrollModalKeyframe {
+  0% { transform: scale(0.92) translateY(15px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+.animate-att-enroll-modal { animation: attEnrollModalKeyframe 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+/* 221. Attendance Calendar Flip */
+.animate-att-calendar-flip:hover {
+  transform: rotateX(15deg);
+  transition: transform 0.3s ease;
+}
+
+/* 222. Attendance Cloud Sync Spin */
+@keyframes attSyncCloudKeyframe {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-att-sync-cloud { animation: attSyncCloudKeyframe 2s linear infinite; }
+
+/* 223. Attendance Summary Ring */
+@keyframes attSummaryRingKeyframe {
+  0%, 100% { box-shadow: 0 0 8px rgba(16, 185, 129, 0.3); }
+  50% { box-shadow: 0 0 22px rgba(16, 185, 129, 0.7); }
+}
+.animate-att-summary-ring { animation: attSummaryRingKeyframe 2.8s ease-in-out infinite; }
+
+/* 224. Attendance Export Sheet Bounce */
+.animate-att-export-excel:hover {
+  transform: translateY(-3px) scale(1.05);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 225. Attendance Warning Flag */
+@keyframes attWarningFlagKeyframe {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.12); filter: brightness(1.4) drop-shadow(0 0 8px #f59e0b); }
+}
+.animate-att-warning-flag { animation: attWarningFlagKeyframe 1.8s ease-in-out infinite; }
+
+
+/* --- PAGE 6: MARKS LEDGER & EXAMINATION ARENA (226 - 235) --- */
+/* 226. Marks Crown Float */
+@keyframes marksCrownFloatKeyframe {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-7px) rotate(4deg); }
+}
+.animate-marks-crown-float { animation: marksCrownFloatKeyframe 2.6s ease-in-out infinite; }
+
+/* 227. Marks Grade Pop */
+@keyframes marksGradePopKeyframe {
+  0% { transform: scale(0.8); opacity: 0; }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-marks-grade-pop { animation: marksGradePopKeyframe 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+/* 228. Marks Calculation Border Stream */
+@keyframes marksCalcStreamKeyframe {
+  0% { border-color: #f59e0b; }
+  50% { border-color: #10b981; }
+  100% { border-color: #f59e0b; }
+}
+.animate-marks-calc-stream { animation: marksCalcStreamKeyframe 3s linear infinite; }
+
+/* 229. Marks Save Shield Flash */
+@keyframes marksSaveBeaconKeyframe {
+  0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
+  50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.9), 0 0 50px rgba(234, 88, 12, 0.6); }
+}
+.animate-marks-save-beacon { animation: marksSaveBeaconKeyframe 2.6s ease-in-out infinite; }
+
+/* 230. Marks Configure Gear Spin */
+@keyframes marksMaxGearKeyframe {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-marks-max-gear:hover { animation: marksMaxGearKeyframe 2.5s linear infinite; }
+
+/* 231. Marks Subject Header Elevate */
+.animate-marks-subject-tab {
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.animate-marks-subject-tab:hover {
+  transform: translateY(-2px);
+}
+
+/* 232. Marks Podium Metallic Luster */
+@keyframes marksPodiumShineKeyframe {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-marks-podium-shine {
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: marksPodiumShineKeyframe 3.2s infinite linear;
+}
+
+/* 233. Marks Rank Up Surge */
+@keyframes marksRankUpKeyframe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.animate-marks-rank-up { animation: marksRankUpKeyframe 1.8s ease-in-out infinite; }
+
+/* 234. Marks Print Roll */
+.animate-marks-print-roll:hover {
+  transform: translateY(-2px) scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+/* 235. Marks Certified Seal Heartbeat */
+@keyframes marksCertifiedSealKeyframe {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px #f59e0b); }
+  50% { transform: scale(1.08); filter: drop-shadow(0 0 16px #ea580c) drop-shadow(0 0 25px #facc15); }
+}
+.animate-marks-certified-seal { animation: marksCertifiedSealKeyframe 2.8s ease-in-out infinite; }
+
+
+
+/* =========================================================================
+   ABSOLUTE BLUR BAN - 100% CRYSTAL CLEAR TEXT & VISUALS ACROSS ALL BROWSERS
+   User Directive: "Remove the blur feature from the website. Anywhere blur is there, remove that blur. Blurring the text is not good. Blurring anything is not good."
+   ========================================================================= */
+*,
+*::before,
+*::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+[class*="blur"],
+[class*="backdrop-blur"],
+.backdrop-blur-none,
+.backdrop-blur-xs,
+.backdrop-blur-sm,
+.backdrop-blur-md,
+.backdrop-blur-lg,
+.backdrop-blur-xl,
+.backdrop-blur-2xl,
+.backdrop-blur-3xl,
+.blur-none,
+.blur-xs,
+.blur-sm,
+.blur-md,
+.blur-lg,
+.blur-xl,
+.blur-2xl,
+.blur-3xl {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  filter: none !important;
 }

@@ -6,7 +6,7 @@ export function UntitledSection({ sectionNumber, title, description }) {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div className="bg-white rounded-3xl border-2 border-dashed border-slate-300 p-8 sm:p-14 text-center shadow-sm relative overflow-hidden">
         {/* Subtle decorative glow */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-slate-100 rounded-full blur-3xl -z-10 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-slate-100 rounded-full -z-10 pointer-events-none" />
         
         <div className="w-16 h-16 rounded-2xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-5 border border-slate-200">
           <Layers className="w-8 h-8 text-slate-500" />

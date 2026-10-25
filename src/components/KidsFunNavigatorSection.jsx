@@ -831,14 +831,14 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-stone-950 via-slate-900 to-indigo-950 text-slate-100 pb-28 selection:bg-amber-400 selection:text-stone-950 font-sans relative overflow-hidden">
       {/* Playful Floating Glow Orbs */}
-      <div className="absolute top-10 left-10 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none animate-float-orb" />
-      <div className="absolute top-1/2 right-10 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-4s' }} />
-      <div className="absolute bottom-10 left-1/3 w-96 h-96 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-8s' }} />
+      <div className="absolute top-10 left-10 w-96 h-96 bg-amber-500/10 rounded-full pointer-events-none animate-float-orb" />
+      <div className="absolute top-1/2 right-10 w-96 h-96 bg-pink-500/10 rounded-full pointer-events-none animate-float-orb" style={{ animationDelay: '-4s' }} />
+      <div className="absolute bottom-10 left-1/3 w-96 h-96 bg-indigo-500/15 rounded-full pointer-events-none animate-float-orb" style={{ animationDelay: '-8s' }} />
       
       {/* =====================================================================
           GAMER HUD TOP BAR: EXP, SOUND, MASCOT, AND PLAYER STATUS
           ===================================================================== */}
-      <div className="w-full bg-stone-950/90 backdrop-blur-md border-b-2 border-amber-400 px-4 sm:px-8 py-3 sticky top-0 z-40 shadow-2xl">
+      <div className="w-full bg-stone-950/90 border-b-2 border-amber-400 px-4 sm:px-8 py-3 sticky top-0 z-40 shadow-2xl">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
           
           {/* Left: Futuristic High-Tech Kids Gadgets Emblem Logo */}
@@ -918,7 +918,7 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
           FULL-PAGE SUBSECTION NAVIGATION TABS (ALL 7 SUBSECTIONS)
           ===================================================================== */}
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-        <div className="bg-stone-900/80 backdrop-blur-md p-2 rounded-3xl border-2 border-slate-800 shadow-2xl grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+        <div className="bg-stone-900/80 p-2 rounded-3xl border-2 border-slate-800 shadow-2xl grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
           
           {[
             { id: 'go_to_khabra', label: '1. Go to Khabra', icon: Navigation, emoji: '🗺️', color: 'from-red-600 to-amber-600' },
@@ -969,14 +969,14 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
 
             {/* GIANT HERO BANNER: GO TO DAV KHABRA */}
             <div className="w-full bg-gradient-to-br from-red-600 via-rose-700 to-amber-600 rounded-3xl p-6 sm:p-12 text-white shadow-2xl border-4 border-amber-300 relative overflow-hidden card-super-interactive ultra-shimmer">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-yellow-400/20 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-96 h-96 bg-red-400/20 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute top-0 right-0 w-96 h-96 bg-yellow-400/20 rounded-full pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-96 h-96 bg-red-400/20 rounded-full pointer-events-none" />
 
               <div className="relative z-10 space-y-6">
                 
                 {/* Header Tag */}
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-stone-950/60 backdrop-blur-md text-amber-300 text-xs font-black uppercase tracking-wider border border-amber-400/40">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-stone-950/60 text-amber-300 text-xs font-black uppercase tracking-wider border border-amber-400/40">
                     <Sparkles className="w-4 h-4 text-yellow-300 animate-spin" />
                     <span>Exact Location: 492F+563, Khabra, Muzaffarpur, Bihar 843113</span>
                   </div>
@@ -996,7 +996,7 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
                 </div>
 
                 {/* GPS PERMISSION PROMPT / STATUS CARD */}
-                <div className="bg-stone-950/70 backdrop-blur-md rounded-2xl p-5 border-2 border-amber-300 flex flex-wrap items-center justify-between gap-4">
+                <div className="bg-stone-950/70 rounded-2xl p-5 border-2 border-amber-300 flex flex-wrap items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-2xl bg-amber-400 text-stone-950 flex items-center justify-center font-black text-2xl shrink-0">
                       📍
@@ -1088,7 +1088,7 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
                       
                       {/* School Bus Mode */}
-                      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
+                      <div className="bg-white/10 rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
                         <div className="flex items-center justify-between text-amber-300 text-xs font-black uppercase">
                           <span className="flex items-center gap-1.5">
                             <Bus className="w-4 h-4" />
@@ -1105,7 +1105,7 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
                       </div>
 
                       {/* Car Mode */}
-                      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
+                      <div className="bg-white/10 rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
                         <div className="flex items-center justify-between text-cyan-300 text-xs font-black uppercase">
                           <span className="flex items-center gap-1.5">
                             <Car className="w-4 h-4" />
@@ -1122,7 +1122,7 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
                       </div>
 
                       {/* Taxi Mode */}
-                      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
+                      <div className="bg-white/10 rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
                         <div className="flex items-center justify-between text-yellow-300 text-xs font-black uppercase">
                           <span className="flex items-center gap-1.5">
                             <Car className="w-4 h-4 text-yellow-400" />
@@ -1139,7 +1139,7 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
                       </div>
 
                       {/* Bicycle Mode */}
-                      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
+                      <div className="bg-white/10 rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
                         <div className="flex items-center justify-between text-emerald-300 text-xs font-black uppercase">
                           <span className="flex items-center gap-1.5">
                             <Bike className="w-4 h-4" />
@@ -1156,7 +1156,7 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
                       </div>
 
                       {/* Walking Mode */}
-                      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
+                      <div className="bg-white/10 rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
                         <div className="flex items-center justify-between text-pink-300 text-xs font-black uppercase">
                           <span className="flex items-center gap-1.5">
                             <Footprints className="w-4 h-4" />
@@ -1503,7 +1503,7 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
 
               {/* Weather Display Card */}
               {weatherData?.current_weather ? (
-                <div className="mt-8 bg-stone-950/60 backdrop-blur-md rounded-3xl p-6 sm:p-8 border-2 border-sky-300 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                <div className="mt-8 bg-stone-950/60 rounded-3xl p-6 sm:p-8 border-2 border-sky-300 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
                   
                   {/* Temperature & Icon */}
                   <div className="flex items-center gap-4">

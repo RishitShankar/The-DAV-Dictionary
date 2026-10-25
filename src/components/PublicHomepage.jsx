@@ -312,13 +312,13 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
       {/* =========================================================================
           TOP NAVIGATION BAR (FUTURISTIC GLASS & AMBIENT GLOW)
       ========================================================================= */}
-      <header className="sticky top-0 z-50 bg-slate-950/85 backdrop-blur-xl border-b border-stone-800/80 shadow-2xl">
+      <header className="sticky top-0 z-50 bg-slate-950/85 border-b border-stone-800/80 shadow-2xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
           {/* Logo & Brand Title */}
           <div className="flex items-center gap-3.5 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 to-orange-500 rounded-2xl blur-xs opacity-75 group-hover:opacity-100 transition duration-300" />
+              <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 to-orange-500 rounded-2xl opacity-75 group-hover:opacity-100 transition duration-300" />
               <img 
                 src="/logo.png" 
                 alt="DAV Dictionary Logo" 
@@ -385,12 +385,12 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
       <section className="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-28 bg-grid-pattern">
         
         {/* Futuristic Glowing Ambient Orbs */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[450px] bg-gradient-to-tr from-amber-600/20 via-orange-600/15 to-purple-600/15 rounded-full blur-[140px] pointer-events-none animate-pulse-aura" />
-        <div className="absolute top-16 right-5 w-80 h-80 bg-cyan-500/15 rounded-full blur-[130px] pointer-events-none animate-float-reverse" />
-        <div className="absolute bottom-10 left-5 w-80 h-80 bg-emerald-500/15 rounded-full blur-[130px] pointer-events-none animate-float-gentle" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[450px] bg-gradient-to-tr from-amber-600/20 via-orange-600/15 to-purple-600/15 rounded-full -[140px] pointer-events-none animate-pulse-aura" />
+        <div className="absolute top-16 right-5 w-80 h-80 bg-cyan-500/15 rounded-full -[130px] pointer-events-none animate-float-reverse" />
+        <div className="absolute bottom-10 left-5 w-80 h-80 bg-emerald-500/15 rounded-full -[130px] pointer-events-none animate-float-gentle" />
 
         {/* Floating Futuristic Badges (Desktop) */}
-        <div className="hidden xl:flex absolute left-8 top-1/3 -translate-y-1/2 p-4 rounded-2xl bg-stone-900/90 backdrop-blur-md border border-amber-500/30 shadow-2xl items-center gap-3 animate-float-gentle pointer-events-none z-20">
+        <div className="hidden xl:flex absolute left-8 top-1/3 -translate-y-1/2 p-4 rounded-2xl bg-stone-900/90 border border-amber-500/30 shadow-2xl items-center gap-3 animate-float-gentle pointer-events-none z-20">
           <div className="w-11 h-11 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-black">
             <School className="w-6 h-6 text-amber-400" />
           </div>
@@ -400,7 +400,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
           </div>
         </div>
 
-        <div className="hidden xl:flex absolute right-8 top-1/4 p-4 rounded-2xl bg-stone-900/90 backdrop-blur-md border border-cyan-500/30 shadow-2xl items-center gap-3 animate-float-reverse pointer-events-none z-20">
+        <div className="hidden xl:flex absolute right-8 top-1/4 p-4 rounded-2xl bg-stone-900/90 border border-cyan-500/30 shadow-2xl items-center gap-3 animate-float-reverse pointer-events-none z-20">
           <div className="w-11 h-11 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-black">
             <Brain className="w-6 h-6 text-cyan-400" />
           </div>
@@ -473,7 +473,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
           {/* =========================================================================
               INTERACTIVE LIVE HERO DIMENSION SIMULATOR
           ========================================================================= */}
-          <div className="mt-14 max-w-4xl mx-auto rounded-3xl bg-stone-900/70 border-2 border-stone-800 backdrop-blur-xl p-5 sm:p-7 shadow-2xl text-left relative overflow-hidden">
+          <div className="mt-14 max-w-4xl mx-auto rounded-3xl bg-stone-900/70 border-2 border-stone-800 p-5 sm:p-7 shadow-2xl text-left relative overflow-hidden">
             
             <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-stone-800">
               <div className="flex items-center gap-2">
@@ -880,7 +880,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
           
           <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-stone-900 via-stone-900 to-amber-950/40 border border-stone-800 shadow-2xl relative overflow-hidden">
             
-            <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full -[100px] pointer-events-none" />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
               

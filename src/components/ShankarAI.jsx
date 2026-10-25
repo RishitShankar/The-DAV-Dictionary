@@ -881,7 +881,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
         {/* STEPPED INTERACTIVE WIZARD POP-UP OVERLAY                                  */}
         {/* ========================================================================= */}
         {wizardStep && (
-          <div className="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-fadeIn">
+          <div className="absolute inset-0 z-50 bg-slate-950/90 flex items-center justify-center p-4 sm:p-6 animate-fadeIn">
             <div className="w-full max-w-2xl bg-stone-900 rounded-3xl border-2 border-orange-500/50 shadow-2xl p-6 sm:p-8 text-white relative">
               
               {/* Close / Skip Wizard */}
@@ -1169,7 +1169,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
     }
 
     return (
-      <div className={`fixed inset-0 z-50 flex items-center justify-center ${isFullscreen ? 'p-0 w-screen h-screen' : 'p-3 sm:p-6'} bg-slate-950/85 backdrop-blur-md overflow-hidden font-sans animate-fadeIn`}>
+      <div className={`fixed inset-0 z-50 flex items-center justify-center ${isFullscreen ? 'p-0 w-screen h-screen' : 'p-3 sm:p-6'} bg-slate-950/85  overflow-hidden font-sans animate-fadeIn`}>
         {shellContent}
       </div>
     );

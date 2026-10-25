@@ -461,10 +461,10 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
       className="w-full min-h-screen bg-gradient-to-b from-stone-950 via-slate-900 to-indigo-950 text-slate-100 pb-28 selection:bg-amber-400 selection:text-stone-950 font-sans relative overflow-hidden"
     >
       {/* Dynamic Animated Trophy Orbs */}
-      <div className="absolute top-10 right-10 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none animate-float-orb" />
-      <div className="absolute bottom-10 left-10 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-5s' }} />
+      <div className="absolute top-10 right-10 w-96 h-96 bg-amber-500/15 rounded-full pointer-events-none animate-float-orb" />
+      <div className="absolute bottom-10 left-10 w-96 h-96 bg-purple-600/15 rounded-full pointer-events-none animate-float-orb" style={{ animationDelay: '-5s' }} />
       {/* SECTION 8 HEADER HERO */}
-      <div className="w-full bg-stone-950/95 backdrop-blur-md border-b-2 border-amber-400 px-4 sm:px-8 py-5 shadow-2xl">
+      <div className="w-full bg-stone-950/95 border-b-2 border-amber-400 px-4 sm:px-8 py-5 shadow-2xl">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 via-yellow-500 to-orange-500 border-2 border-amber-300 shadow-xl flex items-center justify-center text-stone-950 font-black text-2xl shrink-0 animate-trophy">
@@ -524,7 +524,7 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
           <div className="space-y-6">
 
             {/* MY STATS HERO BAR */}
-            <div className="w-full bg-gradient-to-r from-amber-600/30 via-purple-900/40 to-slate-900 rounded-3xl p-6 border-2 border-amber-400/60 shadow-2xl backdrop-blur-md card-super-interactive border-halo-gold">
+            <div className="w-full bg-gradient-to-r from-amber-600/30 via-purple-900/40 to-slate-900 rounded-3xl p-6 border-2 border-amber-400/60 shadow-2xl card-super-interactive border-halo-gold">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-2xl bg-amber-400 text-stone-950 font-black flex items-center justify-center text-xl shadow-lg border-2 border-white">

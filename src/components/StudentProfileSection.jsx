@@ -38,7 +38,7 @@ export function StudentProfileSection({ user }) {
         dislikes: 'Superficial memorization, lack of discipline, cheating',
         favoriteSubject: 'Social Science, Sanskrit & Science',
         photoUrl: '/rishit_shankar.jpg',
-        tierPlan: 'Dimension 4: Master Developer'
+        tierPlan: 'Master Developer Account'
       };
     }
 
@@ -65,7 +65,7 @@ export function StudentProfileSection({ user }) {
       dislikes: '',
       favoriteSubject: '',
       photoUrl: '', // Ready for student's own photo
-      tierPlan: user?.dimensionName || (user?.plan === 'vvip' ? 'Dimension 3: VVIP Plan' : user?.plan === 'vip' ? 'Dimension 2: VIP Plan' : 'Dimension 1: Normal Plan')
+      tierPlan: user?.plan === 'vvip' ? 'VVIP Scholar Pass' : user?.plan === 'vip' ? 'VIP Scholar Pass' : 'Student Scholar Pass'
     };
   };
 
@@ -195,8 +195,8 @@ export function StudentProfileSection({ user }) {
   return (
     <div className="min-h-screen bg-slate-950 text-white py-10 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden">
       {/* Holographic Ambient Glow Orbs */}
-      <div className="absolute top-10 left-10 w-96 h-96 bg-orange-600/15 rounded-full blur-3xl pointer-events-none animate-float-orb" />
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-4s' }} />
+      <div className="absolute top-10 left-10 w-96 h-96 bg-orange-600/15 rounded-full pointer-events-none animate-float-orb" />
+      <div className="absolute bottom-10 right-10 w-96 h-96 bg-amber-500/15 rounded-full pointer-events-none animate-float-orb" style={{ animationDelay: '-4s' }} />
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Top Header Banner */}
@@ -293,7 +293,7 @@ export function StudentProfileSection({ user }) {
                   </div>
                 </div>
                 <span className="bg-stone-950 text-amber-300 text-[9px] font-black px-2 py-0.5 rounded-full uppercase">
-                  {profile.tierPlan.replace('Dimension 4: ', '').replace('Dimension 3: ', '')}
+                  {profile.tierPlan.replace(/Dimension \d+:\s*/gi, '')}
                 </span>
               </div>
 

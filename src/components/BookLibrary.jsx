@@ -25,77 +25,110 @@ const SUBJECT_ART_MAP = {
     spine: 'from-emerald-700 to-teal-900',
     coverGrad: 'from-emerald-600 via-teal-700 to-emerald-950',
     accent: '#34d399',
-    symbol: '∑'
+    symbol: '∑',
+    neonBorder: 'border-emerald-400',
+    neonGlow: 'hover:shadow-[0_0_35px_rgba(52,211,153,0.65)]',
+    neonBadge: 'bg-emerald-400/20 text-emerald-300 border-emerald-400/50'
   },
   english: {
     badge: '📖 DAV English Lit',
     spine: 'from-blue-700 to-indigo-950',
     coverGrad: 'from-blue-600 via-indigo-700 to-blue-950',
     accent: '#60a5fa',
-    symbol: 'Aa'
+    symbol: 'Aa',
+    neonBorder: 'border-cyan-400',
+    neonGlow: 'hover:shadow-[0_0_35px_rgba(56,189,248,0.65)]',
+    neonBadge: 'bg-cyan-400/20 text-cyan-300 border-cyan-400/50'
   },
   hindi: {
     badge: '🪔 हिन्दी साहित्य',
     spine: 'from-orange-700 to-red-950',
     coverGrad: 'from-amber-600 via-orange-700 to-red-950',
     accent: '#fb923c',
-    symbol: 'अ'
+    symbol: 'अ',
+    neonBorder: 'border-amber-400',
+    neonGlow: 'hover:shadow-[0_0_35px_rgba(245,158,11,0.65)]',
+    neonBadge: 'bg-amber-400/20 text-amber-300 border-amber-400/50'
   },
   science: {
     badge: '🔬 DAV Living World',
     spine: 'from-green-700 to-emerald-950',
     coverGrad: 'from-green-600 via-emerald-700 to-green-950',
     accent: '#4ade80',
-    symbol: '⚛'
+    symbol: '⚛',
+    neonBorder: 'border-lime-400',
+    neonGlow: 'hover:shadow-[0_0_35px_rgba(163,230,53,0.65)]',
+    neonBadge: 'bg-lime-400/20 text-lime-300 border-lime-400/50'
   },
   'social science': {
     badge: '🌍 We & Our World',
     spine: 'from-purple-800 to-indigo-950',
     coverGrad: 'from-purple-600 via-indigo-800 to-slate-950',
     accent: '#c084fc',
-    symbol: '🌐'
+    symbol: '🌐',
+    neonBorder: 'border-fuchsia-400',
+    neonGlow: 'hover:shadow-[0_0_35px_rgba(217,70,239,0.65)]',
+    neonBadge: 'bg-fuchsia-400/20 text-fuchsia-300 border-fuchsia-400/50'
   },
   sanskrit: {
     badge: '🕉️ सुरभि संस्कृतम्',
     spine: 'from-amber-700 to-orange-950',
     coverGrad: 'from-orange-500 via-amber-700 to-orange-950',
     accent: '#facc15',
-    symbol: 'ॐ'
+    symbol: 'ॐ',
+    neonBorder: 'border-yellow-400',
+    neonGlow: 'hover:shadow-[0_0_35px_rgba(250,204,21,0.65)]',
+    neonBadge: 'bg-yellow-400/20 text-yellow-300 border-yellow-400/50'
   },
   computer: {
     badge: '💻 Hands On ICT',
     spine: 'from-cyan-700 to-blue-950',
     coverGrad: 'from-cyan-600 via-blue-700 to-slate-950',
     accent: '#38bdf8',
-    symbol: '< / >'
+    symbol: '< / >',
+    neonBorder: 'border-blue-400',
+    neonGlow: 'hover:shadow-[0_0_35px_rgba(96,165,250,0.65)]',
+    neonBadge: 'bg-blue-400/20 text-blue-300 border-blue-400/50'
   },
   evs: {
     badge: '🌱 Environmental Studies',
     spine: 'from-teal-700 to-emerald-950',
     coverGrad: 'from-emerald-500 via-teal-700 to-emerald-950',
     accent: '#2dd4bf',
-    symbol: '🌿'
+    symbol: '🌿',
+    neonBorder: 'border-teal-400',
+    neonGlow: 'hover:shadow-[0_0_35px_rgba(45,212,191,0.65)]',
+    neonBadge: 'bg-teal-400/20 text-teal-300 border-teal-400/50'
   },
   'general knowledge': {
     badge: '🏆 Kid Wiz Quiz',
     spine: 'from-yellow-700 to-amber-950',
     coverGrad: 'from-amber-500 via-yellow-600 to-amber-900',
     accent: '#fde047',
-    symbol: '★'
+    symbol: '★',
+    neonBorder: 'border-rose-400',
+    neonGlow: 'hover:shadow-[0_0_35px_rgba(251,113,133,0.65)]',
+    neonBadge: 'bg-rose-400/20 text-rose-300 border-rose-400/50'
   },
   'art & craft': {
     badge: '🎨 Creative Art',
     spine: 'from-pink-700 to-rose-950',
     coverGrad: 'from-pink-500 via-rose-600 to-purple-950',
     accent: '#f472b6',
-    symbol: '✎'
+    symbol: '✎',
+    neonBorder: 'border-pink-400',
+    neonGlow: 'hover:shadow-[0_0_35px_rgba(244,114,182,0.65)]',
+    neonBadge: 'bg-pink-400/20 text-pink-300 border-pink-400/50'
   },
   activity: {
     badge: '🧩 Integrated Workbook',
     spine: 'from-purple-700 to-amber-950',
     coverGrad: 'from-purple-600 via-amber-600 to-stone-900',
     accent: '#fbbf24',
-    symbol: '✦'
+    symbol: '✦',
+    neonBorder: 'border-violet-400',
+    neonGlow: 'hover:shadow-[0_0_35px_rgba(167,139,250,0.65)]',
+    neonBadge: 'bg-violet-400/20 text-violet-300 border-violet-400/50'
   }
 };
 
@@ -134,6 +167,7 @@ function getCleanSubjectName(subjectStr = '', fallback = 'Subject') {
 }
 
 export function BookLibrary({ 
+  currentUser,
   onOpenPdfReader, 
   onOpenUploadModal,
   onOpenAIWithQuestion,
@@ -144,6 +178,15 @@ export function BookLibrary({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBookTab, setSelectedBookTab] = useState({});
   const [activeFilter, setActiveFilter] = useState('ALL');
+
+  // Custom PDF Upload is strictly authorized ONLY for Dimension 5 (Faculty) and Dimension 4 (Master Developer)
+  const canUploadCustomPdf = Boolean(
+    currentUser?.dimension === 4 ||
+    currentUser?.dimension === 5 ||
+    currentUser?.id === 'rishibhai' ||
+    currentUser?.studentId === 'rishibhai'
+  );
+
 
   const allUploaded = uploadedPdfs.length > 0 
     ? uploadedPdfs 
@@ -193,8 +236,8 @@ export function BookLibrary({
       {/* ========================================================================= */}
       <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-950 via-red-950 to-stone-900 text-white p-6 sm:p-10 mb-8 border border-red-900/50 shadow-2xl">
         {/* Subtle decorative background circles & radial glow */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/10 rounded-full pointer-events-none" />
+        <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-amber-500/10 rounded-full pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="max-w-2xl">
@@ -231,23 +274,25 @@ export function BookLibrary({
             </div>
           </div>
 
-          {/* Upload Custom Book PDF Button */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
-            <button
-              onClick={onOpenUploadModal}
-              className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-stone-950 font-black text-xs sm:text-sm shadow-xl shadow-amber-500/20 transition-all transform hover:-translate-y-0.5 cursor-pointer border border-amber-300"
-            >
-              <Upload className="w-4 h-4 text-stone-950" />
-              <span>Upload Custom PDF</span>
-            </button>
-          </div>
+          {/* Upload Custom Book PDF Button (Strictly for Faculty & Master Developer) */}
+          {canUploadCustomPdf && (
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+              <button
+                onClick={onOpenUploadModal}
+                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-stone-950 font-black text-xs sm:text-sm shadow-xl shadow-amber-500/20 transition-all transform hover:-translate-y-0.5 cursor-pointer border border-amber-300 card-real-3d animate-glow-gold"
+              >
+                <Upload className="w-4 h-4 text-stone-950" />
+                <span>Upload Custom PDF</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
       {/* ========================================================================= */}
       {/* CLASS SELECTOR TABS (LKG to Class 8)                                      */}
       {/* ========================================================================= */}
-      <div className="bg-white/90 backdrop-blur-md p-2 rounded-2xl flex flex-wrap gap-1.5 mb-6 border border-slate-200/80 shadow-sm">
+      <div className="bg-white/90 p-2 rounded-2xl flex flex-wrap gap-1.5 mb-6 border border-slate-200/80 shadow-sm">
         {[8, 7, 6, 5, 4, 3, 2, 1, 'UKG', 'LKG'].map((cls) => {
           const isSelected = selectedClass === cls;
           const label = (cls === 'LKG' || cls === 'UKG') ? cls : `Class ${cls}`;
@@ -409,7 +454,7 @@ export function BookLibrary({
           return (
             <div
               key={sub.id}
-              className="bg-white rounded-3xl border-2 border-slate-200/90 hover:border-amber-500/60 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col justify-between group relative card-super-interactive ultra-shimmer"
+              className={`bg-white rounded-3xl border-2 ${art.neonBorder || 'border-amber-500/60'} ${art.neonGlow || 'hover:shadow-2xl'} overflow-hidden shadow-md transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between group relative card-real-3d animate-anti-gravity`}
             >
               {/* Top Accent Stripe */}
               <div className={`h-1.5 w-full bg-gradient-to-r ${sub.color}`} />
@@ -424,7 +469,7 @@ export function BookLibrary({
                   title={`Click to Open ${currentBook?.title || sub.name}`}
                 >
                   {/* Decorative Subtle Geometric Watermarks */}
-                  <div className="absolute -top-12 -right-12 w-36 h-36 rounded-full bg-white/10 blur-xl pointer-events-none group-hover/book:scale-150 transition-transform duration-500" />
+                  <div className="absolute -top-12 -right-12 w-36 h-36 rounded-full bg-white/10 pointer-events-none group-hover/book:scale-150 transition-transform duration-500" />
                   <div className="absolute bottom-0 right-0 text-white/5 font-mono text-7xl font-black pointer-events-none select-none pr-3 pb-1">
                     {art.symbol}
                   </div>
@@ -436,7 +481,7 @@ export function BookLibrary({
                       <span>{art.badge}</span>
                     </span>
 
-                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white border border-white/20">
+                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-white/20 text-white border border-white/20">
                       {bookList.length} {bookList.length > 1 ? 'Books Bundle' : 'Book'}
                     </span>
                   </div>
@@ -466,7 +511,7 @@ export function BookLibrary({
 
                         {/* Center: Subject Art Icon & Animated Pulse Aura */}
                         <div className="flex flex-col items-center justify-center text-center pl-2 my-auto relative z-10">
-                          <div className="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-lg text-white group-hover/book:scale-110 group-hover/book:rotate-6 transition-all duration-300">
+                          <div className="w-14 h-14 rounded-2xl bg-white/15 border border-white/30 flex items-center justify-center shadow-lg text-white group-hover/book:scale-110 group-hover/book:rotate-6 transition-all duration-300">
                             <IconComp className="w-7 h-7 text-amber-300 drop-shadow-md" />
                           </div>
                           <div className="mt-2.5 font-black text-xs text-white uppercase tracking-wider line-clamp-1 max-w-[130px]">

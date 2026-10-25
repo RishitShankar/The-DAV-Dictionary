@@ -46,13 +46,13 @@ export function PurpleFooter({ currentUser, onSelectSection }) {
     <footer className="bg-gradient-to-br from-[#1a062e] via-[#290c4a] to-[#0f031b] text-white border-t-2 border-purple-500/40 py-12 px-4 sm:px-6 lg:px-8 font-sans shadow-2xl relative overflow-hidden">
       
       {/* Subtle Glowing Radial Background Accents */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto space-y-10 relative z-10">
         
         {/* Top Banner Ribbon */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-purple-950/70 border border-purple-500/30 flex flex-col md:flex-row items-center justify-between gap-4 backdrop-blur-md">
+        <div className="p-5 sm:p-6 rounded-2xl bg-purple-950/70 border border-purple-500/30 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
             <img 
               src="/logo.png" 
@@ -189,7 +189,7 @@ export function PurpleFooter({ currentUser, onSelectSection }) {
           <div className="space-y-3">
             <h4 className="text-sm font-black uppercase tracking-wider text-amber-300 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-amber-400" />
-              <span>Academic Dimensions</span>
+              <span>Academic Sections</span>
             </h4>
 
             <div className="grid grid-cols-1 gap-1 text-[11px]">

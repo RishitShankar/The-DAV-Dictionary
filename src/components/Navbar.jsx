@@ -88,7 +88,7 @@ export function Navbar({
   }
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <header className="sticky top-0 z-40 bg-white/95 border-b border-slate-200 shadow-sm">
       {/* Top Banner - Head Boy Dedication */}
       <div className="bg-gradient-to-r from-amber-600 via-rose-900 to-amber-700 text-amber-100 text-xs py-1.5 px-4 text-center font-medium flex items-center justify-center gap-2">
         <Award className="w-3.5 h-3.5 text-amber-300 animate-pulse" />

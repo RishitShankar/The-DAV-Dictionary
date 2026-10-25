@@ -881,7 +881,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
         {/* STEPPED INTERACTIVE WIZARD POP-UP OVERLAY                                  */}
         {/* ========================================================================= */}
         {wizardStep && (
-          <div className="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-fadeIn">
+          <div className="absolute inset-0 z-50 bg-slate-950/90 flex items-center justify-center p-4 sm:p-6 animate-fadeIn">
             <div className="w-full max-w-2xl bg-stone-900 rounded-3xl border-2 border-orange-500/50 shadow-2xl p-6 sm:p-8 text-white relative">
               
               {/* Close / Skip Wizard */}
@@ -1163,15 +1163,15 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
     if (isSectionView) {
       return (
         <div className="w-full py-6 px-3 sm:px-6 bg-slate-950 flex flex-col items-center justify-center min-h-[calc(100vh-120px)] animate-fadeIn relative overflow-hidden">
-          <div className="absolute top-10 left-10 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none animate-float-orb" />
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-4s' }} />
+          <div className="absolute top-10 left-10 w-80 h-80 bg-amber-500/10 rounded-full pointer-events-none animate-float-orb" />
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-red-600/10 rounded-full pointer-events-none animate-float-orb" style={{ animationDelay: '-4s' }} />
           {shellContent}
         </div>
       );
     }
 
     return (
-      <div className={`fixed inset-0 z-50 flex items-center justify-center ${isFullscreen ? 'p-0 w-screen h-screen' : 'p-3 sm:p-6'} bg-slate-950/85 backdrop-blur-md overflow-hidden font-sans animate-fadeIn`}>
+      <div className={`fixed inset-0 z-50 flex items-center justify-center ${isFullscreen ? 'p-0 w-screen h-screen' : 'p-3 sm:p-6'} bg-slate-950/85  overflow-hidden font-sans animate-fadeIn`}>
         {shellContent}
       </div>
     );

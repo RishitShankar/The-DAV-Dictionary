@@ -197,9 +197,9 @@ export function AboutCreatorSection() {
       <div className="bg-gradient-to-b from-stone-900 via-slate-900 to-stone-950 rounded-3xl border border-amber-500/30 shadow-2xl overflow-hidden relative mb-10 card-interactive shimmer-overlay card-super-interactive border-halo-gold animate-molten-gold">
         
         {/* Glow Highlights */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none animate-float-orb" />
-        <div className="absolute bottom-0 left-10 w-96 h-96 bg-orange-600/15 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-5s' }} />
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/15 rounded-full pointer-events-none animate-float-orb" />
+        <div className="absolute bottom-0 left-10 w-96 h-96 bg-orange-600/15 rounded-full pointer-events-none animate-float-orb" style={{ animationDelay: '-5s' }} />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-red-600/10 rounded-full pointer-events-none" />
 
         {/* Hero Section */}
         <div className="p-6 sm:p-10 relative z-10">
@@ -863,7 +863,7 @@ export function AboutCreatorSection() {
           {/* Backdrop */}
           <div 
             onClick={() => setIsChatOpen(false)}
-            className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-slate-950/70 transition-opacity"
           />
 
           {/* Drawer Panel */}

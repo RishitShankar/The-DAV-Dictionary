@@ -397,7 +397,7 @@ export function DeveloperReviewsSection({ currentUser, onGoToSection }) {
       {/* DETAILED PREVIEW MODAL */}
       {/* User Requirement: "and if I click on have detailed preview, then the message that he has written will be shown to me." */}
       {activeDetailedReview && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 animate-fadeIn">
           <div className="bg-slate-900 border border-amber-500/40 rounded-3xl max-w-2xl w-full p-6 sm:p-8 text-white shadow-2xl relative max-h-[90vh] overflow-y-auto">
             
             {/* Close Button */}

@@ -482,9 +482,9 @@ export function QuestionsAnswersSection({
     <div className="min-h-screen bg-gradient-to-br from-[#0c051e] via-[#1a0a38] to-[#250b44] text-white py-10 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden select-none">
       
       {/* Playful Floating Glowing Arcade Orbs */}
-      <div className="absolute top-10 left-10 w-96 h-96 bg-purple-600/25 rounded-full blur-3xl pointer-events-none animate-float-orb" />
-      <div className="absolute bottom-10 right-10 w-[30rem] h-[30rem] bg-indigo-600/20 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-3s' }} />
-      <div className="absolute top-1/2 left-1/3 w-80 h-80 bg-pink-500/15 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-6s' }} />
+      <div className="absolute top-10 left-10 w-96 h-96 bg-purple-600/25 rounded-full pointer-events-none animate-float-orb" />
+      <div className="absolute bottom-10 right-10 w-[30rem] h-[30rem] bg-indigo-600/20 rounded-full pointer-events-none animate-float-orb" style={{ animationDelay: '-3s' }} />
+      <div className="absolute top-1/2 left-1/3 w-80 h-80 bg-pink-500/15 rounded-full pointer-events-none animate-float-orb" style={{ animationDelay: '-6s' }} />
 
       {/* Redirect Notification Toast */}
       {redirectToast && (
@@ -498,7 +498,7 @@ export function QuestionsAnswersSection({
       <div className="max-w-6xl mx-auto space-y-8 relative z-10">
         
         {/* Top Quest HUD Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-purple-950/70 border border-purple-500/40 backdrop-blur-xl shadow-xl">
+        <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-purple-950/70 border border-purple-500/40 shadow-xl">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
               <Flame className="w-6 h-6 text-slate-950 fill-slate-950" />
@@ -700,7 +700,7 @@ export function QuestionsAnswersSection({
       {/* POP-UP MODAL 1: LEVEL 1 GRADE / CLASS SELECTION (Class LKG to Class 8)    */}
       {/* ========================================================================= */}
       {activeModal === 'level1_grade' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 animate-fade-in">
           <div className="w-full max-w-4xl max-h-[90vh] bg-gradient-to-br from-[#190a36] via-[#240e4f] to-[#120524] border-2 border-purple-500/60 rounded-3xl shadow-2xl flex flex-col overflow-hidden relative">
             
             {/* Pop-Up Header */}
@@ -783,7 +783,7 @@ export function QuestionsAnswersSection({
       {/* POP-UP MODAL 2: LEVEL 2 SUBJECT SELECTION                                */}
       {/* ========================================================================= */}
       {activeModal === 'level2_subject' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 animate-fade-in">
           <div className="w-full max-w-4xl max-h-[90vh] bg-gradient-to-br from-[#190a36] via-[#240e4f] to-[#120524] border-2 border-purple-500/60 rounded-3xl shadow-2xl flex flex-col overflow-hidden relative">
             
             {/* Pop-Up Header */}
@@ -924,7 +924,7 @@ export function QuestionsAnswersSection({
       {/* POP-UP MODAL 2.5: LEVEL 2 SUB-BOOK SELECTION (English/Hindi Multi-Books) */}
       {/* ========================================================================= */}
       {activeModal === 'level2_subbook' && subBookData && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 animate-fade-in">
           <div className="w-full max-w-4xl max-h-[90vh] bg-gradient-to-br from-[#190a36] via-[#240e4f] to-[#120524] border-2 border-amber-400/80 rounded-3xl shadow-2xl flex flex-col overflow-hidden relative">
             
             {/* Pop-Up Header */}
@@ -1050,7 +1050,7 @@ export function QuestionsAnswersSection({
       {/* POP-UP MODAL 3: LEVEL 3 CHAPTER SELECTION (All Chapters with Emojis & Sfx) */}
       {/* ========================================================================= */}
       {activeModal === 'level3_chapter' && selectedSubject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 animate-fade-in">
           <div className="w-full max-w-5xl max-h-[90vh] bg-gradient-to-br from-[#190a36] via-[#240e4f] to-[#120524] border-2 border-purple-500/60 rounded-3xl shadow-2xl flex flex-col overflow-hidden relative">
             
             {/* Pop-Up Header */}
@@ -1129,7 +1129,7 @@ export function QuestionsAnswersSection({
                     >
                       {/* Glow halo for featured chapters */}
                       {isEyeChapter && (
-                        <div className="absolute -top-10 -right-10 w-28 h-28 bg-amber-400/20 rounded-full blur-xl pointer-events-none animate-pulse" />
+                        <div className="absolute -top-10 -right-10 w-28 h-28 bg-amber-400/20 rounded-full pointer-events-none animate-pulse" />
                       )}
 
                       <div>
@@ -1245,7 +1245,7 @@ export function QuestionsAnswersSection({
       {/* POP-UP MODAL 4: LEVEL 4 CHOOSE SOLUTION SOURCE WEBSITE (3 TIERS)           */}
       {/* ========================================================================= */}
       {activeModal === 'level4_source' && selectedChapter && selectedSubject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 animate-fade-in">
           <div className="w-full max-w-4xl max-h-[92vh] bg-gradient-to-br from-[#190a36] via-[#240e4f] to-[#120524] border-2 border-amber-400/80 rounded-3xl shadow-2xl flex flex-col overflow-hidden relative">
             
             {/* Pop-Up Header */}

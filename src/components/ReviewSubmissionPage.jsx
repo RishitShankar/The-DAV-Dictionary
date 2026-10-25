@@ -686,7 +686,7 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
 
       {/* QUICK REVIEW FORM MODAL (5 Clickable Stars as requested by user) */}
       {isStarModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 animate-fadeIn">
           <div className="bg-slate-900 border border-amber-500/40 rounded-3xl max-w-lg w-full p-6 sm:p-8 text-white text-center shadow-2xl relative">
             
             {/* Close Button */}
@@ -799,7 +799,7 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
 
       {/* Celebratory Success Toast / Modal */}
       {submitSuccess && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 animate-fadeIn">
           <div className="bg-slate-900 border border-emerald-500/40 rounded-3xl max-w-md w-full p-6 text-white text-center shadow-2xl">
             <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-400/40 mx-auto flex items-center justify-center mb-4 animate-bounce">
               <CheckCircle2 className="w-9 h-9" />

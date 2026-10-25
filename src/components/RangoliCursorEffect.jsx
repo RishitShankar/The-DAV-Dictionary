@@ -98,8 +98,8 @@ export function RangoliCursorEffect() {
         if (this.isSparkle) {
           // Rangoli 4-point glitter star
           c.fillStyle = this.color;
-          c.shadowColor = this.color;
-          c.shadowBlur = 10;
+          c.shadowColor = 'transparent';
+          c.shadowBlur = 0;
           c.beginPath();
           const s = this.size * 1.5;
           c.moveTo(0, -s);
@@ -111,8 +111,8 @@ export function RangoliCursorEffect() {
         } else {
           // Soft glowing powder grain
           c.fillStyle = this.color;
-          c.shadowColor = this.color;
-          c.shadowBlur = 8;
+          c.shadowColor = 'transparent';
+          c.shadowBlur = 0;
           c.beginPath();
           c.arc(0, 0, this.size, 0, Math.PI * 2);
           c.fill();

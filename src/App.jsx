@@ -382,6 +382,7 @@ export function App() {
               onOpenUpload={() => setIsUploadOpen(true)}
             />
             <BookLibrary
+              currentUser={user}
               onOpenPdfReader={handleOpenPdfReader}
               onOpenUploadModal={() => setIsUploadOpen(true)}
               onOpenAIWithQuestion={handleOpenAIWithQuestion}
@@ -432,7 +433,7 @@ export function App() {
           isGuest ? (
             <div className="max-w-3xl mx-auto px-4 py-20 text-center animate-fadeIn">
               <div className="bg-stone-900 border-2 border-amber-500/50 rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full pointer-events-none" />
                 <div className="w-20 h-20 rounded-3xl bg-amber-500/20 text-amber-400 border border-amber-400/40 mx-auto flex items-center justify-center mb-6 shadow-xl shadow-amber-500/20">
                   <Lock className="w-10 h-10 text-amber-400 animate-bounce" />
                 </div>
@@ -545,9 +546,9 @@ export function App() {
 
       {/* Locked Feature Modal for Free Preview / Demo Mode */}
       {lockedFeatureModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fadeIn">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 animate-fadeIn">
           <div className="bg-gradient-to-b from-stone-900 to-stone-950 border-2 border-amber-500/50 rounded-3xl max-w-md w-full p-6 text-white text-center shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full pointer-events-none" />
             
             <div className="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-400/40 mx-auto flex items-center justify-center mb-4 shadow-lg shadow-amber-500/20">
               <Lock className="w-8 h-8 text-amber-400 animate-bounce" />
@@ -587,7 +588,7 @@ export function App() {
 
       {/* 5th Dimension: Mobile Floating Bottom Navigation Dock */}
       {deviceDimension === 'mobile' && (
-        <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 py-2 px-3 shadow-2xl flex items-center justify-around">
+        <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 border-t border-slate-200 py-2 px-3 shadow-2xl flex items-center justify-around">
           {isTeacher ? (
             <>
               <button

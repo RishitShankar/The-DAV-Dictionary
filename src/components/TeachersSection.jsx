@@ -11,7 +11,7 @@ import {
   ExternalLink, RefreshCw, Bot, Smartphone, RotateCcw,
   ArrowRight, Play, CheckSquare, Radio, Maximize2, Minimize2,
   PhoneOff, Hand, MessageSquareMore, CheckCircle,
-  ChevronLeft, Compass, Palette, Trash2, Trophy, Share,
+  ChevronLeft, Compass, Palette, Trash2, Trophy, Share, Phone, MoreVertical, Settings,
   Camera, UploadCloud, Edit3, Music, Film, FileCheck, Printer, PenTool
 } from 'lucide-react';
 import { RishiAILogo } from './RishiAILogo';
@@ -313,7 +313,7 @@ const PDF_PAGES_METADATA = {
     corePillars: [
       {
         title: 'Teacher Test Authoring',
-        desc: 'Dimension 5 faculty can create custom MCQ, subjective, or combined tests with multi-section deployment and answer keys.'
+        desc: 'Authorized faculty can create custom MCQ, subjective, or combined tests with multi-section deployment and answer keys.'
       },
       {
         title: 'Synchronized Countdown Timer',
@@ -328,7 +328,7 @@ const PDF_PAGES_METADATA = {
     centralButtonSub: 'Launch Timed Exam Portal with Instant Evaluation & Solution Review',
     instructions: [
       'Step 1: Click the central button above to open the full-screen Online Test & Exam Suite.',
-      'Step 2: Teachers (Dimension 5): Click Create New Examination to author and deploy tests.',
+      'Step 2: Teachers (Faculty): Click Create New Examination to author and deploy tests.',
       'Step 3: Students: Select Class and Section to view scheduled unit tests.',
       'Step 4: Attempt the timed exam using the question matrix palette (White, Red, Green, Yellow).',
       'Step 5: Submit test to view instant scorecard, full solution review, and class leaderboard.'
@@ -410,7 +410,7 @@ const PDF_PAGES_METADATA = {
       'Step 1: Click the central button above to launch the Student Marks & Report Ledger.',
       'Step 2: Select your Class standard (LKG to 8) and Section (A to E).',
       'Step 3: Select the specific Examination Term (Periodic Test, Half-Yearly, Pre-Board, Annual).',
-      'Step 4: Teachers (Dimension 5): Enter subject marks and click Save Marks Ledger.',
+      'Step 4: Teachers (Faculty): Enter subject marks and click Save Marks Ledger.',
       'Step 5: Students: Inspect your term scorecard and click Print Report Card.'
     ],
     statPills: [
@@ -759,7 +759,7 @@ export function TeachersSection({
             id: u.id || `tch_${idx}`,
             name: (u.name && (u.name.startsWith('Prof.') || u.name.startsWith('Dr.') || u.name.startsWith('Mr.') || u.name.startsWith('Mrs.'))) ? u.name : `Prof. ${u.name || 'Faculty Member'}`,
             subtitle: u.subject || 'Faculty Teacher',
-            role: 'Verified DAV Faculty (Dimension 5)',
+            role: 'Verified DAV Faculty',
             dp: u.dp || u.avatar || null,
             status: 'Online',
             type: 'teacher',
@@ -827,7 +827,7 @@ export function TeachersSection({
             id: u.id || `tch_${idx}`,
             name: (u.name && (u.name.startsWith('Prof.') || u.name.startsWith('Dr.') || u.name.startsWith('Mr.') || u.name.startsWith('Mrs.'))) ? u.name : `Prof. ${u.name || 'Faculty Member'}`,
             subtitle: u.subject || 'Faculty Teacher',
-            role: 'Verified DAV Faculty (Dimension 5)',
+            role: 'Verified DAV Faculty',
             dp: u.dp || u.avatar || null,
             status: 'Online',
             type: 'teacher',
@@ -975,6 +975,31 @@ export function TeachersSection({
 
   // WhatsApp-Style Delete Message State
   const [deleteMsgModal, setDeleteMsgModal] = useState({ isOpen: false, msg: null, contact: null });
+  const [chatTextColor, setChatTextColor] = useState('#111b21');
+  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showChatMenu, setShowChatMenu] = useState(false);
+  const [chatFilter, setChatFilter] = useState('all'); // 'all' | 'unread' | 'favourites'
+
+  // Clear all chat messages for a contact
+  const handleClearAllChat = (contact) => {
+    if (!contact) return;
+    const chKey = getConversationChannelKey(user?.id, contact.id);
+    const nameKey = getNameChannelKey(user?.name, contact.name);
+    const updatedMap = {
+      ...teacherChatsMap,
+      [chKey]: [],
+      [contact.id]: []
+    };
+    if (nameKey) updatedMap[nameKey] = [];
+    if (contact.name) updatedMap[contact.name] = [];
+    persistChats(updatedMap);
+    if (typeof saveCloudDoubtChats === 'function') {
+      saveCloudDoubtChats(updatedMap).catch(() => {});
+    }
+    setDeleteMsgModal({ isOpen: false, msg: null, contact: null });
+    setShowChatMenu(false);
+    playSoundChime('delivered');
+  };
 
   const handleDeleteForMe = (msg, contact) => {
     if (!msg || !contact) return;
@@ -1126,6 +1151,7 @@ export function TeachersSection({
       senderName: senderName,
       senderClassSec: senderClassSec,
       text: chatInputText.trim(),
+      textColor: chatTextColor || '#111b21',
       media: pendingMedia ? { ...pendingMedia } : null,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       status: 'delivered'
@@ -1272,7 +1298,7 @@ export function TeachersSection({
         name: cleanName,
         subject: cleanSubject,
         department: cleanSubject,
-        role: 'Verified DAV Faculty (Dimension 5)',
+        role: 'Verified DAV Faculty',
         qualification: 'M.Sc./M.A., B.Ed., CTET Certified',
         status: 'Online',
         assignedClass: 'Class 8-D',
@@ -1336,7 +1362,7 @@ export function TeachersSection({
     return `https://p2p.mirotalk.com/join/${roomName}?name=${userName}`;
   };
 
-  // Start Faculty Broadcast (STRICTLY Dimension 5 Only)
+  // Start Faculty Broadcast (STRICTLY Faculty Only)
   const handleStartFacultyBroadcast = async () => {
     const educatorName = user?.name ? (user.name.startsWith('Prof.') || user.name.startsWith('Mrs.') || user.name.startsWith('Mr.') || user.name.startsWith('Dr.') ? user.name : `Prof. ${user.name}`) : 'Verified DAV Faculty';
     const session = {
@@ -1549,7 +1575,7 @@ export function TeachersSection({
   const [selectedTestClass, setSelectedTestClass] = useState('8');
   const [selectedTestSection, setSelectedTestSection] = useState('D');
 
-  // Teacher Test Creator State (Dimension 5 Only)
+  // Teacher Test Creator State (Faculty Only)
   const [showCreateTestModal, setShowCreateTestModal] = useState(false);
   const [testFormatChoice, setTestFormatChoice] = useState('mcq'); // 'mcq', 'subjective', 'combined'
   const [newTestClass, setNewTestClass] = useState('8');
@@ -1667,7 +1693,7 @@ export function TeachersSection({
     } catch (e) {}
   };
 
-  // Deploy New Test Handler (Dimension 5 Only)
+  // Deploy New Test Handler (Faculty Only)
   const handleDeployExamination = (e) => {
     e.preventDefault();
     if (!newTestTitle.trim()) return;
@@ -2344,8 +2370,8 @@ export function TeachersSection({
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-stone-950 via-slate-950 to-stone-900 text-white font-sans selection:bg-amber-400 selection:text-stone-950 pb-16 relative overflow-hidden">
       {/* Dynamic Animated Ambient Orbs */}
-      <div className="absolute top-10 right-10 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl pointer-events-none animate-float-orb" />
-      <div className="absolute bottom-10 left-10 w-96 h-96 bg-teal-500/15 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-5s' }} />
+      <div className="absolute top-10 right-10 w-96 h-96 bg-purple-600/15 rounded-full pointer-events-none animate-float-orb" />
+      <div className="absolute bottom-10 left-10 w-96 h-96 bg-teal-500/15 rounded-full pointer-events-none animate-float-orb" style={{ animationDelay: '-5s' }} />
       
       {/* ========================================================================= */}
       {/* MAIN SECTION 5 CANVAS: 6-PAGE PDF PRESENTATION OR FULL-SCREEN MODE        */}
@@ -2361,7 +2387,7 @@ export function TeachersSection({
             {/* ====================================================== */}
             {/* PAGE DOTS / PILL NAVIGATION - TOP                      */}
             {/* ====================================================== */}
-            <div className="flex items-center justify-center gap-2 pt-4 pb-6 flex-wrap">
+            <div className="flex items-center gap-1.5 pt-3 pb-5 overflow-x-auto scrollbar-none px-2 justify-start sm:justify-center">
               {PRESENTATION_PAGES.map((p) => (
                 <button
                   key={p.id}
@@ -2381,21 +2407,21 @@ export function TeachersSection({
             {/* ====================================================== */}
             {/* THE MAIN PAGE CARD (MINT GREEN + PURPLE GLOW)          */}
             {/* ====================================================== */}
-            <div className="relative w-full rounded-3xl overflow-hidden border-2 border-amber-500/60 shadow-[0_30px_80px_-10px_rgba(245,158,11,0.35)] bg-gradient-to-br from-stone-950 via-stone-900 to-stone-950 card-real-3d elevation-3d-velvet">
+            <div className="relative w-full rounded-3xl overflow-hidden border-2 ${currentMeta.borderColor || 'border-amber-400/80'} ${currentMeta.glowColor || 'shadow-2xl'} bg-gradient-to-br ${currentMeta.cardGradient || 'from-stone-950 to-stone-900'} card-real-3d elevation-3d-velvet transition-all duration-500">
 
               {/* Glowing background blobs */}
-              <div className="pointer-events-none absolute -top-24 -right-24 w-96 h-96 rounded-full bg-teal-500/10 blur-3xl" />
-              <div className="pointer-events-none absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-purple-600/15 blur-3xl" />
-              <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-fuchsia-700/10 blur-3xl" />
+              <div className="pointer-events-none absolute -top-24 -right-24 w-96 h-96 rounded-full bg-teal-500/10" />
+              <div className="pointer-events-none absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-purple-600/15" />
+              <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-fuchsia-700/10" />
 
               {/* Top accent stripe */}
-              <div className="w-full h-2 bg-gradient-to-r from-amber-500 via-red-500 to-yellow-400 animate-spectrum-sheen" />
+              <div className="w-full h-2 bg-gradient-to-r ${currentMeta.stripeGradient || 'from-amber-400 to-red-500'} animate-spectrum-sheen" />
 
               <div className="relative z-10 p-6 sm:p-10 md:p-14 space-y-8">
 
                 {/* Page number badge */}
                 <div className="flex items-center justify-between flex-wrap gap-2">
-                  <span className="px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/50 text-amber-300 font-mono font-black text-xs tracking-widest uppercase animate-badge-bounce">
+                  <span className="px-3 py-1 rounded-full ${currentMeta.badgeStyle || 'bg-amber-400/20 text-amber-300 border-amber-400/50'} font-mono font-black text-xs tracking-widest uppercase animate-badge-bounce">
                     PAGE {currentMeta.pageNumber} OF 06
                   </span>
                   <span className="px-3 py-1 rounded-full bg-red-950/60 border border-red-500/40 text-red-200 font-mono text-[11px] font-bold">
@@ -2405,7 +2431,7 @@ export function TeachersSection({
 
                 {/* Section icon + title */}
                 <div className="text-center space-y-3">
-                  <div className="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-amber-400 via-orange-500 to-red-600 shadow-2xl shadow-amber-500/40 mb-3 border-2 border-amber-300 animate-trophy-glory">
+                  <div className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-br ${currentMeta.iconGradient || 'from-amber-400 to-orange-500'} shadow-2xl mb-3 border-2 border-white/30 animate-trophy-glory">
                     {activePage === 'homework' && <ClipboardList className="w-10 h-10 text-white" />}
                     {activePage === 'doubts_chat' && <MessageSquare className="w-10 h-10 text-white" />}
                     {activePage === 'live_class' && <Video className="w-10 h-10 text-white" />}
@@ -2448,7 +2474,7 @@ export function TeachersSection({
                   {currentMeta.corePillars.map((pillar, idx) => (
                     <div
                       key={idx}
-                      className="p-5 rounded-2xl bg-stone-900/80 border border-amber-500/30 hover:border-amber-400 transition space-y-2 shadow-xl card-real-3d"
+                      className={`p-4 sm:p-5 rounded-2xl ${currentMeta.pillarBg || 'bg-stone-900/80'} border transition space-y-2 shadow-xl card-real-3d`}
                     >
                       <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-stone-950 flex items-center justify-center font-black text-xs font-mono shadow-md animate-float-icon">
                         0{idx + 1}
@@ -2478,7 +2504,7 @@ export function TeachersSection({
                       setIsFullScreenInteractive(true);
                       playSoundChime('sent');
                     }}
-                    className="inline-flex items-center justify-center gap-3 px-8 sm:px-14 py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-red-600 hover:from-amber-300 hover:via-orange-400 hover:to-red-500 text-stone-950 font-black text-sm sm:text-base shadow-2xl shadow-orange-500/50 hover:shadow-amber-500/60 transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer border-2 border-amber-200 card-real-3d animate-glow-gold"
+                    className={`inline-flex items-center justify-center gap-3 px-6 sm:px-14 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r ${currentMeta.buttonGradient || 'from-amber-400 to-orange-500 text-stone-950'} font-black text-sm sm:text-base shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer border-2 border-white/40 card-real-3d min-h-[48px] w-full sm:w-auto`}
                   >
                     <span>{currentMeta.centralButtonText}</span>
                     <ArrowRight className="w-5 h-5" />
@@ -2628,8 +2654,8 @@ export function TeachersSection({
                 
                 {/* Gen Z Hero Graphical Banner */}
                 <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-950 via-slate-950 to-teal-950 border-2 border-teal-500/50 p-6 md:p-10 shadow-2xl">
-                  <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-teal-500/15 blur-3xl pointer-events-none" />
-                  <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-purple-500/20 blur-3xl pointer-events-none" />
+                  <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-teal-500/15 pointer-events-none" />
+                  <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-purple-500/20 pointer-events-none" />
 
                   <div className="relative z-10 max-w-4xl space-y-3">
                     <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-950/80 border border-teal-500/50 text-xs font-mono font-bold text-teal-300">
@@ -2657,12 +2683,12 @@ export function TeachersSection({
                           className="px-6 py-3 rounded-2xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-teal-400 hover:from-purple-500 hover:to-teal-300 text-slate-950 font-black text-xs md:text-sm flex items-center gap-2 shadow-xl shadow-purple-600/30 transition transform hover:scale-105 active:scale-95 cursor-pointer"
                         >
                           <Plus className="w-4 h-4 text-slate-950" />
-                          <span>Assign New Homework (Dimension 5 Faculty)</span>
+                          <span>Assign New Homework (Faculty Desk)</span>
                         </button>
                       ) : (
                         <div className="px-5 py-2.5 rounded-xl bg-slate-900/90 border border-teal-500/40 text-teal-300 font-mono text-xs flex items-center gap-2">
                           <CheckCircle2 className="w-4 h-4 text-teal-400" />
-                          <span>Student Mode: Daily Homework Viewer (Dimension 1-4)</span>
+                          <span>Student Mode: Daily Homework Viewer</span>
                         </div>
                       )}
                     </div>
@@ -2796,14 +2822,14 @@ export function TeachersSection({
                   })()}
                 </div>
 
-                {/* Teacher: Assign New Homework Modal (Dimension 5 Only) */}
+                {/* Teacher: Assign New Homework Modal (Faculty Only) */}
                 {showAssignHwModal && isDimension5 && (
-                  <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md p-4 flex items-center justify-center animate-fadeIn">
+                  <div className="fixed inset-0 z-50 bg-slate-950/90 p-4 flex items-center justify-center animate-fadeIn">
                     <div className="w-full max-w-2xl bg-purple-950/95 border-2 border-teal-400/80 rounded-3xl p-6 shadow-2xl space-y-4">
                       <div className="flex items-center justify-between pb-3 border-b border-purple-800">
                         <h3 className="text-base font-black text-white flex items-center gap-2">
                           <Plus className="w-4 h-4 text-teal-300" />
-                          <span>Publish New Homework to Students (Dimension 5)</span>
+                          <span>Publish Daily Homework to Students</span>
                         </h3>
                         <button onClick={() => setShowAssignHwModal(false)} className="text-purple-300 hover:text-white cursor-pointer">
                           <X className="w-5 h-5" />
@@ -2945,539 +2971,695 @@ export function TeachersSection({
             {/* PAGE 2: FACULTY ACADEMIC DIRECT DESK (CHAT & CONSULTATION)            */}
             {/* --------------------------------------------------------------------- */}
             {activePage === 'doubts_chat' && (
-              <div className="w-full space-y-4 animate-fadeIn">
+              <div className="w-full animate-fadeIn font-sans">
                 
-                {/* Top Control Header */}
-                <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-950/90 via-slate-950 to-teal-950/90 border border-purple-500/50 flex items-center justify-between flex-wrap gap-3 shadow-xl">
-                  <div>
-                    <h2 className="text-base font-black text-white flex items-center gap-2">
-                      <MessageSquare className="w-5 h-5 text-teal-300" />
-                      <span>{isDimension5 ? 'Faculty Direct Desk - Student Consultation Directory' : 'Faculty Academic Direct Desk - Verified Teachers Directory'}</span>
-                    </h2>
-                    <p className="hidden sm:block text-xs text-purple-200/90 mt-0.5">
-                      {isDimension5 ? 'Direct messaging with enrolled students - Rich media support - Sub-second delivery' : 'Direct academic doubt clearance with verified faculty - Rich media support'}
-                    </p>
-                  </div>
-
-                  {/* Controls: Edit Profile, Wallpaper */}
-                  <div className="flex items-center gap-2 flex-wrap">
-                    
-                    {/* Role Indicator (Automatic, no manual toggle) */}
-                    <div className="px-3 py-1.5 rounded-xl bg-purple-900/60 border border-purple-600 text-xs font-mono font-bold text-teal-300 flex items-center gap-1.5">
-                      <ShieldCheck className="w-3.5 h-3.5 text-teal-300" />
-                      <span>{isDimension5 ? `Faculty: ${user?.name || 'Teacher'} (${user?.subject || 'Science & Tech'})` : `Student: ${user?.name || 'Enrolled Student'}`}</span>
-                    </div>
-
-                    {/* Teacher Profile & DP Edit (Dimension 5 Only) */}
-                    {isDimension5 && (
-                      <button
-                        onClick={() => setShowTeacherProfileModal(true)}
-                        className="px-3 py-1.5 rounded-xl bg-purple-900/60 hover:bg-purple-900 border border-purple-600 text-purple-200 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
-                      >
-                        <Edit3 className="w-3.5 h-3.5 text-teal-300" />
-                        <span>Edit Faculty Profile &amp; DP</span>
-                      </button>
-                    )}
-
-                    {/* Wallpaper Picker Button */}
-                    <button
-                      onClick={() => setShowWallpaperPicker(prev => !prev)}
-                      className="px-3 py-1.5 rounded-xl bg-slate-900 border border-purple-700 text-purple-200 hover:text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer"
-                      title="Change Chat Wallpaper"
-                    >
-                      <Palette className="w-3.5 h-3.5 text-teal-300" />
-                      <span>Wallpaper</span>
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        setIsDoubtSessionResolved(true);
-                        playSoundChime('delivered');
-                      }}
-                      className="px-3 py-1.5 rounded-xl bg-purple-900/60 hover:bg-purple-900 border border-purple-600 text-purple-200 font-bold text-xs flex items-center gap-1.5 cursor-pointer"
-                    >
-                      <CheckCircle className="w-3.5 h-3.5 text-teal-300" />
-                      <span>End Doubt Session</span>
-                    </button>
-
-                  </div>
-                </div>
-
-                {/* Wallpaper Picker Dropdown Modal */}
-                {showWallpaperPicker && (
-                  <div className="p-4 rounded-2xl bg-purple-950/95 border border-purple-600 shadow-2xl space-y-3 animate-fadeIn text-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-teal-300 uppercase tracking-wider font-mono">Choose Chat Background Wallpaper</span>
-                      <button onClick={() => setShowWallpaperPicker(false)} className="text-purple-300 hover:text-white">
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                      <button
-                        onClick={() => {
-                          setChatWallpaper('default');
-                          localStorage.setItem(CHAT_WALLPAPER_STORAGE_KEY, 'default');
-                          setShowWallpaperPicker(false);
-                        }}
-                        className="p-2.5 rounded-xl bg-slate-950 border border-purple-700 hover:border-teal-400 text-center font-bold text-purple-200"
-                      >
-                        Deep Cosmos (Default)
-                      </button>
-                      <button
-                        onClick={() => {
-                          setChatWallpaper('emerald');
-                          localStorage.setItem(CHAT_WALLPAPER_STORAGE_KEY, 'emerald');
-                          setShowWallpaperPicker(false);
-                        }}
-                        className="p-2.5 rounded-xl bg-gradient-to-br from-teal-950 to-slate-950 border border-teal-600 text-center font-bold text-teal-200"
-                      >
-                        Mint &amp; Emerald
-                      </button>
-                      <button
-                        onClick={() => {
-                          setChatWallpaper('purple');
-                          localStorage.setItem(CHAT_WALLPAPER_STORAGE_KEY, 'purple');
-                          setShowWallpaperPicker(false);
-                        }}
-                        className="p-2.5 rounded-xl bg-gradient-to-br from-purple-950 to-slate-950 border border-purple-500 text-center font-bold text-fuchsia-200"
-                      >
-                        Royal Purple
-                      </button>
-                      <div>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          id="chat-custom-wallpaper-upload"
-                          className="hidden"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              const r = new FileReader();
-                              r.onload = (ev) => {
-                                setChatWallpaper(ev.target.result);
-                                localStorage.setItem(CHAT_WALLPAPER_STORAGE_KEY, ev.target.result);
-                                setShowWallpaperPicker(false);
-                              };
-                              r.readAsDataURL(file);
-                            }
-                          }}
-                        />
-                        <label
-                          htmlFor="chat-custom-wallpaper-upload"
-                          className="p-2.5 rounded-xl bg-slate-900 border border-teal-500 text-teal-300 hover:bg-slate-800 text-center font-bold block cursor-pointer"
-                        >
-                          Upload Custom Photo
-                        </label>
-                      </div>
-                    </div>
-                    {/* Fit mode selector */}
-                    <div className="flex items-center gap-3 pt-2 border-t border-purple-800/80">
-                      <span className="text-purple-300">Photo Display:</span>
-                      <button
-                        onClick={() => setWallpaperFitMode('contain')}
-                        className={`px-3 py-1 rounded-lg font-bold ${wallpaperFitMode === 'contain' ? 'bg-teal-500 text-slate-950' : 'bg-slate-900 text-purple-300'}`}
-                      >
-                        Fit Whole Photo (No Zoom / Distortion)
-                      </button>
-                      <button
-                        onClick={() => setWallpaperFitMode('cover')}
-                        className={`px-3 py-1 rounded-lg font-bold ${wallpaperFitMode === 'cover' ? 'bg-teal-500 text-slate-950' : 'bg-slate-900 text-purple-300'}`}
-                      >
-                        Fill Area (Cover)
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Mobile Tab Switcher */}
-                <div className="flex sm:hidden bg-purple-950/80 rounded-xl p-1 border border-purple-800 text-xs">
-                  <button
-                    onClick={() => setMobileChatTab('roster')}
-                    className={`flex-1 py-1.5 rounded-lg font-bold flex items-center justify-center gap-1.5 ${
-                      mobileChatTab === 'roster' ? 'bg-teal-500 text-slate-950 font-black' : 'text-purple-300'
-                    }`}
-                  >
-                    <Users className="w-3.5 h-3.5" />
-                    <span>{isDimension5 ? 'Students' : 'Teachers'}</span>
-                  </button>
-                  <button
-                    onClick={() => setMobileChatTab('chat')}
-                    className={`flex-1 py-1.5 rounded-lg font-bold flex items-center justify-center gap-1.5 ${
-                      mobileChatTab === 'chat' ? 'bg-teal-500 text-slate-950 font-black' : 'text-purple-300'
-                    }`}
-                  >
-                    <MessageCircle className="w-3.5 h-3.5" />
-                    <span>Chat Panel</span>
-                  </button>
-                </div>
-
-                {/* Main Chat Workspace Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-0 sm:gap-4 h-[76vh] min-h-[480px] max-h-[720px] sm:h-[720px] rounded-3xl overflow-hidden border border-purple-800 bg-slate-950 shadow-2xl">
+                {/* Authentic WhatsApp Desktop Container */}
+                <div className="w-full rounded-2xl overflow-hidden shadow-2xl border border-[#d1d7db] bg-white flex flex-col h-[82vh] min-h-[580px] max-h-[860px]">
                   
-                  {/* Left Column: Contacts Directory (Width 4/12 on desktop) */}
-                  <div className={`sm:col-span-4 lg:col-span-4 bg-purple-950/40 border-r border-purple-800 flex flex-col h-full ${
-                    mobileChatTab === 'roster' ? 'flex' : 'hidden sm:flex'
-                  }`}>
-                    
-                    {/* Search & Header */}
-                    <div className="p-3 border-b border-purple-800 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase text-teal-300 tracking-wider font-mono">
-                          {isDimension5 ? 'Registered Students' : 'Registered Faculty'}
-                        </span>
-                        <span className="text-[11px] font-mono text-purple-300">
-                          {chatContactsList.filter(c => isUserOnline(c)).length} Online • {chatContactsList.filter(c => !isUserOnline(c)).length} Offline
-                        </span>
+                  {/* WhatsApp Desktop Top App Bar (Title Bar) */}
+                  <div className="h-10 bg-[#f0f2f5] border-b border-[#d1d7db] px-4 flex items-center justify-between select-none shrink-0">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-5 h-5 rounded-full bg-[#25d366] flex items-center justify-center text-white shadow-xs">
+                        <MessageSquare className="w-3 h-3 fill-current" />
                       </div>
-                      <div className="relative">
-                        <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-purple-400" />
-                        <input
-                          type="text"
-                          placeholder={isDimension5 ? "Search student name or class..." : "Search teacher name or subject..."}
-                          value={contactSearchQuery}
-                          onChange={(e) => setContactSearchQuery(e.target.value)}
-                          className="w-full pl-8 pr-3 py-1.5 bg-slate-900 border border-purple-700 rounded-xl text-xs text-white placeholder-purple-400 focus:outline-none focus:border-teal-400"
-                        />
-                      </div>
+                      <span className="text-xs font-bold text-[#111b21] tracking-tight">WhatsApp</span>
+                      <span className="text-[11px] text-[#667781] font-semibold border-l border-[#d1d7db] pl-2.5">
+                        {isDimension5 ? 'Faculty Academic Direct Desk' : 'Verified Faculty Doubt Portal'}
+                      </span>
                     </div>
 
-                    {/* Contacts List */}
-                    <div className="flex-1 overflow-y-auto divide-y divide-purple-900/40 scrollbar-thin">
-                      {chatContactsList.length === 0 ? (
-                        <div className="p-8 text-center space-y-2 text-purple-300 text-xs">
-                          <Users className="w-8 h-8 text-purple-500 mx-auto opacity-40" />
-                          <p className="font-bold text-white">
-                            {isDimension5 ? 'No registered students yet' : 'No registered faculty yet'}
-                          </p>
-                          <p className="text-[11px]">
-                            {isDimension5 
-                              ? 'Students who register accounts in Dimension 1 to 4 will appear here for direct messaging.'
-                              : 'Teachers who register in Dimension 5 will appear here for academic consultations.'}
-                          </p>
-                        </div>
-                      ) : (
-                        chatContactsList
-                          .filter(c => {
-                            if (!contactSearchQuery.trim()) return true;
-                            const q = contactSearchQuery.toLowerCase();
-                            return (c.name && c.name.toLowerCase().includes(q)) || (c.subtitle && c.subtitle.toLowerCase().includes(q));
-                          })
-                          .map((contact) => {
-                            const isSelected = activeContact?.id === contact.id;
-                            const msgs = typeof getMessagesForContact === 'function' ? getMessagesForContact(contact) : (teacherChatsMap[contact.id] || []);
-                            const lastMsg = msgs[msgs.length - 1];
-
-                            return (
-                              <button
-                                key={contact.id}
-                                onClick={() => handleSelectContact(contact.id)}
-                                className={`w-full p-3 flex items-start gap-3 text-left transition cursor-pointer ${
-                                  isSelected ? 'bg-purple-900/60 border-l-4 border-teal-400' : 'hover:bg-purple-900/20'
-                                }`}
-                              >
-                                {/* Avatar / DP */}
-                                <div className="relative shrink-0">
-                                  {contact.dp ? (
-                                    <img
-                                      src={contact.dp}
-                                      alt={contact.name}
-                                      className="w-10 h-10 rounded-2xl object-cover border border-teal-400 shadow-md"
-                                    />
-                                  ) : (
-                                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-600 to-teal-500 text-slate-950 font-black flex items-center justify-center text-sm shadow-md">
-                                      {contact.name.charAt(0)}
-                                    </div>
-                                  )}
-                                  {isUserOnline(contact) ? (
-                                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 absolute -bottom-0.5 -right-0.5 ring-2 ring-slate-950 shadow-xs" title="Online" />
-                                  ) : (
-                                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500 absolute -bottom-0.5 -right-0.5 ring-2 ring-slate-950 shadow-xs" title="Offline" />
-                                  )}
-                                </div>
-
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center justify-between gap-1">
-                                    <h4 className="text-xs font-bold text-white truncate">{contact.name}</h4>
-                                    <span className="text-[10px] text-purple-400 font-mono">
-                                      {lastMsg ? lastMsg.time : 'Active'}
-                                    </span>
-                                  </div>
-                                  <p className="text-[11px] text-teal-300 truncate font-mono">
-                                    {contact.subtitle}
-                                  </p>
-                                  {lastMsg && (
-                                    <p className="text-[11px] text-purple-300 truncate mt-0.5">
-                                      {lastMsg.text || (lastMsg.media ? `[${lastMsg.media.type}]` : '...')}
-                                    </p>
-                                  )}
-                                </div>
-                              </button>
-                            );
-                          })
+                    <div className="flex items-center gap-3">
+                      {isDimension5 && (
+                        <button
+                          type="button"
+                          onClick={() => setShowTeacherProfileModal(true)}
+                          className="px-2.5 py-1 rounded-md bg-white border border-[#d1d7db] text-[#111b21] hover:bg-[#eae6df] text-[11px] font-bold flex items-center gap-1.5 transition cursor-pointer"
+                        >
+                          <Edit3 className="w-3 h-3 text-[#00a884]" />
+                          <span>Edit DP &amp; Profile</span>
+                        </button>
                       )}
+
+                      {/* Window Controls */}
+                      <div className="flex items-center gap-2 text-[#54656f] text-xs font-mono ml-2">
+                        <span className="w-3 h-3 flex items-center justify-center hover:text-[#111b21] cursor-pointer" title="Minimize">—</span>
+                        <span className="w-3 h-3 flex items-center justify-center hover:text-[#111b21] cursor-pointer" title="Maximize">□</span>
+                        <span className="w-3 h-3 flex items-center justify-center hover:text-rose-600 cursor-pointer" title="Close">✕</span>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Right Column: Chat Stream & Message Input (Width 8/12 on desktop) */}
-                  <div className={`sm:col-span-8 lg:col-span-8 relative flex flex-col h-full min-h-0 overflow-hidden bg-slate-950 ${
-                    mobileChatTab === 'chat' ? 'flex' : 'hidden sm:flex'
-                  }`}>
+                  {/* Main Desktop Workspace Area (3 Columns: Dock + Chats Roster + Conversation) */}
+                  <div className="flex-1 flex overflow-hidden min-h-0 bg-white">
                     
-                    {/* Active Chat Header */}
-                    {activeContact ? (
-                      <div className="p-3.5 border-b border-purple-800 bg-purple-950/60 flex items-center justify-between flex-wrap gap-2 shrink-0">
-                        <div className="flex items-center gap-3">
-                          <button
-                            onClick={() => setMobileChatTab('roster')}
-                            className="px-2.5 py-1.5 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-teal-300 sm:hidden cursor-pointer shrink-0 flex items-center gap-1 text-xs font-bold shadow-sm"
-                            title="Back to contacts list"
-                          >
-                            <ChevronLeft className="w-4 h-4" />
-                            <span>Contacts</span>
-                          </button>
-                          
-                          {activeContact.dp ? (
-                            <img
-                              src={activeContact.dp}
-                              alt={activeContact.name}
-                              className="w-10 h-10 rounded-2xl object-cover border border-teal-400 shadow-md"
-                            />
-                          ) : (
-                            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-600 to-teal-500 text-slate-950 font-black flex items-center justify-center text-sm shadow-md">
-                              {activeContact.name.charAt(0)}
-                            </div>
-                          )}
+                    {/* Column 1: WhatsApp Left Vertical Icon Dock (Far Left) */}
+                    <div className="w-14 sm:w-16 bg-[#f0f2f5] border-r border-[#d1d7db] flex flex-col items-center justify-between py-3 shrink-0">
+                      
+                      {/* Top Icons */}
+                      <div className="flex flex-col items-center gap-4 w-full">
+                        {/* Chats with Badge */}
+                        <button 
+                          type="button"
+                          onClick={() => setMobileChatTab('roster')}
+                          className="relative p-2 rounded-xl bg-[#d9fdd3] text-[#008069] shadow-xs cursor-pointer transition"
+                          title="Chats"
+                        >
+                          <MessageSquare className="w-5 h-5 fill-current" />
+                          <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-[#25d366] text-white text-[9px] font-black shadow-xs">
+                            {chatContactsList.filter(c => isUserOnline(c)).length || 2}
+                          </span>
+                        </button>
 
-                          <div>
-                            <h3 className="text-xs sm:text-sm font-black text-white flex items-center gap-1.5">
-                              <span>{activeContact.name}</span>
-                              <span className={`w-2 h-2 rounded-full ${isUserOnline(activeContact) ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'}`} />
-                              <span className={`text-[10px] font-bold ${isUserOnline(activeContact) ? 'text-emerald-400' : 'text-rose-400'}`}>
-                                {isUserOnline(activeContact) ? 'Online' : 'Offline'}
-                              </span>
-                            </h3>
-                            <p className="text-[10px] sm:text-xs text-teal-300 font-mono">
-                              {activeContact.subtitle} - {activeContact.role}
-                            </p>
+                        {/* Calls */}
+                        <button 
+                          type="button"
+                          className="p-2 rounded-xl text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21] transition cursor-pointer"
+                          title="Calls"
+                        >
+                          <Phone className="w-5 h-5" />
+                        </button>
+
+                        {/* Status */}
+                        <button 
+                          type="button"
+                          className="p-2 rounded-xl text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21] transition cursor-pointer"
+                          title="Status"
+                        >
+                          <Radio className="w-5 h-5" />
+                        </button>
+
+                        {/* Channels */}
+                        <button 
+                          type="button"
+                          className="p-2 rounded-xl text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21] transition cursor-pointer"
+                          title="Channels"
+                        >
+                          <Compass className="w-5 h-5" />
+                        </button>
+
+                        {/* Communities */}
+                        <button 
+                          type="button"
+                          className="p-2 rounded-xl text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21] transition cursor-pointer"
+                          title="Communities"
+                        >
+                          <Users className="w-5 h-5" />
+                        </button>
+
+                        {/* Meta AI Gradient Icon */}
+                        <button 
+                          type="button"
+                          onClick={handleInstantAIAnswer}
+                          className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-[1.5px] cursor-pointer hover:scale-105 transition shadow-sm"
+                          title="Rishi AI Chat Assistant"
+                        >
+                          <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
+                            <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+                          </div>
+                        </button>
+                      </div>
+
+                      {/* Bottom Dock Items: Settings & Profile */}
+                      <div className="flex flex-col items-center gap-3 w-full border-t border-[#d1d7db] pt-3">
+                        <button 
+                          type="button"
+                          onClick={() => isDimension5 && setShowTeacherProfileModal(true)}
+                          className="p-2 rounded-xl text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21] transition cursor-pointer"
+                          title="Settings"
+                        >
+                          <Settings className="w-5 h-5" />
+                        </button>
+
+                        {/* User Avatar */}
+                        <div className="relative cursor-pointer" title={user?.name || 'My Profile'}>
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00a884] to-[#25d366] text-white font-bold flex items-center justify-center text-xs shadow-xs">
+                            {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                          </div>
+                          <span className="w-2.5 h-2.5 rounded-full bg-[#25d366] ring-2 ring-white absolute -bottom-0.5 -right-0.5" />
+                        </div>
+                      </div>
+
+                    </div>
+
+                    {/* Column 2: Chats Directory Panel (Middle) */}
+                    <div className={`w-full sm:w-80 md:w-96 bg-white border-r border-[#d1d7db] flex flex-col h-full shrink-0 ${
+                      mobileChatTab === 'roster' ? 'flex' : 'hidden sm:flex'
+                    }`}>
+                      
+                      {/* Chats Header */}
+                      <div className="p-3.5 pb-2 border-b border-[#f0f2f5] space-y-3 shrink-0">
+                        <div className="flex items-center justify-between">
+                          <h2 className="text-xl font-bold text-[#111b21] tracking-tight">Chats</h2>
+                          <div className="flex items-center gap-1 text-[#54656f]">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (chatContactsList.length > 0 && !activeContact) {
+                                  handleSelectContact(chatContactsList[0].id);
+                                }
+                              }}
+                              className="w-8 h-8 rounded-lg bg-[#00a884] hover:bg-[#008f6f] text-white flex items-center justify-center transition cursor-pointer shadow-xs"
+                              title="Start New Chat"
+                            >
+                              <Edit3 className="w-4 h-4" />
+                            </button>
+                            <button 
+                              type="button"
+                              onClick={() => setShowChatMenu(prev => !prev)}
+                              className="p-1.5 rounded-lg hover:bg-[#f0f2f5] text-[#54656f] hover:text-[#111b21] transition cursor-pointer"
+                              title="Menu"
+                            >
+                              <MoreVertical className="w-4 h-4" />
+                            </button>
                           </div>
                         </div>
 
-                        {/* Top Actions: AI Answer */}
-                        <div className="flex items-center gap-2">
+                        {/* Search Bar */}
+                        <div className="relative">
+                          <Search className="w-4 h-4 absolute left-3 top-2.5 text-[#54656f]" />
+                          <input
+                            type="text"
+                            placeholder="Search or start a new chat"
+                            value={contactSearchQuery}
+                            onChange={(e) => setContactSearchQuery(e.target.value)}
+                            className="w-full pl-9 pr-3 py-2 bg-[#f0f2f5] border border-transparent rounded-lg text-xs font-bold text-[#111b21] placeholder-[#667781] focus:outline-none focus:bg-white focus:border-[#00a884] transition"
+                          />
+                        </div>
+
+                        {/* Filter Chips: All, Unread, Favourites */}
+                        <div className="flex items-center gap-2 pt-1 overflow-x-auto scrollbar-none pb-1">
                           <button
-                            onClick={handleInstantAIAnswer}
-                            className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-400 text-slate-950 font-black text-[11px] flex items-center gap-1.5 shadow-md cursor-pointer hover:opacity-95"
+                            type="button"
+                            onClick={() => setChatFilter('all')}
+                            className={`px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer shrink-0 ${
+                              chatFilter === 'all'
+                                ? 'bg-[#d9fdd3] text-[#008069] border border-[#c3f4bc]'
+                                : 'bg-[#f0f2f5] text-[#54656f] hover:bg-[#e9edef]'
+                            }`}
                           >
-                            <Bot className="w-3.5 h-3.5" />
-                            <span>Instant Teacher AI Answer</span>
+                            All
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setChatFilter('unread')}
+                            className={`px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer shrink-0 ${
+                              chatFilter === 'unread'
+                                ? 'bg-[#d9fdd3] text-[#008069] border border-[#c3f4bc]'
+                                : 'bg-[#f0f2f5] text-[#54656f] hover:bg-[#e9edef]'
+                            }`}
+                          >
+                            Unread
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setChatFilter('favourites')}
+                            className={`px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer shrink-0 ${
+                              chatFilter === 'favourites'
+                                ? 'bg-[#d9fdd3] text-[#008069] border border-[#c3f4bc]'
+                                : 'bg-[#f0f2f5] text-[#54656f] hover:bg-[#e9edef]'
+                            }`}
+                          >
+                            Favourites
+                          </button>
+                          <button
+                            type="button"
+                            className="w-6 h-6 rounded-full bg-[#f0f2f5] text-[#54656f] hover:bg-[#e9edef] flex items-center justify-center text-xs font-bold shrink-0 cursor-pointer"
+                          >
+                            +
                           </button>
                         </div>
                       </div>
-                    ) : (
-                      <div className="p-3.5 border-b border-purple-800 bg-purple-950/60 text-xs text-purple-300">
-                        Select a contact from directory
-                      </div>
-                    )}
 
-                    {/* Messages Body with Custom Wallpaper */}
-                    <div
-                      onScroll={(e) => {
-                        const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-                        const isNearBottom = scrollHeight - scrollTop - clientHeight < 120;
-                        setShowChatScrollDown(!isNearBottom);
-                      }}
-                      className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-3 pb-10 chat-scroll-container"
-                      style={
-                        chatWallpaper.startsWith('data:') || chatWallpaper.startsWith('http')
-                          ? {
-                              backgroundImage: `url(${chatWallpaper})`,
-                              backgroundSize: wallpaperFitMode === 'contain' ? 'contain' : 'cover',
-                              backgroundPosition: 'center',
-                              backgroundRepeat: 'no-repeat',
-                              backgroundColor: '#020617'
-                            }
-                          : chatWallpaper === 'emerald'
-                          ? { background: 'linear-gradient(135deg, #022c22 0%, #020617 100%)' }
-                          : chatWallpaper === 'purple'
-                          ? { background: 'linear-gradient(135deg, #2e1065 0%, #020617 100%)' }
-                          : { background: '#020617' }
-                      }
-                    >
-                      {activeContact && (typeof getMessagesForContact === 'function' ? getMessagesForContact(activeContact).length === 0 : (!teacherChatsMap[activeContact.id] || teacherChatsMap[activeContact.id].length === 0)) ? (
-                        <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-2 text-purple-300">
-                          <MessageSquare className="w-10 h-10 text-teal-400 opacity-60" />
-                          <h4 className="text-sm font-bold text-white">Start Direct Consultation</h4>
-                          <p className="text-xs max-w-sm">
-                            Type a question or homework doubt below, attach photos/notes, and get verified answers.
-                          </p>
-                        </div>
-                      ) : (
-                        (typeof getMessagesForContact === 'function' ? getMessagesForContact(activeContact) : (teacherChatsMap[activeContact?.id] || [])).map((msg) => {
-                          const isMe = Boolean(
-                            (msg.senderUserId && user?.id && String(msg.senderUserId).toLowerCase() === String(user.id).toLowerCase()) ||
-                            (msg.senderName && user?.name && String(msg.senderName).toLowerCase() === String(user.name).toLowerCase()) ||
-                            (isDimension5 ? msg.sender === 'teacher' : msg.sender === 'student')
-                          );
+                      {/* Contacts List */}
+                      <div className="flex-1 overflow-y-auto divide-y divide-[#f0f2f5] scrollbar-thin bg-white">
+                        {chatContactsList.length === 0 ? (
+                          <div className="p-8 text-center space-y-2 text-[#667781] text-xs">
+                            <Users className="w-8 h-8 text-[#00a884] mx-auto opacity-50" />
+                            <p className="font-bold text-[#111b21]">No chats yet</p>
+                            <p className="text-[11px]">Verified teachers and students will appear here for instant consultation.</p>
+                          </div>
+                        ) : (
+                          chatContactsList
+                            .filter(c => {
+                              if (chatFilter === 'unread') return isUserOnline(c);
+                              if (chatFilter === 'favourites') return Boolean(c.isHOD || c.isPrincipal);
+                              if (!contactSearchQuery.trim()) return true;
+                              const q = contactSearchQuery.toLowerCase();
+                              return (c.name && c.name.toLowerCase().includes(q)) || (c.subtitle && c.subtitle.toLowerCase().includes(q));
+                            })
+                            .map((contact) => {
+                              const isSelected = activeContact?.id === contact.id;
+                              const msgs = typeof getMessagesForContact === 'function' ? getMessagesForContact(contact) : (teacherChatsMap[contact.id] || []);
+                              const lastMsg = msgs[msgs.length - 1];
 
-                          const myId = String(user?.id || 'me').toLowerCase();
-                          if (Array.isArray(msg.deletedForMe) && msg.deletedForMe.includes(myId)) {
-                            return null;
-                          }
-
-                          return (
-                            <div
-                              key={msg.id}
-                              className={`flex flex-col group ${isMe ? 'items-end' : 'items-start'} animate-fadeIn`}
-                            >
-                              <div
-                                className={`max-w-[85%] sm:max-w-[70%] p-3 rounded-2xl space-y-1.5 shadow-lg relative ${
-                                  isMe
-                                    ? 'bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 rounded-br-none'
-                                    : 'bg-purple-900/90 text-white rounded-bl-none border border-purple-700/60'
-                                }`}
-                              >
-                                {msg.deletedForEveryone ? (
-                                  <div className="flex items-center gap-1.5 italic text-slate-400 text-xs py-1">
-                                    <Trash2 className="w-3.5 h-3.5 opacity-60" />
-                                    <span>This message was deleted</span>
-                                  </div>
-                                ) : (<>
-                                <div className="flex items-center justify-between gap-3 text-[10px] font-mono opacity-80 border-b border-black/10 pb-1">
-                                  <span className="font-black">{msg.senderName}</span>
-                                  <span>{msg.senderClassSec}</span>
-                                </div>
-
-                                {/* Media Renderers */}
-                                {msg.media && (
-                                  <div className="pt-1">
-                                    {msg.media.type === 'image' && (
+                              return (
+                                <button
+                                  key={contact.id}
+                                  onClick={() => handleSelectContact(contact.id)}
+                                  className={`w-full p-3 flex items-center gap-3 text-left transition cursor-pointer ${
+                                    isSelected ? 'bg-[#f0f2f5]' : 'hover:bg-[#f5f6f6] bg-white'
+                                  }`}
+                                >
+                                  {/* Avatar */}
+                                  <div className="relative shrink-0">
+                                    {contact.dp ? (
                                       <img
-                                        src={msg.media.dataUrl}
-                                        alt={msg.media.name}
-                                        className="rounded-xl max-h-64 object-contain w-full border border-black/20"
+                                        src={contact.dp}
+                                        alt={contact.name}
+                                        className="w-12 h-12 rounded-full object-cover border border-[#d1d7db]"
                                       />
+                                    ) : (
+                                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#dfe5e7] to-[#cfd8dc] text-[#111b21] font-bold flex items-center justify-center text-base shadow-xs">
+                                        {contact.name.charAt(0)}
+                                      </div>
                                     )}
-                                    {msg.media.type === 'audio' && (
-                                      <audio controls src={msg.media.dataUrl} className="w-full max-w-xs" />
-                                    )}
-                                    {msg.media.type === 'video' && (
-                                      <video controls src={msg.media.dataUrl} className="w-full max-w-xs max-h-60 rounded-xl" />
+                                    {isUserOnline(contact) && (
+                                      <span className="w-3 h-3 rounded-full bg-[#25d366] ring-2 ring-white absolute bottom-0 right-0" title="Online" />
                                     )}
                                   </div>
-                                )}
 
-                                {msg.text && (
-                                  <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</p>
-                                )}
-
-                                <div className="flex items-center justify-between gap-2 text-[9px] font-mono opacity-80 pt-0.5">
-                                  <button
-                                    type="button"
-                                    onClick={() => setDeleteMsgModal({ isOpen: true, msg, contact: activeContact })}
-                                    className="opacity-70 sm:opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-black/20 text-slate-400 hover:text-rose-400 transition cursor-pointer"
-                                    title="Delete message"
-                                  >
-                                    <Trash2 className="w-3 h-3" />
-                                  </button>
-                                  <div className="flex items-center gap-1">
-                                    <span>{msg.time}</span>
-                                    {isMe && (
-                                      <span>
-                                        {msg.status === 'delivered' ? (
-                                          <CheckCheck className="w-3 h-3 text-slate-950" />
-                                        ) : (
-                                          <Check className="w-3 h-3 text-slate-950/70" />
-                                        )}
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center justify-between gap-1">
+                                      <h4 className="text-sm font-bold text-[#111b21] truncate">{contact.name}</h4>
+                                      <span className="text-[11px] text-[#667781] font-semibold shrink-0">
+                                        {lastMsg ? lastMsg.time : '8:02 pm'}
                                       </span>
-                                    )}
+                                    </div>
+                                    <div className="flex items-center justify-between gap-1 mt-0.5">
+                                      <p className="text-xs text-[#667781] truncate font-medium flex items-center gap-1">
+                                        {lastMsg ? (
+                                          <>
+                                            <CheckCheck className="w-3.5 h-3.5 text-[#53bdeb] shrink-0" />
+                                            <span className="truncate">{lastMsg.text || (lastMsg.media ? `[${lastMsg.media.type}]` : 'Message')}</span>
+                                          </>
+                                        ) : (
+                                          <span className="text-[#00a884] font-semibold">{contact.subtitle || 'Available on WhatsApp'}</span>
+                                        )}
+                                      </p>
+                                    </div>
                                   </div>
-                                </div>
-                                </>)}
-                              </div>
-                            </div>
-                          );
-                        })
-                      )}
-                      <div ref={chatMessagesEndRef} className="h-4 w-full" />
+                                </button>
+                              );
+                            })
+                        )}
+                      </div>
                     </div>
 
-                    {/* Floating Scroll to Bottom Button */}
-                    {showChatScrollDown && (
-                      <button
-                        type="button"
-                        onClick={() => chatMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })}
-                        className="absolute bottom-24 right-6 z-30 px-3.5 py-2 rounded-full bg-teal-400 hover:bg-teal-300 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-2xl transition cursor-pointer animate-bounce border-2 border-slate-950"
-                        title="Scroll down to latest messages"
-                      >
-                        <ChevronDown className="w-4 h-4" />
-                        <span>Latest Messages</span>
-                      </button>
-                    )}
+                    {/* Column 3: Active Conversation Canvas (Right) */}
+                    <div className={`flex-1 flex flex-col h-full min-w-0 bg-[#efeae2] relative overflow-hidden ${
+                      mobileChatTab === 'chat' ? 'flex' : 'hidden sm:flex'
+                    }`}
+                    style={{
+                      backgroundColor: '#efeae2',
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2354656f' fill-opacity='0.06'%3E%3Cpath d='M40 30h20v20H40zM120 70h15v15h-15zM220 40h25v25h-25zM310 80h18v18h-18zM60 160h22v22H60zM180 140h30v30h-30zM290 170h20v20h-20zM30 270h25v25H30zM140 250h20v20h-20zM240 280h28v28h-28zM340 260h16v16h-16zM80 340h30v30H80zM200 350h22v22h-22zM310 340h25v25h-25z'/%3E%3Ccircle cx='70' cy='90' r='12'/%3E%3Ccircle cx='170' cy='50' r='8'/%3E%3Ccircle cx='270' cy='110' r='14'/%3E%3Ccircle cx='360' cy='40' r='10'/%3E%3Ccircle cx='100' cy='210' r='15'/%3E%3Ccircle cx='240' cy='200' r='11'/%3E%3Ccircle cx='350' cy='160' r='13'/%3E%3Ccircle cx='50' cy='360' r='14'/%3E%3Ccircle cx='160' cy='320' r='9'/%3E%3Ccircle cx='270' cy='360' r='16'/%3E%3C/g%3E%3C/svg%3E")`
+                    }}
+                    >
+                      
+                      {activeContact ? (
+                        <>
+                          {/* Active Contact Header Bar */}
+                          <div className="p-3 px-4 bg-[#f0f2f5] border-b border-[#d1d7db] flex items-center justify-between shrink-0 shadow-xs z-10">
+                            <div className="flex items-center gap-3">
+                              <button
+                                type="button"
+                                onClick={() => setMobileChatTab('roster')}
+                                className="p-1 rounded-lg text-[#54656f] hover:text-[#111b21] sm:hidden cursor-pointer"
+                                title="Back to Contacts"
+                              >
+                                <ChevronLeft className="w-5 h-5" />
+                              </button>
+                              
+                              <div className="relative">
+                                {activeContact.dp ? (
+                                  <img
+                                    src={activeContact.dp}
+                                    alt={activeContact.name}
+                                    className="w-10 h-10 rounded-full object-cover border border-[#d1d7db]"
+                                  />
+                                ) : (
+                                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#dfe5e7] to-[#cfd8dc] text-[#111b21] font-bold flex items-center justify-center text-sm shadow-xs">
+                                    {activeContact.name.charAt(0)}
+                                  </div>
+                                )}
+                                {isUserOnline(activeContact) && (
+                                  <span className="w-2.5 h-2.5 rounded-full bg-[#25d366] ring-2 ring-white absolute bottom-0 right-0" />
+                                )}
+                              </div>
 
-                    {/* Pending Media Preview */}
-                    {pendingMedia && (
-                      <div className="px-4 py-2 bg-purple-950/95 border-t border-purple-800 flex items-center justify-between gap-3 text-xs">
-                        <div className="flex items-center gap-2 text-teal-300">
-                          <Paperclip className="w-4 h-4 text-teal-300" />
-                          <span className="font-bold truncate max-w-xs">{pendingMedia.name}</span>
-                          <span className="text-[10px] uppercase font-mono text-purple-300">({pendingMedia.type})</span>
+                              <div>
+                                <h3 className="text-sm font-bold text-[#111b21] flex items-center gap-1.5 leading-tight">
+                                  <span>{activeContact.name}</span>
+                                </h3>
+                                <p className="text-[11px] font-semibold text-[#667781]">
+                                  {isUserOnline(activeContact) ? (
+                                    <span className="text-[#00a884]">online</span>
+                                  ) : (
+                                    <span>last seen today at 8:02 pm</span>
+                                  )}
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Top Right Actions */}
+                            <div className="flex items-center gap-1 text-[#54656f] relative">
+                              <button
+                                type="button"
+                                className="p-2 rounded-lg hover:bg-[#e9edef] hover:text-[#111b21] transition cursor-pointer"
+                                title="Video Call"
+                              >
+                                <Video className="w-4 h-4" />
+                              </button>
+                              <button
+                                type="button"
+                                className="p-2 rounded-lg hover:bg-[#e9edef] hover:text-[#111b21] transition cursor-pointer"
+                                title="Voice Call"
+                              >
+                                <Phone className="w-4 h-4" />
+                              </button>
+                              <button
+                                type="button"
+                                className="p-2 rounded-lg hover:bg-[#e9edef] hover:text-[#111b21] transition cursor-pointer"
+                                title="Search in Chat"
+                              >
+                                <Search className="w-4 h-4" />
+                              </button>
+                              
+                              <button
+                                type="button"
+                                onClick={() => setShowChatMenu(prev => !prev)}
+                                className="p-2 rounded-lg hover:bg-[#e9edef] hover:text-[#111b21] transition cursor-pointer"
+                                title="Chat Menu"
+                              >
+                                <MoreVertical className="w-4 h-4" />
+                              </button>
+
+                              {/* WhatsApp Dropdown Menu */}
+                              {showChatMenu && (
+                                <div className="absolute right-0 top-10 w-56 bg-white border border-[#d1d7db] rounded-xl shadow-2xl py-1.5 z-50 text-xs font-bold text-[#111b21] animate-fadeIn">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleClearAllChat(activeContact)}
+                                    className="w-full px-4 py-2.5 text-left hover:bg-rose-50 text-rose-600 flex items-center gap-2 cursor-pointer transition"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                    <span>Delete all chat (Clear)</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setShowChatMenu(false);
+                                      handleInstantAIAnswer();
+                                    }}
+                                    className="w-full px-4 py-2.5 text-left hover:bg-[#f0f2f5] flex items-center gap-2 cursor-pointer transition text-[#00a884]"
+                                  >
+                                    <Bot className="w-4 h-4" />
+                                    <span>Instant Rishi AI Answer</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setShowChatMenu(false);
+                                      setIsDoubtSessionResolved(true);
+                                      playSoundChime('delivered');
+                                    }}
+                                    className="w-full px-4 py-2.5 text-left hover:bg-[#f0f2f5] flex items-center gap-2 cursor-pointer transition"
+                                  >
+                                    <CheckCircle className="w-4 h-4 text-[#00a884]" />
+                                    <span>End Doubt Consultation</span>
+                                  </button>
+                                </div>
+                              )}
+
+                            </div>
+                          </div>
+
+                          {/* Chat Stream Messages Canvas */}
+                          <div
+                            onScroll={(e) => {
+                              const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+                              const isNearBottom = scrollHeight - scrollTop - clientHeight < 120;
+                              setShowChatScrollDown(!isNearBottom);
+                            }}
+                            className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-3 chat-scroll-container"
+                          >
+                            {/* Date Badge: Today */}
+                            <div className="flex justify-center my-2">
+                              <span className="px-3 py-1 rounded-lg bg-white border border-[#d1d7db]/40 text-[#54656f] text-[11px] font-bold uppercase tracking-wide shadow-xs">
+                                Today
+                              </span>
+                            </div>
+
+                            {/* Messages Loop */}
+                            {(typeof getMessagesForContact === 'function' ? getMessagesForContact(activeContact) : (teacherChatsMap[activeContact?.id] || [])).length === 0 ? (
+                              <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-2 text-[#667781]">
+                                <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-xs">
+                                  <MessageSquare className="w-7 h-7 text-[#00a884]" />
+                                </div>
+                                <h4 className="text-sm font-bold text-[#111b21]">No messages here yet</h4>
+                                <p className="text-xs max-w-sm font-medium">Send a message or doubt below to start chatting with {activeContact.name}.</p>
+                              </div>
+                            ) : (
+                              (typeof getMessagesForContact === 'function' ? getMessagesForContact(activeContact) : (teacherChatsMap[activeContact?.id] || [])).map((msg) => {
+                                const isMe = Boolean(
+                                  (msg.senderUserId && user?.id && String(msg.senderUserId).toLowerCase() === String(user.id).toLowerCase()) ||
+                                  (msg.senderName && user?.name && String(msg.senderName).toLowerCase() === String(user.name).toLowerCase()) ||
+                                  (isDimension5 ? msg.sender === 'teacher' : msg.sender === 'student')
+                                );
+
+                                const myId = String(user?.id || 'me').toLowerCase();
+                                const myName = String(user?.name || '').toLowerCase().trim();
+                                if (Array.isArray(msg.deletedForMe) && (msg.deletedForMe.includes(myId) || (myName && msg.deletedForMe.includes(myName)))) {
+                                  return null;
+                                }
+
+                                return (
+                                  <div
+                                    key={msg.id}
+                                    className={`flex flex-col group ${isMe ? 'items-end' : 'items-start'} animate-fadeIn`}
+                                  >
+                                    <div
+                                      className={`max-w-[85%] sm:max-w-[65%] p-2.5 px-3 rounded-lg shadow-xs space-y-1 relative ${
+                                        isMe
+                                          ? 'bg-[#d9fdd3] text-[#111b21] rounded-tr-none border border-[#c3f4bc]/50'
+                                          : 'bg-white text-[#111b21] rounded-tl-none border border-[#e9edef]'
+                                      }`}
+                                    >
+                                      {msg.deletedForEveryone ? (
+                                        <div className="flex items-center gap-1.5 italic text-[#667781] text-xs font-bold py-1">
+                                          <Trash2 className="w-3.5 h-3.5 opacity-70" />
+                                          <span>🚫 This message was deleted</span>
+                                        </div>
+                                      ) : (
+                                        <>
+                                          {!isMe && (
+                                            <div className="text-[11px] font-bold text-[#008069] pb-0.5">
+                                              {msg.senderName}
+                                            </div>
+                                          )}
+
+                                          {/* Media Renderers */}
+                                          {msg.media && (
+                                            <div className="pt-1">
+                                              {msg.media.type === 'image' && (
+                                                <img
+                                                  src={msg.media.dataUrl}
+                                                  alt={msg.media.name}
+                                                  className="rounded-lg max-h-72 object-contain w-full border border-black/10"
+                                                />
+                                              )}
+                                              {msg.media.type === 'audio' && (
+                                                <audio controls src={msg.media.dataUrl} className="w-full max-w-xs" />
+                                              )}
+                                              {msg.media.type === 'video' && (
+                                                <video controls src={msg.media.dataUrl} className="w-full max-w-xs max-h-60 rounded-lg" />
+                                              )}
+                                            </div>
+                                          )}
+
+                                          {/* Always Bold Message Text with custom selected color */}
+                                          {msg.text && (
+                                            <p 
+                                              className="text-xs sm:text-sm font-bold leading-relaxed whitespace-pre-wrap break-words"
+                                              style={{ color: msg.textColor || '#111b21' }}
+                                            >
+                                              {msg.text}
+                                            </p>
+                                          )}
+
+                                          {/* Bottom Meta Bar (Timestamp + Checkmarks + Hover Delete) */}
+                                          <div className="flex items-center justify-end gap-1.5 text-[10px] text-[#667781] font-semibold pt-0.5 float-right ml-4 -mb-0.5">
+                                            <button
+                                              type="button"
+                                              onClick={() => setDeleteMsgModal({ isOpen: true, msg, contact: activeContact })}
+                                              className="opacity-0 group-hover:opacity-100 p-0.5 hover:text-rose-600 transition cursor-pointer"
+                                              title="Delete message"
+                                            >
+                                              <Trash2 className="w-3 h-3" />
+                                            </button>
+                                            
+                                            <span>{msg.time}</span>
+                                            
+                                            {isMe && (
+                                              <span>
+                                                {msg.status === 'delivered' ? (
+                                                  <CheckCheck className="w-3.5 h-3.5 text-[#53bdeb]" />
+                                                ) : (
+                                                  <Check className="w-3.5 h-3.5 text-[#667781]" />
+                                                )}
+                                              </span>
+                                            )}
+                                          </div>
+                                        </>
+                                      )}
+                                    </div>
+                                  </div>
+                                );
+                              })
+                            )}
+                            <div ref={chatMessagesEndRef} className="h-4 w-full" />
+                          </div>
+
+                          {/* Floating Scroll to Bottom */}
+                          {showChatScrollDown && (
+                            <button
+                              type="button"
+                              onClick={() => chatMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                              className="absolute bottom-20 right-6 z-30 p-2.5 rounded-full bg-white text-[#54656f] hover:text-[#111b21] shadow-lg transition cursor-pointer border border-[#d1d7db]"
+                              title="Scroll to bottom"
+                            >
+                              <ChevronDown className="w-5 h-5" />
+                            </button>
+                          )}
+
+                          {/* Pending Media Preview */}
+                          {pendingMedia && (
+                            <div className="px-4 py-2 bg-white border-t border-[#d1d7db] flex items-center justify-between gap-3 text-xs">
+                              <div className="flex items-center gap-2 text-[#00a884] font-bold">
+                                <Paperclip className="w-4 h-4" />
+                                <span className="truncate max-w-xs">{pendingMedia.name}</span>
+                                <span className="text-[10px] uppercase text-[#667781]">({pendingMedia.type})</span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setPendingMedia(null)}
+                                className="p-1 rounded-lg hover:bg-[#f0f2f5] text-[#54656f] hover:text-[#111b21] cursor-pointer"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          )}
+
+                          {/* WhatsApp Input Bar */}
+                          <div className="p-2 sm:p-2.5 bg-[#f0f2f5] border-t border-[#d1d7db] flex items-center gap-2 shrink-0 relative">
+                            
+                            {/* Smiley Emoji Icon */}
+                            <button
+                              type="button"
+                              onClick={() => setChatInputText(prev => prev + ' 😊')}
+                              className="p-2 rounded-lg text-[#54656f] hover:text-[#111b21] cursor-pointer transition"
+                              title="Add Emoji"
+                            >
+                              <Smile className="w-5 h-5" />
+                            </button>
+
+                            {/* Paperclip Attachment Pin */}
+                            <input
+                              type="file"
+                              accept="image/*,video/*,audio/*"
+                              ref={mediaFileInputRef}
+                              className="hidden"
+                              onChange={handleUniversalMediaUpload}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => mediaFileInputRef.current?.click()}
+                              className="p-2 rounded-lg text-[#54656f] hover:text-[#111b21] cursor-pointer transition"
+                              title="Attach Media"
+                            >
+                              <Paperclip className="w-5 h-5" />
+                            </button>
+
+                            {/* Text Color Picker Swatch Button */}
+                            <div className="relative">
+                              <button
+                                type="button"
+                                onClick={() => setShowColorPicker(prev => !prev)}
+                                className="p-2 rounded-lg text-[#54656f] hover:text-[#111b21] cursor-pointer transition flex items-center gap-1"
+                                title="Change Text Color"
+                              >
+                                <Palette className="w-5 h-5" style={{ color: chatTextColor }} />
+                              </button>
+
+                              {/* Color Selector Popover */}
+                              {showColorPicker && (
+                                <div className="absolute bottom-12 left-0 bg-white border border-[#d1d7db] rounded-2xl shadow-2xl p-3 z-50 flex items-center gap-2 animate-fadeIn">
+                                  {[
+                                    { color: '#111b21', label: 'Black (Default)' },
+                                    { color: '#008069', label: 'WhatsApp Green' },
+                                    { color: '#1d4ed8', label: 'Royal Blue' },
+                                    { color: '#b91c1c', label: 'Crimson Red' },
+                                    { color: '#7c3aed', label: 'Purple' },
+                                    { color: '#ea580c', label: 'Orange' },
+                                    { color: '#0f766e', label: 'Teal' }
+                                  ].map((c) => (
+                                    <button
+                                      key={c.color}
+                                      type="button"
+                                      onClick={() => {
+                                        setChatTextColor(c.color);
+                                        setShowColorPicker(false);
+                                      }}
+                                      className={`w-6 h-6 rounded-full border-2 transition cursor-pointer transform hover:scale-110 ${
+                                        chatTextColor === c.color ? 'border-[#111b21] ring-2 ring-[#00a884]' : 'border-white'
+                                      }`}
+                                      style={{ backgroundColor: c.color }}
+                                      title={c.label}
+                                    />
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* White Rounded Input Field */}
+                            <input
+                              type="text"
+                              placeholder="Type a message"
+                              value={chatInputText}
+                              onChange={(e) => setChatInputText(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                  e.preventDefault();
+                                  handleSendMessage();
+                                }
+                              }}
+                              className="flex-1 bg-white rounded-lg px-4 py-2.5 text-xs sm:text-sm font-bold text-[#111b21] placeholder-[#667781] focus:outline-none border border-transparent focus:border-[#d1d7db] shadow-xs"
+                              style={{ color: chatTextColor }}
+                            />
+
+                            {/* Send Button */}
+                            <button
+                              type="button"
+                              disabled={!chatInputText.trim() && !pendingMedia}
+                              onClick={handleSendMessage}
+                              className="w-10 h-10 rounded-full bg-[#00a884] hover:bg-[#008f6f] text-white flex items-center justify-center shrink-0 shadow-md transition disabled:opacity-40 cursor-pointer"
+                              title="Send Message"
+                            >
+                              <Send className="w-4 h-4 ml-0.5" />
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="h-full flex flex-col items-center justify-center text-center p-8 space-y-3 bg-[#f0f2f5]">
+                          <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-xs">
+                            <MessageSquare className="w-8 h-8 text-[#00a884]" />
+                          </div>
+                          <h3 className="text-xl font-bold text-[#111b21]">WhatsApp Web for DAV</h3>
+                          <p className="text-xs text-[#667781] max-w-sm font-medium">
+                            Select a faculty teacher or student from the directory on the left to start real-time messaging with media support.
+                          </p>
                         </div>
-                        <button
-                          onClick={() => setPendingMedia(null)}
-                          className="p-1 rounded-lg hover:bg-purple-900 text-purple-300 hover:text-white cursor-pointer"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    )}
+                      )}
 
-                    {/* Chat Input Bar with SINGLE PIN ICON */}
-                    <div className="p-2.5 sm:p-3 bg-purple-950/95 border-t border-purple-800 space-y-2 shrink-0 sticky bottom-0 z-20">
-                      <div className="flex items-center gap-2">
-                        
-                        {/* Single Paperclip Pin Icon */}
-                        <input
-                          type="file"
-                          accept="image/*,video/*,audio/*"
-                          ref={mediaFileInputRef}
-                          className="hidden"
-                          onChange={handleUniversalMediaUpload}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => mediaFileInputRef.current?.click()}
-                          title="Attach Media (Image, Video, Audio, Handwritten Notes)"
-                          className="p-2.5 rounded-xl bg-slate-900 hover:bg-purple-900 text-teal-300 border border-purple-700 cursor-pointer transition hover:scale-105"
-                        >
-                          <Paperclip className="w-4 h-4" />
-                        </button>
-
-                        {/* Text Input */}
-                        <input
-                          type="text"
-                          placeholder={isDimension5 ? "Type your academic advice or guidance..." : "Type your question or chapter doubt here..."}
-                          value={chatInputText}
-                          onChange={(e) => setChatInputText(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' && !e.shiftKey) {
-                              e.preventDefault();
-                              handleSendMessage();
-                            }
-                          }}
-                          className="flex-1 px-4 py-2.5 rounded-xl bg-slate-900 border border-purple-700 text-white placeholder-purple-400 text-xs sm:text-sm focus:outline-none focus:border-teal-400"
-                        />
-
-                        {/* Send Button */}
-                        <button
-                          type="button"
-                          disabled={!chatInputText.trim() && !pendingMedia}
-                          onClick={handleSendMessage}
-                          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-slate-950 font-black text-xs flex items-center gap-1.5 transition disabled:opacity-40 cursor-pointer shadow-lg"
-                        >
-                          <Send className="w-4 h-4" />
-                          <span className="hidden sm:inline">Send</span>
-                        </button>
-                      </div>
                     </div>
 
                   </div>
@@ -3485,14 +3667,14 @@ export function TeachersSection({
 
                 {/* WhatsApp-Style Delete Message Confirmation Modal */}
                 {deleteMsgModal.isOpen && (
-                  <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-                    <div className="bg-slate-900 border border-purple-600 rounded-3xl p-6 max-w-sm w-full shadow-2xl text-center space-y-4 animate-fadeIn">
-                      <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 mx-auto flex items-center justify-center">
+                  <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+                    <div className="bg-white border border-[#d1d7db] rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center space-y-4 animate-fadeIn">
+                      <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-500 mx-auto flex items-center justify-center">
                         <Trash2 className="w-6 h-6" />
                       </div>
                       <div>
-                        <h3 className="text-base font-bold text-white">Delete message?</h3>
-                        <p className="text-xs text-purple-300 mt-1 line-clamp-2 italic">
+                        <h3 className="text-base font-bold text-[#111b21]">Delete message?</h3>
+                        <p className="text-xs text-[#667781] mt-1 line-clamp-2 italic font-bold">
                           {deleteMsgModal.msg?.text || (deleteMsgModal.msg?.media ? '[' + deleteMsgModal.msg.media.type + ']' : 'Message')}
                         </p>
                       </div>
@@ -3505,7 +3687,7 @@ export function TeachersSection({
                           <button
                             type="button"
                             onClick={() => handleDeleteForEveryone(deleteMsgModal.msg, deleteMsgModal.contact)}
-                            className="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg transition cursor-pointer"
+                            className="w-full py-2.5 rounded-lg bg-[#00a884] hover:bg-[#008f6f] text-white font-bold text-xs shadow-sm transition cursor-pointer"
                           >
                             Delete for Everyone
                           </button>
@@ -3513,14 +3695,21 @@ export function TeachersSection({
                         <button
                           type="button"
                           onClick={() => handleDeleteForMe(deleteMsgModal.msg, deleteMsgModal.contact)}
-                          className="w-full py-2.5 rounded-xl bg-purple-700 hover:bg-purple-600 text-white font-bold text-xs shadow-md transition cursor-pointer"
+                          className="w-full py-2.5 rounded-lg bg-[#f0f2f5] hover:bg-[#e9edef] text-[#111b21] font-bold text-xs transition cursor-pointer"
                         >
                           Delete for Me
                         </button>
                         <button
                           type="button"
+                          onClick={() => handleClearAllChat(deleteMsgModal.contact)}
+                          className="w-full py-2.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs transition cursor-pointer border border-rose-200"
+                        >
+                          Delete All Chat (Clear Conversation)
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => setDeleteMsgModal({ isOpen: false, msg: null, contact: null })}
-                          className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition cursor-pointer"
+                          className="w-full py-2 rounded-lg text-[#667781] hover:text-[#111b21] font-bold text-xs transition cursor-pointer"
                         >
                           Cancel
                         </button>
@@ -3529,9 +3718,10 @@ export function TeachersSection({
                   </div>
                 )}
 
+
                 {/* Edit Faculty Profile & DP Modal */}
                 {showTeacherProfileModal && (
-                  <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md p-4 flex items-center justify-center animate-fadeIn">
+                  <div className="fixed inset-0 z-50 bg-slate-950/90 p-4 flex items-center justify-center animate-fadeIn">
                     <div className="w-full max-w-md bg-slate-900 border-2 border-teal-400 rounded-3xl p-6 shadow-2xl space-y-4">
                       <div className="flex items-center justify-between pb-3 border-b border-purple-800">
                         <div className="flex items-center gap-2">
@@ -3647,8 +3837,8 @@ export function TeachersSection({
                 
                 {/* Live Class Graphical Landing Banner */}
                 <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-950 via-slate-950 to-rose-950 border-2 border-rose-500/50 p-8 md:p-12 shadow-2xl">
-                  <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-rose-500/15 blur-3xl pointer-events-none" />
-                  <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-purple-500/20 blur-3xl pointer-events-none" />
+                  <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-rose-500/15 pointer-events-none" />
+                  <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-purple-500/20 pointer-events-none" />
 
                   <div className="relative z-10 max-w-4xl space-y-4">
                     <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-950/80 border border-rose-500/50 text-xs font-mono font-bold text-rose-300">
@@ -3813,7 +4003,7 @@ export function TeachersSection({
 
                 {/* Class Selection Pop-up for Live Lectures */}
                 {isLivePortalModalOpen && (
-                  <div className="fixed inset-0 z-50 bg-slate-950/98 backdrop-blur-2xl p-4 md:p-8 flex flex-col overflow-y-auto animate-fadeIn">
+                  <div className="fixed inset-0 z-50 bg-slate-950/98 p-4 md:p-8 flex flex-col overflow-y-auto animate-fadeIn">
                     <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col space-y-6">
                       
                       {/* Top Bar */}
@@ -4076,8 +4266,8 @@ export function TeachersSection({
                 
                 {/* Hero Animated Graphical Banner */}
                 <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-950 via-slate-950 to-amber-950 border-2 border-amber-500/50 p-6 md:p-10 shadow-2xl">
-                  <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-amber-500/15 blur-3xl pointer-events-none" />
-                  <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-purple-500/20 blur-3xl pointer-events-none" />
+                  <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-amber-500/15 pointer-events-none" />
+                  <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-purple-500/20 pointer-events-none" />
 
                   <div className="relative z-10 max-w-4xl space-y-3">
                     <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-950/80 border border-amber-500/50 text-xs font-mono font-bold text-amber-300">
@@ -4091,7 +4281,7 @@ export function TeachersSection({
 
                     <p className="text-xs md:text-sm text-purple-200/80 leading-relaxed max-w-2xl">
                       {isDimension5 
-                        ? 'Dimension 5 Faculty: Deploy timed MCQ & subjective examinations, monitor student submissions, and review real-time test leaderboards.'
+                        ? 'Faculty Portal: Deploy timed MCQ & subjective examinations, monitor student submissions, and review real-time test leaderboards.'
                         : 'Attempt scheduled DAV unit examinations with timed countdown, MCQ options, and notebook photo uploads for subjective questions.'}
                     </p>
 
@@ -4133,7 +4323,7 @@ export function TeachersSection({
                           className="px-6 py-3 rounded-2xl bg-purple-900 border-2 border-teal-400 text-teal-300 hover:text-white font-black text-xs md:text-sm flex items-center gap-2 transition cursor-pointer shadow-xl hover:scale-105"
                         >
                           <Plus className="w-4 h-4 text-teal-300" />
-                          <span>Create &amp; Deploy New Examination (Dimension 5)</span>
+                          <span>Create &amp; Deploy New Examination (Faculty)</span>
                         </button>
                       )}
                     </div>
@@ -4316,7 +4506,7 @@ export function TeachersSection({
                   </div>
                 )}
 
-                {/* TEACHER CHECK LEADERBOARD MODAL (Dimension 5 Only) */}
+                {/* TEACHER CHECK LEADERBOARD MODAL (Faculty Only) */}
                 {showTeacherLeaderboardModal && (
                   <div className="fixed inset-0 z-50 bg-slate-950 p-4 md:p-8 flex flex-col overflow-y-auto animate-fadeIn">
                     <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col space-y-6">
@@ -4331,7 +4521,7 @@ export function TeachersSection({
                               Online Examination Leaderboard &amp; Student Submissions
                             </h2>
                             <p className="text-xs text-amber-300 font-mono">
-                              Dimension 5 Exclusive: Review answers, inspect notebook photos, and override scores
+                              Faculty Exclusive: Review answers, inspect notebook photos, and override scores
                             </p>
                           </div>
                         </div>
@@ -4449,7 +4639,7 @@ export function TeachersSection({
                           </div>
                           <div>
                             <h2 className="text-lg md:text-xl font-black text-white">
-                              Author &amp; Deploy New Examination (Dimension 5)
+                              Author &amp; Deploy New Examination (Faculty)
                             </h2>
                             <p className="text-xs text-teal-300 font-mono">
                               24-hour test window, MCQ media attachments, and subjective questions
@@ -5076,8 +5266,8 @@ export function TeachersSection({
                 
                 {/* Hero Animated Graphical Banner */}
                 <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-950 via-slate-950 to-cyan-950 border-2 border-cyan-500/50 p-6 md:p-10 shadow-2xl">
-                  <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-cyan-500/15 blur-3xl pointer-events-none" />
-                  <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-purple-500/20 blur-3xl pointer-events-none" />
+                  <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-cyan-500/15 pointer-events-none" />
+                  <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-purple-500/20 pointer-events-none" />
 
                   <div className="relative z-10 max-w-4xl space-y-3">
                     <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/50 text-xs font-mono font-bold text-cyan-300">
@@ -5090,7 +5280,7 @@ export function TeachersSection({
                     </h2>
 
                     <p className="text-xs md:text-sm text-purple-200/80 leading-relaxed max-w-2xl">
-                      Students verify daily attendance and 75% CBSE compliance. Dimension 5 teachers have exclusive authorization to mark Present or Absent and enroll students.
+                      Students verify daily attendance and 75% CBSE compliance. Authorized teachers have exclusive authorization to mark Present or Absent and enroll students.
                     </p>
 
                     <div className="pt-2 flex items-center gap-3 flex-wrap">
@@ -5193,7 +5383,7 @@ export function TeachersSection({
                         </h4>
                         <p className="text-xs text-purple-300 max-w-md mx-auto">
                           {isDimension5 
-                            ? "As a Dimension 5 Faculty member, click 'Enroll Student' above to register real students into this class cohort."
+                            ? "As an authorized Faculty member, click 'Enroll Student' above to register real students into this class cohort."
                             : "Your teacher has not enrolled students into this section roster yet."}
                         </p>
                       </div>
@@ -5407,8 +5597,8 @@ export function TeachersSection({
                 
                 {/* Hero Animated Graphical Banner */}
                 <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-950 via-slate-950 to-indigo-950 border-2 border-indigo-500/50 p-6 md:p-10 shadow-2xl">
-                  <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-indigo-500/15 blur-3xl pointer-events-none" />
-                  <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-purple-500/20 blur-3xl pointer-events-none" />
+                  <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-indigo-500/15 pointer-events-none" />
+                  <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-purple-500/20 pointer-events-none" />
 
                   <div className="relative z-10 max-w-4xl space-y-3">
                     <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-950/80 border border-indigo-500/50 text-xs font-mono font-bold text-indigo-300">
@@ -5469,7 +5659,7 @@ export function TeachersSection({
                             className="px-6 py-3 rounded-2xl bg-gradient-to-r from-teal-400 to-indigo-500 text-slate-950 font-black text-xs md:text-sm flex items-center gap-2 transition cursor-pointer shadow-lg hover:scale-105"
                           >
                             <FileCheck className="w-4 h-4" />
-                            <span>Save Marks Ledger (Dimension 5)</span>
+                            <span>Save Marks Ledger (Faculty Authorization)</span>
                           </button>
                         </>
                       )}
@@ -5491,7 +5681,7 @@ export function TeachersSection({
 
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-teal-300 font-mono">
-                        {isDimension5 ? 'Editing Mode (Dimension 5 Teacher)' : 'Student Verification Mode'}
+                        {isDimension5 ? 'Editing Mode (Faculty)' : 'Student Verification Mode'}
                       </span>
                     </div>
                   </div>
@@ -5780,9 +5970,9 @@ export function TeachersSection({
                   </div>
                 )}
 
-                {/* CONFIGURE MAX MARKS MODAL (Dimension 5 Only) */}
+                {/* CONFIGURE MAX MARKS MODAL (Faculty Only) */}
                 {showMaxMarksConfigModal && (
-                  <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md p-4 flex items-center justify-center animate-fadeIn">
+                  <div className="fixed inset-0 z-50 bg-slate-950/90 p-4 flex items-center justify-center animate-fadeIn">
                     <div className="w-full max-w-lg bg-slate-900 border-2 border-purple-500 rounded-3xl p-6 shadow-2xl space-y-4">
                       <div className="flex items-center justify-between pb-3 border-b border-purple-800">
                         <h3 className="text-sm font-black text-white">⚙️ Configure Maximum Marks per Subject</h3>
@@ -5820,9 +6010,9 @@ export function TeachersSection({
                   </div>
                 )}
 
-                {/* ENROLL STUDENT MODAL (Dimension 5 Only) */}
+                {/* ENROLL STUDENT MODAL (Faculty Only) */}
                 {showEnrollModal && (
-                  <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md p-4 flex items-center justify-center animate-fadeIn">
+                  <div className="fixed inset-0 z-50 bg-slate-950/90 p-4 flex items-center justify-center animate-fadeIn">
                     <div className="w-full max-w-md bg-slate-900 border-2 border-teal-400 rounded-3xl p-6 shadow-2xl space-y-4">
                       <div className="flex items-center justify-between pb-3 border-b border-purple-800">
                         <div className="flex items-center gap-2">
@@ -5940,7 +6130,7 @@ export function TeachersSection({
 
                 {/* OFFICIAL PRINTABLE STUDENT REPORT CARD MODAL */}
                 {showReportCardModal && selectedReportStudent && (
-                  <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md p-4 flex items-center justify-center animate-fadeIn overflow-y-auto">
+                  <div className="fixed inset-0 z-50 bg-slate-950/90 p-4 flex items-center justify-center animate-fadeIn overflow-y-auto">
                     <div className="w-full max-w-2xl bg-white text-slate-950 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6 relative border-4 border-teal-500">
                       
                       {/* Close button */}
