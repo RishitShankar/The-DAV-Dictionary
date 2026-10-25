@@ -1321,7 +1321,7 @@ export function TeachersSection({
 
   
   // =========================================================================
-  // LIVE WHATSAPP REAL-TIME 1-ON-1 WEBRTC VIDEO & VOICE CALLING ENGINE (SECTION 5 PAGE 2)
+  // 100% REAL PEER-TO-PEER WEBRTC VIDEO & VOICE CALLING (SECTION 5 PAGE 2)
   // =========================================================================
   const [callState, setCallState] = useState({
     isOpen: false,
@@ -1338,20 +1338,23 @@ export function TeachersSection({
   });
   const [micVolumeLevel, setMicVolumeLevel] = useState(0);
   const [incomingCall, setIncomingCall] = useState(null);
+  const [hasRemoteStream, setHasRemoteStream] = useState(false);
 
   const callStreamRef = useRef(null); // Local MediaStream
   const remoteStreamRef = useRef(null); // Remote MediaStream
   const localVideoRef = useRef(null); // Local <video> element
   const remoteVideoRef = useRef(null); // Remote <video> element
+  const remoteAudioRef = useRef(null); // Remote <audio> element
   const peerConnectionRef = useRef(null); // RTCPeerConnection
   const ringtonePlayerRef = useRef(null);
   const callTimerRef = useRef(null);
   const callAudioCtxRef = useRef(null);
   const callAnalyserRef = useRef(null);
   const callAnimFrameRef = useRef(null);
-  const pendingRemoteSdpOfferRef = useRef(null);
+  const activeCallIdRef = useRef(null);
+  const queuedCandidatesRef = useRef([]);
 
-  // Synthesized WhatsApp Ringtone Player for Outgoing Ring and WhatsApp Marimba Chime
+  // Synthesized WhatsApp Ringtone Player
   const createWhatsAppRingtonePlayer = (mode = 'incoming') => {
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -1378,12 +1381,13 @@ export function TeachersSection({
             osc1.start(ctx.currentTime);
             osc2.start(ctx.currentTime);
             osc1.stop(ctx.currentTime + 1.6);
+            osc2.stop(ctx.currentTime + 1.6);
           } catch (e) {}
         };
         playTone();
         timerId = setInterval(playTone, 3800);
       } else {
-        const melody = [659.25, 830.61, 987.77, 1318.51, 987.77, 830.61]; // E5, G#5, B5, E6, B5, G#5
+        const melody = [659.25, 830.61, 987.77, 1318.51, 987.77, 830.61];
         const playMelody = () => {
           try {
             if (ctx.state === 'suspended') ctx.resume();
@@ -1455,7 +1459,7 @@ export function TeachersSection({
     } catch (e) {}
   };
 
-  // Start Real-Time Microphone Volume Analysis for Animated Audio Waveform
+  // Start Real-Time Microphone Volume Analysis
   const startVolumeAnalysis = (stream) => {
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -1484,18 +1488,22 @@ export function TeachersSection({
     } catch (e) {}
   };
 
-  // Helper to Acquire Hardware Camera & Microphone Media Stream
+  // Acquire Hardware Camera & Mic MediaStream
   const acquireCallMedia = async (type = 'video', facing = 'user') => {
     try {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         throw new Error('getUserMedia not supported');
       }
       const constraints = {
-        audio: true,
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true
+        },
         video: type === 'video' ? {
           facingMode: facing,
-          width: { ideal: 1280, max: 1920 },
-          height: { ideal: 720, max: 1080 }
+          width: { ideal: 640 },
+          height: { ideal: 480 }
         } : false
       };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -1503,11 +1511,12 @@ export function TeachersSection({
 
       if (localVideoRef.current && type === 'video') {
         localVideoRef.current.srcObject = stream;
+        localVideoRef.current.play().catch(() => {});
       }
       startVolumeAnalysis(stream);
       return stream;
     } catch (err) {
-      console.warn('Camera/Mic permission fallback:', err);
+      console.warn('Camera/Mic permission fallback to audio:', err);
       try {
         const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
         callStreamRef.current = audioStream;
@@ -1519,7 +1528,7 @@ export function TeachersSection({
     }
   };
 
-  // Duration Timer for Active Connected Call
+  // Duration Timer for Connected Call
   useEffect(() => {
     let interval = null;
     if (callState.isOpen && callState.status === 'connected') {
@@ -1535,37 +1544,58 @@ export function TeachersSection({
     };
   }, [callState.isOpen, callState.status]);
 
-  // Attach local and remote media streams to video elements whenever call state changes
+  // Connect Local & Remote media streams to HTML Video / Audio elements
   useEffect(() => {
-    if (callState.isOpen && callState.callType === 'video') {
-      if (localVideoRef.current && callStreamRef.current) {
+    if (callState.isOpen) {
+      if (callStreamRef.current && localVideoRef.current && callState.callType === 'video') {
         localVideoRef.current.srcObject = callStreamRef.current;
+        localVideoRef.current.play().catch(() => {});
       }
-      if (remoteVideoRef.current && remoteStreamRef.current) {
-        remoteVideoRef.current.srcObject = remoteStreamRef.current;
+      if (remoteStreamRef.current) {
+        if (remoteVideoRef.current && callState.callType === 'video') {
+          remoteVideoRef.current.srcObject = remoteStreamRef.current;
+          remoteVideoRef.current.play().catch(() => {});
+        }
+        if (remoteAudioRef.current) {
+          remoteAudioRef.current.srcObject = remoteStreamRef.current;
+          remoteAudioRef.current.play().catch(() => {});
+        }
       }
     }
-  }, [callState.isOpen, callState.callType, callState.status]);
+  }, [callState.isOpen, callState.callType, callState.status, hasRemoteStream]);
 
-  // Real-Time Incoming Call Signaling Listener (Supabase Realtime + BroadcastChannel + LocalStorage)
+  // Real-Time Incoming Call Signaling Listener
   useEffect(() => {
-    const handleSignal = (data) => {
+    const handleSignal = async (data) => {
       if (!data || !data.type) return;
 
       const myName = String(user?.name || '').toLowerCase().trim();
       const myId = String(user?.id || '').toLowerCase().trim();
       const targetName = String(data.targetName || '').toLowerCase().trim();
       const targetId = String(data.targetId || '').toLowerCase().trim();
+      const callerId = String(data.callerId || '').toLowerCase().trim();
+      const callerName = String(data.callerName || '').toLowerCase().trim();
 
-      const isMatch = (myId && targetId && (myId === targetId || targetId.includes(myId))) ||
-                      (myName && targetName && (myName === targetName || targetName.includes(myName)));
+      // Don't process signals sent by our own device
+      if (callerId && myId && callerId === myId) return;
+      if (callerName && myName && callerName === myName) return;
 
-      // Incoming Call Offer from another device / tab
-      if (data.type === 'INCOMING_CALL' && (isMatch || !targetName || isDimension5)) {
+      const isTargetMe = (myId && targetId && (myId === targetId || targetId.includes(myId))) ||
+                         (myName && targetName && (myName === targetName || targetName.includes(myName)));
+
+      // If caller is student and current session is faculty, OR caller is faculty and current session is student
+      const roleMatch = (data.callerRole === 'Student' && isDimension5) ||
+                        (data.callerRole === 'Faculty' && !isDimension5);
+
+      const shouldReceive = isTargetMe || roleMatch || (!targetId && !targetName);
+
+      // 1. INCOMING CALL OFFER
+      if (data.type === 'INCOMING_CALL' && shouldReceive) {
         if (callState.isOpen) {
           if (typeof broadcastCallSignal === 'function') {
             broadcastCallSignal({
               type: 'CALL_DECLINED',
+              callId: data.callId,
               callerId: data.callerId,
               targetId: myId,
               reason: 'busy'
@@ -1574,9 +1604,12 @@ export function TeachersSection({
           return;
         }
 
+        activeCallIdRef.current = data.callId;
+        queuedCandidatesRef.current = [];
+
         setIncomingCall({
           callerId: data.callerId || 'peer',
-          callerName: data.callerName || 'DAV Faculty Desk',
+          callerName: data.callerName || (data.callerRole === 'Faculty' ? 'DAV Faculty Desk' : 'DAV Student'),
           callerRole: data.callerRole || 'Verified User',
           callerAvatar: data.callerAvatar || '',
           callType: data.callType || 'video',
@@ -1589,37 +1622,63 @@ export function TeachersSection({
         playSoundChime('alert');
       }
 
-      // Call Answered by remote peer
-      if (data.type === 'CALL_ANSWERED' && isMatch) {
-        if (ringtonePlayerRef.current) {
-          ringtonePlayerRef.current.stop();
-          ringtonePlayerRef.current = null;
-        }
-        if (callTimerRef.current) {
-          clearTimeout(callTimerRef.current);
-          callTimerRef.current = null;
-        }
-        playWhatsAppCallConnectedTone();
+      // 2. CALL ANSWERED (Caller receives Callee's SDP Answer)
+      if (data.type === 'CALL_ANSWERED') {
+        const isMyCall = activeCallIdRef.current && (data.callId === activeCallIdRef.current);
+        if (isMyCall || isTargetMe) {
+          if (ringtonePlayerRef.current) {
+            ringtonePlayerRef.current.stop();
+            ringtonePlayerRef.current = null;
+          }
+          if (callTimerRef.current) {
+            clearTimeout(callTimerRef.current);
+            callTimerRef.current = null;
+          }
+          playWhatsAppCallConnectedTone();
 
-        if (peerConnectionRef.current && data.sdpAnswer) {
-          peerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(data.sdpAnswer)).catch(() => {});
-        }
+          if (peerConnectionRef.current && data.sdpAnswer) {
+            try {
+              if (peerConnectionRef.current.signalingState !== 'stable') {
+                await peerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(data.sdpAnswer));
+              }
+              // Drain any queued candidates
+              while (queuedCandidatesRef.current.length > 0) {
+                const c = queuedCandidatesRef.current.shift();
+                try {
+                  await peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(c));
+                } catch (ce) {}
+              }
+            } catch (err) {
+              console.warn('Error setting remote description from answer:', err);
+            }
+          }
 
-        setCallState(prev => ({ ...prev, status: 'connected' }));
+          setCallState(prev => ({ ...prev, status: 'connected' }));
+        }
       }
 
-      // ICE Candidate received
-      if (data.type === 'ICE_CANDIDATE' && isMatch) {
-        if (peerConnectionRef.current && data.candidate) {
-          peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(data.candidate)).catch(() => {});
+      // 3. ICE CANDIDATE RECEIVED
+      if (data.type === 'ICE_CANDIDATE') {
+        const isMyCall = activeCallIdRef.current && (data.callId === activeCallIdRef.current);
+        if (isMyCall || isTargetMe) {
+          if (peerConnectionRef.current && peerConnectionRef.current.remoteDescription && data.candidate) {
+            try {
+              await peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(data.candidate));
+            } catch (ce) {}
+          } else if (data.candidate) {
+            queuedCandidatesRef.current.push(data.candidate);
+          }
         }
       }
 
-      // Call Ended or Declined by remote peer
-      if ((data.type === 'CALL_ENDED' || data.type === 'CALL_DECLINED') && (isMatch || !targetName)) {
-        setIncomingCall(null);
-        if (callState.isOpen) {
-          handleEndCall(false, data.type === 'CALL_DECLINED' ? 'declined' : 'ended');
+      // 4. CALL ENDED / DECLINED
+      if (data.type === 'CALL_ENDED' || data.type === 'CALL_DECLINED') {
+        const isMyCall = activeCallIdRef.current && (data.callId === activeCallIdRef.current);
+        if (isMyCall || isTargetMe) {
+          setIncomingCall(null);
+          if (callState.isOpen) {
+            handleEndCall(false, data.type === 'CALL_DECLINED' ? 'declined' : 'ended');
+          }
         }
       }
     };
@@ -1629,26 +1688,20 @@ export function TeachersSection({
       unsubSupabase = subscribeCallSignals(handleSignal);
     }
 
-    let bc = null;
-    try {
-      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
-        bc = new BroadcastChannel('dav_whatsapp_voice_calling_sync');
-        bc.onmessage = (ev) => {
-          if (ev.data) handleSignal(ev.data);
-        };
-      }
-    } catch (e) {}
-
     return () => {
       if (unsubSupabase) unsubSupabase();
-      if (bc) bc.close();
     };
   }, [user?.name, user?.id, isDimension5, callState.isOpen]);
 
-  // Initiate Outgoing Call (Video or Voice)
+  // Initiate Outgoing Call (Student to Teacher or Teacher to Student)
   const handleStartCall = async (contact, type = 'video') => {
     if (!contact) return;
     playSoundChime('sent');
+
+    const callId = Date.now();
+    activeCallIdRef.current = callId;
+    queuedCandidatesRef.current = [];
+    setHasRemoteStream(false);
 
     setCallState({
       isOpen: true,
@@ -1671,14 +1724,15 @@ export function TeachersSection({
     // Acquire camera and mic input
     const stream = await acquireCallMedia(type, 'user');
 
-    // Set up WebRTC Peer Connection with STUN servers
+    // Set up WebRTC Peer Connection with Google STUN servers
     let offer = null;
     try {
       const pc = new RTCPeerConnection({
         iceServers: [
           { urls: 'stun:stun.l.google.com:19302' },
           { urls: 'stun:stun1.l.google.com:19302' },
-          { urls: 'stun:stun2.l.google.com:19302' }
+          { urls: 'stun:stun2.l.google.com:19302' },
+          { urls: 'stun:stun3.l.google.com:19302' }
         ]
       });
       peerConnectionRef.current = pc;
@@ -1690,8 +1744,14 @@ export function TeachersSection({
       pc.ontrack = (event) => {
         if (event.streams && event.streams[0]) {
           remoteStreamRef.current = event.streams[0];
+          setHasRemoteStream(true);
           if (remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = event.streams[0];
+            remoteVideoRef.current.play().catch(() => {});
+          }
+          if (remoteAudioRef.current) {
+            remoteAudioRef.current.srcObject = event.streams[0];
+            remoteAudioRef.current.play().catch(() => {});
           }
         }
       };
@@ -1700,7 +1760,9 @@ export function TeachersSection({
         if (event.candidate && typeof broadcastCallSignal === 'function') {
           broadcastCallSignal({
             type: 'ICE_CANDIDATE',
+            callId: callId,
             callerId: user?.id || 'me',
+            callerName: user?.name || (isDimension5 ? 'Verified DAV Faculty' : 'DAV Student'),
             targetId: contact.id,
             targetName: contact.name,
             candidate: event.candidate
@@ -1708,7 +1770,10 @@ export function TeachersSection({
         }
       };
 
-      offer = await pc.createOffer();
+      offer = await pc.createOffer({
+        offerToReceiveAudio: true,
+        offerToReceiveVideo: type === 'video'
+      });
       await pc.setLocalDescription(offer);
     } catch (e) {
       console.warn('WebRTC peer setup warning:', e);
@@ -1716,6 +1781,7 @@ export function TeachersSection({
 
     const signalData = {
       type: 'INCOMING_CALL',
+      callId: callId,
       callerId: user?.id || 'me',
       callerName: user?.name || (isDimension5 ? 'Verified DAV Faculty' : 'DAV Student'),
       callerRole: isDimension5 ? 'Faculty' : 'Student',
@@ -1723,21 +1789,12 @@ export function TeachersSection({
       targetId: contact.id,
       targetName: contact.name,
       callType: type,
-      callId: Date.now(),
-      sdpOffer: offer
+      sdpOffer: offer ? { type: offer.type, sdp: offer.sdp } : null
     };
 
     if (typeof broadcastCallSignal === 'function') {
       broadcastCallSignal(signalData);
     }
-
-    try {
-      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
-        const bc = new BroadcastChannel('dav_whatsapp_voice_calling_sync');
-        bc.postMessage(signalData);
-        bc.close();
-      }
-    } catch (e) {}
 
     setCallState(prev => ({
       ...prev,
@@ -1746,36 +1803,15 @@ export function TeachersSection({
       hasCamPermission: Boolean(stream && stream.getVideoTracks().length > 0)
     }));
 
-    // Auto-connect to faculty / test peer after 3.8 seconds
+    // Timeout: if no answer after 35 seconds, end call
     callTimerRef.current = setTimeout(() => {
-      if (ringtonePlayerRef.current) {
-        ringtonePlayerRef.current.stop();
-        ringtonePlayerRef.current = null;
+      if (callState.status !== 'connected') {
+        handleEndCall(true, 'no_answer');
       }
-      playWhatsAppCallConnectedTone();
-
-      setCallState(prev => ({
-        ...prev,
-        status: 'connected'
-      }));
-
-      // Faculty greeting through browser voice synthesizer
-      try {
-        if ('speechSynthesis' in window) {
-          window.speechSynthesis.cancel();
-          const greetingText = type === 'video'
-            ? `Namaste! This is ${contact.name || 'DAV Faculty Desk'}. I am connected with you on live video call. I can see you clearly. How may I guide your studies today?`
-            : `Namaste! This is ${contact.name || 'DAV Faculty Desk'}. I am connected with you on live voice call. How may I assist you with your studies?`;
-          const utterance = new SpeechSynthesisUtterance(greetingText);
-          utterance.rate = 1.0;
-          utterance.pitch = 1.05;
-          window.speechSynthesis.speak(utterance);
-        }
-      } catch (e) {}
-    }, 3800);
+    }, 35000);
   };
 
-  // Accept Incoming Call
+  // Accept Incoming Call (Callee)
   const handleAcceptCall = async (incomingData) => {
     if (!incomingData) return;
     setIncomingCall(null);
@@ -1785,6 +1821,10 @@ export function TeachersSection({
     }
 
     const type = incomingData.callType || 'video';
+    const callId = incomingData.callId;
+    activeCallIdRef.current = callId;
+    setHasRemoteStream(false);
+
     const contact = chatContactsList.find(c => 
       c.id === incomingData.callerId || 
       c.name.toLowerCase().includes(incomingData.callerName.toLowerCase())
@@ -1819,7 +1859,8 @@ export function TeachersSection({
         iceServers: [
           { urls: 'stun:stun.l.google.com:19302' },
           { urls: 'stun:stun1.l.google.com:19302' },
-          { urls: 'stun:stun2.l.google.com:19302' }
+          { urls: 'stun:stun2.l.google.com:19302' },
+          { urls: 'stun:stun3.l.google.com:19302' }
         ]
       });
       peerConnectionRef.current = pc;
@@ -1831,8 +1872,14 @@ export function TeachersSection({
       pc.ontrack = (event) => {
         if (event.streams && event.streams[0]) {
           remoteStreamRef.current = event.streams[0];
+          setHasRemoteStream(true);
           if (remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = event.streams[0];
+            remoteVideoRef.current.play().catch(() => {});
+          }
+          if (remoteAudioRef.current) {
+            remoteAudioRef.current.srcObject = event.streams[0];
+            remoteAudioRef.current.play().catch(() => {});
           }
         }
       };
@@ -1841,7 +1888,9 @@ export function TeachersSection({
         if (event.candidate && typeof broadcastCallSignal === 'function') {
           broadcastCallSignal({
             type: 'ICE_CANDIDATE',
+            callId: callId,
             callerId: user?.id || 'me',
+            callerName: user?.name || (isDimension5 ? 'Verified DAV Faculty' : 'DAV Student'),
             targetId: incomingData.callerId,
             targetName: incomingData.callerName,
             candidate: event.candidate
@@ -1851,6 +1900,15 @@ export function TeachersSection({
 
       if (incomingData.sdpOffer) {
         await pc.setRemoteDescription(new RTCSessionDescription(incomingData.sdpOffer));
+        
+        // Drain queued candidates
+        while (queuedCandidatesRef.current.length > 0) {
+          const c = queuedCandidatesRef.current.shift();
+          try {
+            await pc.addIceCandidate(new RTCIceCandidate(c));
+          } catch (ce) {}
+        }
+
         answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
       }
@@ -1860,24 +1918,17 @@ export function TeachersSection({
 
     const answerSignal = {
       type: 'CALL_ANSWERED',
+      callId: callId,
       callerId: user?.id || 'me',
       callerName: user?.name || (isDimension5 ? 'Verified DAV Faculty' : 'DAV Student'),
       targetId: incomingData.callerId,
       targetName: incomingData.callerName,
-      sdpAnswer: answer
+      sdpAnswer: answer ? { type: answer.type, sdp: answer.sdp } : null
     };
 
     if (typeof broadcastCallSignal === 'function') {
       broadcastCallSignal(answerSignal);
     }
-
-    try {
-      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
-        const bc = new BroadcastChannel('dav_whatsapp_voice_calling_sync');
-        bc.postMessage(answerSignal);
-        bc.close();
-      }
-    } catch (e) {}
   };
 
   // Decline Incoming Call
@@ -1892,22 +1943,15 @@ export function TeachersSection({
     if (incomingData && typeof broadcastCallSignal === 'function') {
       broadcastCallSignal({
         type: 'CALL_DECLINED',
+        callId: incomingData.callId,
         callerId: user?.id || 'me',
         targetId: incomingData.callerId,
         targetName: incomingData.callerName
       });
     }
-
-    try {
-      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
-        const bc = new BroadcastChannel('dav_whatsapp_voice_calling_sync');
-        bc.postMessage({ type: 'CALL_DECLINED' });
-        bc.close();
-      }
-    } catch (e) {}
   };
 
-  // End Active Call (Video or Voice)
+  // End Active Call
   const handleEndCall = (broadcast = true, reason = 'ended') => {
     if (ringtonePlayerRef.current) {
       ringtonePlayerRef.current.stop();
@@ -1942,15 +1986,13 @@ export function TeachersSection({
       callAudioCtxRef.current = null;
       callAnalyserRef.current = null;
     }
-    try {
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-    } catch (e) {}
 
     playWhatsAppCallEndTone();
 
     if (broadcast && callState.contact) {
       const endSignal = {
         type: reason === 'declined' ? 'CALL_DECLINED' : 'CALL_ENDED',
+        callId: activeCallIdRef.current,
         callerId: user?.id || 'me',
         targetId: callState.contact.id,
         targetName: callState.contact.name
@@ -1958,21 +2000,16 @@ export function TeachersSection({
       if (typeof broadcastCallSignal === 'function') {
         broadcastCallSignal(endSignal);
       }
-      try {
-        if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
-          const bc = new BroadcastChannel('dav_whatsapp_voice_calling_sync');
-          bc.postMessage(endSignal);
-          bc.close();
-        }
-      } catch (e) {}
     }
 
     const durationSec = callState.duration;
     const mins = Math.floor(durationSec / 60);
     const secs = durationSec % 60;
-    const durStr = durationSec > 0 ? (mins > 0 ? `${mins}m ${secs}s` : `${secs}s`) : (reason === 'declined' ? 'Declined' : 'Missed');
+    const durStr = durationSec > 0 
+      ? (mins > 0 ? `${mins}m ${secs}s` : `${secs}s`) 
+      : (reason === 'declined' ? 'Declined' : reason === 'no_answer' ? 'No Answer' : 'Missed');
 
-    // Log call record into chat message history
+    // Log call record into chat history
     if (callState.contact) {
       const contact = callState.contact;
       const isVid = callState.callType === 'video';
@@ -2007,6 +2044,10 @@ export function TeachersSection({
     }
 
     setCallState(prev => ({ ...prev, status: 'ended' }));
+    setHasRemoteStream(false);
+    activeCallIdRef.current = null;
+    queuedCandidatesRef.current = [];
+
     setTimeout(() => {
       setCallState({
         isOpen: false,
@@ -2069,7 +2110,7 @@ export function TeachersSection({
     playSoundChime('sent');
   };
 
-  const chatMessagesEndRef = useRef(null);
+    const chatMessagesEndRef = useRef(null);
   const [showChatScrollDown, setShowChatScrollDown] = useState(false);
 
   // Auto-scroll chat to bottom on new messages or contact switch (safe after activeContact & teacherChatsMap initialization)
@@ -4233,9 +4274,14 @@ export function TeachersSection({
                         {/* Chats with Badge */}
                         <button 
                           type="button"
-                          onClick={() => setMobileChatTab('roster')}
-                          className="relative p-2 rounded-xl bg-[#d9fdd3] text-[#008069] shadow-xs cursor-pointer transition animate-chat-bubble-pop"
-                          title="Chats"
+                          onClick={() => {
+                            setWhatsAppDockView('chats');
+                            setMobileChatTab('roster');
+                          }}
+                          className={`relative p-2 rounded-xl shadow-xs cursor-pointer transition animate-chat-bubble-pop ${
+                            whatsAppDockView === 'chats' ? 'bg-[#d9fdd3] text-[#008069]' : 'text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21]'
+                          }`}
+                          title="Direct Chats"
                         >
                           <MessageSquare className="w-5 h-5 fill-current" />
                           <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-[#25d366] text-white text-[9px] font-black shadow-xs animate-chat-radar-ping">
@@ -4264,8 +4310,11 @@ export function TeachersSection({
                         {/* Channels */}
                         <button 
                           type="button"
-                          className="p-2 rounded-xl text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21] transition cursor-pointer"
-                          title="Channels"
+                          onClick={() => setWhatsAppDockView('channels')}
+                          className={`relative p-2 rounded-xl shadow-xs cursor-pointer transition ${
+                            whatsAppDockView === 'channels' ? 'bg-[#d9fdd3] text-[#008069]' : 'text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21]'
+                          }`}
+                          title="WhatsApp Channels"
                         >
                           <Compass className="w-5 h-5" />
                         </button>
@@ -4314,7 +4363,18 @@ export function TeachersSection({
 
                     </div>
 
-                    {/* Column 2: Chats Directory Panel (Middle) */}
+                    {/* Main Workspace: Either WhatsApp Channels Module or Direct 1-on-1 Chats */}
+                    {whatsAppDockView === 'channels' ? (
+                      <div className="flex-1 flex overflow-hidden min-h-0 bg-white">
+                        <WhatsAppChannelsModule 
+                          user={user} 
+                          isDimension5={isDimension5} 
+                          onSwitchToChats={() => setWhatsAppDockView('chats')} 
+                        />
+                      </div>
+                    ) : (
+                      <>
+                        {/* Column 2: Chats Directory Panel (Middle) */}
                     <div className={`w-full sm:w-80 md:w-96 bg-white border-r border-[#d1d7db] flex flex-col h-full shrink-0 ${
                       mobileChatTab === 'roster' ? 'flex' : 'hidden sm:flex'
                     }`}>
@@ -4322,7 +4382,18 @@ export function TeachersSection({
                       {/* Chats Header */}
                       <div className="p-3.5 pb-2 border-b border-[#f0f2f5] space-y-3 shrink-0">
                         <div className="flex items-center justify-between">
-                          <h2 className="text-xl font-bold text-[#111b21] tracking-tight">Chats</h2>
+                          <div className="flex items-center gap-2">
+                            <h2 className="text-xl font-bold text-[#111b21] tracking-tight">Chats</h2>
+                            <button
+                              type="button"
+                              onClick={() => setWhatsAppDockView('channels')}
+                              className="px-2 py-0.5 rounded-full bg-[#d9fdd3] hover:bg-[#c3f4bc] text-[#008069] text-[10px] font-black tracking-wider uppercase transition cursor-pointer flex items-center gap-1 shadow-2xs"
+                              title="Switch to WhatsApp Channels"
+                            >
+                              <Compass className="w-3 h-3" />
+                              <span>Channels</span>
+                            </button>
+                          </div>
                           <div className="flex items-center gap-1 text-[#54656f]">
                             <button
                               type="button"
@@ -4890,6 +4961,9 @@ export function TeachersSection({
 
                     </div>
 
+                      </>
+                    )}
+
                   </div>
                 </div>
 
@@ -5113,11 +5187,13 @@ export function TeachersSection({
                             ref={remoteVideoRef}
                             autoPlay
                             playsInline
-                            className={`w-full h-full object-cover ${callState.status !== 'connected' || !remoteStreamRef.current ? 'hidden' : 'block'}`}
+                            className={`w-full h-full object-cover ${callState.status !== 'connected' || !hasRemoteStream ? 'hidden' : 'block'}`}
                           />
+                          {/* Dedicated Remote Audio Playback Element for Real-Time Voice */}
+                          <audio ref={remoteAudioRef} autoPlay playsInline />
 
                           {/* Fallback Display if connecting or peer camera is off */}
-                          {(callState.status !== 'connected' || !remoteStreamRef.current) && (
+                          {(callState.status !== 'connected' || !hasRemoteStream) && (
                             <div className="flex flex-col items-center justify-center space-y-4 p-6 text-center z-10">
                               <div className="relative">
                                 {(callState.status === 'calling' || callState.status === 'ringing') && (
@@ -5233,6 +5309,8 @@ export function TeachersSection({
                     ) : (
                       /* VOICE CALL DIALOG (AUTHENTIC WHATSAPP DESKTOP) */
                       <div className="w-full max-w-md bg-[#111b21] border border-[#222e35] rounded-3xl overflow-hidden shadow-2xl flex flex-col items-center text-white relative">
+                        {/* Real-time remote audio element for Voice Call */}
+                        <audio ref={remoteAudioRef} autoPlay playsInline />
                         
                         {/* Top Bar: Encryption & Call Type */}
                         <div className="w-full p-4 flex items-center justify-between border-b border-[#202c33] bg-[#111b21]/90">
