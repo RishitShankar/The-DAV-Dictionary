@@ -162,79 +162,176 @@ export function QuestionsAnswersSection({
     setActiveModal('level2_subject');
   };
 
+  
+  // Helper to dynamically build sub-book multi-textbook selections for any class (LKG to 8)
+  const getSubjectSubBooks = (cls, subjId) => {
+    const clsStr = String(cls);
+
+    // English Sub-Books
+    if (subjId === 'group_eng' || subjId.startsWith('group_eng') || subjId.includes('eng')) {
+      if (['8', '7', '6'].includes(clsStr)) {
+        return {
+          category: 'English',
+          title: `Choose Your English Textbook (Class ${clsStr})`,
+          subtitle: `Select which official DAV Class ${clsStr} English textbook you want questions & answers for:`,
+          icon: 'BookOpen',
+          books: [
+            {
+              id: `eng${clsStr}_lit`,
+              name: `English Literature (Class ${clsStr})`,
+              tagline: 'Stories of Wit, Courage, Classic Drama & Poetry',
+              icon: 'BookOpen',
+              emoji: '📖',
+              badge: 'Literature Reader • Official',
+              desc: 'Detailed back-exercise answers, HOTS, poem explanations, and character questions.'
+            },
+            {
+              id: `eng${clsStr}_reader`,
+              name: `My English Reader (Class ${clsStr})`,
+              tagline: 'Theme Units, Reading Comprehension & Expression',
+              icon: 'BookOpen',
+              emoji: '📘',
+              badge: 'Theme Coursebook • Reading',
+              desc: 'Comprehension passages, unit vocabulary, writing tasks, and discussion answers.'
+            },
+            {
+              id: `eng${clsStr}_prac`,
+              name: `English Practice Book (Class ${clsStr})`,
+              tagline: 'Grammar Worksheets, Workbooks & Applied Rules',
+              icon: 'BookOpen',
+              emoji: '✍️',
+              badge: 'Grammar Practice • Exercises',
+              desc: 'Tenses, modals, voice, clauses, narration, and sentence transformation solutions.'
+            }
+          ]
+        };
+      } else if (['5', '4', '3', '2'].includes(clsStr)) {
+        return {
+          category: 'English',
+          title: `Choose Your English Textbook (Class ${clsStr})`,
+          subtitle: `Select which official DAV Class ${clsStr} English textbook you want questions & answers for:`,
+          icon: 'BookOpen',
+          books: [
+            {
+              id: `eng${clsStr}_reader`,
+              name: `My English Reader (Class ${clsStr})`,
+              tagline: 'Stories, Poems & Reading Comprehension',
+              icon: 'BookOpen',
+              emoji: '📘',
+              badge: 'Reader Coursebook',
+              desc: 'Chapter-wise questions, vocabulary drills, and reading solutions.'
+            },
+            {
+              id: `eng${clsStr}_prac`,
+              name: `English Practice Book (Class ${clsStr})`,
+              tagline: 'Elementary Grammar & Practice Worksheets',
+              icon: 'BookOpen',
+              emoji: '✍️',
+              badge: 'Grammar & Worksheets',
+              desc: 'Nouns, verbs, tenses, prepositions, and grammar exercise solutions.'
+            }
+          ]
+        };
+      }
+    }
+
+    // Hindi Sub-Books
+    if (subjId === 'group_hin' || subjId.startsWith('group_hin') || subjId.includes('hin') || subjId.includes('माधुरी') || subjId.includes('अभ्यास')) {
+      if (['8', '7', '6'].includes(clsStr)) {
+        return {
+          category: 'Hindi',
+          title: `Choose Your Hindi Textbook (Class ${clsStr})`,
+          subtitle: `Select which official DAV Class ${clsStr} Hindi textbook you want questions & answers for:`,
+          icon: 'Languages',
+          books: [
+            {
+              id: `hin${clsStr}_gs`,
+              name: `ज्ञान सागर - Gyan Sagar (Class ${clsStr})`,
+              tagline: 'प्रेरक कहानियाँ, कविताएँ, दोहे एवं हिन्दी साहित्य',
+              icon: 'Languages',
+              emoji: '📜',
+              badge: 'Literature / साहित्य',
+              desc: 'सम्पूर्ण पाठ्यपुस्तक के शब्दार्थ, प्रश्नोत्तर, बातचीत के लिए, अनुमान और कल्पना।'
+            },
+            {
+              id: `hin${clsStr}_as`,
+              name: `अभ्यास सागर - Abhyas Sagar (Class ${clsStr})`,
+              tagline: 'संधि, समास, मुहावरे, पत्र लेखन एवं व्याकरण अभ्यास',
+              icon: 'Languages',
+              emoji: '✍️',
+              badge: 'Grammar Practice / व्याकरण',
+              desc: 'व्याकरण के सभी अभ्यास, कार्यपत्रक, उदाहरण एवं मॉडल उत्तर।'
+            }
+          ]
+        };
+      } else if (['5', '4', '3', '2', '1'].includes(clsStr)) {
+        return {
+          category: 'Hindi',
+          title: `Choose Your Hindi Textbook (Class ${clsStr})`,
+          subtitle: `Select which official DAV Class ${clsStr} Hindi textbook you want questions & answers for:`,
+          icon: 'Languages',
+          books: [
+            {
+              id: `hin${clsStr}_bm`,
+              name: `भाषा माधुरी - Bhasha Madhuri (Class ${clsStr})`,
+              tagline: 'सुंदर कहानियाँ, कविताएँ, शब्दार्थ एवं पाठ्य प्रश्नोत्तर',
+              icon: 'Languages',
+              emoji: '📜',
+              badge: 'साहित्य / Literature',
+              desc: 'पाठ के शब्दार्थ, भावार्थ, मौखिक एवं लिखित प्रश्नोत्तर।'
+            },
+            {
+              id: `hin${clsStr}_ba`,
+              name: `भाषा अभ्यास - Bhasha Abhyas (Class ${clsStr})`,
+              tagline: 'व्याकरण अभ्यास, शब्द पहेली एवं रचनात्मक लेखन',
+              icon: 'Languages',
+              emoji: '✍️',
+              badge: 'व्याकरण / Workbook',
+              desc: 'विलोम, पर्यायवाची, लिंग, वचन, वाक्य रचना एवं अभ्यास प्रश्न।'
+            }
+          ]
+        };
+      } else if (clsStr === 'UKG') {
+        return {
+          category: 'Hindi',
+          title: 'Choose Your Hindi Textbook (UKG)',
+          subtitle: 'Select which official DAV UKG Hindi textbook you want questions & answers for:',
+          icon: 'Languages',
+          books: [
+            {
+              id: 'ukg_hin_bm',
+              name: 'बाल माधुरी - Bal Madhuri (UKG Hindi)',
+              tagline: 'चित्र कथाएँ, बाल कविताएँ एवं सरल पाठ',
+              icon: 'Languages',
+              emoji: '📜',
+              badge: 'बाल साहित्य',
+              desc: 'सचित्र बाल कविताएँ, शब्द ज्ञान एवं रोचक अभ्यास।'
+            },
+            {
+              id: 'ukg_hin_sa',
+              name: 'शब्द अभ्यास - Shabd Abhyas (UKG)',
+              tagline: 'वर्णमाला, दो-तीन अक्षर के शब्द एवं लेखन अभ्यास',
+              icon: 'Languages',
+              emoji: '✍️',
+              badge: 'शब्द अभ्यास',
+              desc: 'सुलेख, अक्षर मिलान, रिक्त स्थान एवं शब्द रचना अभ्यास।'
+            }
+          ]
+        };
+      }
+    }
+
+    return null;
+  };
+
   // Step 3: User clicks a subject in Pop-up Level 2
   const handleSelectSubject = (subj) => {
     playSfx('select');
 
-    // Multi-book detection for Class 8 English
-    if (String(selectedClass) === '8' && (subj.id === 'group_eng8' || subj.id === 'eng8')) {
-      setSubBookData({
-        category: 'English',
-        title: 'Choose Your English Textbook (Class 8)',
-        subtitle: 'Select which official DAV textbook you want questions & answers for:',
-        icon: 'BookOpen',
-        books: [
-          {
-            id: 'eng8_lit',
-            name: 'English Literature (Class 8)',
-            tagline: 'Stories of Wit, Courage, Classic Drama & Poetry',
-            icon: 'BookOpen',
-            emoji: '📖',
-            badge: 'Literature Reader • 13 Units',
-            desc: 'Chapter 1 Three Questions, Granny\'s Tree Climbing, The Fun They Had, Father\'s Help, etc.'
-          },
-          {
-            id: 'eng8_reader',
-            name: 'My English Reader (Class 8)',
-            tagline: 'Theme Units, Reading Comprehension & Expression',
-            icon: 'BookOpen',
-            emoji: '📘',
-            badge: 'Theme Coursebook • Reading',
-            desc: 'Celebrations, Hobbies, Nature, Changing Times & Compassion Units'
-          },
-          {
-            id: 'eng8_prac',
-            name: 'English Practice Book (Class 8)',
-            tagline: 'Tenses, Active-Passive Voice, Reported Speech & Grammar',
-            icon: 'BookOpen',
-            emoji: '✍️',
-            badge: 'Grammar & Exercises • Worksheets',
-            desc: 'Tenses, Narration, Modals, Subject-Verb Agreement, Clauses, Linkers, Voice'
-          }
-        ]
-      });
-      setActiveModal('level2_subbook');
-      return;
-    }
-
-    // Multi-book detection for Class 8 Hindi
-    if (String(selectedClass) === '8' && (subj.id === 'group_hin8' || subj.id === 'hin8')) {
-      setSubBookData({
-        category: 'Hindi',
-        title: 'Choose Your Hindi Textbook (Class 8)',
-        subtitle: 'Select which official DAV Hindi textbook you want questions & answers for:',
-        icon: 'Languages',
-        books: [
-          {
-            id: 'hin8_gs',
-            name: 'ज्ञान सागर - Gyan Sagar (Class 8)',
-            tagline: 'प्रेरक कहानियाँ, कविताएँ, दोहे एवं हिन्दी साहित्य',
-            icon: 'Languages',
-            emoji: '📜',
-            badge: 'Literature / साहित्य • 20 पाठ',
-            desc: 'हम पंछी उन्मुक्त गगन के, असल धन, अच्छे पड़ोसी के गुण, दोहे, सूरदास के पद'
-          },
-          {
-            id: 'hin8_as',
-            name: 'अभ्यास सागर - Abhyas Sagar (Class 8)',
-            tagline: 'संधि, समास, मुहावरे, पत्र लेखन एवं व्याकरण अभ्यास',
-            icon: 'Languages',
-            emoji: '✍️',
-            badge: 'Grammar Practice / व्याकरण • 20 अभ्यास',
-            desc: 'अनुस्वार-अनुनासिक, उपसर्ग-प्रत्यय, सन्धि, समास, वाक्य-भेद, मुहावरे'
-          }
-        ]
-      });
+    // Multi-book detection for English and Hindi across ALL classes
+    const multiBook = getSubjectSubBooks(selectedClass, subj.id);
+    if (multiBook && (subj.isGroup || subj.id.startsWith('group_') || subj.id.includes('group'))) {
+      setSubBookData(multiBook);
       setActiveModal('level2_subbook');
       return;
     }
@@ -299,55 +396,56 @@ export function QuestionsAnswersSection({
     setActiveModal(null);
   };
 
-  // Get subjects for selected class (with Class 8 multi-textbook groups)
-  const isClass8 = String(selectedClass) === '8';
+  // Get subjects for selected class (with universal multi-textbook grouping for English & Hindi across all classes)
+  const clsStr = String(selectedClass);
   const rawSubjects = DAV_SUBJECTS[selectedClass] || [];
-  
+
+  const hasMultiEng = ['8', '7', '6', '5', '4', '3', '2'].includes(clsStr);
+  const hasMultiHin = ['8', '7', '6', '5', '4', '3', '2', '1', 'UKG'].includes(clsStr);
+
   let availableSubjects = rawSubjects;
-  if (isClass8 && !subjectSearch.trim()) {
-    availableSubjects = [
-      {
-        id: 'group_eng8',
-        name: 'English (3 Official Textbooks)',
-        tagline: 'English Literature, My English Reader & English Practice Book',
+  if (!subjectSearch.trim()) {
+    const specialGroups = [];
+    if (hasMultiEng) {
+      const engCount = ['8', '7', '6'].includes(clsStr) ? 3 : 2;
+      specialGroups.push({
+        id: `group_eng_${clsStr}`,
+        name: `English (${engCount} Official Textbooks)`,
+        tagline: engCount === 3 
+          ? 'English Literature, My English Reader & English Practice Book'
+          : 'My English Reader & English Practice Book',
         icon: 'BookOpen',
-        badge: '3 Books Available 📚',
+        badge: `${engCount} Books Available 📚`,
         isGroup: true,
-        bookCount: 3
-      },
-      {
-        id: 'group_hin8',
+        bookCount: engCount
+      });
+    }
+    if (hasMultiHin) {
+      const hinLabel = ['8', '7', '6'].includes(clsStr)
+        ? 'ज्ञान सागर (Gyan Sagar) एवं अभ्यास सागर (Abhyas Sagar)'
+        : (clsStr === 'UKG' ? 'बाल माधुरी (Bal Madhuri) एवं शब्द अभ्यास (Shabd Abhyas)' : 'भाषा माधुरी (Bhasha Madhuri) एवं भाषा अभ्यास (Bhasha Abhyas)');
+      specialGroups.push({
+        id: `group_hin_${clsStr}`,
         name: 'Hindi - हिन्दी (2 Official Textbooks)',
-        tagline: 'ज्ञान सागर (Gyan Sagar) एवं अभ्यास सागर (Abhyas Sagar)',
+        tagline: hinLabel,
         icon: 'Languages',
         badge: '2 Books Available 📖',
         isGroup: true,
         bookCount: 2
-      },
-      ...rawSubjects.filter(s => !s.id.startsWith('eng') && !s.id.startsWith('hin'))
-    ];
-  } else if (isClass8 && subjectSearch.trim()) {
-    availableSubjects = [
-      {
-        id: 'group_eng8',
-        name: 'English (3 Official Textbooks)',
-        tagline: 'English Literature, My English Reader & English Practice Book',
-        icon: 'BookOpen',
-        badge: '3 Books Available 📚',
-        isGroup: true,
-        bookCount: 3
-      },
-      {
-        id: 'group_hin8',
-        name: 'Hindi - हिन्दी (2 Official Textbooks)',
-        tagline: 'ज्ञान सागर (Gyan Sagar) एवं अभ्यास सागर (Abhyas Sagar)',
-        icon: 'Languages',
-        badge: '2 Books Available 📖',
-        isGroup: true,
-        bookCount: 2
-      },
-      ...rawSubjects
-    ];
+      });
+    }
+
+    const otherSubjects = rawSubjects.filter(s => {
+      const id = s.id.toLowerCase();
+      if (hasMultiEng && (id.includes('eng') || s.name.toLowerCase().includes('english'))) return false;
+      if (hasMultiHin && (id.includes('hin') || s.name.toLowerCase().includes('hindi') || s.name.includes('माधुरी') || s.name.includes('अभ्यास') || s.name.includes('सागर'))) return false;
+      return true;
+    });
+
+    availableSubjects = [...specialGroups, ...otherSubjects];
+  } else {
+    // When searching, allow searching both groups and all individual subjects
+    availableSubjects = rawSubjects;
   }
 
   const filteredSubjects = availableSubjects.filter(s => 
@@ -597,123 +695,6 @@ export function QuestionsAnswersSection({
             </button>
           </div>
 
-        </div>
-
-        {/* Featured Chapters Spotlight Carousel Deck */}
-        <div className="p-6 rounded-3xl bg-purple-950/40 border border-purple-800/60 backdrop-blur-md">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-400" />
-              <h3 className="font-black text-base text-white">Popular High-Yield Featured Chapters</h3>
-            </div>
-            <span className="text-xs text-purple-300">1-Click Launch Directly</span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            
-            {/* Ch 11 Class 8 Science The Human Eye */}
-            <div 
-              onClick={() => {
-                setSelectedClass(8);
-                const sub = (DAV_SUBJECTS[8] || []).find(s => s.id === 'sci8') || { id: 'sci8', name: 'DAV Science & Technology' };
-                setSelectedSubject(sub);
-                const chaps = getSubjectChapters(8, 'sci8', sub.name);
-                const ch11 = chaps.find(c => c.number === 11) || chaps[10];
-                handleSelectChapter(ch11);
-              }}
-              className="p-4 rounded-2xl bg-gradient-to-br from-amber-500/20 via-purple-950 to-purple-900 border-2 border-amber-400 hover:border-amber-300 transition transform hover:-translate-y-1 cursor-pointer shadow-lg shadow-amber-500/20 relative group overflow-hidden"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-400 text-slate-950">
-                  Class 8 • Ch 11
-                </span>
-                <span className="text-xs">👁️</span>
-              </div>
-              <h4 className="font-black text-sm text-white group-hover:text-amber-300 transition">The Human Eye</h4>
-              <p className="text-[11px] text-purple-200/80 mt-1 line-clamp-2">Direct verified Solution Gyan solution &amp; eye defect answers</p>
-              <div className="pt-2 mt-2 border-t border-purple-800/60 flex items-center justify-between text-xs font-bold text-amber-400">
-                <span>Open Solutions</span>
-                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
-              </div>
-            </div>
-
-            {/* Ch 1 Class 8 Science The Cell */}
-            <div 
-              onClick={() => {
-                setSelectedClass(8);
-                const sub = (DAV_SUBJECTS[8] || []).find(s => s.id === 'sci8') || { id: 'sci8', name: 'DAV Science & Technology' };
-                setSelectedSubject(sub);
-                const chaps = getSubjectChapters(8, 'sci8', sub.name);
-                handleSelectChapter(chaps[0]);
-              }}
-              className="p-4 rounded-2xl bg-purple-950/60 border border-purple-700/60 hover:border-purple-400 transition transform hover:-translate-y-1 cursor-pointer shadow-md group"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-purple-800 text-purple-200">
-                  Class 8 • Ch 1
-                </span>
-                <span className="text-xs">🔬</span>
-              </div>
-              <h4 className="font-black text-sm text-white group-hover:text-amber-300 transition">The Cell: Structure &amp; Functions</h4>
-              <p className="text-[11px] text-purple-200/80 mt-1 line-clamp-2">Organelles, cell wall, nucleus &amp; plant vs animal cells</p>
-              <div className="pt-2 mt-2 border-t border-purple-800/60 flex items-center justify-between text-xs font-bold text-purple-300 group-hover:text-amber-400">
-                <span>Open Solutions</span>
-                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
-              </div>
-            </div>
-
-            {/* Ch 6 Class 8 Maths Compound Interest */}
-            <div 
-              onClick={() => {
-                setSelectedClass(8);
-                const sub = (DAV_SUBJECTS[8] || []).find(s => s.id === 'math8') || { id: 'math8', name: 'DAV Secondary Mathematics' };
-                setSelectedSubject(sub);
-                const chaps = getSubjectChapters(8, 'math8', sub.name);
-                const ch6 = chaps.find(c => c.number === 6) || chaps[5];
-                handleSelectChapter(ch6);
-              }}
-              className="p-4 rounded-2xl bg-gradient-to-br from-emerald-500/20 via-purple-950 to-purple-900 border-2 border-emerald-400 hover:border-emerald-300 transition transform hover:-translate-y-1 cursor-pointer shadow-lg shadow-emerald-500/20 group"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-400 text-slate-950">
-                  Class 8 • Unit 6
-                </span>
-                <span className="text-xs">💰</span>
-              </div>
-              <h4 className="font-black text-sm text-white group-hover:text-amber-300 transition">Compound Interest</h4>
-              <p className="text-[11px] text-purple-200/80 mt-1 line-clamp-2">Direct Solution Gyan &amp; Learn Cram worksheet formulas</p>
-              <div className="pt-2 mt-2 border-t border-purple-800/60 flex items-center justify-between text-xs font-bold text-emerald-400">
-                <span>Open Solutions</span>
-                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
-              </div>
-            </div>
-
-            {/* Ch 1 Class 8 Hindi Hum Panchhi Unmukt Gagan Ke */}
-            <div 
-              onClick={() => {
-                setSelectedClass(8);
-                const sub = (DAV_SUBJECTS[8] || []).find(s => s.id === 'hin8') || { id: 'hin8', name: 'Hindi - ज्ञान सागर' };
-                setSelectedSubject(sub);
-                const chaps = getSubjectChapters(8, 'hin8', sub.name);
-                handleSelectChapter(chaps[0]);
-              }}
-              className="p-4 rounded-2xl bg-gradient-to-br from-amber-500/20 via-purple-950 to-purple-900 border-2 border-amber-400/80 hover:border-amber-300 transition transform hover:-translate-y-1 cursor-pointer shadow-md group"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-400 text-slate-950">
-                  Class 8 • पाठ 1
-                </span>
-                <span className="text-xs">📖</span>
-              </div>
-              <h4 className="font-black text-sm text-white group-hover:text-amber-300 transition">हम पंछी उन्मुक्त गगन के</h4>
-              <p className="text-[11px] text-purple-200/80 mt-1 line-clamp-2">A Guide to Hindi (onlinehindi.in) by Avinash Ranjan Gupta</p>
-              <div className="pt-2 mt-2 border-t border-purple-800/60 flex items-center justify-between text-xs font-bold text-amber-300">
-                <span>Open Solutions</span>
-                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
-              </div>
-            </div>
-
-          </div>
         </div>
 
       </div>

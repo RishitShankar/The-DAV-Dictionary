@@ -2342,7 +2342,7 @@ export function TeachersSection({
 
 
   return (
-    <div className="w-full min-h-screen bg-slate-950 text-white font-sans selection:bg-teal-500 selection:text-slate-950 pb-16 relative overflow-hidden">
+    <div className="w-full min-h-screen bg-gradient-to-b from-stone-950 via-slate-950 to-stone-900 text-white font-sans selection:bg-amber-400 selection:text-stone-950 pb-16 relative overflow-hidden">
       {/* Dynamic Animated Ambient Orbs */}
       <div className="absolute top-10 right-10 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl pointer-events-none animate-float-orb" />
       <div className="absolute bottom-10 left-10 w-96 h-96 bg-teal-500/15 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-5s' }} />
@@ -2369,8 +2369,8 @@ export function TeachersSection({
                   title={p.title}
                   className={`transition-all duration-300 cursor-pointer rounded-full font-black text-[11px] font-mono border-2 ${
                     activePage === p.id
-                      ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-slate-950 border-teal-200 shadow-lg shadow-teal-400/40 px-4 py-1.5 scale-105'
-                      : 'bg-slate-900 text-purple-300 border-purple-700 hover:border-teal-500 hover:text-teal-300 px-3 py-1.5 flex items-center justify-center'
+                      ? 'bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-500 text-stone-950 border-amber-200 shadow-xl shadow-amber-500/40 px-5 py-2 scale-105 font-black card-real-3d animate-glow-gold'
+                      : 'bg-stone-900 text-amber-200/80 border-stone-800 hover:border-amber-400 hover:text-amber-300 px-3.5 py-1.5 flex items-center justify-center transition-all'
                   }`}
                 >
                   {activePage === p.id ? `Page ${p.num} / 6` : `P${p.num}`}
@@ -2381,7 +2381,7 @@ export function TeachersSection({
             {/* ====================================================== */}
             {/* THE MAIN PAGE CARD (MINT GREEN + PURPLE GLOW)          */}
             {/* ====================================================== */}
-            <div className="relative w-full rounded-3xl overflow-hidden border-2 border-purple-700/60 shadow-[0_30px_80px_-10px_rgba(124,58,237,0.4)] bg-gradient-to-br from-[#1a0533] via-[#0d1a2e] to-[#001a1a]">
+            <div className="relative w-full rounded-3xl overflow-hidden border-2 border-amber-500/60 shadow-[0_30px_80px_-10px_rgba(245,158,11,0.35)] bg-gradient-to-br from-stone-950 via-stone-900 to-stone-950 card-real-3d elevation-3d-velvet">
 
               {/* Glowing background blobs */}
               <div className="pointer-events-none absolute -top-24 -right-24 w-96 h-96 rounded-full bg-teal-500/10 blur-3xl" />
@@ -2389,23 +2389,23 @@ export function TeachersSection({
               <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-fuchsia-700/10 blur-3xl" />
 
               {/* Top accent stripe */}
-              <div className="w-full h-1.5 bg-gradient-to-r from-purple-600 via-fuchsia-400 to-teal-400" />
+              <div className="w-full h-2 bg-gradient-to-r from-amber-500 via-red-500 to-yellow-400 animate-spectrum-sheen" />
 
               <div className="relative z-10 p-6 sm:p-10 md:p-14 space-y-8">
 
                 {/* Page number badge */}
                 <div className="flex items-center justify-between flex-wrap gap-2">
-                  <span className="px-3 py-1 rounded-full bg-teal-400/15 border border-teal-400/40 text-teal-300 font-mono font-black text-[11px] tracking-widest uppercase">
+                  <span className="px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/50 text-amber-300 font-mono font-black text-xs tracking-widest uppercase animate-badge-bounce">
                     PAGE {currentMeta.pageNumber} OF 06
                   </span>
-                  <span className="px-3 py-1 rounded-full bg-purple-700/30 border border-purple-500/40 text-purple-200 font-mono text-[10px] font-bold">
+                  <span className="px-3 py-1 rounded-full bg-red-950/60 border border-red-500/40 text-red-200 font-mono text-[11px] font-bold">
                     {currentMeta.badgeText}
                   </span>
                 </div>
 
                 {/* Section icon + title */}
                 <div className="text-center space-y-3">
-                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-700 via-fuchsia-600 to-teal-500 shadow-xl shadow-purple-700/40 mb-2">
+                  <div className="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-amber-400 via-orange-500 to-red-600 shadow-2xl shadow-amber-500/40 mb-3 border-2 border-amber-300 animate-trophy-glory">
                     {activePage === 'homework' && <ClipboardList className="w-10 h-10 text-white" />}
                     {activePage === 'doubts_chat' && <MessageSquare className="w-10 h-10 text-white" />}
                     {activePage === 'live_class' && <Video className="w-10 h-10 text-white" />}
@@ -2413,10 +2413,10 @@ export function TeachersSection({
                     {activePage === 'attendance' && <UserCheck className="w-10 h-10 text-white" />}
                     {activePage === 'marks_ledger' && <Award className="w-10 h-10 text-white" />}
                   </div>
-                  <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
+                  <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight text-3d-mega animate-3d-float">
                     {currentMeta.directiveName}
                   </h2>
-                  <p className="text-xs sm:text-sm text-purple-200/80 italic max-w-2xl mx-auto">
+                  <p className="text-xs sm:text-sm text-amber-200/90 font-medium max-w-2xl mx-auto">
                     {currentMeta.tagline}
                   </p>
 
@@ -2439,7 +2439,7 @@ export function TeachersSection({
                 </div>
 
                 {/* Overview description */}
-                <div className="max-w-3xl mx-auto text-center text-xs sm:text-sm text-slate-300/90 leading-relaxed bg-white/5 rounded-2xl px-6 py-4 border border-purple-700/30">
+                <div className="max-w-3xl mx-auto text-center text-xs sm:text-sm text-stone-200 leading-relaxed bg-stone-900/90 rounded-2xl px-6 py-4 border border-amber-500/30 shadow-lg">
                   {currentMeta.overview}
                 </div>
 
@@ -2448,12 +2448,12 @@ export function TeachersSection({
                   {currentMeta.corePillars.map((pillar, idx) => (
                     <div
                       key={idx}
-                      className="p-5 rounded-2xl bg-gradient-to-br from-purple-900/40 to-teal-900/30 border border-teal-500/20 hover:border-teal-400/50 transition space-y-2 shadow-lg"
+                      className="p-5 rounded-2xl bg-stone-900/80 border border-amber-500/30 hover:border-amber-400 transition space-y-2 shadow-xl card-real-3d"
                     >
-                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-400 text-slate-950 flex items-center justify-center font-black text-xs font-mono">
+                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-stone-950 flex items-center justify-center font-black text-xs font-mono shadow-md animate-float-icon">
                         0{idx + 1}
                       </div>
-                      <h4 className="text-xs sm:text-sm font-black text-teal-200">{pillar.title}</h4>
+                      <h4 className="text-xs sm:text-sm font-black text-amber-300 text-3d-gold">{pillar.title}</h4>
                       <p className="text-[11px] sm:text-xs text-slate-300/80 leading-relaxed">{pillar.desc}</p>
                     </div>
                   ))}
@@ -2462,9 +2462,9 @@ export function TeachersSection({
                 {/* Stat pills */}
                 <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
                   {currentMeta.statPills.map((pill, i) => (
-                    <div key={i} className="px-3.5 py-1.5 rounded-xl bg-slate-900/60 border border-purple-700/50 text-center shadow-md">
-                      <div className="text-[9px] text-purple-300 font-mono uppercase tracking-wider">{pill.label}</div>
-                      <div className="text-xs sm:text-sm font-black text-teal-300">{pill.val}</div>
+                    <div key={i} className="px-3.5 py-1.5 rounded-xl bg-stone-900 border border-amber-500/30 text-center shadow-md">
+                      <div className="text-[9px] text-stone-400 font-mono uppercase tracking-wider">{pill.label}</div>
+                      <div className="text-xs sm:text-sm font-black text-amber-300">{pill.val}</div>
                     </div>
                   ))}
                 </div>
@@ -2478,26 +2478,26 @@ export function TeachersSection({
                       setIsFullScreenInteractive(true);
                       playSoundChime('sent');
                     }}
-                    className="inline-flex items-center justify-center gap-3 px-8 sm:px-14 py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-fuchsia-500 to-teal-400 hover:from-purple-500 hover:via-fuchsia-400 hover:to-teal-300 text-slate-950 font-black text-sm sm:text-base shadow-2xl shadow-purple-600/40 hover:shadow-teal-400/30 transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer border-2 border-teal-200/60"
+                    className="inline-flex items-center justify-center gap-3 px-8 sm:px-14 py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-red-600 hover:from-amber-300 hover:via-orange-400 hover:to-red-500 text-stone-950 font-black text-sm sm:text-base shadow-2xl shadow-orange-500/50 hover:shadow-amber-500/60 transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer border-2 border-amber-200 card-real-3d animate-glow-gold"
                   >
                     <span>{currentMeta.centralButtonText}</span>
                     <ArrowRight className="w-5 h-5" />
                   </button>
-                  <p className="text-[11px] text-purple-300/70 font-mono text-center">
+                  <p className="text-[11px] text-amber-300/80 font-mono text-center">
                     {currentMeta.centralButtonSub}
                   </p>
                 </div>
 
                 {/* Instructions Box */}
-                <div className="max-w-2xl mx-auto rounded-2xl bg-slate-900/70 border border-purple-800/60 p-4 sm:p-5 space-y-2">
-                  <h4 className="text-[11px] font-black uppercase text-teal-300 font-mono flex items-center gap-2">
+                <div className="max-w-2xl mx-auto rounded-2xl bg-stone-900/90 border border-amber-500/30 p-4 sm:p-5 space-y-2 rounded-2xl shadow-xl">
+                  <h4 className="text-[11px] font-black uppercase text-amber-400 font-mono flex items-center gap-2">
                     <CheckCircle className="w-3.5 h-3.5" />
                     <span>How to Use This Academic Section:</span>
                   </h4>
                   <ul className="space-y-1 text-[11px] sm:text-xs text-slate-300">
                     {currentMeta.instructions.map((step, i) => (
                       <li key={i} className="flex items-start gap-2">
-                        <span className="text-teal-400 font-bold shrink-0">{i + 1}.</span>
+                        <span className="text-amber-400 font-bold shrink-0">{i + 1}.</span>
                         <span>{step.replace(/^Step \d+:\s*/, '')}</span>
                       </li>
                     ))}
@@ -2520,12 +2520,12 @@ export function TeachersSection({
               {/* ================================================== */}
               {/* SLIDE NAVIGATION BAR - BOTTOM                      */}
               {/* ================================================== */}
-              <div className="w-full bg-slate-950/80 border-t border-purple-800/50 px-6 py-4 flex items-center justify-between flex-wrap gap-4">
+              <div className="w-full bg-stone-950 border-t border-amber-500/30 px-6 py-4 flex items-center justify-between flex-wrap gap-4">
                 
                 <button
                   onClick={handlePrevSlide}
                   disabled={currentPageIdx === 0}
-                  className="px-4 py-2 rounded-xl bg-purple-900/50 hover:bg-purple-800 text-purple-200 disabled:opacity-30 disabled:cursor-not-allowed font-bold text-xs flex items-center gap-1.5 transition cursor-pointer border border-purple-700"
+                  className="px-4 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-amber-200 disabled:opacity-30 disabled:cursor-not-allowed font-bold text-xs flex items-center gap-1.5 transition cursor-pointer border border-stone-700"
                 >
                   <ChevronLeft className="w-4 h-4" />
                   <span>Previous Page</span>
@@ -2538,7 +2538,7 @@ export function TeachersSection({
                       key={p.id}
                       onClick={() => handlePageChange(p.id)}
                       className={`w-2.5 h-2.5 rounded-full transition-all ${
-                        activePage === p.id ? 'w-6 bg-teal-400' : 'bg-purple-800 hover:bg-purple-600'
+                        activePage === p.id ? 'w-6 bg-amber-400' : 'bg-stone-800 hover:bg-stone-700'
                       }`}
                       title={p.title}
                     />
@@ -2548,7 +2548,7 @@ export function TeachersSection({
                 <button
                   onClick={handleNextSlide}
                   disabled={currentPageIdx === PRESENTATION_PAGES.length - 1}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-teal-500 hover:from-purple-500 hover:to-teal-400 text-slate-950 font-black text-xs flex items-center gap-1.5 transition cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 font-black text-xs flex items-center gap-1.5 transition cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed shadow-md"
                 >
                   <span>Next Page</span>
                   <ChevronRight className="w-4 h-4" />
@@ -2568,8 +2568,8 @@ export function TeachersSection({
                     onClick={() => handleSelectSectionPage(p.id)}
                     className={`p-3 rounded-2xl border text-center transition cursor-pointer ${
                       isSelected
-                        ? 'bg-gradient-to-br from-teal-400 to-cyan-500 text-slate-950 border-teal-200 shadow-lg shadow-teal-400/30 font-black'
-                        : 'bg-slate-900/70 text-purple-200 border-purple-800 hover:border-teal-400/60 font-bold'
+                        ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-stone-950 border-amber-200 shadow-lg shadow-amber-500/30 font-black card-real-3d'
+                        : 'bg-stone-900 text-stone-300 border-stone-800 hover:border-amber-400 hover:text-amber-300 font-bold'
                     }`}
                   >
                     <div className="text-[10px] font-mono opacity-80">Page {p.num}</div>
