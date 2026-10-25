@@ -30,7 +30,8 @@ const ICON_MAP = {
 export function QuestionsAnswersSection({ 
   currentUser, 
   onOpenUpgradeModal,
-  onOpenAIWithQuestion 
+  onOpenAIWithQuestion,
+  onRequireLogin
 }) {
   // Plan Selection: 'normal' | 'vip' | 'vvip'
   const initialPlan = (currentUser?.plan === 'vvip' || currentUser?.isAdmin) 
@@ -265,6 +266,18 @@ export function QuestionsAnswersSection({
 
   // Step 5: User clicks a website option in Pop-up Level 4 -> Direct Launch
   const handleLaunchWebsite = (sourceKey, url) => {
+    if (currentUser?.plan === 'guest' || currentUser?.isDemo) {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      if (onRequireLogin) {
+        onRequireLogin(
+          'Login to Continue',
+          `You are exploring in Demo Preview. Please sign in or register with your Student ID & Password to open full chapter solutions and question banks on ${sourceKey === 'solutiongyan' ? 'Solution Gyan' : 'external study portals'}.`
+        );
+      }
+      return;
+    }
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }

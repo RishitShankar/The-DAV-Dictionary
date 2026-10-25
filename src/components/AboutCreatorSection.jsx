@@ -172,7 +172,7 @@ export function AboutCreatorSection() {
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
           <span className="text-xs font-black uppercase tracking-widest text-amber-500">
-            Section 10 • Creator Biography & Vision
+            Section 11 • Creator Biography & Vision
           </span>
         </div>
         <div className="flex items-center gap-2">

@@ -110,7 +110,7 @@ function renderFormattedMessage(text, isUser) {
   );
 }
 
-export function ShankarAI({ isOpen, onClose, initialPrompt = '', user, isSectionView = false }) {
+export function ShankarAI({ isOpen, onClose, initialPrompt = '', user, isSectionView = false, onRequireLogin }) {
   // Modes: 'academics' | 'outer_world'
   const [activeMode, setActiveMode] = useState('academics');
 
@@ -303,6 +303,16 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
   const handleSend = async (textToSend, actionType = null) => {
     const question = textToSend || input;
     if (!question.trim() || loading) return;
+
+    if (user?.plan === 'guest' || user?.isDemo) {
+      if (onRequireLogin) {
+        onRequireLogin(
+          'Login to Continue',
+          'You are currently exploring in Free Demo Preview. Please log in or register with your Student ID & Password to ask questions, solve homework doubts, and generate AI chapter quizzes with Shankar AI.'
+        );
+      }
+      return;
+    }
 
     // Close quiz if user sends a question
     setShowQuiz(false);

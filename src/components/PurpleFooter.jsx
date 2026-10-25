@@ -193,8 +193,9 @@ export function PurpleFooter({ onSelectSection }) {
                 { id: 7, name: 'Section 7: Kids Fun & Gadgets' },
                 { id: 8, name: 'Section 8: Study Leaderboard & Focus' },
                 { id: 9, name: 'Section 9: Student Personal Profile' },
-                { id: 10, name: 'Section 10: Donate to Developer' },
-                { id: 11, name: 'Section 11: About Creator Rishit' }
+                { id: 10, name: 'Section 10: Donate & Reviews Hub' },
+                { id: 11, name: 'Section 11: About Creator Rishit' },
+                { id: 12, name: 'Section 12: Developer Reviews Vault' }
               ].map(sec => (
                 <button
                   key={sec.id}

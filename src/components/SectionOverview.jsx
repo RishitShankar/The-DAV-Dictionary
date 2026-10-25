@@ -130,16 +130,16 @@ export function SectionOverview({ onSelectSection }) {
     },
     {
       id: 10,
-      title: 'Section 10: Donate to Developer & Support Hub',
-      shortTitle: 'Donate & Support',
+      title: 'Section 10: Donate to Developer & Community Reviews Hub',
+      shortTitle: 'Donate & Review',
       icon: Heart,
       emoji: '❤️',
       color: 'from-rose-600 to-pink-700',
       cardBg: 'from-rose-500/10 via-pink-50/80 to-white',
       borderHover: 'hover:border-rose-500',
-      tag: 'UPI / Paytm / Bills',
+      tag: '2 Pages: Donate & Review',
       tagColor: 'bg-rose-100 text-rose-900 border-rose-300',
-      description: 'Support Rishit Shankar with continuous server maintenance, AI compute, and development. Donate via UPI (9470033984@upi), Paytm, Cash, or Card with instant official downloadable invoices!'
+      description: 'Divided into 2 pages: Page 1 lets supporters contribute with instant official receipts. Page 2 offers a full Review & Voice Feedback Hub with 677-word detection, voice writing, audio recording, media uploads, and 5-star ratings!'
     },
     {
       id: 11,
@@ -153,6 +153,19 @@ export function SectionOverview({ onSelectSection }) {
       tag: 'Master Developer',
       tagColor: 'bg-yellow-100 text-yellow-900 border-yellow-300',
       description: 'Meet Rishit Shankar (Head Boy, Class 8 DAV Khabra, 96% scorer, 100/100 in Sanskrit, Chess Gold Medalist). Contact directly via WhatsApp (+91 94700 33984), Call (+91 80922 61750), Snapchat (@rishitshankar), and social profiles.'
+    },
+    {
+      id: 12,
+      title: 'Section 12: Developer Reviews Vault (Dimension 4)',
+      shortTitle: 'Developer Vault',
+      icon: Star,
+      emoji: '⭐',
+      color: 'from-amber-700 to-red-900',
+      cardBg: 'from-amber-500/10 via-red-50/80 to-white',
+      borderHover: 'hover:border-amber-500',
+      tag: 'Dimension 4 Person Only',
+      tagColor: 'bg-red-100 text-red-900 border-red-300',
+      description: 'Reserved exclusively for Developer Rishit Shankar. Click "Check the Reviews" in the center to view student names, review messages, voice recordings, video attachments, and 5-star ratings (or "nothing" if unrated).'
     }
   ];
 

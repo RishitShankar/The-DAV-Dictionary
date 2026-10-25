@@ -4,17 +4,195 @@ import {
   CheckCircle2, ArrowRight, Lock, UserCheck, Brain, 
   Search, Library, Star, Crown, ChevronDown, ChevronUp,
   FileText, HelpCircle, Heart, Code2, LogIn, Highlighter,
-  Flame, Laptop, Check, ArrowUpRight, School, Phone, Mail, MessageCircle
+  Flame, Laptop, Check, ArrowUpRight, School, Phone, Mail, MessageCircle,
+  Play, Compass, Calculator, Calendar as CalendarIcon, Clock as ClockIcon,
+  CloudSun, Bus, MapPin, Eye, Trophy, Layers, Video, ClipboardList,
+  UserCheck as UserCheckIcon, Shield, Zap, ExternalLink, Rocket
 } from 'lucide-react';
 import { WhatsAppLogo, InstagramLogo, LinkedInLogo, SnapchatLogo } from './SocialLogos';
 
-export function PublicHomepage({ onGoToLogin }) {
+export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
   const [activeGradeFilter, setActiveGradeFilter] = useState('8');
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
+  const [activeDimensionFilter, setActiveDimensionFilter] = useState('all');
+  const [activeHeroTab, setActiveHeroTab] = useState(0);
 
   const toggleFaq = (idx) => {
     setOpenFaqIndex(openFaqIndex === idx ? null : idx);
   };
+
+  // The 11 Core Features / Dimensions of The DAV Dictionary Platform
+  const allDimensions = [
+    {
+      num: 1,
+      id: 'overview',
+      category: 'core',
+      name: 'Overview Hub',
+      shortName: 'Overview Hub',
+      tagline: 'Interactive Campus Navigator & Dimension Gateway',
+      icon: Layers,
+      color: 'from-amber-500 to-orange-600',
+      glowClass: 'hover:border-amber-400/60 shadow-amber-500/10',
+      badge: 'Launchpad',
+      desc: 'Central control deck and visual index connecting all 11 dimensions. Real-time portal status, quick jumps, daily notifications, and student shortcuts.',
+      features: ['Dimension Quick Switcher', 'Live Campus Announcements', 'Academic Shortcuts', 'Quick Jump Radar'],
+      demoReady: '100% Unlocked in Demo'
+    },
+    {
+      num: 2,
+      id: 'library',
+      category: 'academics',
+      name: 'Digital Textbooks & Library',
+      shortName: '70+ Textbooks',
+      tagline: 'Complete Uncompressed DAV Board Curriculum (LKG–Class 8)',
+      icon: BookOpen,
+      color: 'from-red-600 to-rose-700',
+      glowClass: 'hover:border-red-400/60 shadow-red-500/10',
+      badge: '70+ Books',
+      desc: 'The official digital archive of 70 textbooks across LKG, UKG, and Classes 1 to 8. Zero missing pages, embedded with neon highlighters, sticky notes, and full-screen reading.',
+      features: ['LKG to Class 8 Streaming', 'Neon Cyber Highlighters', 'Google Drive Cloud Annotator', 'Searchable Chapters'],
+      demoReady: 'Preview Catalog Free • Login to Read Book'
+    },
+    {
+      num: 3,
+      id: 'qa',
+      category: 'academics',
+      name: 'Chapter Questions & Answers',
+      shortName: 'Q&A Arcade',
+      tagline: 'Interactive Solution Gyan & DAV Guide Matrix',
+      icon: FileText,
+      color: 'from-purple-600 to-indigo-700',
+      glowClass: 'hover:border-purple-400/60 shadow-purple-500/10',
+      badge: 'Solution Matrix',
+      desc: 'Dual-mode Question & Answer engine supporting Normal, VIP, and VVIP study tracks. Connects every DAV chapter to verified solutions, exercises, and model answers.',
+      features: ['Normal & VIP Plan Modes', 'Solution Gyan Integration', 'Class 1-8 Chapter Banks', 'Audio Chapter Pronunciation'],
+      demoReady: 'Explore All Chapters • Login to Open Solution'
+    },
+    {
+      num: 4,
+      id: 'shankar_ai',
+      category: 'ai',
+      name: 'Shankar AI Companion',
+      shortName: 'Shankar AI',
+      tagline: 'Curriculum-Trained Dual Engine (Academics & Outer World)',
+      icon: Brain,
+      color: 'from-amber-400 via-orange-500 to-yellow-500',
+      glowClass: 'hover:border-amber-400/80 shadow-amber-500/20',
+      badge: '24/7 AI Tutor',
+      desc: 'Proprietary artificial intelligence grounded in DAV textbooks and CBSE syllabus. Switch between Academic Curriculum Intelligence and Global Non-Academic Knowledge.',
+      features: ['DAV Textbook Grounded', 'Class 1-8 Specific Tuning', 'Speech-to-Text Voice Q&A', 'Chapter Quiz Auto-Generator'],
+      demoReady: 'Explore Modes & Prompts • Login to Ask AI'
+    },
+    {
+      num: 5,
+      id: 'erp',
+      category: 'erp',
+      name: 'Smart School ERP & Faculty Desk',
+      shortName: 'Smart ERP Suite',
+      tagline: '6-in-1 Daily Academic Desk & Live Virtual Schooling',
+      icon: School,
+      color: 'from-blue-600 to-cyan-600',
+      glowClass: 'hover:border-cyan-400/60 shadow-cyan-500/10',
+      badge: '6-in-1 Suite',
+      desc: 'Comprehensive school operations: Page 1 Daily Homework Hub, Page 2 Faculty Desk, Page 3 WebRTC Live Video Classrooms, Page 4 Online CBT Exam Suite, Page 5 Digital Attendance, and Page 6 Leaderboard.',
+      features: ['Daily Homework Hub (100% Free)', 'WebRTC HD Live Classes', 'CBT Test Palette Simulator', '75% Attendance Register'],
+      demoReady: 'Homework & Attendance 100% Free'
+    },
+    {
+      num: 6,
+      id: 'videos',
+      category: 'academics',
+      name: 'Video Explanations & PYQ Bank',
+      shortName: 'Video Lectures',
+      tagline: 'Curated YouTube Lectures & Previous Year Question Papers',
+      icon: Video,
+      color: 'from-rose-600 to-pink-600',
+      glowClass: 'hover:border-rose-400/60 shadow-rose-500/10',
+      badge: 'Video & PYQs',
+      desc: 'Expert video lessons linked to every chapter of Class 8, 6, and 4. Accompanied by official past-year board examination question papers and step-by-step marking schemes.',
+      features: ['Multi-Part Video Lessons', 'Official DAV Past Papers', 'Chapter Playlist Switcher', 'Zero Dead-Screen Embeds'],
+      demoReady: 'Browse Video Syllabus • Login to Watch'
+    },
+    {
+      num: 7,
+      id: 'utilities',
+      category: 'utilities',
+      name: 'Campus Smart Utilities & Radar',
+      shortName: 'Campus Utilities',
+      tagline: 'DAV Khabra Navigation, Weather, Bus, Scientific Tools',
+      icon: Compass,
+      color: 'from-emerald-600 to-teal-700',
+      glowClass: 'hover:border-emerald-400/60 shadow-emerald-500/10',
+      badge: 'Smart Tools',
+      desc: 'Live interactive tools: Turn-by-turn Google Maps navigation to DAV Khabra, Live Bus Fleet Radar, Real-Time Muzaffarpur Weather, Scientific Calculator, Calendar, Compass, and World/School Clock.',
+      features: ['Turn-by-Turn GPS to DAV Khabra', 'Live Bus Radar Fleet', 'Working Scientific Calculator', 'Live Weather, Compass & Clock'],
+      demoReady: 'Calculator, Weather & Clock 100% Free'
+    },
+    {
+      num: 8,
+      id: 'focus',
+      category: 'utilities',
+      name: 'Deep Study Focus Mode',
+      shortName: 'Deep Focus OS',
+      tagline: 'Pomodoro Engine, 40Hz Binaural Beats & Focus Streaks',
+      icon: Trophy,
+      color: 'from-indigo-600 to-violet-700',
+      glowClass: 'hover:border-violet-400/60 shadow-violet-500/10',
+      badge: 'Focus Arena',
+      desc: 'Distraction-free deep work zone featuring anti-tab switch detection, 40Hz Gamma wave synthesizer, ambient rain soundscapes, and live campus study leaderboards.',
+      features: ['Anti-Distraction Monitor', '40Hz Binaural Focus Waves', '15m to 60m Study Sprints', 'Campus Study Leaderboard'],
+      demoReady: 'View Leaderboard • Login to Start Focus'
+    },
+    {
+      num: 9,
+      id: 'vault',
+      category: 'utilities',
+      name: 'Secure Student Personal Vault',
+      shortName: 'Student Vault',
+      tagline: 'Encrypted Cloud Storage for IDs, Credentials & Records',
+      icon: Shield,
+      color: 'from-slate-700 to-zinc-900',
+      glowClass: 'hover:border-amber-400/60 shadow-amber-500/10',
+      badge: 'Zero-Knowledge',
+      desc: 'Personal encrypted student locker. Safely store report cards, school ID cards, admission numbers, fee receipts, and private academic goals with end-to-end security.',
+      features: ['Encrypted Cloud Storage', 'Digital School ID Generator', 'Academic Performance Ledger', 'Secure Password Vault'],
+      demoReady: 'Protected Vault • Login to Open'
+    },
+    {
+      num: 10,
+      id: 'donate',
+      category: 'community',
+      name: 'Donate to Developer (Patron)',
+      shortName: 'Developer Patron',
+      tagline: 'Sponsor Digital Education & Instant Stamped Receipt',
+      icon: Heart,
+      color: 'from-amber-600 to-yellow-600',
+      glowClass: 'hover:border-amber-400/60 shadow-amber-500/10',
+      badge: 'Official Bill',
+      desc: 'Community patronage gateway to keep servers running free for all students. Choose ₹5 Chai Support or custom amount via UPI, Paytm, Card, or Cash with an instant official bill.',
+      features: ['Instant Stamped Invoice PDF', 'UPI, Paytm, Cash, Cards', 'Sponsor Cloud GPU Servers', 'Donor Hall of Fame'],
+      demoReady: 'Interactive Form • Login to Generate Bill'
+    },
+    {
+      num: 11,
+      id: 'about',
+      category: 'community',
+      name: 'About Developer & Community Hub',
+      shortName: 'Creator & Community',
+      tagline: 'Chat with Head Boy Rishit Shankar & Launch Confetti',
+      icon: Crown,
+      color: 'from-amber-500 to-orange-500',
+      glowClass: 'hover:border-amber-400/80 shadow-amber-500/20',
+      badge: 'Double VIP',
+      desc: 'Meet Head Boy Rishit Shankar (Class 8, Roll 25), Chess Cluster 3 Gold Medalist, 96% academic topper. Direct sub-second chat, Launch Celebration Confetti, and community reviews.',
+      features: ['Direct Chat with Rishit Shankar', 'Screen Shake Party Popper', 'Verified Social Handles', 'Official Student Endorsements'],
+      demoReady: '100% Unlocked for Demo (Double VIP!)'
+    }
+  ];
+
+  const filteredDimensions = activeDimensionFilter === 'all' 
+    ? allDimensions 
+    : allDimensions.filter(d => d.category === activeDimensionFilter);
 
   // Grade books highlights
   const gradeHighlights = {
@@ -54,200 +232,298 @@ export function PublicHomepage({ onGoToLogin }) {
 
   const faqs = [
     {
-      q: "What is The DAV Dictionary & Smart Digital Library?",
-      a: "It is an all-in-one educational platform engineered specifically for students of DAV Public Schools. It hosts the complete digital curriculum of 70 uncompressed DAV textbooks from LKG through Class 8, paired with Shankar AI (a curriculum-trained AI tutor), interactive chapter quizzes, a comprehensive vocabulary dictionary, and in-browser PDF annotation tools."
+      q: "What is The DAV Dictionary & Smart Digital Campus?",
+      a: "The DAV Dictionary is an all-in-one next-generation educational ecosystem engineered specifically for students, parents, and faculty of DAV Public Schools. Across 11 super-dimensions, it hosts the complete digital curriculum of 70+ verified DAV textbooks (LKG to Class 8), paired with Shankar AI, daily homework tracking, online CBT exam simulation, live video classrooms, student attendance, study focus timer, and campus utilities."
     },
     {
-      q: "Is access to the textbooks and AI completely free?",
-      a: "Yes! The core digital library, reading tools, Shankar AI questions, and quizzes are 100% free for all students. There are also specialized VIP and VVIP tiers with expanded features for dedicated scholars."
+      q: "What does 'Have a Demo Preview' allow me to do?",
+      a: "The Demo Preview gives you instant, 1-click access to the entire 11-dimension platform without needing to register or enter credentials first! You can explore the Overview Hub, view the complete 70+ textbook library, test chapter Q&A selectors, try Shankar AI interfaces, inspect daily homework and attendance, run the scientific calculator, weather, and compass, explore deep study focus modes, and chat directly with Head Boy Rishit Shankar. Full textbook PDF viewing and AI chatting unlock as soon as you sign in."
     },
     {
-      q: "How do I register or log into the portal?",
-      a: "Click on any 'Register Now' or 'Student Login' button on this page. You will be redirected to the authentic Blackboard Login Gatekeeper where you can sign in with your student ID & password, or enter through the Free Guest Preview."
+      q: "Is access to the textbooks, Shankar AI, and Homework Hub free?",
+      a: "Yes, 100%! The core textbooks, Shankar AI questions, daily homework hub, attendance tracker, and school utilities are completely free for all students. There are also specialized VIP and VVIP scholarship tiers with expanded multi-device sync and premium study vaults."
     },
     {
-      q: "Can I highlight and write notes directly on the textbooks?",
-      a: "Yes! When you open any textbook, you have access to a built-in Neon Highlighter (10 glowing cyber colors), classic ink pens, and movable sticky notes. All your drawings and annotations automatically persist to your browser and sync to the cloud."
+      q: "How do I register or log in with my Student ID?",
+      a: "Click on 'Register Now / Student Login' at the top of this page. You will enter the authentic Blackboard Login Gatekeeper where you can sign in with your ID and password or click Free Preview."
     },
     {
-      q: "Who is the developer of this platform?",
-      a: "The DAV Dictionary was conceived, designed, and developed by Rishit Shankar (Head Boy, Class 8 DAV Khabra, Roll 25), who scored 96% in his Class 8 exams (with 100/100 in Sanskrit and 99/100 in Hindi) and is a Chess Cluster 3 Gold Medalist. He created this platform as an official student initiative to empower every DAVian."
+      q: "Who is the developer of The DAV Dictionary?",
+      a: "The platform was conceived, designed, and developed by Rishit Shankar (Head Boy, Class 8 DAV Khabra, Roll 25). He scored 96% in his Class 8 exams (with 100/100 in Sanskrit and 99/100 in Hindi) and is a Chess Cluster 3 Gold Medalist. He engineered this platform as a student-led initiative to empower every DAVian."
     }
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-amber-400 selection:text-stone-950">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-amber-400 selection:text-stone-950 relative overflow-x-hidden">
       
       {/* =========================================================================
-          TOP NAVIGATION BAR
+          TOP NAVIGATION BAR (FUTURISTIC GLASS & AMBIENT GLOW)
       ========================================================================= */}
-      <header className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-stone-800">
+      <header className="sticky top-0 z-50 bg-slate-950/85 backdrop-blur-xl border-b border-stone-800/80 shadow-2xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
           {/* Logo & Brand Title */}
           <div className="flex items-center gap-3.5 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <img 
-              src="/logo.png" 
-              alt="The DAV Dictionary Logo" 
-              className="w-12 h-12 object-contain drop-shadow-md rounded-xl"
-            />
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 to-orange-500 rounded-2xl blur-xs opacity-75 group-hover:opacity-100 transition duration-300" />
+              <img 
+                src="/logo.png" 
+                alt="The DAV Dictionary Logo" 
+                className="relative w-12 h-12 object-contain rounded-xl bg-stone-950 p-1 border border-amber-500/40"
+              />
+            </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-black text-lg sm:text-xl tracking-tight text-white">
+                <span className="font-black text-lg sm:text-xl tracking-tight text-white flex items-center gap-1.5">
                   The DAV Dictionary
                 </span>
-                <span className="hidden sm:inline-block px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-gradient-to-r from-amber-400 to-orange-500 text-stone-950">
-                  Official Portal
+                <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-gradient-to-r from-amber-400 to-orange-500 text-stone-950 shadow-xs">
+                  <Sparkles className="w-2.5 h-2.5 text-stone-950 fill-current" />
+                  11 Dimensions
                 </span>
               </div>
-              <p className="text-[11px] text-amber-200/80 font-medium">
-                DAV Public School Digital Library & Shankar AI Hub
+              <p className="text-[11px] text-amber-300/80 font-medium hidden xs:block">
+                DAV Public School Digital Campus &amp; Shankar AI Super-App
               </p>
             </div>
           </div>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-7 text-xs font-bold text-stone-300">
-            <a href="#about" className="hover:text-amber-400 transition-colors">Overview</a>
-            <a href="#features" className="hover:text-amber-400 transition-colors">Key Features</a>
-            <a href="#curriculum" className="hover:text-amber-400 transition-colors">Library Catalog</a>
-            <a href="#developer" className="hover:text-amber-400 transition-colors">Meet Rishit</a>
+          <nav className="hidden lg:flex items-center gap-6 text-xs font-bold text-stone-300">
+            <a href="#dimensions" className="hover:text-amber-400 transition-colors flex items-center gap-1">
+              <span>11 Dimensions</span>
+              <span className="px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 text-[10px] font-black">All</span>
+            </a>
+            <a href="#features-overview" className="hover:text-amber-400 transition-colors">Campus Features</a>
+            <a href="#curriculum" className="hover:text-amber-400 transition-colors">70+ Textbooks</a>
+            <a href="#developer" className="hover:text-amber-400 transition-colors">Head Boy Rishit</a>
             <a href="#faq" className="hover:text-amber-400 transition-colors">FAQ</a>
           </nav>
 
           {/* Action CTAs */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            
+            {/* Have a Demo Preview Button (Header Shortcut) */}
             <button
-              onClick={onGoToLogin}
-              className="px-4 py-2 rounded-xl text-xs font-bold text-stone-200 hover:text-white hover:bg-stone-800/80 transition-all flex items-center gap-1.5 cursor-pointer border border-stone-700"
+              onClick={() => onEnterDemoPreview(1)}
+              className="px-3.5 sm:px-4 py-2 rounded-xl text-xs font-black bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 hover:border-emerald-400 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+              title="Launch full platform in Demo Mode without login"
             >
-              <LogIn className="w-3.5 h-3.5 text-amber-400" />
-              <span>Login</span>
+              <Rocket className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+              <span>Demo Preview</span>
             </button>
 
             <button
               onClick={onGoToLogin}
-              className="px-5 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 transition-all transform hover:-translate-y-0.5 flex items-center gap-2 cursor-pointer"
+              className="px-4 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 transition-all transform hover:-translate-y-0.5 flex items-center gap-1.5 cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5 text-stone-950" />
-              <span>Register Now</span>
+              <LogIn className="w-3.5 h-3.5 text-stone-950" />
+              <span>Login / Register</span>
             </button>
+
           </div>
 
         </div>
       </header>
 
       {/* =========================================================================
-          HERO SECTION (LIVELY ANIMATIONS & DYNAMIC ORBS)
+          HERO SECTION (CENTER OF ATTRACTION • NEW ERA GRAPHIC DESIGN)
       ========================================================================= */}
-      <section className="relative overflow-hidden pt-16 pb-24 lg:pt-24 lg:pb-32">
-        {/* Dynamic Glowing Mesh Orbs & Animated Auroras */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-amber-600/25 via-orange-600/20 to-rose-600/15 rounded-full blur-[130px] pointer-events-none animate-pulse-aura" />
-        <div className="absolute top-10 right-10 w-96 h-96 bg-cyan-600/15 rounded-full blur-[140px] pointer-events-none animate-float-reverse" />
-        <div className="absolute bottom-10 left-10 w-96 h-96 bg-purple-600/15 rounded-full blur-[140px] pointer-events-none animate-float-gentle" />
+      <section className="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-28 bg-grid-pattern">
+        
+        {/* Futuristic Glowing Ambient Orbs */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[450px] bg-gradient-to-tr from-amber-600/20 via-orange-600/15 to-purple-600/15 rounded-full blur-[140px] pointer-events-none animate-pulse-aura" />
+        <div className="absolute top-16 right-5 w-80 h-80 bg-cyan-500/15 rounded-full blur-[130px] pointer-events-none animate-float-reverse" />
+        <div className="absolute bottom-10 left-5 w-80 h-80 bg-emerald-500/15 rounded-full blur-[130px] pointer-events-none animate-float-gentle" />
 
-        {/* Floating Badges for Visual Depth */}
-        <div className="hidden lg:flex absolute left-6 xl:left-14 top-1/3 -translate-y-1/2 p-3.5 rounded-2xl bg-stone-900/85 backdrop-blur-md border border-amber-500/30 shadow-2xl items-center gap-3 animate-float-gentle pointer-events-none z-20">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-black">
-            <BookOpen className="w-5 h-5 text-amber-400" />
+        {/* Floating Futuristic Badges (Desktop) */}
+        <div className="hidden xl:flex absolute left-8 top-1/3 -translate-y-1/2 p-4 rounded-2xl bg-stone-900/90 backdrop-blur-md border border-amber-500/30 shadow-2xl items-center gap-3 animate-float-gentle pointer-events-none z-20">
+          <div className="w-11 h-11 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-black">
+            <School className="w-6 h-6 text-amber-400" />
           </div>
           <div className="text-left">
-            <div className="text-xs font-black text-white">70 Full Textbooks</div>
-            <div className="text-[10px] text-amber-300/80">LKG to Class 8 Streaming</div>
+            <div className="text-xs font-black text-white">11 Super-Dimensions</div>
+            <div className="text-[10px] text-amber-300/80">Complete Campus OS Online</div>
           </div>
         </div>
 
-        <div className="hidden lg:flex absolute right-6 xl:right-14 top-1/4 p-3.5 rounded-2xl bg-stone-900/85 backdrop-blur-md border border-cyan-500/30 shadow-2xl items-center gap-3 animate-float-reverse pointer-events-none z-20">
-          <div className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-black">
-            <Brain className="w-5 h-5 text-cyan-400" />
+        <div className="hidden xl:flex absolute right-8 top-1/4 p-4 rounded-2xl bg-stone-900/90 backdrop-blur-md border border-cyan-500/30 shadow-2xl items-center gap-3 animate-float-reverse pointer-events-none z-20">
+          <div className="w-11 h-11 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-black">
+            <Brain className="w-6 h-6 text-cyan-400" />
           </div>
           <div className="text-left">
-            <div className="text-xs font-black text-white">Shankar AI Tutor</div>
-            <div className="text-[10px] text-cyan-300/80">24/7 Smart Curriculum AI</div>
-          </div>
-        </div>
-
-        <div className="hidden xl:flex absolute left-14 bottom-16 p-3 rounded-2xl bg-stone-900/85 backdrop-blur-md border border-emerald-500/30 shadow-2xl items-center gap-2.5 animate-float-reverse pointer-events-none z-20">
-          <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-emerald-400" />
-          </div>
-          <div className="text-left">
-            <div className="text-[11px] font-black text-white">Interactive Quizzes</div>
-            <div className="text-[9px] text-emerald-300/80">Instant Chapter Auto-Grading</div>
-          </div>
-        </div>
-
-        <div className="hidden xl:flex absolute right-14 bottom-16 p-3 rounded-2xl bg-stone-900/85 backdrop-blur-md border border-purple-500/30 shadow-2xl items-center gap-2.5 animate-float-gentle pointer-events-none z-20">
-          <div className="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-300 flex items-center justify-center">
-            <Highlighter className="w-4 h-4 text-purple-400" />
-          </div>
-          <div className="text-left">
-            <div className="text-[11px] font-black text-white">PDF Smart Highlighter</div>
-            <div className="text-[9px] text-purple-300/80">Cyber Neon &amp; Cloud Sync</div>
+            <div className="text-xs font-black text-white">Shankar AI Engine</div>
+            <div className="text-[10px] text-cyan-300/80">Academic &amp; Outer World AI</div>
           </div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           
-          {/* Pill Badge with Pulsing Glow */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-stone-900/90 border border-amber-500/40 text-amber-300 text-xs font-bold mb-8 shadow-lg shadow-amber-500/10 hover:border-amber-400 transition transform hover:scale-105">
-            <School className="w-3.5 h-3.5 text-amber-400 animate-bounce" />
-            <span>DAV Public School Khabra • Official Academic Platform</span>
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+          {/* Live Campus Pill Badge */}
+          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-stone-900/90 border border-amber-400/50 text-amber-300 text-xs font-extrabold mb-6 shadow-xl shadow-amber-500/10 hover:border-amber-300 transition transform hover:scale-105">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+            <span>DAV Public School Khabra • Next-Gen Digital Learning Platform</span>
+            <span className="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[10px] font-black uppercase">
+              11 Dimensions Active
+            </span>
           </div>
 
-          {/* Main Title with Animated Shimmering Gradient */}
+          {/* Main Title with Shimmering Gradient */}
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white max-w-5xl mx-auto leading-[1.12]">
-            The Smart Digital Library &amp;{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-400 to-rose-400 animate-text-gradient font-black drop-shadow-sm">
-              DAV Curriculum AI
+            The Digital Campus &amp;{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-400 to-yellow-300 animate-text-gradient font-black drop-shadow-sm">
+              AI Learning Super-App
             </span>
           </h1>
 
           {/* Subtitle */}
           <p className="mt-6 text-base sm:text-xl text-stone-300 max-w-3xl mx-auto leading-relaxed">
-            Welcome to the premier academic repository for DAVians. Access all <strong>70 verified textbooks</strong> from LKG to Class 8, solve complex doubts with <strong>Shankar AI</strong>, practice chapter quizzes, and draw directly inside your books.
+            Welcome to the new era of DAV education. Built by students for students, featuring <strong>11 comprehensive dimensions</strong>: 70+ official textbooks, Shankar AI companion, daily homework hub, CBT exam simulation, live campus utilities, and deep focus technology.
           </p>
 
-          {/* Primary Action Buttons with Light Sweep Shimmer */}
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
+          {/* =========================================================================
+              THE TWO PRIMARY ACTION BUTTONS:
+              1. REGISTER NOW / STUDENT LOGIN
+              2. HAVE A DEMO PREVIEW (REPLACES OLD EXPLORE 70 TEXTBOOKS)
+          ========================================================================= */}
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-lg mx-auto">
+            
+            {/* Left Button: Register Now / Student Login */}
             <button
               onClick={onGoToLogin}
-              className="relative overflow-hidden w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 font-black text-sm shadow-xl shadow-orange-500/30 hover:shadow-orange-500/50 transition-all transform hover:-translate-y-1 hover:scale-105 active:scale-95 flex items-center justify-center gap-3 cursor-pointer group"
+              className="relative overflow-hidden w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 font-black text-sm sm:text-base shadow-xl shadow-orange-500/30 hover:shadow-orange-500/50 transition-all transform hover:-translate-y-1 hover:scale-105 active:scale-95 flex items-center justify-center gap-3 cursor-pointer group"
             >
-              {/* Animated Light Sweep Shimmer */}
               <div className="absolute inset-0 w-1/2 h-full bg-white/30 skew-x-12 animate-shimmer-sweep pointer-events-none" />
               <UserCheck className="w-5 h-5 text-stone-950 relative z-10" />
               <span className="relative z-10">Register Now / Student Login</span>
               <ArrowRight className="w-4 h-4 text-stone-950 relative z-10 group-hover:translate-x-1 transition-transform" />
             </button>
 
-            <a
-              href="#curriculum"
-              className="w-full sm:w-auto px-7 py-4 rounded-2xl bg-stone-900/90 hover:bg-stone-800 border border-stone-700 hover:border-amber-500/40 text-stone-200 hover:text-white font-bold text-sm transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 shadow-lg"
+            {/* Right Button: Have a Demo Preview */}
+            <button
+              onClick={() => onEnterDemoPreview(1)}
+              className="relative overflow-hidden w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500/20 via-teal-500/20 to-emerald-500/20 hover:from-emerald-500/30 hover:to-teal-500/30 border-2 border-emerald-400/80 hover:border-emerald-300 text-emerald-300 hover:text-white font-black text-sm sm:text-base shadow-xl shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all transform hover:-translate-y-1 hover:scale-105 active:scale-95 flex items-center justify-center gap-3 cursor-pointer group"
             >
-              <Library className="w-4 h-4 text-amber-400" />
-              <span>Explore 70 Textbooks</span>
-            </a>
+              <Rocket className="w-5 h-5 text-emerald-400 group-hover:rotate-12 transition-transform" />
+              <span>Have a Demo Preview 🚀</span>
+              <span className="px-2 py-0.5 rounded-full bg-emerald-400 text-stone-950 text-[10px] font-black uppercase">
+                Instant Access
+              </span>
+            </button>
+
           </div>
 
-          {/* Animated Statistics Bar with Hover Scaling */}
-          <div className="mt-16 pt-12 border-t border-stone-800/80 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            <div className="p-4 rounded-2xl bg-stone-900/50 border border-stone-800 hover:border-amber-500/50 hover:bg-stone-900/80 hover:scale-105 transition-all duration-300 shadow-lg group">
-              <div className="text-3xl sm:text-4xl font-black text-amber-400 group-hover:scale-110 transition-transform">70+</div>
-              <div className="text-xs text-stone-400 font-semibold mt-1">DAV Textbooks</div>
+          <p className="mt-3 text-xs text-stone-400 font-medium">
+            ✨ No account required for Demo Preview • Test all 11 dimensions in 1 click
+          </p>
+
+          {/* =========================================================================
+              INTERACTIVE LIVE HERO DIMENSION SIMULATOR
+          ========================================================================= */}
+          <div className="mt-14 max-w-4xl mx-auto rounded-3xl bg-stone-900/70 border-2 border-stone-800 backdrop-blur-xl p-5 sm:p-7 shadow-2xl text-left relative overflow-hidden">
+            
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-stone-800">
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-red-500 inline-block" />
+                <span className="w-3 h-3 rounded-full bg-amber-500 inline-block" />
+                <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block" />
+                <span className="text-xs font-mono text-stone-400 ml-2">DAV_CAMPUS_OS // INTERACTIVE SIMULATOR</span>
+              </div>
+              <span className="text-[11px] font-bold text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/30">
+                Tap Any Dimension to Preview:
+              </span>
             </div>
-            <div className="p-4 rounded-2xl bg-stone-900/50 border border-stone-800 hover:border-orange-500/50 hover:bg-stone-900/80 hover:scale-105 transition-all duration-300 shadow-lg group">
-              <div className="text-3xl sm:text-4xl font-black text-orange-400 group-hover:scale-110 transition-transform">LKG–8</div>
-              <div className="text-xs text-stone-400 font-semibold mt-1">Complete Grades</div>
+
+            {/* Quick Dimension Selector Tabs */}
+            <div className="flex items-center gap-1.5 sm:gap-2 mt-4 overflow-x-auto pb-2 scrollbar-none">
+              {[
+                { idx: 0, label: 'Dim 1: Overview', icon: Layers },
+                { idx: 1, label: 'Dim 2: 70+ Books', icon: BookOpen },
+                { idx: 3, label: 'Dim 4: Shankar AI', icon: Brain },
+                { idx: 4, label: 'Dim 5: Smart ERP', icon: School },
+                { idx: 6, label: 'Dim 7: Utilities', icon: Compass },
+                { idx: 7, label: 'Dim 8: Deep Focus', icon: Trophy }
+              ].map(tab => (
+                <button
+                  key={tab.idx}
+                  onClick={() => setActiveHeroTab(tab.idx)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                    activeHeroTab === tab.idx
+                      ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-stone-950 font-black shadow-md'
+                      : 'bg-stone-950/80 text-stone-300 hover:text-white border border-stone-800'
+                  }`}
+                >
+                  <tab.icon className="w-3.5 h-3.5" />
+                  <span>{tab.label}</span>
+                </button>
+              ))}
             </div>
-            <div className="p-4 rounded-2xl bg-stone-900/50 border border-stone-800 hover:border-emerald-500/50 hover:bg-stone-900/80 hover:scale-105 transition-all duration-300 shadow-lg group">
-              <div className="text-3xl sm:text-4xl font-black text-emerald-400 group-hover:scale-110 transition-transform">24/7</div>
-              <div className="text-xs text-stone-400 font-semibold mt-1">Shankar AI Tutor</div>
+
+            {/* Dynamic Card Displaying Selected Dimension */}
+            {allDimensions[activeHeroTab] && (
+              <div className="mt-5 p-5 rounded-2xl bg-stone-950/80 border border-stone-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+                <div className="space-y-2 max-w-xl">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-400 text-stone-950">
+                      Section {allDimensions[activeHeroTab].num}
+                    </span>
+                    <span className="text-xs font-bold text-stone-400">
+                      {allDimensions[activeHeroTab].tagline}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-black text-white">
+                    {allDimensions[activeHeroTab].name}
+                  </h3>
+                  <p className="text-xs text-stone-300 leading-relaxed">
+                    {allDimensions[activeHeroTab].desc}
+                  </p>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {allDimensions[activeHeroTab].features.map((feat, fi) => (
+                      <span key={fi} className="text-[10px] font-semibold text-emerald-300 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded-lg">
+                        ✓ {feat}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="shrink-0 flex flex-col gap-2 w-full md:w-auto">
+                  <button
+                    onClick={() => onEnterDemoPreview(allDimensions[activeHeroTab].num)}
+                    className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 font-black text-xs flex items-center justify-center gap-2 shadow-lg transition cursor-pointer"
+                  >
+                    <span>Test This in Demo Preview</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-stone-950" />
+                  </button>
+                  <span className="text-[10px] text-center text-amber-300/80 font-medium">
+                    {allDimensions[activeHeroTab].demoReady}
+                  </span>
+                </div>
+              </div>
+            )}
+
+          </div>
+
+          {/* Animated Statistics Bar */}
+          <div className="mt-14 pt-10 border-t border-stone-800/80 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-5xl mx-auto">
+            <div className="p-4 rounded-2xl bg-stone-900/60 border border-stone-800 hover:border-amber-400/50 hover:bg-stone-900/90 transition-all duration-300 shadow-lg group">
+              <div className="text-3xl sm:text-4xl font-black text-amber-400 group-hover:scale-110 transition-transform">11</div>
+              <div className="text-xs text-stone-400 font-bold mt-1">Super Dimensions</div>
+              <div className="text-[10px] text-emerald-400 font-medium mt-0.5">● 100% Online</div>
             </div>
-            <div className="p-4 rounded-2xl bg-stone-900/50 border border-stone-800 hover:border-cyan-500/50 hover:bg-stone-900/80 hover:scale-105 transition-all duration-300 shadow-lg group">
-              <div className="text-3xl sm:text-4xl font-black text-cyan-400 group-hover:scale-110 transition-transform">100%</div>
-              <div className="text-xs text-stone-400 font-semibold mt-1">Free for Students</div>
+            <div className="p-4 rounded-2xl bg-stone-900/60 border border-stone-800 hover:border-orange-400/50 hover:bg-stone-900/90 transition-all duration-300 shadow-lg group">
+              <div className="text-3xl sm:text-4xl font-black text-orange-400 group-hover:scale-110 transition-transform">70+</div>
+              <div className="text-xs text-stone-400 font-bold mt-1">DAV Official Books</div>
+              <div className="text-[10px] text-stone-400 mt-0.5">LKG to Class 8</div>
+            </div>
+            <div className="p-4 rounded-2xl bg-stone-900/60 border border-stone-800 hover:border-cyan-400/50 hover:bg-stone-900/90 transition-all duration-300 shadow-lg group">
+              <div className="text-3xl sm:text-4xl font-black text-cyan-400 group-hover:scale-110 transition-transform">24/7</div>
+              <div className="text-xs text-stone-400 font-bold mt-1">Shankar AI Tutor</div>
+              <div className="text-[10px] text-cyan-400 font-medium mt-0.5">DAV Grounded</div>
+            </div>
+            <div className="p-4 rounded-2xl bg-stone-900/60 border border-stone-800 hover:border-emerald-400/50 hover:bg-stone-900/90 transition-all duration-300 shadow-lg group">
+              <div className="text-3xl sm:text-4xl font-black text-emerald-400 group-hover:scale-110 transition-transform">100%</div>
+              <div className="text-xs text-stone-400 font-bold mt-1">Free for Students</div>
+              <div className="text-[10px] text-emerald-400 font-medium mt-0.5">Zero Ads • Zero Lag</div>
             </div>
           </div>
 
@@ -255,98 +531,135 @@ export function PublicHomepage({ onGoToLogin }) {
       </section>
 
       {/* =========================================================================
-          KEY FEATURES SECTION
+          SECTION 2: THE 11 MASTER DIMENSIONS SHOWCASE (INTERACTIVE GRID)
       ========================================================================= */}
-      <section id="features" className="py-20 bg-stone-900/40 border-y border-stone-800 relative">
+      <section id="dimensions" className="py-20 bg-stone-900/50 border-y border-stone-800 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-xs font-black uppercase tracking-wider text-amber-400">
-              Engineered for Academic Excellence
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <span className="text-xs font-black uppercase tracking-widest text-amber-400 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30">
+              Complete Architectural Blueprint
             </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-white mt-2">
-              Everything A DAV Student Needs To Succeed
+            <h2 className="text-3xl sm:text-5xl font-black text-white mt-3 tracking-tight">
+              All 11 Super-Dimensions Explained
             </h2>
-            <p className="mt-4 text-stone-400 text-sm sm:text-base">
-              Say goodbye to forgotten physical books, heavy school bags, and unclarified homework doubts.
+            <p className="mt-4 text-stone-300 text-sm sm:text-base leading-relaxed">
+              The DAV Dictionary is not just a digital library. It is an all-inclusive digital campus featuring 11 distinct dimensions designed to take every DAVian to the top.
             </p>
+
+            {/* Filter Tabs */}
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-8">
+              {[
+                { id: 'all', label: 'All 11 Dimensions' },
+                { id: 'academics', label: 'Core Academics & Books' },
+                { id: 'ai', label: 'Shankar AI Intelligence' },
+                { id: 'erp', label: 'Smart School ERP Desk' },
+                { id: 'utilities', label: 'Campus Utilities & Focus' },
+                { id: 'community', label: 'Patron & Community' }
+              ].map(f => (
+                <button
+                  key={f.id}
+                  onClick={() => setActiveDimensionFilter(f.id)}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    activeDimensionFilter === f.id
+                      ? 'bg-amber-400 text-stone-950 font-black shadow-md'
+                      : 'bg-stone-900 border border-stone-800 text-stone-300 hover:text-white'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
           </div>
 
+          {/* 11 Dimensions Showcase Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            {/* Feature 1: Digital Library */}
-            <div className="p-7 rounded-3xl bg-stone-900/80 border border-stone-800 hover:border-amber-500/40 transition-all group">
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <BookOpen className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">Complete Digital Library</h3>
-              <p className="text-xs text-stone-400 leading-relaxed">
-                Full-edition textbooks for Class 8, Class 6, Class 4, and all primary grades. Zero missing pages, uncompressed high-resolution scans.
+            {filteredDimensions.map((dim) => {
+              const IconComp = dim.icon;
+              return (
+                <div 
+                  key={dim.num}
+                  className={`p-6 sm:p-7 rounded-3xl bg-stone-950/80 border border-stone-800 ${dim.glowClass} transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl flex flex-col justify-between group relative overflow-hidden`}
+                >
+                  {/* Subtle Top Gradient Line */}
+                  <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${dim.color}`} />
+
+                  <div>
+                    {/* Header Row */}
+                    <div className="flex items-center justify-between mb-4">
+                      <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${dim.color} text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+                        <IconComp className="w-6 h-6" />
+                      </div>
+                      <span className="px-3 py-1 rounded-full bg-stone-900 border border-stone-800 text-amber-300 text-[10px] font-black uppercase">
+                        Section {dim.num}
+                      </span>
+                    </div>
+
+                    <h3 className="text-xl font-black text-white group-hover:text-amber-300 transition-colors">
+                      {dim.name}
+                    </h3>
+                    <p className="text-xs font-bold text-amber-400/90 mt-1">
+                      {dim.tagline}
+                    </p>
+
+                    <p className="text-xs text-stone-300 mt-3 leading-relaxed">
+                      {dim.desc}
+                    </p>
+
+                    {/* Features Chips */}
+                    <div className="space-y-1.5 mt-4 pt-4 border-t border-stone-900">
+                      {dim.features.map((feat, fi) => (
+                        <div key={fi} className="flex items-center gap-2 text-[11px] text-stone-300">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          <span>{feat}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Card Bottom CTA */}
+                  <div className="mt-6 pt-4 border-t border-stone-800/80 flex items-center justify-between gap-3">
+                    <span className="text-[10px] text-stone-400 font-medium">
+                      {dim.demoReady}
+                    </span>
+                    <button
+                      onClick={() => onEnterDemoPreview(dim.num)}
+                      className="px-3.5 py-1.5 rounded-xl bg-amber-400/10 hover:bg-amber-400 text-amber-300 hover:text-stone-950 font-black text-xs transition-all flex items-center gap-1 cursor-pointer border border-amber-400/30"
+                    >
+                      <span>Explore</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </button>
+                  </div>
+
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Big Banner in Dimensions Section */}
+          <div className="mt-12 p-8 rounded-3xl bg-gradient-to-r from-stone-900 via-amber-950/40 to-stone-900 border-2 border-amber-400/40 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
+            <div className="space-y-1 text-center md:text-left">
+              <h3 className="text-xl sm:text-2xl font-black text-white">
+                Want to test all 11 features right now without logging in?
+              </h3>
+              <p className="text-xs sm:text-sm text-stone-300">
+                Click Have a Demo Preview to roam freely through the entire school portal!
               </p>
             </div>
-
-            {/* Feature 2: Shankar AI */}
-            <div className="p-7 rounded-3xl bg-stone-900/80 border border-stone-800 hover:border-orange-500/40 transition-all group">
-              <div className="w-12 h-12 rounded-2xl bg-orange-500/20 text-orange-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <Brain className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">Shankar AI Curriculum Tutor</h3>
-              <p className="text-xs text-stone-400 leading-relaxed">
-                Trained on the exact DAV curriculum. Ask about Class 8 Science cells, Class 7 Sanskrit grammar, or Class 6 Hindi literature for instant explanations.
-              </p>
-            </div>
-
-            {/* Feature 3: Neon Highlighter & Pen */}
-            <div className="p-7 rounded-3xl bg-stone-900/80 border border-stone-800 hover:border-cyan-500/40 transition-all group">
-              <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <Highlighter className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">Highlighter &amp; Live Annotation</h3>
-              <p className="text-xs text-stone-400 leading-relaxed">
-                10 neon highlighter colors, classic ink pens, and movable notes right on the textbook pages. All drawings automatically save to cloud memory.
-              </p>
-            </div>
-
-            {/* Feature 4: Interactive Quizzes */}
-            <div className="p-7 rounded-3xl bg-stone-900/80 border border-stone-800 hover:border-emerald-500/40 transition-all group">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <Award className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">Chapter-Wise Quizzes</h3>
-              <p className="text-xs text-stone-400 leading-relaxed">
-                Test your knowledge before exams with instant automated scoring, explanations for wrong answers, and grade-wise question banks.
-              </p>
-            </div>
-
-            {/* Feature 5: The DAV Dictionary */}
-            <div className="p-7 rounded-3xl bg-stone-900/80 border border-stone-800 hover:border-purple-500/40 transition-all group">
-              <div className="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <FileText className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">Academic Vocabulary Engine</h3>
-              <p className="text-xs text-stone-400 leading-relaxed">
-                Look up complex terms with phonetic pronunciation, parts of speech, and DAV textbook usage contexts to expand your vocabulary.
-              </p>
-            </div>
-
-            {/* Feature 6: Cross-Device Cloud Sync */}
-            <div className="p-7 rounded-3xl bg-stone-900/80 border border-stone-800 hover:border-rose-500/40 transition-all group">
-              <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">Cloud Database &amp; Security</h3>
-              <p className="text-xs text-stone-400 leading-relaxed">
-                Integrated with Supabase cloud infrastructure. Passwords, student profiles, and PDF drawings sync across smartphones, tablets, and laptops.
-              </p>
-            </div>
-
+            <button
+              onClick={() => onEnterDemoPreview(1)}
+              className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-300 hover:to-teal-400 text-stone-950 font-black text-xs sm:text-sm shadow-xl transition-all transform hover:scale-105 cursor-pointer flex items-center gap-2 shrink-0"
+            >
+              <Rocket className="w-4 h-4 text-stone-950" />
+              <span>Launch Demo Preview Now →</span>
+            </button>
           </div>
 
         </div>
       </section>
 
       {/* =========================================================================
-          CURRICULUM SHOWCASE (LKG TO CLASS 8)
+          SECTION 3: CURRICULUM SHOWCASE (LKG TO CLASS 8)
       ========================================================================= */}
       <section id="curriculum" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -370,7 +683,7 @@ export function PublicHomepage({ onGoToLogin }) {
                 onClick={() => setActiveGradeFilter('8')}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                   activeGradeFilter === '8'
-                    ? 'bg-amber-400 text-stone-950 shadow-md'
+                    ? 'bg-amber-400 text-stone-950 shadow-md font-black'
                     : 'text-stone-400 hover:text-white'
                 }`}
               >
@@ -380,7 +693,7 @@ export function PublicHomepage({ onGoToLogin }) {
                 onClick={() => setActiveGradeFilter('6')}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                   activeGradeFilter === '6'
-                    ? 'bg-amber-400 text-stone-950 shadow-md'
+                    ? 'bg-amber-400 text-stone-950 shadow-md font-black'
                     : 'text-stone-400 hover:text-white'
                 }`}
               >
@@ -390,7 +703,7 @@ export function PublicHomepage({ onGoToLogin }) {
                 onClick={() => setActiveGradeFilter('4')}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                   activeGradeFilter === '4'
-                    ? 'bg-amber-400 text-stone-950 shadow-md'
+                    ? 'bg-amber-400 text-stone-950 shadow-md font-black'
                     : 'text-stone-400 hover:text-white'
                 }`}
               >
@@ -400,7 +713,7 @@ export function PublicHomepage({ onGoToLogin }) {
                 onClick={() => setActiveGradeFilter('primary')}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                   activeGradeFilter === 'primary'
-                    ? 'bg-amber-400 text-stone-950 shadow-md'
+                    ? 'bg-amber-400 text-stone-950 shadow-md font-black'
                     : 'text-stone-400 hover:text-white'
                 }`}
               >
@@ -414,10 +727,10 @@ export function PublicHomepage({ onGoToLogin }) {
             {gradeHighlights[activeGradeFilter]?.map((b, i) => (
               <div 
                 key={i} 
-                className="p-5 rounded-2xl bg-stone-900/60 border border-stone-800 hover:border-amber-500/30 transition-all flex items-center justify-between gap-4"
+                className="p-5 rounded-2xl bg-stone-900/60 border border-stone-800 hover:border-amber-400/40 transition-all flex items-center justify-between gap-4 group"
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                     <BookOpen className="w-5 h-5" />
                   </div>
                   <div>
@@ -432,41 +745,22 @@ export function PublicHomepage({ onGoToLogin }) {
             ))}
           </div>
 
-          {/* Quick CTA to Open Library */}
-          <div className="mt-10 p-6 rounded-3xl bg-gradient-to-r from-stone-900 via-amber-950/30 to-stone-900 border border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-center sm:text-left">
-              <h3 className="font-extrabold text-white text-base">
-                Ready to start reading your DAV textbooks right now?
-              </h3>
-              <p className="text-xs text-stone-400 mt-1">
-                Enter your credentials or click Free Preview to access the complete reader.
-              </p>
-            </div>
-            <button
-              onClick={onGoToLogin}
-              className="px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs transition cursor-pointer flex items-center gap-2 shrink-0 shadow-lg"
-            >
-              <span>Open Blackboard Reader →</span>
-            </button>
-          </div>
-
         </div>
       </section>
 
       {/* =========================================================================
-          MEET THE DEVELOPER SECTION (RISHIT SHANKAR)
+          SECTION 4: MEET THE DEVELOPER & HEAD BOY (RISHIT SHANKAR)
       ========================================================================= */}
       <section id="developer" className="py-20 bg-stone-900/40 border-t border-stone-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-stone-900 via-stone-900 to-amber-950/40 border border-stone-800 shadow-2xl relative overflow-hidden">
             
-            {/* Background Glow */}
             <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-[100px] pointer-events-none" />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
               
-              {/* Left Column: Photo & Badges */}
+              {/* Photo & Badges */}
               <div className="lg:col-span-4 flex flex-col items-center text-center">
                 <div className="relative group">
                   <div className="w-44 h-44 sm:w-52 sm:h-52 rounded-3xl overflow-hidden border-2 border-amber-400/60 shadow-2xl shadow-amber-500/20">
@@ -489,12 +783,12 @@ export function PublicHomepage({ onGoToLogin }) {
                 </div>
               </div>
 
-              {/* Right Column: Bio & Vision */}
+              {/* Bio & Vision */}
               <div className="lg:col-span-8 space-y-5">
                 
                 <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold">
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>The Vision Behind The Project</span>
+                  <span>The Vision Behind The 11 Dimensions</span>
                 </div>
 
                 <h2 className="text-2xl sm:text-3xl font-black text-white leading-tight">
@@ -502,7 +796,7 @@ export function PublicHomepage({ onGoToLogin }) {
                 </h2>
 
                 <p className="text-stone-300 text-xs sm:text-sm leading-relaxed">
-                  As Head Boy at DAV Khabra, I observed students frequently struggling with forgotten textbooks, heavy bags, or lack of instant explanations while studying at home. I engineered <strong>The DAV Dictionary</strong> as an all-in-one digital companion—combining full textbooks with <strong>Shankar AI</strong>, customized chapter quizzes, and interactive notes.
+                  As Head Boy at DAV Khabra, I observed students frequently struggling with heavy bags, forgotten books, or lack of instant explanations while studying at home. I engineered <strong>The DAV Dictionary</strong> into an all-in-one digital companion—expanding from a digital library into 11 comprehensive dimensions uniting Shankar AI, homework tracking, CBT exams, bus radar, and deep focus technology.
                 </p>
 
                 {/* Developer Highlights */}
@@ -517,18 +811,12 @@ export function PublicHomepage({ onGoToLogin }) {
                   </div>
                   <div className="p-3 rounded-xl bg-stone-950/70 border border-stone-800">
                     <div className="text-cyan-400 font-black text-sm">Full-Stack</div>
-                    <div className="text-[10px] text-stone-400">React, Vite, AI &amp; Cloud</div>
+                    <div className="text-[10px] text-stone-400">React, Vite, AI &amp; Supabase Cloud</div>
                   </div>
                 </div>
 
+                {/* Contact Badges */}
                 <div className="pt-2 flex flex-wrap items-center gap-2.5">
-                  <button
-                    onClick={onGoToLogin}
-                    className="px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs flex items-center gap-2 transition cursor-pointer shadow-md"
-                  >
-                    <span>Register / Sign In →</span>
-                  </button>
-
                   <a
                     href="https://wa.me/919470033984?text=Hi%20Rishit%2C%20I%20am%20a%20DAV%20student%20using%20The%20DAV%20Dictionary!"
                     target="_blank"
@@ -566,16 +854,6 @@ export function PublicHomepage({ onGoToLogin }) {
                   </a>
 
                   <a
-                    href="https://www.snapchat.com/add/rishitshankar?share_id=-ZCpwO3-VMM&locale=en-IN"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3.5 py-2 rounded-xl bg-yellow-500/20 hover:bg-yellow-400 text-yellow-300 hover:text-stone-950 border border-yellow-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
-                  >
-                    <SnapchatLogo className="w-4 h-4 shrink-0" />
-                    <span>Snapchat</span>
-                  </a>
-
-                  <a
                     href="https://www.linkedin.com/in/rishit-shankar-05559b2bb"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -596,7 +874,7 @@ export function PublicHomepage({ onGoToLogin }) {
       </section>
 
       {/* =========================================================================
-          FAQ SECTION
+          SECTION 5: FAQ SECTION
       ========================================================================= */}
       <section id="faq" className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -646,7 +924,7 @@ export function PublicHomepage({ onGoToLogin }) {
       </section>
 
       {/* =========================================================================
-          BOTTOM CALL TO ACTION (REGISTRATION GATEWAY)
+          SECTION 6: BOTTOM CALL TO ACTION
       ========================================================================= */}
       <section className="py-16 bg-gradient-to-b from-stone-950 to-[#1c1613] border-t border-stone-800 text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -659,22 +937,29 @@ export function PublicHomepage({ onGoToLogin }) {
           </h2>
           
           <p className="mt-3 text-stone-300 text-sm max-w-xl mx-auto">
-            Click below to enter the Blackboard Portal, sign in with your ID and password, and unlock all 70 textbooks and Shankar AI.
+            Choose between full Student Login or instant Free Demo Preview to experience all 11 dimensions today!
           </p>
 
-          <div className="mt-8">
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={onGoToLogin}
-              className="px-10 py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 font-black text-base shadow-2xl shadow-orange-500/30 hover:shadow-orange-500/50 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3 mx-auto cursor-pointer"
+              className="px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 font-black text-sm sm:text-base shadow-xl transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 cursor-pointer"
             >
               <UserCheck className="w-5 h-5 text-stone-950" />
-              <span>Register Now / Open Blackboard Portal</span>
-              <ArrowRight className="w-5 h-5 text-stone-950" />
+              <span>Register / Login with ID</span>
+            </button>
+
+            <button
+              onClick={() => onEnterDemoPreview(1)}
+              className="px-8 py-4 rounded-2xl bg-emerald-500/20 hover:bg-emerald-500/30 border-2 border-emerald-400 text-emerald-300 hover:text-white font-black text-sm sm:text-base shadow-xl transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Rocket className="w-5 h-5 text-emerald-400" />
+              <span>Launch Demo Preview 🚀</span>
             </button>
           </div>
 
           <p className="mt-4 text-[11px] text-stone-500">
-            Instant Login • Works on Mobile, Tablet &amp; PC • 100% Free
+            Instant Login • Mobile, Tablet &amp; PC Optimized • 100% Free
           </p>
         </div>
       </section>
@@ -686,7 +971,7 @@ export function PublicHomepage({ onGoToLogin }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
           
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="The DAV Dictionary" className="w-9 h-9 object-contain" />
+            <img src="/logo.png" alt="The DAV Dictionary" className="w-10 h-10 object-contain rounded-lg" />
             <div>
               <span className="font-bold text-white text-sm">The DAV Dictionary</span>
               <p className="text-[10px] text-stone-400">तमसो मा ज्योतिर्गमय • Lead me from darkness to light</p>

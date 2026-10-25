@@ -20,7 +20,7 @@ import {
   DAV_SAMPLE_PAPERS 
 } from '../data/videoLecturesData.js';
 
-export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
+export function ChapterExplanationsSection({ user, onOpenAIWithQuestion, onRequireLogin }) {
   // Sub-Section Tabs (1: Video Lectures, 2: PYQs, 3: Sample Papers)
   const [activeSubTab, setActiveSubTab] = useState('videos');
 
@@ -197,6 +197,10 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion }) {
 
   // Copy Video Link to Clipboard
   const handleCopyLink = () => {
+    if (user?.plan === 'guest' || user?.isDemo) {
+      if (onRequireLogin) onRequireLogin('Login to Continue', 'Please log in with your Student ID & Password to copy lecture video links.');
+      return;
+    }
     const url = activeLecture.watchUrl;
     navigator.clipboard.writeText(url);
     setCopiedLink(true);
@@ -669,15 +673,19 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                           <span>{copiedLink ? 'Copied!' : 'Copy Link'}</span>
                         </button>
 
-                        <a
-                          href={activeLecture.watchUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-3.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-bold flex items-center gap-1.5 transition shadow-sm"
+                        <button
+                          onClick={() => {
+                            if (user?.plan === 'guest' || user?.isDemo) {
+                              if (onRequireLogin) onRequireLogin('Login to Continue', 'Please log in with your Student ID & Password to watch official DAV video lectures on YouTube.');
+                              return;
+                            }
+                            window.open(activeLecture.watchUrl, '_blank', 'noopener,noreferrer');
+                          }}
+                          className="px-3.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-bold flex items-center gap-1.5 transition shadow-sm cursor-pointer"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
                           <span>Watch on YouTube</span>
-                        </a>
+                        </button>
                       </div>
                     </div>
 
@@ -700,7 +708,31 @@ Please write each question clearly and show all steps, formulas, and reasoning s
 
                     {/* 16:9 EMBEDDED RESPONSIVE YOUTUBE PLAYER WITH ZERO DEAD SCREENS & STRICT FALLBACK HANDLING */}
                     <div className="relative w-full aspect-video bg-black flex items-center justify-center">
-                      {playerMode === 'playlist' && activeLecture.playlistId ? (
+                      {(user?.plan === 'guest' || user?.isDemo) ? (
+                        <div className="w-full h-full p-8 flex flex-col items-center justify-center text-center bg-gradient-to-br from-stone-950 via-slate-900 to-stone-950">
+                          <div className="w-16 h-16 rounded-2xl bg-amber-500/20 border-2 border-amber-400/50 text-amber-400 flex items-center justify-center mb-4 shadow-xl">
+                            <Lock className="w-8 h-8 text-amber-400 animate-bounce" />
+                          </div>
+                          <span className="px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-black uppercase tracking-wider mb-2 border border-amber-400/30">
+                            Video Lectures Locked in Demo Preview
+                          </span>
+                          <h3 className="text-xl font-black text-white max-w-md mb-2">
+                            {activeLecture.title || 'Official Video Explanation'}
+                          </h3>
+                          <p className="text-xs text-stone-300 max-w-sm mb-6 leading-relaxed">
+                            Please log in or register with your Student ID to watch video lectures, access full playlists, and unlock past-year question paper solutions.
+                          </p>
+                          <button
+                            onClick={() => {
+                              if (onRequireLogin) onRequireLogin('Login to Continue', 'Please log in with your Student ID to watch full chapter video lectures.');
+                            }}
+                            className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 text-xs font-black uppercase tracking-wider shadow-lg flex items-center gap-2 cursor-pointer transition transform hover:scale-105"
+                          >
+                            <Lock className="w-4 h-4 text-stone-950" />
+                            <span>Login to Continue</span>
+                          </button>
+                        </div>
+                      ) : playerMode === 'playlist' && activeLecture.playlistId ? (
                         <iframe
                           key={`playlist-${activeLecture.playlistId}`}
                           className="w-full h-full"

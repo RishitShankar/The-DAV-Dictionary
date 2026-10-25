@@ -21,6 +21,7 @@ import { TeachersSection } from './components/TeachersSection';
 import { ChapterExplanationsSection } from './components/ChapterExplanationsSection';
 import { KidsFunNavigatorSection } from './components/KidsFunNavigatorSection';
 import { StudyLeaderboardSection } from './components/StudyLeaderboardSection';
+import { DeveloperReviewsSection } from './components/DeveloperReviewsSection';
 import { PurpleFooter } from './components/PurpleFooter';
 import { SectionErrorBoundary } from './components/SectionErrorBoundary';
 import { 
@@ -172,16 +173,42 @@ export function App() {
   };
 
   const handleOpenPdfReader = (book) => {
-    // Check permission if in guest mode
-    if (user?.plan === 'guest') {
-      setLockedFeatureModal({
-        title: 'Complete Book Reader Locked',
-        message: 'You are currently in Free Preview mode. Please log in with your Normal, VIP, or VVIP ID & Password to read complete textbooks.'
-      });
+    // Check permission if in guest / demo mode
+    if (user?.plan === 'guest' || user?.isDemo) {
+      handleRequireLogin(
+        'Login to Open Book',
+        `You are currently exploring in Free Demo Preview. Please log in or register with your Student ID & Password to open and read the complete textbook: "${book?.title || 'Selected Book'}".`
+      );
       return;
     }
     setReaderBook(book);
     setIsPdfReaderOpen(true);
+  };
+
+  const handleEnterDemoPreview = (targetSection = 1) => {
+    const demoUser = {
+      id: 'guest_student',
+      name: 'Guest Explorer (Demo)',
+      role: 'Demo Preview Student',
+      studentId: 'DEMO-PREVIEW',
+      classNum: '8',
+      section: 'D',
+      plan: 'guest',
+      dimension: 0,
+      dimensionName: 'Demo Preview Mode',
+      isAdmin: false,
+      isDemo: true
+    };
+    setUser(demoUser);
+    setViewMode('app');
+    setActiveSection(targetSection || 1);
+  };
+
+  const handleRequireLogin = (title = 'Login to Continue', message = 'You are currently exploring in Free Demo Preview. Please sign in or register with your Student ID & Password to use this feature.') => {
+    setLockedFeatureModal({
+      title,
+      message
+    });
   };
 
   const handleAddPdf = (newPdf) => {
@@ -209,27 +236,33 @@ export function App() {
     return (
       <PublicHomepage 
         onGoToLogin={() => setViewMode('login')} 
+        onEnterDemoPreview={handleEnterDemoPreview}
       />
     );
   }
 
-  const isGuest = user.plan === 'guest';
+  const isGuest = user.plan === 'guest' || user.isDemo;
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans selection:bg-amber-300 selection:text-red-950">
       
       {/* Guest Mode Floating Notification */}
       {isGuest && (
-        <div className="bg-gradient-to-r from-orange-600 to-amber-600 text-stone-950 text-xs py-2 px-4 flex items-center justify-between font-bold shadow-md z-30 sticky top-0">
+        <div className="bg-gradient-to-r from-amber-500 via-orange-600 to-amber-500 text-stone-950 text-xs py-2 px-4 flex items-center justify-between font-bold shadow-md z-30 sticky top-0 border-b border-amber-300">
           <div className="flex items-center gap-2">
-            <Lock className="w-4 h-4" />
-            <span>Free Guest Demo Preview Active • Full Textbook Reader & Downloads are Locked</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+            <Sparkles className="w-4 h-4 text-stone-950" />
+            <span>🚀 Demo Preview Mode Active • Exploring The DAV Dictionary • Full Unrestricted Access with Student ID &amp; Password</span>
           </div>
           <button
-            onClick={handleLogout}
-            className="py-1 px-3 rounded-lg bg-stone-950 text-amber-300 text-[11px] font-black uppercase hover:bg-stone-900 transition cursor-pointer"
+            onClick={() => {
+              setUser(null);
+              setViewMode('login');
+            }}
+            className="py-1 px-3.5 rounded-lg bg-stone-950 text-amber-300 text-[11px] font-black uppercase hover:bg-stone-900 transition cursor-pointer shadow-sm flex items-center gap-1.5"
           >
-            Sign In with ID →
+            <Lock className="w-3 h-3 text-amber-400" />
+            <span>Login to Unlock Full Access →</span>
           </button>
         </div>
       )}
@@ -256,6 +289,7 @@ export function App() {
       {/* Top Navbar with Hamburger Menu & Admin Program Launcher */}
       <Navbar
         activeSection={activeSection}
+        onSelectSection={handleSelectSection}
         onToggleSidebar={() => setIsSidebarOpen(prev => !prev)}
         user={user}
         isTeacher={isTeacher}
@@ -328,11 +362,13 @@ export function App() {
             currentUser={user} 
             onOpenUpgradeModal={() => setIsPricingOpen(true)}
             onOpenAIWithQuestion={handleOpenAIWithQuestion}
+            onRequireLogin={handleRequireLogin}
           />
         ) : activeSection === 4 ? (
           <ShankarAI 
             isSectionView={true} 
             user={user} 
+            onRequireLogin={handleRequireLogin}
           />
         ) : activeSection === 5 ? (
           <TeachersSection 
@@ -342,30 +378,84 @@ export function App() {
             onSubSectionChange={(sub) => setTeacherSubSection(sub)}
             teacherSubDimension={teacherSubDimension}
             onToggleSubDimension={handleToggleTeacherSubDimension}
+            onRequireLogin={handleRequireLogin}
           />
         ) : activeSection === 6 ? (
           <ChapterExplanationsSection 
             user={user} 
             onOpenAIWithQuestion={handleOpenAIWithQuestion}
+            onRequireLogin={handleRequireLogin}
           />
         ) : activeSection === 7 ? (
-          <KidsFunNavigatorSection user={user} />
+          <KidsFunNavigatorSection 
+            user={user} 
+            onRequireLogin={handleRequireLogin}
+          />
         ) : activeSection === 8 ? (
-          <StudyLeaderboardSection user={user} />
+          <StudyLeaderboardSection 
+            user={user} 
+            onRequireLogin={handleRequireLogin}
+          />
         ) : activeSection === 9 ? (
-          <StudentProfileSection user={user} />
+          isGuest ? (
+            <div className="max-w-3xl mx-auto px-4 py-20 text-center animate-fadeIn">
+              <div className="bg-stone-900 border-2 border-amber-500/50 rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="w-20 h-20 rounded-3xl bg-amber-500/20 text-amber-400 border border-amber-400/40 mx-auto flex items-center justify-center mb-6 shadow-xl shadow-amber-500/20">
+                  <Lock className="w-10 h-10 text-amber-400 animate-bounce" />
+                </div>
+                <span className="px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-400 text-stone-950 inline-block mb-3">
+                  Dimension 9 • Student Personal Vault Locked
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-black text-white mb-3">
+                  Login to Access Your Secure Vault
+                </h2>
+                <p className="text-sm text-stone-300 max-w-lg mx-auto leading-relaxed mb-8">
+                  The Student Personal Vault contains end-to-end encrypted school identity records, academic marks ledgers, exam passwords, and private student dossiers. Please sign in or register with your Student ID to open your vault.
+                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <button
+                    onClick={() => {
+                      setUser(null);
+                      setViewMode('login');
+                    }}
+                    className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 font-black text-sm shadow-xl shadow-orange-500/30 transition cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Lock className="w-4 h-4 text-stone-950" />
+                    <span>Login to Continue</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveSection(1)}
+                    className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-stone-800 hover:bg-stone-700 text-stone-300 text-sm font-bold transition cursor-pointer border border-stone-700"
+                  >
+                    ← Back to Overview Hub
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <StudentProfileSection user={user} />
+          )
         ) : activeSection === 10 ? (
-          <DonationSection currentUser={user} />
+          <DonationSection 
+            currentUser={user} 
+            onRequireLogin={handleRequireLogin}
+          />
         ) : activeSection === 11 ? (
           <AboutCreatorSection />
+        ) : activeSection === 12 ? (
+          <DeveloperReviewsSection 
+            currentUser={user} 
+            onGoToSection={handleSelectSection} 
+          />
         ) : (
           <UntitledSection sectionNumber={activeSection} />
         )}
         </SectionErrorBoundary>
       </main>
 
-      {/* Official Purple Footer displayed on Section 9, 10 & 11 */}
-      {(activeSection === 9 || activeSection === 10 || activeSection === 11) && (
+      {/* Official Purple Footer displayed on Section 9, 10, 11 & 12 */}
+      {(activeSection === 9 || activeSection === 10 || activeSection === 11 || activeSection === 12) && (
         <PurpleFooter onSelectSection={(secId) => setActiveSection(secId)} />
       )}
 
@@ -417,34 +507,42 @@ export function App() {
         onAddPdf={handleAddPdf}
       />
 
-      {/* Locked Feature Modal for Free Preview */}
+      {/* Locked Feature Modal for Free Preview / Demo Mode */}
       {lockedFeatureModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-slate-900 border border-orange-500/40 rounded-3xl max-w-md w-full p-6 text-white text-center shadow-2xl">
-            <div className="w-14 h-14 rounded-2xl bg-orange-500/20 text-orange-400 border border-orange-400/40 mx-auto flex items-center justify-center mb-4">
-              <Lock className="w-7 h-7" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fadeIn">
+          <div className="bg-gradient-to-b from-stone-900 to-stone-950 border-2 border-amber-500/50 rounded-3xl max-w-md w-full p-6 text-white text-center shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+            
+            <div className="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-400/40 mx-auto flex items-center justify-center mb-4 shadow-lg shadow-amber-500/20">
+              <Lock className="w-8 h-8 text-amber-400 animate-bounce" />
             </div>
-            <h3 className="text-xl font-black text-amber-300 mb-2">
-              {lockedFeatureModal.title}
+
+            <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-400/20 text-amber-300 border border-amber-400/40 inline-block mb-2">
+              Student Login Required
+            </span>
+
+            <h3 className="text-xl font-black text-white mb-2">
+              {lockedFeatureModal.title || 'Login to Continue'}
             </h3>
-            <p className="text-xs text-slate-300 leading-relaxed mb-6">
-              {lockedFeatureModal.message}
+            <p className="text-xs text-stone-300 leading-relaxed mb-6">
+              {lockedFeatureModal.message || 'You are currently exploring in Free Demo Preview. Please sign in or register with your Student ID & Password to unlock full access.'}
             </p>
-            <div className="flex gap-2">
+            <div className="flex gap-2.5">
               <button
                 onClick={() => setLockedFeatureModal(null)}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 cursor-pointer"
+                className="flex-1 py-3 px-4 rounded-xl bg-stone-800 hover:bg-stone-700 text-xs font-bold text-stone-300 transition cursor-pointer border border-stone-700"
               >
-                Continue Preview
+                Keep Exploring Demo
               </button>
               <button
                 onClick={() => {
                   setLockedFeatureModal(null);
-                  handleLogout();
+                  setUser(null);
+                  setViewMode('login');
                 }}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-stone-950 text-xs font-black uppercase cursor-pointer"
+                className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 text-xs font-black uppercase shadow-lg shadow-orange-500/30 transition cursor-pointer flex items-center justify-center gap-1.5"
               >
-                Sign In Now →
+                <span>Login Now →</span>
               </button>
             </div>
           </div>

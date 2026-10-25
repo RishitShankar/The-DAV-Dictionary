@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { 
   Heart, IndianRupee, QrCode, CreditCard, Banknote, ShieldCheck, 
   Sparkles, CheckCircle2, Copy, Check, ExternalLink, ArrowRight, 
-  User, Award, School, Receipt, Printer, Share2, AlertCircle, RefreshCw, Trash2
+  User, Award, School, Receipt, Printer, Share2, AlertCircle, RefreshCw, Trash2,
+  Star, MessageSquare
 } from 'lucide-react';
 import { WhatsAppLogo } from './SocialLogos';
 import { DavInvoiceModal } from './DavInvoiceModal';
+import { ReviewSubmissionPage } from './ReviewSubmissionPage';
 import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
 import { getSupabaseClient, saveCloudDonation, fetchCloudDonations } from '../services/supabaseClient';
 
-export function DonationSection({ currentUser }) {
+export function DonationSection({ currentUser, onRequireLogin }) {
   const [selectedUser, setSelectedUser] = useState(currentUser?.id || 'rishibhai');
   const [donorName, setDonorName] = useState(currentUser?.name || 'Rishit Shankar');
   const [donorPhone, setDonorPhone] = useState(currentUser?.personalWhatsApp || currentUser?.phoneNumber || '9470033984');
@@ -21,6 +23,7 @@ export function DonationSection({ currentUser }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [activeInvoice, setActiveInvoice] = useState(null);
   const [registeredUsers, setRegisteredUsers] = useState([]);
+  const [activePage, setActivePage] = useState('donate'); // 'donate' (Page 1) | 'review' (Page 2)
 
   const isAdmin = Boolean(currentUser?.isAdmin || currentUser?.id === 'rishibhai' || currentUser?.dimension === 4);
 
@@ -106,6 +109,15 @@ export function DonationSection({ currentUser }) {
 
   const handleConfirmDonation = async (e) => {
     e?.preventDefault();
+    if (currentUser?.plan === 'guest' || currentUser?.isDemo) {
+      if (onRequireLogin) {
+        onRequireLogin(
+          'Login to Continue',
+          'You are exploring in Demo Preview. Please log in or register with your Student ID & Password to confirm your patron donation and generate your official stamped DAV bill receipt.'
+        );
+      }
+      return;
+    }
     if (newDonationNum <= 0) return;
 
     setIsProcessing(true);
@@ -189,37 +201,89 @@ export function DonationSection({ currentUser }) {
     <div className="min-h-screen bg-gradient-to-br from-amber-50/70 via-rose-50/30 to-slate-100/90 py-10 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-6xl mx-auto space-y-8">
         
-        {/* Hero Section */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-red-950 via-slate-900 to-amber-950 text-white p-6 sm:p-10 shadow-2xl border border-amber-500/30">
-          <div className="relative z-10 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold mb-3 border border-amber-400/30">
-              <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400 animate-pulse" />
-              <span>Section 8 • Official Developer Donation &amp; Support Hub</span>
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-              Support &amp; Donate to Developer (Rishit Shankar)
-            </h1>
-            <p className="text-sm sm:text-base text-stone-300 mt-2 leading-relaxed">
-              Every voluntary contribution fuels continuous cloud servers, Shankar AI Gemini API speed, verified DAV textbook scans, and new digital features for all DAV Public School students.
-            </p>
-
-            <div className="flex flex-wrap items-center gap-4 mt-5 text-xs text-amber-200">
-              <span className="flex items-center gap-1.5 font-bold">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                Official Printable Bill &amp; Receipt Generated Instantly
+        {/* Section 10 Two-Page Switcher */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/95 backdrop-blur-md p-3 sm:p-4 rounded-3xl border border-amber-300/80 shadow-lg">
+          <div className="flex items-center gap-2.5">
+            <span className="w-3 h-3 rounded-full bg-red-800 animate-pulse" />
+            <div>
+              <span className="text-xs font-black uppercase tracking-wider text-slate-900 block">
+                Section 10 Navigation
               </span>
-              <span>•</span>
-              <span className="flex items-center gap-1.5 font-bold">
-                <Award className="w-4 h-4 text-amber-400" />
-                Donations Add Directly to Existing Account Balance
+              <span className="text-[11px] text-slate-500">
+                Official Developer Support &amp; Review Portal
               </span>
             </div>
           </div>
 
-          <div className="absolute right-4 bottom-4 opacity-15 pointer-events-none hidden md:block">
-            <Heart className="w-64 h-64 text-amber-400" />
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={() => setActivePage('donate')}
+              className={`flex-1 sm:flex-none px-4 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer ${
+                activePage === 'donate'
+                  ? 'bg-gradient-to-r from-red-800 via-rose-700 to-red-900 text-white shadow-md'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+              }`}
+            >
+              <Heart className={`w-4 h-4 ${activePage === 'donate' ? 'text-rose-300 fill-rose-300' : 'text-slate-500'}`} />
+              <span>Page 1: Donate to Developer</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActivePage('review')}
+              className={`flex-1 sm:flex-none px-4 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer ${
+                activePage === 'review'
+                  ? 'bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-700 text-stone-950 shadow-md font-black'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+              }`}
+            >
+              <Star className={`w-4 h-4 ${activePage === 'review' ? 'text-stone-950 fill-stone-950' : 'text-amber-500'}`} />
+              <span>Page 2: Review (Submit Review)</span>
+            </button>
           </div>
         </div>
+
+        {activePage === 'review' ? (
+          /* PAGE 2: REVIEW SUBMISSION */
+          <ReviewSubmissionPage 
+            currentUser={currentUser} 
+            onSwitchToDonate={() => setActivePage('donate')} 
+          />
+        ) : (
+          /* PAGE 1: DONATE TO DEVELOPER */
+          <>
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-red-950 via-slate-900 to-amber-950 text-white p-6 sm:p-10 shadow-2xl border border-amber-500/30">
+              <div className="relative z-10 max-w-3xl">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold mb-3 border border-amber-400/30">
+                  <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400 animate-pulse" />
+                  <span>Section 10 • Official Developer and Donate and Support Hub</span>
+                </div>
+                <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                  Support &amp; Donate to Developer (Rishit Shankar)
+                </h1>
+                <p className="text-sm sm:text-base text-stone-300 mt-2 leading-relaxed">
+                  Every voluntary contribution fuels continuous cloud servers, Shankar AI Gemini API speed, verified DAV textbook scans, and new digital features for all DAV Public School students.
+                </p>
+
+                <div className="flex flex-wrap items-center gap-4 mt-5 text-xs text-amber-200">
+                  <span className="flex items-center gap-1.5 font-bold">
+                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                    Official Printable Bill &amp; Receipt Generated Instantly
+                  </span>
+                  <span>•</span>
+                  <span className="flex items-center gap-1.5 font-bold">
+                    <Award className="w-4 h-4 text-amber-400" />
+                    Donations Add Directly to Existing Account Balance
+                  </span>
+                </div>
+              </div>
+
+              <div className="absolute right-4 bottom-4 opacity-15 pointer-events-none hidden md:block">
+                <Heart className="w-64 h-64 text-amber-400" />
+              </div>
+            </div>
 
         {/* Main 2-Column Donation Portal */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -628,6 +692,8 @@ export function DonationSection({ currentUser }) {
             ))}
           </div>
         </div>
+          </>
+        )}
 
       </div>
 

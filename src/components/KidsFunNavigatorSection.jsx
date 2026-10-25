@@ -20,7 +20,7 @@ import {
   KidSoundFX 
 } from '../data/section7Data.js';
 
-export function KidsFunNavigatorSection({ user }) {
+export function KidsFunNavigatorSection({ user, onRequireLogin }) {
   // Master Active Sub-Section (1 to 7)
   // 1: 'go_to_khabra' (Go to DAV Khabra GPS Teleport)
   // 2: 'track_bus' (Principal Anil Kumar Singh's Live Bus Fleet Radar)
@@ -1178,7 +1178,12 @@ export function KidsFunNavigatorSection({ user }) {
                     href={googleMapsDirectionsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => {
+                    onClick={(e) => {
+                      if (user?.plan === 'guest' || user?.isDemo) {
+                        e.preventDefault();
+                        if (onRequireLogin) onRequireLogin('Login to Continue', 'Please log in with your Student ID to launch Google Maps GPS navigation to DAV Khabra.');
+                        return;
+                      }
                       playFx('victory');
                       addXp(100);
                     }}

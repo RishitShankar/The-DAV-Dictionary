@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, Award, BookOpen, Layers, ShieldAlert, LogOut, KeyRound, User, Crown, Sparkles, Lock, Heart, Smartphone, Monitor, Bus } from 'lucide-react';
+import { Menu, Award, BookOpen, Layers, ShieldAlert, LogOut, KeyRound, User, Crown, Sparkles, Lock, Heart, Smartphone, Monitor, Bus, Trophy, Star } from 'lucide-react';
 import { BlackDogLogo } from './BlackDogLogo';
 
 export function Navbar({ 
   activeSection, 
+  onSelectSection,
   onToggleSidebar, 
   user, 
   isTeacher = false,
@@ -19,6 +20,7 @@ export function Navbar({
   onLogout 
 }) {
   const isAdmin = user?.isAdmin || user?.id === 'rishibhai';
+  const isDeveloper = Boolean(isAdmin || user?.id === 'rishibhai' || user?.studentId === 'rishibhai' || user?.dimension === 4 || user?.plan === 'developer');
   const isGuest = user?.plan === 'guest';
 
   // State to track user's real uploaded photo from Section 9 (Student Profile)
@@ -217,18 +219,28 @@ export function Navbar({
                     </>
                   ) : activeSection === 8 ? (
                     <>
-                      <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
-                      <span>Section 8: Donate to Developer</span>
+                      <Trophy className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Section 8: Study Leaderboard &amp; Focus Mode</span>
                     </>
                   ) : activeSection === 9 ? (
                     <>
-                      <User className="w-3.5 h-3.5 text-amber-500" />
+                      <User className="w-3.5 h-3.5 text-violet-500" />
                       <span>Section 9: Student Personal Profile</span>
                     </>
                   ) : activeSection === 10 ? (
                     <>
-                      <User className="w-3.5 h-3.5 text-amber-600" />
-                      <span>Section 10: About Creator Rishit Shankar</span>
+                      <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
+                      <span>Section 10: Donate &amp; Reviews Hub</span>
+                    </>
+                  ) : activeSection === 11 ? (
+                    <>
+                      <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Section 11: About Creator Rishit Shankar</span>
+                    </>
+                  ) : activeSection === 12 ? (
+                    <>
+                      <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                      <span>Section 12: Developer Review Vault (Dimension 4)</span>
                     </>
                   ) : (
                     <>
@@ -243,6 +255,25 @@ export function Navbar({
 
           {/* User Account / Admin Superpower Button */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+
+            {/* Dimension 4 Developer Only: Interactive Section 12 Review Vault Pill */}
+            {isDeveloper && (
+              <button
+                type="button"
+                onClick={() => onSelectSection && onSelectSection(12)}
+                className={`py-1.5 px-3 rounded-xl text-xs font-black transition cursor-pointer flex items-center gap-1.5 shadow-sm border ${
+                  activeSection === 12
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 border-amber-300 ring-2 ring-amber-400/50'
+                    : 'bg-red-950 text-amber-300 border-amber-500/40 hover:bg-red-900 hover:border-amber-400'
+                }`}
+                title="Dimension 4 Developer Person Only: Section 12 Review Vault"
+              >
+                <Star className="w-3.5 h-3.5 text-amber-300 fill-amber-300 animate-pulse" />
+                <span className="hidden sm:inline">Section 12: Check Reviews</span>
+                <span className="sm:hidden">Sec 12</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+              </button>
+            )}
 
             {/* 5th Dimension Switcher: PC vs Mobile Mode */}
             <div className="flex items-center bg-slate-100 p-0.5 sm:p-1 rounded-xl border border-slate-200">

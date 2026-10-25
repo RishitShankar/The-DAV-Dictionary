@@ -241,7 +241,7 @@ class FocusSoundEngine {
 
 const soundEngine = new FocusSoundEngine();
 
-export function StudyLeaderboardSection({ user }) {
+export function StudyLeaderboardSection({ user, onRequireLogin }) {
   const currentUserId = (user?.id || 'rishibhai').toLowerCase();
   const currentUserName = user?.name || (currentUserId === 'rishibhai' ? 'Rishit Shankar' : 'DAV Student');
 
@@ -400,6 +400,15 @@ export function StudyLeaderboardSection({ user }) {
   };
 
   const startFocusSession = (mins = targetDurationMinutes) => {
+    if (user?.plan === 'guest' || user?.isDemo) {
+      if (onRequireLogin) {
+        onRequireLogin(
+          'Login to Continue',
+          'You are exploring in Demo Preview. Please log in or register with your Student ID & Password to start recorded deep focus sessions and earn streak points on the campus leaderboard.'
+        );
+      }
+      return;
+    }
     setTargetDurationMinutes(mins);
     setSecondsRemaining(mins * 60);
     setIsFocusActive(true);
