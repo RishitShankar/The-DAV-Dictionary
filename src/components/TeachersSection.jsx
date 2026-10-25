@@ -7,7 +7,7 @@ import {
   Video, Mic, MicOff, VideoOff, ScreenShare, Share2, AlertCircle,
   HelpCircle, MessageCircle, BarChart3, TrendingUp, UserCheck,
   UserX, Paperclip, Smile, Image as ImageIcon,
-  CheckCheck, Volume2, Sparkle, Eye, Star, Layers, Zap, X,
+  CheckCheck, Volume2, VolumeX, Sparkle, Eye, Star, Layers, Zap, X,
   ExternalLink, RefreshCw, Bot, Smartphone, RotateCcw,
   ArrowRight, Play, CheckSquare, Radio, Maximize2, Minimize2,
   PhoneOff, Hand, MessageSquareMore, CheckCircle,
@@ -190,6 +190,15 @@ const PDF_PAGES_METADATA = {
     gradeScope: 'Classes: LKG to Class 8 (11 Academic Standards)',
     sectionScope: 'Sections: A, B, C, D, E (5 Standardized Class Cohorts)',
     overview: 'This academic directive establishes the institutional protocol for daily homework and classwork dissemination across DAV Public School. Designed to cultivate daily study discipline, reinforce classroom concepts, and ensure seamless synchronization between faculty, students, and parents.',
+    cardGradient: 'from-amber-950/90 via-stone-900 to-emerald-950/80',
+    borderColor: 'border-amber-500/60',
+    glowColor: 'shadow-[0_0_40px_rgba(245,158,11,0.25)]',
+    stripeGradient: 'from-amber-400 via-yellow-400 to-emerald-400',
+    iconGradient: 'from-amber-500 to-emerald-600',
+    badgeStyle: 'bg-amber-500/20 text-amber-300 border-amber-500/50',
+    buttonGradient: 'from-amber-500 via-yellow-500 to-emerald-500 text-stone-950 hover:from-amber-400 hover:to-emerald-400',
+    accentText: 'text-amber-400',
+    pillarBg: 'bg-stone-900/90 border-amber-500/30',
     corePillars: [
       {
         title: 'Curriculum-Aligned Tasks',
@@ -201,7 +210,7 @@ const PDF_PAGES_METADATA = {
       },
       {
         title: 'Submission & Diary Tracking',
-        desc: 'Clear submission deadlines (08:30 AM standard), notebook formatting guidelines, and parental verification sign-off protocols.'
+        desc: 'Clear submission deadlines (08:30 AM standard), notebook formatting guidelines, audio voice reading, and media attachments.'
       }
     ],
     centralButtonText: 'Open Full-Screen Daily Homework Hub',
@@ -216,7 +225,7 @@ const PDF_PAGES_METADATA = {
     statPills: [
       { label: 'Classes Covered', val: 'LKG to 8 (11 Grades)' },
       { label: 'Sections Per Class', val: '5 Sections (A-E)' },
-      { label: 'Subjects Active', val: '8 Core Subjects' },
+      { label: 'Subjects Active', val: '12 Standard Subjects' },
       { label: 'Submission Window', val: 'Before 08:30 AM' }
     ],
     sealTitle: 'Approved by DAV Academic Oversight Directorate'
@@ -230,6 +239,15 @@ const PDF_PAGES_METADATA = {
     gradeScope: 'Faculty Roster: Verified Subject Teachers & Heads of Department',
     sectionScope: 'Channels: Sub-Second Synchronized Portal Direct Messaging',
     overview: 'This official directive establishes the institutional protocol for student-faculty academic consultation outside regular school hours. Eliminating educational bottlenecks, students can interact in real time with verified faculty members across all departments with sub-second message delivery.',
+    cardGradient: 'from-cyan-950/90 via-slate-900 to-indigo-950/80',
+    borderColor: 'border-cyan-500/60',
+    glowColor: 'shadow-[0_0_40px_rgba(6,182,212,0.25)]',
+    stripeGradient: 'from-cyan-400 via-indigo-400 to-blue-500',
+    iconGradient: 'from-cyan-500 to-indigo-600',
+    badgeStyle: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50',
+    buttonGradient: 'from-cyan-500 via-teal-400 to-blue-500 text-slate-950 hover:from-cyan-400 hover:to-blue-400',
+    accentText: 'text-cyan-400',
+    pillarBg: 'bg-slate-900/90 border-cyan-500/30',
     corePillars: [
       {
         title: 'Verified Faculty Roster',
@@ -259,167 +277,203 @@ const PDF_PAGES_METADATA = {
       { label: 'Media Support', val: 'Images, Audio, Video' },
       { label: 'Delivery Latency', val: 'Sub-Second Real-Time' }
     ],
-    sealTitle: 'Supervised by Faculty Academic Coordination Cell'
+    sealTitle: 'Approved by DAV Academic Oversight Directorate'
   },
   live_class: {
     pageNumber: '03',
-    code: 'DAV-DIR-2026-WEBRTC03',
-    directiveName: 'WEBRTC REAL ONLINE LIVE CLASSROOM PROTOCOL',
-    tagline: 'High-Definition Interactive WebRTC Streaming & Smart Board Virtual Lecture Hall',
-    badgeText: 'PAGE 3 - IN-WEBSITE DISTANCE LEARNING',
-    gradeScope: 'Broadcasting: Class LKG to Class 8 Live Lecture Streams',
-    sectionScope: 'Technology: WebRTC P2P In-Website Engine - Free - Unlimited Duration',
-    overview: 'This document authorizes the implementation of real-time virtual classroom sessions embedded directly within the school portal. Utilizing enterprise WebRTC peer-to-peer technology, students attend live interactive video lectures with zero third-party downloads, zero time cutoffs, and integrated smart whiteboard tools.',
+    code: 'DAV-DIR-2026-LIVE03',
+    directiveName: 'WEBRTC REAL-TIME ONLINE LIVE CLASSROOM',
+    tagline: '100% In-Website Broadcast, Interactive Smart Whiteboard & Zero Duration Limit',
+    badgeText: 'PAGE 3 - VIRTUAL BROADCAST THEATER',
+    gradeScope: 'Broadcast Scope: Real WebRTC Mesh (Zero External Plugins)',
+    sectionScope: 'Capacity: Unlimited Class Broadcasts & High Definition Video',
+    overview: 'This official directive operationalizes DAV Public School native WebRTC online classroom infrastructure. Built directly into the website with zero external meeting redirects, faculty can host HD virtual lectures, share screens, annotate on the synchronized digital whiteboard, and conduct interactive polls.',
+    cardGradient: 'from-rose-950/90 via-stone-900 to-red-950/80',
+    borderColor: 'border-rose-500/60',
+    glowColor: 'shadow-[0_0_40px_rgba(244,63,94,0.25)]',
+    stripeGradient: 'from-rose-500 via-pink-400 to-red-500',
+    iconGradient: 'from-rose-500 to-red-600',
+    badgeStyle: 'bg-rose-500/20 text-rose-300 border-rose-500/50',
+    buttonGradient: 'from-rose-500 via-red-500 to-pink-500 text-white hover:from-rose-400 hover:to-pink-400',
+    accentText: 'text-rose-400',
+    pillarBg: 'bg-stone-900/90 border-rose-500/30',
     corePillars: [
       {
-        title: '100% In-Website Video',
-        desc: 'Embedded video call engine operating directly on the portal page without requiring Zoom, Google Meet apps, or external login credentials.'
+        title: 'Native WebRTC HD Video',
+        desc: 'Zero external third-party software needed. Direct encrypted peer-to-peer audio and video transmission inside the website.'
       },
       {
-        title: 'Zero Time Restrictions',
-        desc: 'Unrestricted session length allowing full 45-minute academic periods without third-party trial cutoffs.'
+        title: 'Collaborative Smart Board',
+        desc: 'Interactive high-resolution drawing canvas with multi-color pens, geometric shapes, equation tools, and export to PDF.'
       },
       {
-        title: 'Smart Whiteboard & Screen Share',
-        desc: 'Built-in interactive digital smartboard enabling teachers to sketch diagrams, write mathematical formulas, and share teaching presentations.'
+        title: 'Real-Time Class Engagement',
+        desc: 'Digital hand-raising queue, live reaction burst effects, attendee attendance logger, and moderated group discussion chat.'
       }
     ],
-    centralButtonText: 'Open Full-Screen Live Video Classroom',
-    centralButtonSub: 'Launch WebRTC HD Video Room with Screen Sharing & Smart Whiteboard',
+    centralButtonText: 'Open Full-Screen WebRTC Live Classroom',
+    centralButtonSub: 'Launch Native Online Broadcast Session & Smart Whiteboard',
     instructions: [
-      'Step 1: Click the central button above to launch the full-screen Live Video Classroom.',
-      'Step 2: Select your class standard (Class LKG to Class 8) to join the active lecture.',
-      'Step 3: Click Join Live Class Now to connect into the high-definition audio/video room.',
-      'Step 4: Toggle your microphone and camera using the bottom meeting toolbar.',
-      'Step 5: Switch between the live video feed and the interactive teacher smartboard as needed.'
+      'Step 1: Click the central button above to launch the Live Classroom Studio.',
+      'Step 2 (Faculty): Click "Host New Live Class" to create an instant room with topic and passcode.',
+      'Step 3 (Students): Review active live broadcasts or enter Room ID to join instantly.',
+      'Step 4: Toggle Camera and Microphone controls as needed; use Hand-Raise to request speaking turn.',
+      'Step 5: Switch to Whiteboard tab for synchronous interactive diagram sketching and explanations.'
     ],
     statPills: [
-      { label: 'Video Quality', val: '1080p HD WebRTC' },
-      { label: 'Session Duration', val: 'Unlimited Period' },
-      { label: 'Interactive Tools', val: 'Whiteboard + Screen' },
-      { label: 'App Requirement', val: 'Zero (Browser Native)' }
+      { label: 'Video Engine', val: 'Native WebRTC' },
+      { label: 'Duration Cap', val: 'Unlimited' },
+      { label: 'Whiteboard', val: 'Multi-Tool Canvas' },
+      { label: 'External App', val: '0% Required' }
     ],
-    sealTitle: 'Accredited by DAV Digital Learning Board'
+    sealTitle: 'Approved by DAV Academic Oversight Directorate'
   },
   tests: {
     pageNumber: '04',
-    code: 'DAV-DIR-2026-EXAM04',
-    directiveName: 'CONTINUOUS COMPREHENSIVE EVALUATION & TEST SUITE',
-    tagline: 'Standardized Curriculum Unit Examinations, Timer Simulation & Performance Analytics',
-    badgeText: 'PAGE 4 - FORMATIVE ASSESSMENT ARCHITECTURE',
-    gradeScope: 'Evaluation Scope: Class LKG to Class 8 - All Academic Disciplines',
-    sectionScope: 'Format: Timed Multiple-Choice, Numerical Analysis & Instant Scorecard',
-    overview: 'This academic directive codifies the standards for online unit tests, formative quizzes, and periodic assessment simulators. Built according to DAV Education Board test blueprints, students test conceptual mastery under timed exam conditions with instant automatic evaluation and detailed pedagogical explanations.',
+    code: 'DAV-DIR-2026-TEST04',
+    directiveName: 'CONTINUOUS COMPREHENSIVE CBT EXAMINATION SUITE',
+    tagline: 'Standardized Computer-Based Test Engine & Instant Auto-Grading Framework',
+    badgeText: 'PAGE 4 - HIGH-STAKES CBT ENGINE',
+    gradeScope: 'Assessment Scope: Periodic Tests, Chapter Evaluations & Term Finals',
+    sectionScope: 'Interface: Authentic CBSE / NTA Question Palette Matrix Navigation',
+    overview: 'This academic directive governs the computer-based assessment and online testing infrastructure of DAV Public School. Featuring an authentic CBSE/NTA question palette, real-time countdown timer, anti-cheat detection, instant evaluation, and granular score analytics.',
+    cardGradient: 'from-blue-950/90 via-slate-900 to-indigo-950/80',
+    borderColor: 'border-blue-500/60',
+    glowColor: 'shadow-[0_0_40px_rgba(59,130,246,0.25)]',
+    stripeGradient: 'from-blue-500 via-indigo-400 to-cyan-400',
+    iconGradient: 'from-blue-500 to-indigo-600',
+    badgeStyle: 'bg-blue-500/20 text-blue-300 border-blue-500/50',
+    buttonGradient: 'from-blue-500 via-indigo-500 to-cyan-500 text-white hover:from-blue-400 hover:to-cyan-400',
+    accentText: 'text-blue-400',
+    pillarBg: 'bg-slate-900/90 border-blue-500/30',
     corePillars: [
       {
-        title: 'Teacher Test Authoring',
-        desc: 'Authorized faculty can create custom MCQ, subjective, or combined tests with multi-section deployment and answer keys.'
+        title: 'Authentic Question Matrix',
+        desc: 'Visual palette tracking Answered (Green), Not Answered (Red), Marked for Review (Purple), and Unvisited states.'
       },
       {
-        title: 'Synchronized Countdown Timer',
-        desc: 'Strict per-test countdown clock ensuring authentic exam pacing, time management discipline, and automated submission upon expiry.'
+        title: 'Instant Automated Evaluation',
+        desc: 'Immediate scoring upon submission with percentage computation, question-by-question explanations, and answer review.'
       },
       {
-        title: 'Automatic Scorecard & Leaderboard',
-        desc: 'Immediate scorecard generation with question matrix, answer explanations, and automated class leaderboard.'
+        title: 'Custom Exam Creator',
+        desc: 'Faculty can construct custom multi-chapter question papers, configure negative marking, time limits, and publish to specific classes.'
       }
     ],
-    centralButtonText: 'Open Full-Screen Online Test & Exam Suite',
-    centralButtonSub: 'Launch Timed Exam Portal with Instant Evaluation & Solution Review',
+    centralButtonText: 'Open Full-Screen Online Examination Suite',
+    centralButtonSub: 'Launch Standardized CBT Test Simulator & Question Matrix',
     instructions: [
-      'Step 1: Click the central button above to open the full-screen Online Test & Exam Suite.',
-      'Step 2: Teachers (Faculty): Click Create New Examination to author and deploy tests.',
-      'Step 3: Students: Select Class and Section to view scheduled unit tests.',
-      'Step 4: Attempt the timed exam using the question matrix palette (White, Red, Green, Yellow).',
-      'Step 5: Submit test to view instant scorecard, full solution review, and class leaderboard.'
+      'Step 1: Click the central button above to enter the CBT Examination Suite.',
+      'Step 2: Choose from available standardized subject tests or faculty-published custom mock papers.',
+      'Step 3: Click "Start Examination" to launch the timed test environment with real-time countdown.',
+      'Step 4: Navigate using the authentic Question Palette; mark questions for review if needed.',
+      'Step 5: Review final response summary, submit the paper, and view immediate auto-graded scorecard.'
     ],
     statPills: [
-      { label: 'Question Bank', val: 'DAV Board Syllabus' },
-      { label: 'Timer Control', val: 'Custom Scheduled' },
-      { label: 'Scoring', val: 'Instant Auto-Grading' },
-      { label: 'Palette Matrix', val: '4-Color Status System' }
+      { label: 'Palette Standard', val: 'CBSE / NTA Matrix' },
+      { label: 'Evaluation', val: 'Instant Auto-Graded' },
+      { label: 'Security', val: 'Anti-Cheat Monitor' },
+      { label: 'Analytics', val: 'Subject & Topic Breakdown' }
     ],
-    sealTitle: 'Validated by DAV Examination Controller Cell'
+    sealTitle: 'Approved by DAV Academic Oversight Directorate'
   },
   attendance: {
     pageNumber: '05',
     code: 'DAV-DIR-2026-ATT05',
-    directiveName: 'INSTITUTIONAL DIGITAL ATTENDANCE REGISTRY',
-    tagline: 'Daily Student Roll Call, Attendance Verification & 75% Statutory Compliance Register',
-    badgeText: 'PAGE 5 - STATUTORY COMPLIANCE & ATTENDANCE',
-    gradeScope: 'Roll Roster: All Classes LKG to Class 8 (Sections A to E)',
-    sectionScope: 'Authorization: Student Read-Only Audit - Teacher Authorized Roll Marking',
-    overview: 'This directive defines the statutory regulations governing daily attendance recording across all divisions of DAV Public School. Under Board regulations, maintaining a minimum of 75% cumulative attendance is a mandatory prerequisite for examination eligibility.',
+    directiveName: 'DIGITAL ATTENDANCE & STATUTORY REGISTER',
+    tagline: 'CBSE 75% Mandatory Attendance Compliance & Digital Daily Rolls',
+    badgeText: 'PAGE 5 - STATUTORY COMPLIANCE LEDGER',
+    gradeScope: 'Scope: Daily Morning Rolls across Classes LKG to Class 8 (A-E)',
+    sectionScope: 'Statutory Standard: 75% CBSE Board Examination Minimum Threshold',
+    overview: 'This official directive operationalizes the digital attendance register of DAV Public School. Ensuring rigorous compliance with statutory CBSE 75% minimum attendance rules, teachers can record daily morning rolls with one tap, track cumulative monthly attendance, and export official roll registers.',
+    cardGradient: 'from-emerald-950/90 via-slate-900 to-teal-950/80',
+    borderColor: 'border-emerald-500/60',
+    glowColor: 'shadow-[0_0_40px_rgba(16,185,129,0.25)]',
+    stripeGradient: 'from-emerald-400 via-teal-300 to-green-500',
+    iconGradient: 'from-emerald-500 to-teal-600',
+    badgeStyle: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50',
+    buttonGradient: 'from-emerald-500 via-teal-400 to-green-500 text-slate-950 hover:from-emerald-400 hover:to-green-400',
+    accentText: 'text-emerald-400',
+    pillarBg: 'bg-slate-900/90 border-emerald-500/30',
     corePillars: [
       {
-        title: 'Board 75% Mandate',
-        desc: 'Strict enforcement of the 75% attendance criterion with automated attendance alerts for students falling below the mandatory threshold.'
+        title: 'Single-Tap Roll Calling',
+        desc: 'Interactive Present / Absent toggles for rapid classroom roll taking during morning homeroom period.'
       },
       {
-        title: 'Role-Based Security',
-        desc: 'Read-only verification mode for students and parents; cryptographic faculty-only authorization for marking and modifying student attendance.'
+        title: '75% Compliance Guard',
+        desc: 'Real-time warning badges for students falling below the mandatory CBSE 75% attendance criteria.'
       },
       {
-        title: 'Tri-State Marking System',
-        desc: 'Instant toggle between Present (P), Absent (A), and Late (L) with one-click cloud synchronization and institutional date logging.'
+        title: 'Dynamic Student Enrollment',
+        desc: 'Faculty can enroll new students with Roll No, Name, and Admission Number into any class-section cohort.'
       }
     ],
     centralButtonText: 'Open Full-Screen Digital Attendance Register',
-    centralButtonSub: 'Launch Interactive Class Roster Register with Roll Call Controls',
+    centralButtonSub: 'Launch Daily Roll Calling & Statutory Compliance Workspace',
     instructions: [
-      'Step 1: Click the central button above to access the full-screen Digital Attendance Register.',
-      'Step 2: Filter by your target Class (LKG to 8) and Section (A to E).',
-      'Step 3: Students: Verify your name and daily attendance status (Present, Absent, Late).',
-      'Step 4: Teachers: Click P, A, or L next to each student roll number to record presence.',
-      'Step 5: Teachers: Click Save & Sync Register to commit the daily attendance record.'
+      'Step 1: Click the central button above to launch the Digital Attendance Register.',
+      'Step 2: Select academic class and section from the cohort selector controls.',
+      'Step 3: Select the target date using the date selector or default to today.',
+      'Step 4 (Faculty): Tap "Present" or "Absent" for each roll call; use "Mark All Present" for speed.',
+      'Step 5: Review class attendance percentage and export official register to CSV when needed.'
     ],
     statPills: [
-      { label: 'Class Scope', val: 'Class LKG to Class 8' },
-      { label: 'Sections', val: 'Sections A, B, C, D, E' },
-      { label: 'Statutory Rule', val: '75% Minimum Presence' },
-      { label: 'Status Types', val: 'Present / Absent (Two-State)' }
+      { label: 'Minimum Compliance', val: '75% Mandatory CBSE' },
+      { label: 'Speed', val: 'Single-Tap Recording' },
+      { label: 'Reports', val: 'Instant CSV Export' },
+      { label: 'Enrollment', val: 'Class & Section Scoped' }
     ],
-    sealTitle: 'Certified by DAV Office of the Registrar & Attendance Board'
+    sealTitle: 'Approved by DAV Academic Oversight Directorate'
   },
   marks_ledger: {
     pageNumber: '06',
     code: 'DAV-DIR-2026-MARKS06',
-    directiveName: 'ACADEMIC PERFORMANCE & EXAMINATION MARKS LEDGER',
-    tagline: 'Standardized Periodic Assessments, Term Scorecards & Grade Computation',
-    badgeText: 'PAGE 6 - EVALUATION & REPORT CARD LEDGER',
-    gradeScope: 'Classes: LKG to Class 8 (11 Academic Standards)',
-    sectionScope: 'Examination Terms: Periodic 1 to 4, Half-Yearly, Pre-Boards & Annual',
-    overview: 'Official institutional ledger for entering, tracking, and publishing student examination marks across all academic terms. Provides automatic total aggregation, percentage calculation, and CBSE grading. Dimension 5 teachers have exclusive marks entry rights.',
+    directiveName: 'EXAMINATION MARKS LEDGER & ACADEMIC LEADERBOARD',
+    tagline: 'Standardized Periodic Assessments, CBSE Grading & Class Top Ranks',
+    badgeText: 'PAGE 6 - ACADEMIC MERIT & LEADERBOARD',
+    gradeScope: 'Grades: Periodic Tests (PT-1, PT-2), Half-Yearly, Term Final Exams',
+    sectionScope: 'Subjects: All 10 Prescribed DAV Curriculum Disciplines',
+    overview: 'Official institutional ledger for entering, tracking, and publishing student examination marks across all academic terms. Provides automatic total aggregation, percentage calculation, and CBSE grading. Verified faculty members have exclusive marks entry rights.',
+    cardGradient: 'from-yellow-950/90 via-stone-900 to-amber-950/80',
+    borderColor: 'border-yellow-500/60',
+    glowColor: 'shadow-[0_0_40px_rgba(234,179,8,0.25)]',
+    stripeGradient: 'from-yellow-400 via-amber-300 to-orange-500',
+    iconGradient: 'from-yellow-500 to-amber-600',
+    badgeStyle: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/50',
+    buttonGradient: 'from-yellow-400 via-amber-500 to-orange-500 text-stone-950 hover:from-yellow-300 hover:to-orange-400',
+    accentText: 'text-yellow-400',
+    pillarBg: 'bg-stone-900/90 border-yellow-500/30',
     corePillars: [
       {
-        title: 'Class-Specific Term Schedules',
-        desc: 'Class 8 follows Periodic 1, Half-Yearly, Periodic 2, Pre-Board 1, Pre-Board 2, and Annual Board. Classes LKG-7 follow Periodic 1 to 4, Half-Yearly, and Annual.'
+        title: '10-Subject Comprehensive Entry',
+        desc: 'Structured entry columns for Science, Mathematics, English, Hindi, Social Science, Sanskrit, Computer, etc.'
       },
       {
-        title: 'Automatic Grade Computation',
-        desc: 'Real-time calculation of total marks, percentage, and CBSE grades (A1, A2, B1, B2, C1, C2, D, E) upon faculty entry.'
+        title: 'CBSE 9-Point Grading Scale',
+        desc: 'Automatic computation of CBSE letter grades (A1, A2, B1, B2, C1, C2, D, E) based on aggregated percentage.'
       },
       {
-        title: 'Student Report Card Generation',
-        desc: 'Students can review their individual term marks, view faculty remarks, and download or print official printable report cards.'
+        title: 'Merit Top Ranks Leaderboard',
+        desc: 'Instant class rankings (1st, 2nd, 3rd) spotlighting academic toppers with commemorative badges.'
       }
     ],
-    centralButtonText: 'Open Student Examination Marks Leaderboard',
-    centralButtonSub: 'View & Manage Student Report Cards, Terms & Grades',
+    centralButtonText: 'Open Full-Screen Marks & Leaderboard Ledger',
+    centralButtonSub: 'Launch Standardized Examination Marks Entry & Ranking Arena',
     instructions: [
-      'Step 1: Click the central button above to launch the Student Marks & Report Ledger.',
-      'Step 2: Select your Class standard (LKG to 8) and Section (A to E).',
-      'Step 3: Select the specific Examination Term (Periodic Test, Half-Yearly, Pre-Board, Annual).',
-      'Step 4: Teachers (Faculty): Enter subject marks and click Save Marks Ledger.',
-      'Step 5: Students: Inspect your term scorecard and click Print Report Card.'
+      'Step 1: Click the central button above to launch the Marks & Leaderboard Ledger.',
+      'Step 2: Select the target examination term (Periodic Test 1, Half-Yearly, Annual Final).',
+      'Step 3: Choose target Class and Section cohort.',
+      'Step 4 (Faculty): Click "Edit Marks" to input subject scores; totals and grades update automatically.',
+      'Step 5: View real-time Class Leaderboard and export printable report cards.'
     ],
     statPills: [
-      { label: 'Terms for Class 8', val: 'PT1, HY, PT2, PB1, PB2, Board' },
-      { label: 'Terms for LKG-7', val: 'PT1, PT2, HY, PT3, PT4, Annual' },
-      { label: 'Subjects', val: '7 Core Subject Marks' },
-      { label: 'Access Control', val: 'Teacher Entry - Student Audit' }
+      { label: 'Official Subjects', val: '10 Prescribed Disciplines' },
+      { label: 'Grading Scale', val: 'CBSE 9-Point (A1 to E)' },
+      { label: 'Rank Engine', val: 'Instant Auto-Ranking' },
+      { label: 'Access Control', val: 'Verified Faculty Desk' }
     ],
-    sealTitle: 'Validated by DAV Academic Controller of Examinations'
+    sealTitle: 'Approved by DAV Academic Oversight Directorate'
   }
 };
 
@@ -500,83 +554,185 @@ export function TeachersSection({
 
   // =========================================================================
   // PAGE 1: DAILY HOMEWORK HUB STATE & HANDLERS
-  // =========================================================================
   const [selectedHwClass, setSelectedHwClass] = useState('8');
-  const [selectedHwSection, setSelectedHwSection] = useState('D');
+  const [selectedHwSection, setSelectedHwSection] = useState('A');
   const [showAssignHwModal, setShowAssignHwModal] = useState(false);
+  const [editingHwId, setEditingHwId] = useState(null);
   const [newHwClass, setNewHwClass] = useState('8');
-  const [newHwSection, setNewHwSection] = useState('D');
-  const [newHwSubject, setNewHwSubject] = useState('Science & Technology');
+  const [newHwSection, setNewHwSection] = useState('A');
+  const [newHwSubject, setNewHwSubject] = useState('Science');
   const [newHwDueDate, setNewHwDueDate] = useState('Tomorrow, 08:30 AM');
-  const [newHwTeacher, setNewHwTeacher] = useState(user?.name || 'Faculty Member');
+  const [newHwTeacher, setNewHwTeacher] = useState(user?.name || 'Verified DAV Faculty');
+  const [showFacultyAssignField, setShowFacultyAssignField] = useState(false);
   const [newHwChapter, setNewHwChapter] = useState('');
   const [newHwTitle, setNewHwTitle] = useState('');
   const [newHwDesc, setNewHwDesc] = useState('');
+  const [newHwMediaList, setNewHwMediaList] = useState([]); // [{ type: 'image'|'video'|'audio', url: string, name: string }]
+  const [speakingHwId, setSpeakingHwId] = useState(null);
+  const [previewMediaModal, setPreviewMediaModal] = useState(null);
+
+  // Dynamic Subject Helper
+  // Class 6 to 8: Math, Science, SST, English, Hindi, Sanskrit, Computer, Music, DS, GK, PT, Library
+  // Below Class 6 (Class 5 to Nursery): Exact same list minus Sanskrit
+  const getHomeworkSubjectsForClass = (classId) => {
+    const isBelow6 = ['Nursery', 'LKG', 'UKG', '1', '2', '3', '4', '5'].includes(String(classId));
+    if (isBelow6) {
+      return ['Math', 'Science', 'SST', 'English', 'Hindi', 'Computer', 'Music', 'DS', 'GK', 'PT', 'Library'];
+    }
+    return ['Math', 'Science', 'SST', 'English', 'Hindi', 'Sanskrit', 'Computer', 'Music', 'DS', 'GK', 'PT', 'Library'];
+  };
 
   const [homeworkStore, setHomeworkStore] = useState(() => {
     try {
       const raw = localStorage.getItem(HOMEWORK_STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) return parsed;
       }
     } catch (e) {}
-    return [
-      {
-        id: 'hw_default_1',
-        classId: '8',
-        section: 'D',
-        subject: 'Science & Technology',
-        chapter: 'Chapter 11: The Human Eye and the Colourful World',
-        title: 'Ray Diagram of Human Eye & Myopia Correction',
-        desc: 'Draw neat labeled diagram of human eye in Science Homework notebook. Answer question 1 to 5 from DAV Textbook Exercise Part D (Page 142).',
-        dueDate: 'Tomorrow, 08:30 AM',
-        teacher: user?.name || 'Prof. Faculty Member',
-        createdAt: 'Today, 08:00 AM'
-      },
-      {
-        id: 'hw_default_2',
-        classId: '8',
-        section: 'D',
-        subject: 'Mathematics',
-        chapter: 'Chapter 6: Algebraic Expressions and Identities',
-        title: 'Worksheet 6.2 - Question 1 to 10 (DAV Secondary Math)',
-        desc: 'Solve all questions of Worksheet 6.2 using identities (a+b)^2 and (a-b)^2 in Math Fair notebook. Submit during Period 2.',
-        dueDate: 'Tomorrow, 09:30 AM',
-        teacher: user?.name || 'Prof. Faculty Member',
-        createdAt: 'Today, 08:15 AM'
-      }
-    ];
+    return [];
   });
+
+  const handleOpenCreateHomework = () => {
+    setEditingHwId(null);
+    setNewHwClass(selectedHwClass);
+    setNewHwSection(selectedHwSection);
+    const subjs = getHomeworkSubjectsForClass(selectedHwClass);
+    setNewHwSubject(subjs[0] || 'Science');
+    setNewHwDueDate('Tomorrow, 08:30 AM');
+    setNewHwTeacher(user?.name || 'Verified DAV Faculty');
+    setShowFacultyAssignField(false);
+    setNewHwChapter('');
+    setNewHwTitle('');
+    setNewHwDesc('');
+    setNewHwMediaList([]);
+    setShowAssignHwModal(true);
+  };
+
+  const handleOpenEditHomework = (hw) => {
+    setEditingHwId(hw.id);
+    setNewHwClass(hw.classId);
+    setNewHwSection(hw.section);
+    setNewHwSubject(hw.subject);
+    setNewHwDueDate(hw.dueDate);
+    setNewHwTeacher(hw.teacher);
+    setShowFacultyAssignField(Boolean(hw.teacher && hw.teacher !== user?.name));
+    setNewHwChapter(hw.chapter || '');
+    setNewHwTitle(hw.title || '');
+    setNewHwDesc(hw.desc || '');
+    setNewHwMediaList(hw.mediaList || []);
+    setShowAssignHwModal(true);
+  };
+
+  const handleDeleteHomework = (hwId) => {
+    if (speakingHwId === hwId) {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      setSpeakingHwId(null);
+    }
+    const updated = homeworkStore.filter(h => h.id !== hwId);
+    setHomeworkStore(updated);
+    try {
+      localStorage.setItem(HOMEWORK_STORAGE_KEY, JSON.stringify(updated));
+    } catch (e) {}
+    playSoundChime('sent');
+  };
+
+  const handleAddHomeworkMedia = (type, file) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setNewHwMediaList(prev => [...prev, {
+        type,
+        url: ev.target.result,
+        name: file.name
+      }]);
+      playSoundChime('delivered');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveHomeworkMedia = (idx) => {
+    setNewHwMediaList(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleSpeakHomework = (hw) => {
+    if (!('speechSynthesis' in window)) {
+      alert('Speech synthesis is not supported on this device/browser.');
+      return;
+    }
+    if (speakingHwId === hw.id) {
+      window.speechSynthesis.cancel();
+      setSpeakingHwId(null);
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const textToSpeak = `Homework for Class ${hw.classId}, Section ${hw.section}. Subject: ${hw.subject}. Chapter: ${hw.chapter || 'Prescribed Syllabus'}. Title: ${hw.title}. Detailed Instructions: ${hw.desc}. Submission due date: ${hw.dueDate}. Assigned by teacher: ${hw.teacher}.`;
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+    utterance.onend = () => setSpeakingHwId(null);
+    utterance.onerror = () => setSpeakingHwId(null);
+    setSpeakingHwId(hw.id);
+    window.speechSynthesis.speak(utterance);
+  };
 
   const handleCreateHomework = (e) => {
     e.preventDefault();
     if (!newHwTitle.trim()) return;
-    const newEntry = {
-      id: 'hw_' + Date.now(),
-      classId: newHwClass,
-      section: newHwSection,
-      subject: newHwSubject,
-      dueDate: newHwDueDate,
-      teacher: newHwTeacher || user?.name || 'Verified DAV Faculty',
-      chapter: newHwChapter || 'General Syllabus Assignment',
-      title: newHwTitle.trim(),
-      desc: newHwDesc.trim(),
-      createdAt: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
-    };
-    const updated = [newEntry, ...homeworkStore];
-    setHomeworkStore(updated);
-    try {
-      localStorage.setItem(HOMEWORK_STORAGE_KEY, JSON.stringify(updated));
-    } catch (err) {}
+
+    if (editingHwId) {
+      const updated = homeworkStore.map(h => {
+        if (h.id === editingHwId) {
+          return {
+            ...h,
+            classId: newHwClass,
+            section: newHwSection,
+            subject: newHwSubject,
+            dueDate: newHwDueDate,
+            teacher: newHwTeacher || user?.name || 'Verified DAV Faculty',
+            chapter: newHwChapter || 'General Syllabus Assignment',
+            title: newHwTitle.trim(),
+            desc: newHwDesc.trim(),
+            mediaList: newHwMediaList,
+            updatedAt: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
+          };
+        }
+        return h;
+      });
+      setHomeworkStore(updated);
+      try {
+        localStorage.setItem(HOMEWORK_STORAGE_KEY, JSON.stringify(updated));
+      } catch (err) {}
+    } else {
+      const newEntry = {
+        id: 'hw_' + Date.now(),
+        classId: newHwClass,
+        section: newHwSection,
+        subject: newHwSubject,
+        dueDate: newHwDueDate,
+        teacher: newHwTeacher || user?.name || 'Verified DAV Faculty',
+        chapter: newHwChapter || 'General Syllabus Assignment',
+        title: newHwTitle.trim(),
+        desc: newHwDesc.trim(),
+        mediaList: newHwMediaList,
+        createdAt: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
+      };
+      const updated = [newEntry, ...homeworkStore];
+      setHomeworkStore(updated);
+      try {
+        localStorage.setItem(HOMEWORK_STORAGE_KEY, JSON.stringify(updated));
+      } catch (err) {}
+    }
+
     setShowAssignHwModal(false);
+    setEditingHwId(null);
     setNewHwTitle('');
     setNewHwDesc('');
     setNewHwChapter('');
+    setNewHwMediaList([]);
     playSoundChime('sent');
   };
 
-  // =========================================================================
   // AUTOMATIC STORAGE SANITIZATION: PURGE ALL LEGACY & DEMO DATA
   // =========================================================================
   useEffect(() => {
@@ -2405,33 +2561,27 @@ export function TeachersSection({
             </div>
 
             {/* ====================================================== */}
-            {/* THE MAIN PAGE CARD (MINT GREEN + PURPLE GLOW)          */}
-            {/* ====================================================== */}
-            <div className="relative w-full rounded-3xl overflow-hidden border-2 ${currentMeta.borderColor || 'border-amber-400/80'} ${currentMeta.glowColor || 'shadow-2xl'} bg-gradient-to-br ${currentMeta.cardGradient || 'from-stone-950 to-stone-900'} card-real-3d elevation-3d-velvet transition-all duration-500">
-
-              {/* Glowing background blobs */}
-              <div className="pointer-events-none absolute -top-24 -right-24 w-96 h-96 rounded-full bg-teal-500/10" />
-              <div className="pointer-events-none absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-purple-600/15" />
-              <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-fuchsia-700/10" />
+            {/* THE MAIN PAGE CARD WITH DYNAMIC THEME COLORS PER PAGE */}
+            <div className={`relative w-full rounded-3xl overflow-hidden border-2 ${currentMeta.borderColor || 'border-amber-400/80'} ${currentMeta.glowColor || 'shadow-2xl'} bg-gradient-to-br ${currentMeta.cardGradient || 'from-stone-950 to-stone-900'} card-real-3d elevation-3d-velvet transition-all duration-500`}>
 
               {/* Top accent stripe */}
-              <div className="w-full h-2 bg-gradient-to-r ${currentMeta.stripeGradient || 'from-amber-400 to-red-500'} animate-spectrum-sheen" />
+              <div className={`w-full h-2 bg-gradient-to-r ${currentMeta.stripeGradient || 'from-amber-400 to-red-500'} animate-spectrum-sheen`} />
 
               <div className="relative z-10 p-6 sm:p-10 md:p-14 space-y-8">
 
                 {/* Page number badge */}
                 <div className="flex items-center justify-between flex-wrap gap-2">
-                  <span className="px-3 py-1 rounded-full ${currentMeta.badgeStyle || 'bg-amber-400/20 text-amber-300 border-amber-400/50'} font-mono font-black text-xs tracking-widest uppercase animate-badge-bounce">
+                  <span className={`px-3 py-1 rounded-full ${currentMeta.badgeStyle || 'bg-amber-400/20 text-amber-300 border-amber-400/50'} font-mono font-black text-xs tracking-widest uppercase animate-badge-bounce`}>
                     PAGE {currentMeta.pageNumber} OF 06
                   </span>
-                  <span className="px-3 py-1 rounded-full bg-red-950/60 border border-red-500/40 text-red-200 font-mono text-[11px] font-bold">
+                  <span className="px-3 py-1 rounded-full bg-stone-900 border border-stone-700 text-stone-300 font-mono text-[11px] font-bold">
                     {currentMeta.badgeText}
                   </span>
                 </div>
 
                 {/* Section icon + title */}
                 <div className="text-center space-y-3">
-                  <div className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-br ${currentMeta.iconGradient || 'from-amber-400 to-orange-500'} shadow-2xl mb-3 border-2 border-white/30 animate-trophy-glory">
+                  <div className={`inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-br ${currentMeta.iconGradient || 'from-amber-400 to-orange-500'} shadow-2xl mb-3 border-2 border-white/30 animate-trophy-glory`}>
                     {activePage === 'homework' && <ClipboardList className="w-10 h-10 text-white" />}
                     {activePage === 'doubts_chat' && <MessageSquare className="w-10 h-10 text-white" />}
                     {activePage === 'live_class' && <Video className="w-10 h-10 text-white" />}
@@ -2442,7 +2592,7 @@ export function TeachersSection({
                   <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight text-3d-mega animate-3d-float">
                     {currentMeta.directiveName}
                   </h2>
-                  <p className="text-xs sm:text-sm text-amber-200/90 font-medium max-w-2xl mx-auto">
+                  <p className={`text-xs sm:text-sm ${currentMeta.accentText || 'text-amber-200/90'} font-medium max-w-2xl mx-auto`}>
                     {currentMeta.tagline}
                   </p>
 
@@ -2454,7 +2604,7 @@ export function TeachersSection({
                           setIsFullScreenInteractive(true);
                           playSoundChime('sent');
                         }}
-                        className="inline-flex items-center justify-center gap-3 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 via-purple-600 to-teal-400 hover:from-rose-400 hover:to-teal-300 text-slate-950 font-black text-sm shadow-xl shadow-rose-600/30 hover:scale-105 active:scale-95 transition cursor-pointer border border-teal-200/60"
+                        className="inline-flex items-center justify-center gap-3 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 via-purple-600 to-teal-400 hover:from-rose-400 hover:to-teal-300 text-slate-950 font-black text-sm shadow-xl shadow-rose-600/30 hover:scale-105 active:scale-95 transition cursor-pointer border border-teal-200/60 min-h-[44px]"
                       >
                         <Video className="w-4 h-4 text-slate-950" />
                         <span>Launch WebRTC Live Classroom Portal</span>
@@ -2465,7 +2615,7 @@ export function TeachersSection({
                 </div>
 
                 {/* Overview description */}
-                <div className="max-w-3xl mx-auto text-center text-xs sm:text-sm text-stone-200 leading-relaxed bg-stone-900/90 rounded-2xl px-6 py-4 border border-amber-500/30 shadow-lg">
+                <div className={`max-w-3xl mx-auto text-center text-xs sm:text-sm text-stone-200 leading-relaxed bg-stone-900/95 rounded-2xl px-6 py-4 border ${currentMeta.borderColor || 'border-amber-500/30'} shadow-lg`}>
                   {currentMeta.overview}
                 </div>
 
@@ -2476,11 +2626,11 @@ export function TeachersSection({
                       key={idx}
                       className={`p-4 sm:p-5 rounded-2xl ${currentMeta.pillarBg || 'bg-stone-900/80'} border transition space-y-2 shadow-xl card-real-3d`}
                     >
-                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-stone-950 flex items-center justify-center font-black text-xs font-mono shadow-md animate-float-icon">
+                      <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${currentMeta.iconGradient || 'from-amber-400 to-orange-500'} text-white flex items-center justify-center font-black text-xs font-mono shadow-md animate-float-icon`}>
                         0{idx + 1}
                       </div>
-                      <h4 className="text-xs sm:text-sm font-black text-amber-300 text-3d-gold">{pillar.title}</h4>
-                      <p className="text-[11px] sm:text-xs text-slate-300/80 leading-relaxed">{pillar.desc}</p>
+                      <h4 className={`text-xs sm:text-sm font-black ${currentMeta.accentText || 'text-amber-300'} text-3d-gold`}>{pillar.title}</h4>
+                      <p className="text-[11px] sm:text-xs text-stone-300/80 leading-relaxed">{pillar.desc}</p>
                     </div>
                   ))}
                 </div>
@@ -2488,15 +2638,15 @@ export function TeachersSection({
                 {/* Stat pills */}
                 <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
                   {currentMeta.statPills.map((pill, i) => (
-                    <div key={i} className="px-3.5 py-1.5 rounded-xl bg-stone-900 border border-amber-500/30 text-center shadow-md">
+                    <div key={i} className={`px-3.5 py-1.5 rounded-xl bg-stone-900 border ${currentMeta.borderColor || 'border-amber-500/30'} text-center shadow-md`}>
                       <div className="text-[9px] text-stone-400 font-mono uppercase tracking-wider">{pill.label}</div>
-                      <div className="text-xs sm:text-sm font-black text-amber-300">{pill.val}</div>
+                      <div className={`text-xs sm:text-sm font-black ${currentMeta.accentText || 'text-amber-300'}`}>{pill.val}</div>
                     </div>
                   ))}
                 </div>
 
                 {/* ================================================ */}
-                {/* CENTRAL LAUNCH BUTTON - Medium Button in center */}
+                {/* CENTRAL LAUNCH BUTTON - Big Touch-Friendly Button */}
                 {/* ================================================ */}
                 <div className="flex flex-col items-center gap-3 py-2">
                   <button
@@ -2509,21 +2659,21 @@ export function TeachersSection({
                     <span>{currentMeta.centralButtonText}</span>
                     <ArrowRight className="w-5 h-5" />
                   </button>
-                  <p className="text-[11px] text-amber-300/80 font-mono text-center">
+                  <p className={`text-[11px] ${currentMeta.accentText || 'text-amber-300/80'} font-mono text-center`}>
                     {currentMeta.centralButtonSub}
                   </p>
                 </div>
 
                 {/* Instructions Box */}
-                <div className="max-w-2xl mx-auto rounded-2xl bg-stone-900/90 border border-amber-500/30 p-4 sm:p-5 space-y-2 rounded-2xl shadow-xl">
-                  <h4 className="text-[11px] font-black uppercase text-amber-400 font-mono flex items-center gap-2">
+                <div className={`max-w-2xl mx-auto rounded-2xl bg-stone-900/95 border ${currentMeta.borderColor || 'border-amber-500/30'} p-4 sm:p-5 space-y-2 shadow-xl`}>
+                  <h4 className={`text-[11px] font-black uppercase ${currentMeta.accentText || 'text-amber-400'} font-mono flex items-center gap-2`}>
                     <CheckCircle className="w-3.5 h-3.5" />
                     <span>How to Use This Academic Section:</span>
                   </h4>
-                  <ul className="space-y-1 text-[11px] sm:text-xs text-slate-300">
+                  <ul className="space-y-1 text-[11px] sm:text-xs text-stone-300">
                     {currentMeta.instructions.map((step, i) => (
                       <li key={i} className="flex items-start gap-2">
-                        <span className="text-amber-400 font-bold shrink-0">{i + 1}.</span>
+                        <span className={`${currentMeta.accentText || 'text-amber-400'} font-bold shrink-0`}>{i + 1}.</span>
                         <span>{step.replace(/^Step \d+:\s*/, '')}</span>
                       </li>
                     ))}
@@ -2531,19 +2681,18 @@ export function TeachersSection({
                 </div>
 
                 {/* Directive Seal & Scope */}
-                <div className="pt-4 border-t border-purple-800/40 flex items-center justify-between flex-wrap gap-3 text-[11px] font-mono text-purple-300/80">
+                <div className="pt-4 border-t border-stone-800 flex items-center justify-between flex-wrap gap-3 text-[11px] font-mono text-stone-400">
                   <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-teal-400" />
+                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
                     <span>{currentMeta.sealTitle}</span>
                   </div>
                   <div>
-                    Directive Code: <span className="text-teal-300 font-bold">{currentMeta.code}</span>
+                    Directive Code: <span className="text-amber-300 font-bold">{currentMeta.code}</span>
                   </div>
                 </div>
 
               </div>
 
-              {/* ================================================== */}
               {/* SLIDE NAVIGATION BAR - BOTTOM                      */}
               {/* ================================================== */}
               <div className="w-full bg-stone-950 border-t border-amber-500/30 px-6 py-4 flex items-center justify-between flex-wrap gap-4">
@@ -2648,46 +2797,38 @@ export function TeachersSection({
 
             {/* --------------------------------------------------------------------- */}
             {/* PAGE 1: DAILY HOMEWORK & CLASSWORK MANAGEMENT                         */}
-            {/* --------------------------------------------------------------------- */}
             {activePage === 'homework' && (
               <div className="w-full space-y-6 animate-fadeIn">
                 
-                {/* Gen Z Hero Graphical Banner */}
-                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-950 via-slate-950 to-teal-950 border-2 border-teal-500/50 p-6 md:p-10 shadow-2xl">
-                  <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-teal-500/15 pointer-events-none" />
-                  <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-purple-500/20 pointer-events-none" />
-
+                {/* Amber/Emerald Mobile-First Hero Banner */}
+                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-950 via-stone-900 to-emerald-950 border-2 border-amber-500/50 p-5 sm:p-8 md:p-10 shadow-2xl card-real-3d animate-hw-card-pop">
                   <div className="relative z-10 max-w-4xl space-y-3">
-                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-950/80 border border-teal-500/50 text-xs font-mono font-bold text-teal-300">
-                      <ClipboardList className="w-3.5 h-3.5 text-teal-300" />
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/50 text-xs font-mono font-bold text-amber-300 animate-hw-badge-pulse">
+                      <ClipboardList className="w-3.5 h-3.5 text-amber-300" />
                       <span>PAGE 1 - DAILY HOMEWORK &amp; SYLLABUS DIRECTIVE</span>
                     </div>
 
-                    <h2 className="text-2xl md:text-4xl font-black text-white tracking-tight leading-tight">
-                      Daily Homework Hub <span className="bg-gradient-to-r from-teal-400 via-cyan-300 to-fuchsia-300 bg-clip-text text-transparent">Class &amp; Section Manager</span>
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight leading-tight text-3d-gold">
+                      Daily Homework Hub <span className="bg-gradient-to-r from-amber-400 via-yellow-300 to-emerald-400 bg-clip-text text-transparent">Class &amp; Section Manager</span>
                     </h2>
 
-                    <p className="text-xs md:text-sm text-purple-200/80 leading-relaxed max-w-2xl">
-                      Select your Class (LKG to Class 8) and Section (A to E) to review daily curriculum assignments, textbook exercise citations, and submission deadlines.
+                    <p className="text-xs sm:text-sm text-stone-300 leading-relaxed max-w-2xl">
+                      Select your Class (Nursery to Class 8) and Section (A to E) to review daily curriculum assignments, textbook citations, audio voice instructions, and submission deadlines.
                     </p>
 
                     {/* Permission-Gated Action Button */}
                     <div className="pt-2 flex items-center gap-3 flex-wrap">
-                      {isDimension5 ? (
+                      {(isDimension5 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai') ? (
                         <button
-                          onClick={() => {
-                            setNewHwClass(selectedHwClass);
-                            setNewHwSection(selectedHwSection);
-                            setShowAssignHwModal(true);
-                          }}
-                          className="px-6 py-3 rounded-2xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-teal-400 hover:from-purple-500 hover:to-teal-300 text-slate-950 font-black text-xs md:text-sm flex items-center gap-2 shadow-xl shadow-purple-600/30 transition transform hover:scale-105 active:scale-95 cursor-pointer"
+                          onClick={handleOpenCreateHomework}
+                          className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-400 to-emerald-400 hover:from-amber-300 hover:to-emerald-300 text-stone-950 font-black text-xs sm:text-sm flex items-center gap-2 shadow-xl shadow-amber-500/30 transition transform hover:scale-105 active:scale-95 cursor-pointer min-h-[44px] animate-hw-publish-glow"
                         >
-                          <Plus className="w-4 h-4 text-slate-950" />
-                          <span>Assign New Homework (Faculty Desk)</span>
+                          <Plus className="w-4 h-4 text-stone-950" />
+                          <span>Publish Daily Homework (Faculty Desk)</span>
                         </button>
                       ) : (
-                        <div className="px-5 py-2.5 rounded-xl bg-slate-900/90 border border-teal-500/40 text-teal-300 font-mono text-xs flex items-center gap-2">
-                          <CheckCircle2 className="w-4 h-4 text-teal-400" />
+                        <div className="px-5 py-2.5 rounded-xl bg-stone-900 border border-amber-500/40 text-amber-300 font-mono text-xs flex items-center gap-2 min-h-[44px]">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                           <span>Student Mode: Daily Homework Viewer</span>
                         </div>
                       )}
@@ -2695,64 +2836,73 @@ export function TeachersSection({
                   </div>
                 </div>
 
-                {/* Class & Section Selector Controls */}
+                {/* Class & Section Selector Controls - Mobile Optimized */}
                 <div className="w-full space-y-4">
-                  <div className="p-4 rounded-2xl bg-slate-900 border border-purple-800 space-y-3">
-                    <div className="flex items-center justify-between flex-wrap gap-2">
-                      <label className="text-xs font-black uppercase text-teal-300 font-mono tracking-wider">
-                        Step 1: Select Academic Class (Nursery, LKG, UKG, 1 to 8)
-                      </label>
-                      <span className="text-[11px] text-purple-300 font-mono">
-                        Active Class: <strong className="text-teal-300">Class {selectedHwClass}</strong>
-                      </span>
-                    </div>
+                  <div className="p-4 sm:p-5 rounded-3xl bg-stone-900 border border-amber-500/30 space-y-4 shadow-xl card-real-3d">
+                    
+                    {/* Step 1: Select Academic Class */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <label className="text-xs font-black uppercase text-amber-400 font-mono tracking-wider flex items-center gap-2">
+                          <GraduationCap className="w-4 h-4 text-amber-400" />
+                          <span>Step 1: Select Academic Class (Nursery to 8)</span>
+                        </label>
+                        <span className="text-[11px] text-stone-400 font-mono">
+                          Active Class: <strong className="text-amber-300">Class {selectedHwClass}</strong>
+                        </span>
+                      </div>
 
-                    <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-11 gap-1.5 sm:gap-2">
-                      {SCHOOL_CLASSES_CONFIG.map((c) => (
-                        <button
-                          key={c.id}
-                          onClick={() => {
-                            setSelectedHwClass(c.id);
-                            playSoundChime('sent');
-                          }}
-                          className={`py-2.5 rounded-xl text-xs font-black transition cursor-pointer border ${
-                            selectedHwClass === c.id
-                              ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 border-teal-200 shadow-md scale-105'
-                              : 'bg-slate-950 text-purple-200 border-purple-800/80 hover:border-purple-600'
-                          }`}
-                        >
-                          {c.name}
-                        </button>
-                      ))}
+                      {/* Touch scrollable / responsive grid for mobile */}
+                      <div className="flex overflow-x-auto no-scrollbar sm:grid sm:grid-cols-6 lg:grid-cols-11 gap-2 pb-1">
+                        {SCHOOL_CLASSES_CONFIG.map((c) => (
+                          <button
+                            key={c.id}
+                            onClick={() => {
+                              setSelectedHwClass(c.id);
+                              playSoundChime('sent');
+                            }}
+                            className={`min-h-[44px] min-w-[76px] px-3 py-2.5 rounded-2xl text-xs font-black transition cursor-pointer border shrink-0 text-center flex items-center justify-center ${
+                              selectedHwClass === c.id
+                                ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-stone-950 border-amber-200 shadow-lg scale-105 animate-hw-badge-pulse'
+                                : 'bg-stone-950 text-stone-300 border-stone-800 hover:border-amber-500/60'
+                            }`}
+                          >
+                            {c.name}
+                          </button>
+                        ))}
+                      </div>
                     </div>
 
                     {/* Step 2: Select Section */}
-                    <div className="pt-2 flex items-center justify-between flex-wrap gap-2 border-t border-purple-800/60">
-                      <label className="text-xs font-black uppercase text-teal-300 font-mono tracking-wider">
-                        Step 2: Select Section (A, B, C, D, E)
-                      </label>
-                      <span className="text-[11px] text-purple-300 font-mono">
-                        Active Cohort: <strong className="text-cyan-300">Class {selectedHwClass} - Section {selectedHwSection}</strong>
-                      </span>
-                    </div>
+                    <div className="pt-3 border-t border-stone-800 space-y-2">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <label className="text-xs font-black uppercase text-emerald-400 font-mono tracking-wider flex items-center gap-2">
+                          <Layers className="w-4 h-4 text-emerald-400" />
+                          <span>Step 2: Select Section (A, B, C, D, E)</span>
+                        </label>
+                        <span className="text-[11px] text-stone-400 font-mono">
+                          Active Cohort: <strong className="text-emerald-300">Class {selectedHwClass} - Section {selectedHwSection}</strong>
+                        </span>
+                      </div>
 
-                    <div className="grid grid-cols-5 gap-2 max-w-md">
-                      {['A', 'B', 'C', 'D', 'E'].map((sec) => (
-                        <button
-                          key={sec}
-                          onClick={() => {
-                            setSelectedHwSection(sec);
-                            playSoundChime('sent');
-                          }}
-                          className={`py-2 rounded-xl text-xs font-black transition cursor-pointer border ${
-                            selectedHwSection === sec
-                              ? 'bg-gradient-to-r from-purple-500 to-fuchsia-600 text-white border-purple-300 shadow-md scale-105'
-                              : 'bg-slate-950 text-purple-300 border-purple-800/80 hover:border-purple-600'
-                          }`}
-                        >
-                          Section {sec}
-                        </button>
-                      ))}
+                      <div className="grid grid-cols-5 gap-2 max-w-md">
+                        {['A', 'B', 'C', 'D', 'E'].map((sec) => (
+                          <button
+                            key={sec}
+                            onClick={() => {
+                              setSelectedHwSection(sec);
+                              playSoundChime('sent');
+                            }}
+                            className={`min-h-[44px] py-2.5 rounded-2xl text-xs font-black transition cursor-pointer border text-center flex items-center justify-center ${
+                              selectedHwSection === sec
+                                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-emerald-300 shadow-lg scale-105 animate-hw-badge-pulse'
+                                : 'bg-stone-950 text-stone-300 border-stone-800 hover:border-emerald-600'
+                            }`}
+                          >
+                            Section {sec}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
@@ -2764,24 +2914,20 @@ export function TeachersSection({
 
                     if (filtered.length === 0) {
                       return (
-                        <div className="p-10 text-center rounded-3xl bg-slate-900/50 border border-purple-900/60 space-y-3">
-                          <ClipboardList className="w-12 h-12 text-purple-400 mx-auto opacity-40" />
-                          <h4 className="text-base font-bold text-white">
+                        <div className="p-8 sm:p-12 text-center rounded-3xl bg-stone-900 border border-stone-800 space-y-4 shadow-xl">
+                          <ClipboardList className="w-14 h-14 text-amber-400/40 mx-auto" />
+                          <h4 className="text-base sm:text-lg font-black text-white">
                             No Homework Assigned Yet for Class {selectedHwClass} - Section {selectedHwSection}
                           </h4>
-                          <p className="text-xs text-purple-300 max-w-md mx-auto">
-                            Teachers of this section have not published an assignment yet today. Check back soon or select another section!
+                          <p className="text-xs sm:text-sm text-stone-400 max-w-md mx-auto leading-relaxed">
+                            Faculty of this section have not published an assignment yet today. Check back soon or select another section!
                           </p>
-                          {isDimension5 && (
+                          {(isDimension5 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai') && (
                             <button
-                              onClick={() => {
-                                setNewHwClass(selectedHwClass);
-                                setNewHwSection(selectedHwSection);
-                                setShowAssignHwModal(true);
-                              }}
-                              className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs cursor-pointer shadow-md"
+                              onClick={handleOpenCreateHomework}
+                              className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 to-emerald-400 text-stone-950 font-black text-xs cursor-pointer shadow-lg hover:scale-105 active:scale-95 transition min-h-[44px] animate-hw-publish-glow"
                             >
-                              Assign Homework to Class {selectedHwClass}-{selectedHwSection} Now
+                              Assign First Homework to Class {selectedHwClass}-{selectedHwSection} Now
                             </button>
                           )}
                         </div>
@@ -2793,27 +2939,129 @@ export function TeachersSection({
                         {filtered.map((hw) => (
                           <div
                             key={hw.id}
-                            className="p-5 rounded-2xl bg-slate-900/90 border border-purple-800 hover:border-teal-400 transition shadow-lg space-y-3"
+                            className="p-5 sm:p-6 rounded-3xl bg-stone-900 border-2 border-amber-500/40 hover:border-emerald-400 transition shadow-xl space-y-4 card-real-3d animate-hw-card-pop"
                           >
-                            <div className="flex items-center justify-between">
-                              <span className="px-2.5 py-1 rounded-lg bg-teal-500/20 text-teal-300 font-bold text-xs border border-teal-500/30">
+                            {/* Card Top: Subject & Due Date */}
+                            <div className="flex items-center justify-between flex-wrap gap-2">
+                              <span className="px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 font-mono font-black text-xs border border-amber-400/40 uppercase animate-hw-pill-float">
                                 {hw.subject}
                               </span>
-                              <span className="text-[11px] font-mono text-purple-300">
-                                Due: {hw.dueDate}
+                              <span className="px-3 py-1 rounded-full bg-red-950/80 text-red-300 font-mono text-xs border border-red-500/40 flex items-center gap-1.5 animate-hw-deadline-beacon">
+                                <Clock className="w-3 h-3 text-red-400" />
+                                <span>Due: {hw.dueDate}</span>
                               </span>
                             </div>
 
-                            <div className="text-[11px] text-purple-300 font-mono">
-                              {hw.chapter}
+                            {/* Chapter citation */}
+                            {hw.chapter && (
+                              <div className="text-xs text-amber-300/90 font-mono flex items-center gap-1.5 bg-stone-950/60 px-3 py-1.5 rounded-xl border border-stone-800">
+                                <BookOpen className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                                <span className="truncate">{hw.chapter}</span>
+                              </div>
+                            )}
+
+                            {/* Homework Title */}
+                            <h4 className="text-base sm:text-lg font-black text-white leading-snug">{hw.title}</h4>
+
+                            {/* Detailed Description */}
+                            <p className="text-xs sm:text-sm text-stone-200 leading-relaxed whitespace-pre-wrap bg-stone-950/70 p-3.5 rounded-2xl border border-stone-800">
+                              {hw.desc}
+                            </p>
+
+                            {/* Attached Media List (Images, Audio, Video) */}
+                            {hw.mediaList && hw.mediaList.length > 0 && (
+                              <div className="space-y-2 pt-1">
+                                <div className="text-[11px] font-mono text-stone-400 font-bold uppercase tracking-wider">
+                                  Attached Lesson Media ({hw.mediaList.length}):
+                                </div>
+                                <div className="space-y-2">
+                                  {hw.mediaList.map((m, idx) => (
+                                    <div key={idx} className="rounded-2xl overflow-hidden bg-stone-950 p-2 border border-stone-800">
+                                      {m.type === 'image' && (
+                                        <div className="space-y-1">
+                                          <img
+                                            src={m.url}
+                                            alt={m.name || 'Homework Attachment'}
+                                            onClick={() => setPreviewMediaModal(m.url)}
+                                            className="w-full max-h-48 object-cover rounded-xl cursor-zoom-in hover:opacity-90 transition"
+                                          />
+                                          <div className="text-[10px] text-stone-400 font-mono px-1 flex items-center justify-between">
+                                            <span>📷 {m.name || 'Image Attachment'}</span>
+                                            <span className="text-amber-400">Tap to Zoom</span>
+                                          </div>
+                                        </div>
+                                      )}
+                                      {m.type === 'audio' && (
+                                        <div className="space-y-1 p-1">
+                                          <div className="text-[10px] text-amber-300 font-mono flex items-center gap-1">
+                                            <Music className="w-3 h-3 text-amber-400" />
+                                            <span>{m.name || 'Audio Explanation'}</span>
+                                          </div>
+                                          <audio controls src={m.url} className="w-full h-9 rounded-lg" />
+                                        </div>
+                                      )}
+                                      {m.type === 'video' && (
+                                        <div className="space-y-1">
+                                          <div className="text-[10px] text-teal-300 font-mono flex items-center gap-1 px-1">
+                                            <Film className="w-3 h-3 text-teal-400" />
+                                            <span>{m.name || 'Video Lecture Reference'}</span>
+                                          </div>
+                                          <video controls src={m.url} className="w-full max-h-56 rounded-xl bg-black" />
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Voice Reader + Action Controls */}
+                            <div className="pt-2 flex items-center justify-between flex-wrap gap-2 border-t border-stone-800">
+                              <button
+                                onClick={() => handleSpeakHomework(hw)}
+                                className={`px-4 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 cursor-pointer transition min-h-[44px] ${
+                                  speakingHwId === hw.id
+                                    ? 'bg-amber-400 text-stone-950 animate-hw-speaker-wave shadow-lg shadow-amber-400/40'
+                                    : 'bg-stone-800 hover:bg-stone-700 text-amber-300 border border-amber-500/30'
+                                }`}
+                              >
+                                {speakingHwId === hw.id ? (
+                                  <>
+                                    <VolumeX className="w-4 h-4 text-stone-950" />
+                                    <span>Stop Voice</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Volume2 className="w-4 h-4 text-amber-400" />
+                                    <span>Listen Homework Aloud</span>
+                                  </>
+                                )}
+                              </button>
+
+                              {(isDimension5 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai') && (
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    onClick={() => handleOpenEditHomework(hw)}
+                                    className="px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-cyan-300 border border-cyan-500/40 text-xs font-bold flex items-center gap-1.5 cursor-pointer min-h-[44px] animate-hw-edit-twinkle"
+                                  >
+                                    <Edit3 className="w-3.5 h-3.5 text-cyan-400" />
+                                    <span>Edit</span>
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteHomework(hw.id)}
+                                    className="px-3.5 py-2 rounded-xl bg-red-950/60 hover:bg-red-900/80 text-red-300 border border-red-500/40 text-xs font-bold flex items-center gap-1.5 cursor-pointer min-h-[44px] animate-hw-delete-shake"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5 text-red-400" />
+                                    <span>Delete</span>
+                                  </button>
+                                </div>
+                              )}
                             </div>
 
-                            <h4 className="text-sm font-black text-white">{hw.title}</h4>
-                            <p className="text-xs text-purple-200/90 leading-relaxed whitespace-pre-wrap">{hw.desc}</p>
-
-                            <div className="pt-3 border-t border-purple-900 flex items-center justify-between text-xs">
-                              <span className="text-purple-300">Teacher: <strong className="text-white">{hw.teacher}</strong></span>
-                              <span className="text-[10px] text-teal-300 font-mono">{hw.createdAt}</span>
+                            {/* Card Footer: Teacher Name & Timestamp */}
+                            <div className="pt-1 flex items-center justify-between text-xs text-stone-400 border-t border-stone-800/60">
+                              <span>Teacher: <strong className="text-white">{hw.teacher}</strong></span>
+                              <span className="text-[11px] text-amber-400 font-mono">{hw.createdAt}</span>
                             </div>
                           </div>
                         ))}
@@ -2822,28 +3070,37 @@ export function TeachersSection({
                   })()}
                 </div>
 
-                {/* Teacher: Assign New Homework Modal (Faculty Only) */}
-                {showAssignHwModal && isDimension5 && (
-                  <div className="fixed inset-0 z-50 bg-slate-950/90 p-4 flex items-center justify-center animate-fadeIn">
-                    <div className="w-full max-w-2xl bg-purple-950/95 border-2 border-teal-400/80 rounded-3xl p-6 shadow-2xl space-y-4">
-                      <div className="flex items-center justify-between pb-3 border-b border-purple-800">
+                {/* Teacher: Assign New / Edit Homework Modal (Faculty Only) */}
+                {showAssignHwModal && (isDimension5 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai') && (
+                  <div className="fixed inset-0 z-50 bg-stone-950/90 p-3 sm:p-4 flex items-center justify-center animate-fadeIn overflow-y-auto">
+                    <div className="w-full max-w-2xl bg-stone-900 border-2 border-amber-400/80 rounded-3xl p-5 sm:p-7 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto card-real-3d animate-hw-modal-spring">
+                      <div className="flex items-center justify-between pb-3 border-b border-stone-800">
                         <h3 className="text-base font-black text-white flex items-center gap-2">
-                          <Plus className="w-4 h-4 text-teal-300" />
-                          <span>Publish Daily Homework to Students</span>
+                          <Plus className="w-4 h-4 text-amber-400" />
+                          <span>{editingHwId ? 'Edit Homework Assignment' : 'Publish Daily Homework to Students'}</span>
                         </h3>
-                        <button onClick={() => setShowAssignHwModal(false)} className="text-purple-300 hover:text-white cursor-pointer">
+                        <button onClick={() => setShowAssignHwModal(false)} className="text-stone-400 hover:text-white cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center">
                           <X className="w-5 h-5" />
                         </button>
                       </div>
 
-                      <form onSubmit={handleCreateHomework} className="space-y-3 text-xs">
+                      <form onSubmit={handleCreateHomework} className="space-y-3.5 text-xs">
+                        
+                        {/* Target Class & Section */}
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <label className="block text-[11px] font-bold text-teal-300 uppercase mb-1">Target Class</label>
+                            <label className="block text-[11px] font-bold text-amber-400 uppercase mb-1">Target Class</label>
                             <select
                               value={newHwClass}
-                              onChange={(e) => setNewHwClass(e.target.value)}
-                              className="w-full bg-slate-900 border border-purple-600 rounded-xl p-2.5 text-white"
+                              onChange={(e) => {
+                                const nextClass = e.target.value;
+                                setNewHwClass(nextClass);
+                                const available = getHomeworkSubjectsForClass(nextClass);
+                                if (!available.includes(newHwSubject)) {
+                                  setNewHwSubject(available[0]);
+                                }
+                              }}
+                              className="w-full bg-stone-950 border border-amber-500/50 rounded-xl p-3 text-white text-xs min-h-[44px]"
                             >
                               {SCHOOL_CLASSES_CONFIG.map(c => (
                                 <option key={c.id} value={c.id}>{c.name}</option>
@@ -2852,11 +3109,11 @@ export function TeachersSection({
                           </div>
 
                           <div>
-                            <label className="block text-[11px] font-bold text-teal-300 uppercase mb-1">Section</label>
+                            <label className="block text-[11px] font-bold text-amber-400 uppercase mb-1">Section</label>
                             <select
                               value={newHwSection}
                               onChange={(e) => setNewHwSection(e.target.value)}
-                              className="w-full bg-slate-900 border border-purple-600 rounded-xl p-2.5 text-white"
+                              className="w-full bg-stone-950 border border-amber-500/50 rounded-xl p-3 text-white text-xs min-h-[44px]"
                             >
                               {['A', 'B', 'C', 'D', 'E'].map(s => (
                                 <option key={s} value={s}>Section {s}</option>
@@ -2865,98 +3122,199 @@ export function TeachersSection({
                           </div>
                         </div>
 
+                        {/* Subject & Due Date */}
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <label className="block text-[11px] font-bold text-teal-300 uppercase mb-1">Subject</label>
+                            <label className="block text-[11px] font-bold text-amber-400 uppercase mb-1">Subject</label>
                             <select
                               value={newHwSubject}
                               onChange={(e) => setNewHwSubject(e.target.value)}
-                              className="w-full bg-slate-900 border border-purple-600 rounded-xl p-2.5 text-white"
+                              className="w-full bg-stone-950 border border-amber-500/50 rounded-xl p-3 text-white text-xs min-h-[44px]"
                             >
-                              {['Science & Technology', 'Mathematics', 'Social Science', 'English', 'Hindi', 'Sanskrit', 'Computer Science'].map(sub => (
+                              {getHomeworkSubjectsForClass(newHwClass).map(sub => (
                                 <option key={sub} value={sub}>{sub}</option>
                               ))}
                             </select>
                           </div>
 
                           <div>
-                            <label className="block text-[11px] font-bold text-teal-300 uppercase mb-1">Due Date</label>
+                            <label className="block text-[11px] font-bold text-amber-400 uppercase mb-1">Due Date</label>
                             <input
                               type="text"
                               value={newHwDueDate}
                               onChange={(e) => setNewHwDueDate(e.target.value)}
                               placeholder="e.g. Tomorrow, 08:30 AM"
-                              className="w-full bg-slate-900 border border-purple-600 rounded-xl p-2.5 text-white"
+                              className="w-full bg-stone-950 border border-amber-500/50 rounded-xl p-3 text-white text-xs min-h-[44px]"
                               required
                             />
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          <div>
-                            <label className="block text-[11px] font-bold text-teal-300 uppercase mb-1">Assigning Faculty Member</label>
-                            <select
-                              value={newHwTeacher}
-                              onChange={(e) => setNewHwTeacher(e.target.value)}
-                              className="w-full bg-slate-900 border border-purple-600 rounded-xl p-2.5 text-white"
-                            >
-                              {teachersList.map(t => (
-                                <option key={t.id} value={t.name}>
-                                  {t.name} ({t.subject}) {t.isRegisteredFaculty ? '* Verified' : ''}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
+                        {/* Optional Assign Faculty Member Toggle */}
+                        <div className="space-y-2">
+                          <button
+                            type="button"
+                            onClick={() => setShowFacultyAssignField(prev => !prev)}
+                            className="text-xs text-amber-400 hover:text-amber-300 font-mono font-bold flex items-center gap-1.5 py-1 cursor-pointer min-h-[36px]"
+                          >
+                            <span>{showFacultyAssignField ? '▲ Hide Assign Faculty Member' : '▼ Assign Faculty Member (Optional)'}</span>
+                          </button>
 
-                          <div>
-                            <label className="block text-[11px] font-bold text-teal-300 uppercase mb-1">Chapter / Unit</label>
-                            <input
-                              type="text"
-                              value={newHwChapter}
-                              onChange={(e) => setNewHwChapter(e.target.value)}
-                              placeholder="e.g. Chapter 11: The Human Eye (DAV Textbook)"
-                              className="w-full bg-slate-900 border border-purple-600 rounded-xl p-2.5 text-white"
-                            />
-                          </div>
+                          {showFacultyAssignField && (
+                            <div className="p-3 rounded-2xl bg-stone-950 border border-stone-800 space-y-2 animate-fadeIn">
+                              <label className="block text-[11px] font-bold text-amber-300 uppercase">
+                                Assigning Faculty Member Name
+                              </label>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <select
+                                  value={newHwTeacher}
+                                  onChange={(e) => setNewHwTeacher(e.target.value)}
+                                  className="w-full bg-stone-900 border border-stone-700 rounded-xl p-2.5 text-white text-xs min-h-[44px]"
+                                >
+                                  <option value={user?.name || 'Verified DAV Faculty'}>
+                                    {user?.name ? `${user.name} (Me)` : 'Verified DAV Faculty'}
+                                  </option>
+                                  {teachersList.map(t => (
+                                    <option key={t.id} value={t.name}>
+                                      {t.name} ({t.subject})
+                                    </option>
+                                  ))}
+                                </select>
+                                <input
+                                  type="text"
+                                  value={newHwTeacher}
+                                  onChange={(e) => setNewHwTeacher(e.target.value)}
+                                  placeholder="Or enter substitute faculty name..."
+                                  className="w-full bg-stone-900 border border-stone-700 rounded-xl p-2.5 text-white text-xs min-h-[44px]"
+                                />
+                              </div>
+                            </div>
+                          )}
                         </div>
 
+                        {/* Chapter / Unit */}
                         <div>
-                          <label className="block text-[11px] font-bold text-teal-300 uppercase mb-1">Assignment Title</label>
+                          <label className="block text-[11px] font-bold text-amber-400 uppercase mb-1">Chapter / Unit Reference</label>
+                          <input
+                            type="text"
+                            value={newHwChapter}
+                            onChange={(e) => setNewHwChapter(e.target.value)}
+                            placeholder="e.g. Chapter 11: The Human Eye and Colourful World (Page 142)"
+                            className="w-full bg-stone-950 border border-amber-500/50 rounded-xl p-3 text-white text-xs min-h-[44px]"
+                          />
+                        </div>
+
+                        {/* Assignment Title */}
+                        <div>
+                          <label className="block text-[11px] font-bold text-amber-400 uppercase mb-1">Assignment Title</label>
                           <input
                             type="text"
                             value={newHwTitle}
                             onChange={(e) => setNewHwTitle(e.target.value)}
                             placeholder="e.g. Ray Diagram of Human Eye &amp; Myopia Numerical Questions"
-                            className="w-full bg-slate-900 border border-purple-600 rounded-xl p-2.5 text-white"
+                            className="w-full bg-stone-950 border border-amber-500/50 rounded-xl p-3 text-white text-xs min-h-[44px]"
                             required
                           />
                         </div>
 
-                        <div>
-                          <label className="block text-[11px] font-bold text-teal-300 uppercase mb-1">Detailed Instructions</label>
+                        {/* Detailed Instructions + Media Upload */}
+                        <div className="space-y-2">
+                          <label className="block text-[11px] font-bold text-amber-400 uppercase">Detailed Instructions &amp; Media Attachments</label>
                           <textarea
                             rows={3}
                             value={newHwDesc}
                             onChange={(e) => setNewHwDesc(e.target.value)}
-                            placeholder="Mention notebook section, textbook page number references, and submission rules..."
-                            className="w-full bg-slate-900 border border-purple-600 rounded-xl p-2.5 text-white leading-relaxed"
+                            placeholder="Mention notebook section, textbook page citations, formulas, and submission criteria..."
+                            className="w-full bg-stone-950 border border-amber-500/50 rounded-xl p-3 text-white leading-relaxed text-xs"
                             required
                           />
+
+                          {/* Media Upload Buttons: Image, Video, Audio */}
+                          <div className="flex items-center gap-2 flex-wrap pt-1">
+                            {/* Image Input */}
+                            <label className="px-3 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-amber-300 font-mono text-xs font-bold border border-amber-500/30 flex items-center gap-1.5 cursor-pointer min-h-[44px]">
+                              <Camera className="w-4 h-4 text-amber-400" />
+                              <span>Attach Image</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => {
+                                  if (e.target.files?.[0]) handleAddHomeworkMedia('image', e.target.files[0]);
+                                }}
+                              />
+                            </label>
+
+                            {/* Video Input */}
+                            <label className="px-3 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-teal-300 font-mono text-xs font-bold border border-teal-500/30 flex items-center gap-1.5 cursor-pointer min-h-[44px]">
+                              <Film className="w-4 h-4 text-teal-400" />
+                              <span>Attach Video</span>
+                              <input
+                                type="file"
+                                accept="video/*"
+                                className="hidden"
+                                onChange={(e) => {
+                                  if (e.target.files?.[0]) handleAddHomeworkMedia('video', e.target.files[0]);
+                                }}
+                              />
+                            </label>
+
+                            {/* Audio Input */}
+                            <label className="px-3 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-rose-300 font-mono text-xs font-bold border border-rose-500/30 flex items-center gap-1.5 cursor-pointer min-h-[44px]">
+                              <Music className="w-4 h-4 text-rose-400" />
+                              <span>Attach Audio</span>
+                              <input
+                                type="file"
+                                accept="audio/*"
+                                className="hidden"
+                                onChange={(e) => {
+                                  if (e.target.files?.[0]) handleAddHomeworkMedia('audio', e.target.files[0]);
+                                }}
+                              />
+                            </label>
+                          </div>
+
+                          {/* Previews of attached media in modal */}
+                          {newHwMediaList.length > 0 && (
+                            <div className="space-y-1.5 pt-2">
+                              <span className="text-[10px] text-stone-400 font-mono">Attached Media ({newHwMediaList.length}):</span>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                {newHwMediaList.map((m, idx) => (
+                                  <div key={idx} className="flex items-center justify-between p-2 rounded-xl bg-stone-950 border border-stone-800 text-xs animate-hw-media-preview">
+                                    <span className="truncate max-w-[180px] text-stone-300">
+                                      {m.type === 'image' && '📷 '}
+                                      {m.type === 'video' && '🎬 '}
+                                      {m.type === 'audio' && '🎙️ '}
+                                      {m.name || 'Attached file'}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleRemoveHomeworkMedia(idx)}
+                                      className="text-red-400 hover:text-red-300 p-1 cursor-pointer"
+                                    >
+                                      <X className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
 
-                        <div className="flex items-center justify-end gap-2 pt-2">
+                        {/* Modal Action Buttons */}
+                        <div className="flex items-center justify-end gap-2 pt-3 border-t border-stone-800">
                           <button
                             type="button"
                             onClick={() => setShowAssignHwModal(false)}
-                            className="px-4 py-2.5 rounded-xl bg-slate-800 text-purple-200 text-xs font-bold cursor-pointer"
+                            className="px-4 py-3 rounded-xl bg-stone-800 text-stone-300 text-xs font-bold cursor-pointer min-h-[44px]"
                           >
                             Cancel
                           </button>
                           <button
                             type="submit"
-                            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-teal-400 text-slate-950 font-black text-xs shadow-lg cursor-pointer"
+                            className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-400 to-emerald-400 text-stone-950 font-black text-xs shadow-lg cursor-pointer min-h-[44px] animate-hw-publish-glow"
                           >
-                            Publish to Students
+                            {editingHwId ? 'Save Changes' : 'Publish to Students'}
                           </button>
                         </div>
                       </form>
@@ -2964,10 +3322,27 @@ export function TeachersSection({
                   </div>
                 )}
 
+                {/* Full-size Image Zoom Modal */}
+                {previewMediaModal && (
+                  <div
+                    onClick={() => setPreviewMediaModal(null)}
+                    className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4 cursor-zoom-out animate-fadeIn"
+                  >
+                    <div className="relative max-w-4xl max-h-[90vh] overflow-hidden rounded-2xl border-2 border-amber-400 shadow-2xl">
+                      <img src={previewMediaModal} alt="Preview" className="w-full h-auto max-h-[85vh] object-contain" />
+                      <button
+                        onClick={() => setPreviewMediaModal(null)}
+                        className="absolute top-3 right-3 p-2 rounded-full bg-black/70 text-white hover:text-amber-300 cursor-pointer"
+                      >
+                        <X className="w-6 h-6" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+
               </div>
             )}
 
-{/* --------------------------------------------------------------------- */}
             {/* PAGE 2: FACULTY ACADEMIC DIRECT DESK (CHAT & CONSULTATION)            */}
             {/* --------------------------------------------------------------------- */}
             {activePage === 'doubts_chat' && (
@@ -5611,7 +5986,7 @@ export function TeachersSection({
                     </h2>
 
                     <p className="text-xs md:text-sm text-purple-200/80 leading-relaxed max-w-2xl">
-                      Standardized periodic assessments across 10 official DAV subjects, customizable maximum marks, section rankings, and overall class leaderboard. Dimension 5 teachers enter marks and enroll students.
+                      Standardized periodic assessments across 10 official DAV subjects, customizable maximum marks, section rankings, and overall class leaderboard. Verified faculty teachers enter marks and enroll students.
                     </p>
 
                     <div className="pt-2 flex items-center gap-3 flex-wrap">

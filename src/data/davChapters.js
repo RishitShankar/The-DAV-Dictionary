@@ -8775,7 +8775,7 @@ export const DAV_CHAPTERS = {
         "icon": "Zap",
         "emoji": "⚡",
         "badge": "Physics Laws 🚀",
-        "solutionGyanUrl": "https://solutiongyan.com/dav-solutions-for-class-7-social-science-chapter-6-life-on-the-earth/",
+        "solutionGyanUrl": "https://solutiongyan.com/dav-class-7-science-book-solutions-chapter-6/",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-science-chapter-6-question-answer/",
         "ncertUrl": "https://ncertbookspdf.com/chapter-6-motion-and-time-class-7-dav-science-solutions/",
         "onlineHindiUrl": ""
@@ -8871,7 +8871,7 @@ export const DAV_CHAPTERS = {
         "icon": "Layers",
         "emoji": "🧵",
         "badge": "Material Science 👕",
-        "solutionGyanUrl": "https://solutiongyan.com/dav-solutions-for-class-7-social-science-chapter-14-regional-powers/",
+        "solutionGyanUrl": "https://solutiongyan.com/dav-class-7-science-chapter-14-solutions/",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-science-chapter-14-question-answer/",
         "ncertUrl": "https://ncertbookspdf.com/dav-class-7-science-chapter-14-solutions/",
         "onlineHindiUrl": ""
@@ -8883,7 +8883,7 @@ export const DAV_CHAPTERS = {
         "icon": "TreePine",
         "emoji": "🌿",
         "badge": "Flora & Ecology 🌱",
-        "solutionGyanUrl": "https://solutiongyan.com/dav-class-7-social-science-chapter-15-the-mughal-empire-solutions/",
+        "solutionGyanUrl": "",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-science-chapter-15-question-answer/",
         "ncertUrl": "https://ncertbookspdf.com/chapter-15-forests-class-7-dav-science-solutions/",
         "onlineHindiUrl": ""
