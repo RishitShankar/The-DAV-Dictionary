@@ -404,49 +404,46 @@ export function QuestionsAnswersSection({
   const hasMultiHin = ['8', '7', '6', '5', '4', '3', '2', '1', 'UKG'].includes(clsStr);
 
   let availableSubjects = rawSubjects;
-  if (!subjectSearch.trim()) {
-    const specialGroups = [];
-    if (hasMultiEng) {
-      const engCount = ['8', '7', '6'].includes(clsStr) ? 3 : 2;
-      specialGroups.push({
-        id: `group_eng_${clsStr}`,
-        name: `English (${engCount} Official Textbooks)`,
-        tagline: engCount === 3 
-          ? 'English Literature, My English Reader & English Practice Book'
-          : 'My English Reader & English Practice Book',
-        icon: 'BookOpen',
-        badge: `${engCount} Books Available 📚`,
-        isGroup: true,
-        bookCount: engCount
-      });
-    }
-    if (hasMultiHin) {
-      const hinLabel = ['8', '7', '6'].includes(clsStr)
-        ? 'ज्ञान सागर (Gyan Sagar) एवं अभ्यास सागर (Abhyas Sagar)'
-        : (clsStr === 'UKG' ? 'बाल माधुरी (Bal Madhuri) एवं शब्द अभ्यास (Shabd Abhyas)' : 'भाषा माधुरी (Bhasha Madhuri) एवं भाषा अभ्यास (Bhasha Abhyas)');
-      specialGroups.push({
-        id: `group_hin_${clsStr}`,
-        name: 'Hindi - हिन्दी (2 Official Textbooks)',
-        tagline: hinLabel,
-        icon: 'Languages',
-        badge: '2 Books Available 📖',
-        isGroup: true,
-        bookCount: 2
-      });
-    }
-
-    const otherSubjects = rawSubjects.filter(s => {
-      const id = s.id.toLowerCase();
-      if (hasMultiEng && (id.includes('eng') || s.name.toLowerCase().includes('english'))) return false;
-      if (hasMultiHin && (id.includes('hin') || s.name.toLowerCase().includes('hindi') || s.name.includes('माधुरी') || s.name.includes('अभ्यास') || s.name.includes('सागर'))) return false;
-      return true;
+  const specialGroups = [];
+  if (hasMultiEng) {
+    const engCount = ['8', '7', '6'].includes(clsStr) ? 3 : 2;
+    specialGroups.push({
+      id: `group_eng_${clsStr}`,
+      name: `English (${engCount} Official Textbooks)`,
+      tagline: engCount === 3 
+        ? 'English Literature, My English Reader & English Practice Book'
+        : 'My English Reader & English Practice Book',
+      icon: 'BookOpen',
+      badge: `${engCount} Books Available 📚`,
+      isGroup: true,
+      bookCount: engCount
     });
-
-    availableSubjects = [...specialGroups, ...otherSubjects];
-  } else {
-    // When searching, allow searching both groups and all individual subjects
-    availableSubjects = rawSubjects;
   }
+  if (hasMultiHin) {
+    const hinLabel = ['8', '7', '6'].includes(clsStr)
+      ? 'ज्ञान सागर (Gyan Sagar) एवं अभ्यास सागर (Abhyas Sagar)'
+      : (clsStr === 'UKG' ? 'बाल माधुरी (Bal Madhuri) एवं शब्द अभ्यास (Shabd Abhyas)' : 'भाषा माधुरी (Bhasha Madhuri) एवं भाषा अभ्यास (Bhasha Abhyas)');
+    specialGroups.push({
+      id: `group_hin_${clsStr}`,
+      name: 'Hindi - हिन्दी (2 Official Textbooks)',
+      tagline: hinLabel,
+      icon: 'Languages',
+      badge: '2 Books Available 📖',
+      isGroup: true,
+      bookCount: 2
+    });
+  }
+
+  const otherSubjects = rawSubjects.filter(s => {
+    const id = s.id.toLowerCase();
+    if (hasMultiEng && (id.includes('eng') || s.name.toLowerCase().includes('english'))) return false;
+    if (hasMultiHin && (id.includes('hin') || s.name.toLowerCase().includes('hindi') || s.name.includes('माधुरी') || s.name.includes('अभ्यास') || s.name.includes('सागर'))) return false;
+    return true;
+  });
+
+  availableSubjects = subjectSearch.trim()
+    ? [...specialGroups, ...rawSubjects]
+    : [...specialGroups, ...otherSubjects];
 
   const filteredSubjects = availableSubjects.filter(s => 
     s.name.toLowerCase().includes(subjectSearch.toLowerCase()) ||
@@ -881,7 +878,7 @@ export function QuestionsAnswersSection({
                       </div>
 
                       <div className="pt-2 border-t border-purple-800/60 flex items-center justify-between text-xs font-bold text-purple-300 group-hover:text-amber-400">
-                        <span>{isGroup ? (sub.id === 'group_eng8' ? 'Pick English Book (3 Available) 📚' : 'Pick Hindi Book (2 Available) 📖') : 'Select Subject'}</span>
+                        <span>{isGroup ? (sub.id.includes('eng') ? `Pick English Book (${sub.bookCount || 3} Available) 📚` : `Pick Hindi Book (${sub.bookCount || 2} Available) 📖`) : 'Select Subject'}</span>
                         <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition" />
                       </div>
                     </button>
