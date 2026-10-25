@@ -33,9 +33,9 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
           <span>Shaping Modern India • DAV Dictionary (Classes 1 to 8)</span>
         </div>
 
-        {/* Big Bold Headline */}
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-tight animate-solar-flare">
-          Welcome to <span className="gradient-flowing-text">DAV Dictionary</span>
+        {/* Big Bold Headline with Immersive 3D Text */}
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-tight animate-solar-flare animate-3d-float text-3d-white">
+          Welcome to <span className="gradient-flowing-text text-3d-gold inline-block">DAV Dictionary</span>
         </h1>
 
         {/* Subtitle */}
