@@ -20,7 +20,13 @@ export function Navbar({
   onLogout 
 }) {
   const isAdmin = user?.isAdmin || user?.id === 'rishibhai';
-  const isDeveloper = Boolean(isAdmin || user?.id === 'rishibhai' || user?.studentId === 'rishibhai' || user?.dimension === 4 || user?.plan === 'developer');
+  const isDimension4 = Boolean(
+    (user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai') &&
+    user?.dimension !== 1 &&
+    user?.dimension !== 2 &&
+    user?.dimension !== 3 &&
+    user?.dimension !== 5
+  );
   const isGuest = user?.plan === 'guest';
 
   // State to track user's real uploaded photo from Section 9 (Student Profile)
@@ -257,7 +263,7 @@ export function Navbar({
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
 
             {/* Dimension 4 Developer Only: Interactive Section 12 Review Vault Pill */}
-            {isDeveloper && (
+            {isDimension4 && (
               <button
                 type="button"
                 onClick={() => onSelectSection && onSelectSection(12)}

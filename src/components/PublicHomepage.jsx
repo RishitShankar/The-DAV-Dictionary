@@ -22,6 +22,56 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
     setOpenFaqIndex(openFaqIndex === idx ? null : idx);
   };
 
+  // Google Sitelinks Direct Portals (Netflix-Style Fast Jump Directory)
+  const sitelinks = [
+    {
+      title: "Login to DAV Dictionary",
+      path: "/login",
+      badge: "Student Portal",
+      icon: LogIn,
+      color: "from-amber-400 to-orange-500",
+      description: "Sign in with your Student ID and password to access the full DAV Dictionary campus, personal vault, and daily diary.",
+      action: () => onGoToLogin()
+    },
+    {
+      title: "Books from Class LKG to Class VIII",
+      path: "/books",
+      badge: "70+ Textbooks",
+      icon: BookOpen,
+      color: "from-red-500 to-rose-600",
+      description: "Explore 70+ digital textbooks from Class LKG to Class 8 in Demo Preview mode. Browse chapters and full curriculum.",
+      action: () => onEnterDemoPreview(2)
+    },
+    {
+      title: "Join live classes",
+      path: "/live-classes",
+      badge: "WebRTC Classroom",
+      icon: Video,
+      color: "from-blue-500 to-cyan-500",
+      description: "Attend real-time online classes, interactive video lectures, and live doubt-clearing sessions with DAV teachers.",
+      action: () => onEnterDemoPreview(5, 'live_class')
+    },
+    {
+      title: "Question Answers from LKG to Class 8",
+      path: "/question-answers",
+      badge: "Solution Arcade",
+      icon: FileText,
+      color: "from-purple-500 to-indigo-600",
+      description: "Find chapter-wise solutions, NCERT and DAV textbook exercise answers, and exam preparation material.",
+      action: () => onEnterDemoPreview(3)
+    },
+    {
+      title: "Live Chat with Teachers",
+      path: "/faculty-desk",
+      badge: "Faculty Desk",
+      icon: MessageCircle,
+      color: "from-emerald-500 to-teal-500",
+      description: "Connect directly with subject faculty on the Faculty Academic Desk for one-on-one doubts and homework help.",
+      action: () => onEnterDemoPreview(5, 'doubts_chat')
+    }
+  ];
+
+
   // The 11 Core Features / Dimensions of DAV Dictionary Platform
   const allDimensions = [
     {
@@ -533,7 +583,78 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
         </div>
       </section>
 
+      
       {/* =========================================================================
+          GOOGLE SEARCH SITELINKS & FAST DIRECT PORTALS (NETFLIX STYLE)
+      ========================================================================= */}
+      <section className="py-12 bg-slate-950 border-b border-stone-800/80 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          {/* Header with Google Search Badges */}
+          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-8">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold mb-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Google Search Verified Sitelinks</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2.5">
+                <span>Fast Direct Portals</span>
+                <span className="text-xs font-bold text-stone-400 px-2.5 py-1 rounded-lg bg-stone-900 border border-stone-800">
+                  Netflix-Style Directory
+                </span>
+              </h2>
+              <p className="text-xs sm:text-sm text-stone-400 mt-1 max-w-2xl">
+                Official sub-portals indexed for Google Search. Jump directly into any key section of DAV Dictionary.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 text-xs font-mono text-stone-400 bg-stone-900/90 px-3.5 py-2 rounded-xl border border-stone-800 shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-amber-400" />
+              <span className="text-amber-300 font-bold">google.com/search?q=dav+dictionary</span>
+            </div>
+          </div>
+
+          {/* 5 Netflix-Style Sitelinks Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {sitelinks.map((link, idx) => (
+              <a
+                key={idx}
+                href={link.path}
+                onClick={(e) => {
+                  e.preventDefault();
+                  link.action();
+                }}
+                className="group relative p-5 rounded-2xl bg-stone-900/80 hover:bg-stone-900 border border-stone-800 hover:border-amber-400/50 shadow-lg hover:shadow-xl hover:shadow-amber-500/10 transition-all duration-300 flex flex-col justify-between cursor-pointer transform hover:-translate-y-1"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${link.color} p-2 text-stone-950 flex items-center justify-center font-black shadow-md group-hover:scale-110 transition-transform`}>
+                      <link.icon className="w-5 h-5 text-stone-950" />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-stone-400 bg-stone-800/80 px-2 py-0.5 rounded-full group-hover:text-amber-300 transition-colors">
+                      {link.badge}
+                    </span>
+                  </div>
+                  <h3 className="text-sm font-black text-white group-hover:text-amber-300 transition-colors line-clamp-2">
+                    {link.title}
+                  </h3>
+                  <p className="text-xs text-stone-400 mt-2 line-clamp-3 leading-relaxed">
+                    {link.description}
+                  </p>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-stone-800/60 flex items-center justify-between text-xs font-bold text-amber-400 group-hover:text-amber-300">
+                  <span className="text-[11px] font-mono text-stone-500 group-hover:text-stone-400">{link.path}</span>
+                  <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                </div>
+              </a>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
+{/* =========================================================================
           SECTION 2: THE 11 MASTER DIMENSIONS SHOWCASE (INTERACTIVE GRID)
       ========================================================================= */}
       <section id="dimensions" className="py-20 bg-stone-900/50 border-y border-stone-800 relative">

@@ -171,21 +171,21 @@ export function AboutCreatorSection() {
       <div className="flex items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
-          <span className="text-xs font-black uppercase tracking-widest text-amber-500">
+          <span className="text-xs font-black uppercase tracking-widest text-amber-500 animate-badge-bounce">
             Section 11 • Creator Biography & Vision
           </span>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={triggerCelebrationParty}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-stone-950 text-xs font-black shadow-md transition cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-stone-950 text-xs font-black shadow-md transition cursor-pointer btn-interactive animate-glow-gold"
           >
-            <PartyPopper className="w-4 h-4" />
+            <PartyPopper className="w-4 h-4 animate-float-icon" />
             <span>Celebrate Rishit!</span>
           </button>
           <button
             onClick={handleCopyBio}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-amber-300 text-xs font-bold border border-amber-500/30 transition shadow-sm cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-amber-300 text-xs font-bold border border-amber-500/30 transition shadow-sm cursor-pointer btn-interactive"
           >
             {copiedBio ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
             <span>{copiedBio ? 'Bio Copied!' : 'Copy Summary'}</span>
@@ -194,10 +194,11 @@ export function AboutCreatorSection() {
       </div>
 
       {/* Main Profile Showcase Card */}
-      <div className="bg-gradient-to-b from-stone-900 via-slate-900 to-stone-950 rounded-3xl border border-amber-500/30 shadow-2xl overflow-hidden relative mb-10">
+      <div className="bg-gradient-to-b from-stone-900 via-slate-900 to-stone-950 rounded-3xl border border-amber-500/30 shadow-2xl overflow-hidden relative mb-10 card-interactive shimmer-overlay">
         
         {/* Glow Highlights */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none animate-float-orb" />
+        <div className="absolute bottom-0 left-10 w-96 h-96 bg-orange-600/15 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-5s' }} />
         <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* Hero Section */}

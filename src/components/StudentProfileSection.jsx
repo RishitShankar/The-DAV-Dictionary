@@ -193,7 +193,10 @@ export function StudentProfileSection({ user }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white py-10 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-slate-950 text-white py-10 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden">
+      {/* Holographic Ambient Glow Orbs */}
+      <div className="absolute top-10 left-10 w-96 h-96 bg-orange-600/15 rounded-full blur-3xl pointer-events-none animate-float-orb" />
+      <div className="absolute bottom-10 right-10 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-4s' }} />
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Top Header Banner */}

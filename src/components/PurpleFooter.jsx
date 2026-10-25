@@ -8,8 +8,16 @@ import {
   FacebookLogo, YouTubeLogo, XTwitterLogo, GitHubLogo 
 } from './SocialLogos';
 
-export function PurpleFooter({ onSelectSection }) {
+export function PurpleFooter({ currentUser, onSelectSection }) {
   const [openFaq, setOpenFaq] = useState(null);
+
+  const isDimension4 = Boolean(
+    (currentUser?.dimension === 4 || currentUser?.id === 'rishibhai' || currentUser?.studentId === 'rishibhai') &&
+    currentUser?.dimension !== 1 &&
+    currentUser?.dimension !== 2 &&
+    currentUser?.dimension !== 3 &&
+    currentUser?.dimension !== 5
+  );
 
   const faqs = [
     {
@@ -55,7 +63,7 @@ export function PurpleFooter({ onSelectSection }) {
               <div className="flex items-center gap-2">
                 <span className="text-lg font-black tracking-tight text-white">DAV DICTIONARY</span>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-400 text-purple-950 uppercase">
-                  10 Dimensions
+                  11 Sections
                 </span>
               </div>
               <p className="text-xs text-purple-200 mt-0.5">
@@ -195,7 +203,7 @@ export function PurpleFooter({ onSelectSection }) {
                 { id: 9, name: 'Section 9: Student Personal Profile' },
                 { id: 10, name: 'Section 10: Donate & Reviews Hub' },
                 { id: 11, name: 'Section 11: About Creator Rishit' },
-                { id: 12, name: 'Section 12: Developer Reviews Vault' }
+                ...(isDimension4 ? [{ id: 12, name: 'Section 12: Developer Reviews Vault' }] : [])
               ].map(sec => (
                 <button
                   key={sec.id}

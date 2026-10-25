@@ -6,9 +6,19 @@ import {
   BookmarkCheck, MessageCircle, ShieldCheck, Video, Bus, Navigation, MapPin, Trophy
 } from 'lucide-react';
 
-export function SectionOverview({ onSelectSection }) {
+export function SectionOverview({ currentUser, onSelectSection }) {
   const [clickedCardId, setClickedCardId] = useState(null);
   const [isSparkleActive, setIsSparkleActive] = useState(false);
+
+  // Dimension 4 check: Section 12 is ONLY visible to Dimension 4 person (Rishit Shankar)
+  // People from dimension 1, 2, 3, and 5 CANNOT see Section 12!
+  const isDimension4 = Boolean(
+    (currentUser?.dimension === 4 || currentUser?.id === 'rishibhai' || currentUser?.studentId === 'rishibhai') &&
+    currentUser?.dimension !== 1 &&
+    currentUser?.dimension !== 2 &&
+    currentUser?.dimension !== 3 &&
+    currentUser?.dimension !== 5
+  );
 
   const sectionsList = [
     {
@@ -22,7 +32,7 @@ export function SectionOverview({ onSelectSection }) {
       borderHover: 'hover:border-amber-500',
       tag: 'You Are Here',
       tagColor: 'bg-amber-100 text-amber-900 border-amber-300',
-      description: 'The master directory and architectural dashboard for all 10 academic dimensions. Get a quick summary of every tool and jump directly to any section with one click.'
+      description: 'The master directory and architectural dashboard for all 11 verified academic sections. Get a quick summary of every tool and jump directly to any section with one click.'
     },
     {
       id: 2,
@@ -230,12 +240,12 @@ export function SectionOverview({ onSelectSection }) {
 
               {/* Title & Slogan */}
               <div>
-                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold mb-2 border border-amber-400/40">
-                  <School className="w-3.5 h-3.5" />
-                  <span>DAV Dictionary • 10 Dimensions of Academic Excellence</span>
+                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold mb-2 border border-amber-400/40 animate-badge-bounce">
+                  <School className="w-3.5 h-3.5 animate-twinkle" />
+                  <span>The DAV Dictionary: 11 Sections of Academic Intelligence</span>
                 </div>
                 <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-                  Website Overview &amp; 10 Dimensions Hub
+                  <span className="gradient-flowing-text">Website Overview</span> &amp; 11 Sections Hub
                 </h1>
                 <p className="text-xs sm:text-sm text-stone-300 mt-2 max-w-2xl leading-relaxed">
                   "तमसो मा ज्योतिर्गमय — Lead us from darkness to light." Designed by Head Boy <strong>Rishit Shankar</strong> to empower every DAV student with interactive textbooks, Rishi AI, quizzes, and digital study tools.
@@ -245,7 +255,7 @@ export function SectionOverview({ onSelectSection }) {
                 <div className="flex flex-wrap items-center gap-3 mt-4 text-[11px] font-bold text-amber-200">
                   <span className="flex items-center gap-1.5 bg-white/10 px-3 py-1 rounded-full border border-white/10">
                     <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                    <span>10 Comprehensive Sections</span>
+                    <span>11 Comprehensive Sections</span>
                   </span>
                   <span className="flex items-center gap-1.5 bg-white/10 px-3 py-1 rounded-full border border-white/10">
                     <BookOpen className="w-3.5 h-3.5 text-cyan-300" />
@@ -264,7 +274,7 @@ export function SectionOverview({ onSelectSection }) {
             <div className="shrink-0 flex flex-col sm:flex-row lg:flex-col gap-2.5 w-full sm:w-auto">
               <button
                 onClick={() => onSelectSection(2)}
-                className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 font-black text-xs uppercase tracking-wider shadow-xl flex items-center justify-center gap-2 cursor-pointer transition transform hover:scale-105"
+                className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 font-black text-xs uppercase tracking-wider shadow-xl flex items-center justify-center gap-2 cursor-pointer transition transform hover:scale-105 btn-interactive"
               >
                 <BookOpen className="w-4 h-4" />
                 <span>Open Section 2 (Textbooks) →</span>
@@ -272,7 +282,7 @@ export function SectionOverview({ onSelectSection }) {
 
               <button
                 onClick={() => onSelectSection(10)}
-                className="px-6 py-3 rounded-2xl bg-rose-900/80 hover:bg-rose-800 text-white border border-rose-400/40 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition"
+                className="px-6 py-3 rounded-2xl bg-rose-900/80 hover:bg-rose-800 text-white border border-rose-400/40 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition btn-interactive"
               >
                 <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" />
                 <span>Support Developer on Section 10</span>
@@ -290,12 +300,12 @@ export function SectionOverview({ onSelectSection }) {
 
         </div>
 
-        {/* 10 Sections Interactive Kids-Friendly Cards Grid */}
+        {/* 11 Sections Interactive Kids-Friendly Cards Grid */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-600" />
-              <span>Explore All 10 Interactive Dimensions</span>
+              <Sparkles className="w-5 h-5 text-amber-600 animate-spin-slow" />
+              <span>Explore All 11 Interactive Sections</span>
             </h2>
             <span className="text-xs font-bold text-slate-500 bg-white px-3 py-1 rounded-full border border-slate-200">
               Click any card to enter
@@ -303,7 +313,7 @@ export function SectionOverview({ onSelectSection }) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {sectionsList.map((sec) => {
+            {visibleSections.map((sec) => {
               const IconComp = sec.icon || Sparkles;
               const isCurrent = sec.id === 1;
               const isBeingClicked = clickedCardId === sec.id;
@@ -312,7 +322,7 @@ export function SectionOverview({ onSelectSection }) {
                 <div
                   key={sec.id}
                   onClick={() => handleCardClick(sec.id)}
-                  className={`p-6 sm:p-7 rounded-3xl bg-gradient-to-br ${sec.cardBg} border-2 transition-all duration-300 flex flex-col justify-between shadow-md hover:shadow-2xl hover:-translate-y-1.5 cursor-pointer group relative overflow-hidden ${
+                  className={`p-6 sm:p-7 rounded-3xl bg-gradient-to-br ${sec.cardBg} border-2 transition-all duration-300 flex flex-col justify-between shadow-md hover:shadow-2xl cursor-pointer group relative overflow-hidden card-interactive shimmer-overlay ${
                     isCurrent
                       ? 'border-amber-400 ring-4 ring-amber-400/20'
                       : `border-slate-200/80 ${sec.borderHover}`
@@ -328,13 +338,13 @@ export function SectionOverview({ onSelectSection }) {
                     {/* Header Row: Colorful Icon + Title + Pill Badge */}
                     <div className="flex items-center justify-between mb-4 gap-3">
                       <div className="flex items-center gap-3.5">
-                        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${sec.color} text-white flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shrink-0`}>
+                        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${sec.color} text-white flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shrink-0 animate-float-icon`}>
                           <IconComp className="w-7 h-7" />
                         </div>
                         <div>
                           <div className="flex items-center gap-1.5">
                             <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
-                              Dimension {sec.id}
+                              Section {sec.id}
                             </span>
                             <span className="text-xs">{sec.emoji}</span>
                           </div>
@@ -344,7 +354,7 @@ export function SectionOverview({ onSelectSection }) {
                         </div>
                       </div>
 
-                      <span className={`text-[10px] font-extrabold px-3 py-1 rounded-full border shadow-2xs shrink-0 ${sec.tagColor}`}>
+                      <span className={`text-[10px] font-extrabold px-3 py-1 rounded-full border shadow-2xs shrink-0 animate-badge-bounce ${sec.tagColor}`}>
                         {sec.tag}
                       </span>
                     </div>

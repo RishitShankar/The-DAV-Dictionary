@@ -20,11 +20,17 @@ export function GeminiSidebar({
   onLogout 
 }) {
   const isAdmin = user?.isAdmin || user?.id === 'rishibhai';
-  const isDeveloper = Boolean(isAdmin || user?.id === 'rishibhai' || user?.studentId === 'rishibhai' || user?.dimension === 4 || user?.plan === 'developer');
+  const isDimension4 = Boolean(
+    (user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai') &&
+    user?.dimension !== 1 &&
+    user?.dimension !== 2 &&
+    user?.dimension !== 3 &&
+    user?.dimension !== 5
+  );
   const isGuest = user?.plan === 'guest';
 
   const sections = [
-    { id: 1, name: 'Section 1: Master Overview & Hub', icon: Compass, status: '10 Sections Hub' },
+    { id: 1, name: 'Section 1: Master Overview & Hub', icon: Compass, status: '11 Sections Hub' },
     { id: 2, name: 'Section 2: Official DAV Textbooks (LKG–8)', icon: BookOpen, status: 'Digital Library' },
     { id: 3, name: 'Section 3: Questions & Answers', icon: HelpCircle, status: 'Reserved' },
     { id: 4, name: 'Section 4: Rishi AI Companion', icon: Sparkles, status: 'AI Workspace' },
@@ -35,7 +41,7 @@ export function GeminiSidebar({
     { id: 9, name: 'Section 9: Student Personal Profile', icon: User, status: 'Smart ID Vault' },
     { id: 10, name: 'Section 10: Donate & Reviews Hub', icon: Heart, status: '2 Pages: Donate & Review' },
     { id: 11, name: 'Section 11: About Creator Rishit Shankar', icon: Award, status: 'Head Boy Profile' },
-    ...(isDeveloper ? [
+    ...(isDimension4 ? [
       { id: 12, name: 'Section 12: Developer Review Vault', icon: Star, status: 'Dimension 4 Person' }
     ] : []),
   ];

@@ -220,7 +220,7 @@ export function BookLibrary({
           return (
             <div
               key={sub.id}
-              className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+              className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm card-interactive shimmer-overlay flex flex-col justify-between group"
             >
               {/* Card Header Gradient */}
               <div>

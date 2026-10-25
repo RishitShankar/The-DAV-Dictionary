@@ -387,9 +387,9 @@ export function QuestionsAnswersSection({
     <div className="min-h-screen bg-gradient-to-br from-[#0c051e] via-[#1a0a38] to-[#250b44] text-white py-10 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden select-none">
       
       {/* Playful Floating Glowing Arcade Orbs */}
-      <div className="absolute top-10 left-10 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
-      <div className="absolute bottom-10 right-10 w-[30rem] h-[30rem] bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 left-1/3 w-80 h-80 bg-pink-500/15 rounded-full blur-3xl pointer-events-none animate-bounce" style={{ animationDuration: '6s' }} />
+      <div className="absolute top-10 left-10 w-96 h-96 bg-purple-600/25 rounded-full blur-3xl pointer-events-none animate-float-orb" />
+      <div className="absolute bottom-10 right-10 w-[30rem] h-[30rem] bg-indigo-600/20 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-3s' }} />
+      <div className="absolute top-1/2 left-1/3 w-80 h-80 bg-pink-500/15 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-6s' }} />
 
       {/* Redirect Notification Toast */}
       {redirectToast && (

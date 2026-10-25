@@ -1148,7 +1148,9 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
 
     if (isSectionView) {
       return (
-        <div className="w-full py-6 px-3 sm:px-6 bg-slate-950 flex flex-col items-center justify-center min-h-[calc(100vh-120px)] animate-fadeIn">
+        <div className="w-full py-6 px-3 sm:px-6 bg-slate-950 flex flex-col items-center justify-center min-h-[calc(100vh-120px)] animate-fadeIn relative overflow-hidden">
+          <div className="absolute top-10 left-10 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none animate-float-orb" />
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-4s' }} />
           {shellContent}
         </div>
       );

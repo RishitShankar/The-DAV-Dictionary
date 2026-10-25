@@ -458,8 +458,11 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
   return (
     <div 
       ref={containerRef}
-      className="w-full min-h-screen bg-gradient-to-b from-stone-950 via-slate-900 to-indigo-950 text-slate-100 pb-28 selection:bg-amber-400 selection:text-stone-950 font-sans"
+      className="w-full min-h-screen bg-gradient-to-b from-stone-950 via-slate-900 to-indigo-950 text-slate-100 pb-28 selection:bg-amber-400 selection:text-stone-950 font-sans relative overflow-hidden"
     >
+      {/* Dynamic Animated Trophy Orbs */}
+      <div className="absolute top-10 right-10 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none animate-float-orb" />
+      <div className="absolute bottom-10 left-10 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-5s' }} />
       {/* SECTION 8 HEADER HERO */}
       <div className="w-full bg-stone-950/95 backdrop-blur-md border-b-2 border-amber-400 px-4 sm:px-8 py-5 shadow-2xl">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">

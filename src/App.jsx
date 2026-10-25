@@ -151,12 +151,16 @@ export function App() {
   };
 
   const handleSelectSection = (secId) => {
+    // Section 12 is strictly for Dimension 4 only (hidden from dimensions 1, 2, 3, 5)
+    if (secId === 12 && !(user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai')) {
+      return;
+    }
     if (isTeacher && teacherSubDimension === 'teacher_only') {
       // In 5A Only Teacher mode, locked to Faculty OS (Section 5)
       setActiveSection(5);
       return;
     }
-    // In 5B Teacher & Explorer mode, teacher can explore all 10 sections freely!
+    // In 5B Teacher & Explorer mode, teacher can explore all sections freely!
     setActiveSection(secId);
     setIsSidebarOpen(false);
   };
@@ -165,7 +169,30 @@ export function App() {
     setUser(null);
     setViewMode('home');
     localStorage.removeItem('dav_user');
+    try {
+      if (window.history && window.history.pushState) {
+        window.history.pushState(null, '', '/');
+      }
+    } catch (e) {}
   };
+
+  // Deep-Linking Router for Google Search & Sitelinks (/login, /books, /live-classes, /question-answers, /faculty-desk)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const path = window.location.pathname.toLowerCase();
+
+    if (path === '/login' || path.startsWith('/login')) {
+      setViewMode('login');
+    } else if (path === '/books' || path.startsWith('/books')) {
+      handleEnterDemoPreview(2);
+    } else if (path === '/live-classes' || path.startsWith('/live-classes')) {
+      handleEnterDemoPreview(5, 'live_class');
+    } else if (path === '/question-answers' || path.startsWith('/question-answers') || path === '/qa') {
+      handleEnterDemoPreview(3);
+    } else if (path === '/faculty-desk' || path === '/live-chat' || path.startsWith('/faculty-desk')) {
+      handleEnterDemoPreview(5, 'doubts_chat');
+    }
+  }, []);
 
   const handleOpenAIWithQuestion = (question) => {
     setAiPrompt(question);
@@ -185,7 +212,7 @@ export function App() {
     setIsPdfReaderOpen(true);
   };
 
-  const handleEnterDemoPreview = (targetSection = 1) => {
+  const handleEnterDemoPreview = (targetSection = 1, targetSubSection = null) => {
     const demoUser = {
       id: 'guest_student',
       name: 'Guest Explorer (Demo)',
@@ -202,6 +229,9 @@ export function App() {
     setUser(demoUser);
     setViewMode('app');
     setActiveSection(targetSection || 1);
+    if (targetSubSection) {
+      setTeacherSubSection(targetSubSection);
+    }
   };
 
   const handleRequireLogin = (title = 'Login to Continue', message = 'You are currently exploring in Free Demo Preview. Please sign in or register with your Student ID & Password to use this feature.') => {
@@ -338,7 +368,7 @@ export function App() {
             onToggleSubDimension={handleToggleTeacherSubDimension}
           />
         ) : activeSection === 1 ? (
-          <SectionOverview onSelectSection={handleSelectSection} />
+          <SectionOverview currentUser={user} onSelectSection={handleSelectSection} />
         ) : activeSection === 2 ? (
           <>
             <Hero
@@ -444,19 +474,23 @@ export function App() {
         ) : activeSection === 11 ? (
           <AboutCreatorSection />
         ) : activeSection === 12 ? (
-          <DeveloperReviewsSection 
-            currentUser={user} 
-            onGoToSection={handleSelectSection} 
-          />
+          (user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai') ? (
+            <DeveloperReviewsSection 
+              currentUser={user} 
+              onGoToSection={handleSelectSection} 
+            />
+          ) : (
+            <SectionOverview currentUser={user} onSelectSection={handleSelectSection} />
+          )
         ) : (
           <UntitledSection sectionNumber={activeSection} />
         )}
         </SectionErrorBoundary>
       </main>
 
-      {/* Official Purple Footer displayed on Section 9, 10, 11 & 12 */}
-      {(activeSection === 9 || activeSection === 10 || activeSection === 11 || activeSection === 12) && (
-        <PurpleFooter onSelectSection={(secId) => setActiveSection(secId)} />
+      {/* Official Purple Footer displayed on Section 9, 10, 11 & (12 for Dimension 4) */}
+      {(activeSection === 9 || activeSection === 10 || activeSection === 11 || (activeSection === 12 && (user?.dimension === 4 || user?.id === 'rishibhai'))) && (
+        <PurpleFooter currentUser={user} onSelectSection={(secId) => setActiveSection(secId)} />
       )}
 
       {/* Modals */}

@@ -2342,7 +2342,10 @@ export function TeachersSection({
 
 
   return (
-    <div className="w-full min-h-screen bg-slate-950 text-white font-sans selection:bg-teal-500 selection:text-slate-950 pb-16">
+    <div className="w-full min-h-screen bg-slate-950 text-white font-sans selection:bg-teal-500 selection:text-slate-950 pb-16 relative overflow-hidden">
+      {/* Dynamic Animated Ambient Orbs */}
+      <div className="absolute top-10 right-10 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl pointer-events-none animate-float-orb" />
+      <div className="absolute bottom-10 left-10 w-96 h-96 bg-teal-500/15 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-5s' }} />
       
       {/* ========================================================================= */}
       {/* MAIN SECTION 5 CANVAS: 6-PAGE PDF PRESENTATION OR FULL-SCREEN MODE        */}

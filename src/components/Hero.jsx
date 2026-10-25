@@ -6,14 +6,14 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
   return (
     <div className="relative overflow-hidden bg-gradient-to-b from-red-950 via-slate-900 to-slate-950 text-white py-16 px-4 sm:px-6 lg:px-8 border-b border-red-900/30">
       {/* Decorative background glows */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-red-600/15 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-red-600/20 rounded-full blur-3xl pointer-events-none animate-float-orb" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none animate-float-orb" style={{ animationDelay: '-4s' }} />
 
       <div className="max-w-6xl mx-auto relative z-10 text-center">
         
         {/* Official Logo Banner */}
         <div className="flex justify-center mb-6">
-          <div className="p-2 sm:p-3 rounded-3xl bg-white/10 backdrop-blur-md border border-amber-400/40 shadow-2xl inline-flex items-center gap-4 pr-6">
+          <div className="p-2 sm:p-3 rounded-3xl bg-white/10 backdrop-blur-md border border-amber-400/40 shadow-2xl inline-flex items-center gap-4 pr-6 animate-float-slow hover:border-amber-400 transition-colors">
             <img 
               src="/logo.png" 
               alt="DAV Dictionary" 
@@ -28,14 +28,14 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
         </div>
 
         {/* Modern Pill Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-amber-300 text-xs font-semibold mb-6 shadow-inner">
-          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-amber-300 text-xs font-semibold mb-6 shadow-inner animate-badge-bounce">
+          <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-twinkle" />
           <span>Shaping Modern India • DAV Dictionary (Classes 1 to 8)</span>
         </div>
 
         {/* Big Bold Headline */}
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-tight">
-          Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500">DAV Dictionary</span>
+          Welcome to <span className="gradient-flowing-text">DAV Dictionary</span>
         </h1>
 
         {/* Subtitle */}
@@ -50,18 +50,18 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
               const el = document.getElementById('library-section');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold text-sm sm:text-base shadow-lg shadow-amber-500/20 flex items-center gap-2 transition-all transform hover:-translate-y-0.5 cursor-pointer"
+            className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold text-sm sm:text-base shadow-lg shadow-amber-500/20 flex items-center gap-2 transition-all transform hover:-translate-y-0.5 cursor-pointer btn-interactive animate-glow-gold"
           >
-            <BookOpen className="w-5 h-5 text-slate-950" />
+            <BookOpen className="w-5 h-5 text-slate-950 animate-float-icon" />
             <span>Explore Class 1–8 Books</span>
             <ArrowRight className="w-4 h-4" />
           </button>
 
           <button
             onClick={onOpenAI}
-            className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-black text-sm sm:text-base flex items-center gap-2.5 transition-all transform hover:-translate-y-0.5 shadow-lg shadow-orange-600/30 border border-orange-400/50 cursor-pointer"
+            className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-black text-sm sm:text-base flex items-center gap-2.5 transition-all transform hover:-translate-y-0.5 shadow-lg shadow-orange-600/30 border border-orange-400/50 cursor-pointer btn-interactive animate-glow-red"
           >
-            <BlackDogLogo className="w-6 h-6" bgClassName="bg-stone-950" />
+            <BlackDogLogo className="w-6 h-6 animate-float-icon" bgClassName="bg-stone-950" />
             <span>Chat with Rishi AI</span>
             <span className="bg-stone-950 text-amber-300 text-xs px-2 py-0.5 rounded-full font-black border border-amber-400/40">ONLINE</span>
           </button>

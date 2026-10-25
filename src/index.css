@@ -245,3 +245,290 @@
     linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
 }
+
+/* =========================================================================
+   NEXT-GEN GRAPHICAL INTERACTIVE ANIMATIONS FOR ALL SECTIONS (1 to 10)
+   ========================================================================= */
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0.8deg);
+  }
+}
+
+@keyframes floatOrb {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(15px, -18px) scale(1.08);
+  }
+  66% {
+    transform: translate(-12px, 10px) scale(0.95);
+  }
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 12px rgba(239, 68, 68, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+@keyframes pulseRingGold {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 14px rgba(245, 158, 11, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+  }
+}
+
+@keyframes pulseRingEmerald {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 14px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+@keyframes spinSlowly {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmerGleam {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes barEqualizer {
+  0%, 100% { height: 6px; }
+  50% { height: 22px; }
+}
+
+.animate-float-slow {
+  animation: floatSlow 4.5s ease-in-out infinite;
+}
+
+.animate-float-orb {
+  animation: floatOrb 8s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spinSlowly 20s linear infinite;
+}
+
+.animate-pulse-ring-red {
+  animation: pulseRing 2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+.animate-pulse-ring-gold {
+  animation: pulseRingGold 2.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+.animate-pulse-ring-emerald {
+  animation: pulseRingEmerald 2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+/* Interactive Card Elevation & Glow */
+.card-interactive {
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+}
+
+.card-interactive:hover {
+  transform: translateY(-6px) scale(1.012);
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.12), 0 0 15px rgba(245, 158, 11, 0.15);
+}
+
+.card-interactive:active {
+  transform: translateY(-2px) scale(0.985);
+}
+
+/* Interactive Button Hover Physics */
+.btn-interactive {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.btn-interactive:hover {
+  transform: translateY(-2px) scale(1.03);
+  filter: brightness(1.08);
+}
+
+.btn-interactive:active {
+  transform: translateY(1px) scale(0.96);
+}
+
+/* Shimmer overlay for premium cards */
+.shimmer-overlay {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-overlay::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+  transform: translateX(-150%);
+  pointer-events: none;
+}
+
+.shimmer-overlay:hover::after {
+  animation: shimmerGleam 1.2s ease-in-out;
+}
+
+/* =========================================================================
+   10 HIGHLY VISIBLE GRAPHICAL ANIMATIONS FOR ALL 11 SECTIONS
+   ========================================================================= */
+
+@keyframes badgeBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-4px) scale(1.06); }
+}
+
+@keyframes twinkleStar {
+  0%, 100% { opacity: 0.35; transform: scale(0.85) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.25) rotate(180deg); }
+}
+
+@keyframes glowPulseGold {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.3), 0 0 24px rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(245, 158, 11, 0.75), 0 0 50px rgba(245, 158, 11, 0.4);
+    border-color: rgba(245, 158, 11, 0.95);
+  }
+}
+
+@keyframes glowPulseRed {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.3), 0 0 24px rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(239, 68, 68, 0.75), 0 0 50px rgba(239, 68, 68, 0.4);
+    border-color: rgba(239, 68, 68, 0.95);
+  }
+}
+
+@keyframes glowPulsePurple {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.3), 0 0 24px rgba(168, 85, 247, 0.15);
+    border-color: rgba(168, 85, 247, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(168, 85, 247, 0.75), 0 0 50px rgba(168, 85, 247, 0.4);
+    border-color: rgba(168, 85, 247, 0.95);
+  }
+}
+
+@keyframes floatIconMotion {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-4px) rotate(-3deg); }
+  75% { transform: translateY(3px) rotate(3deg); }
+}
+
+@keyframes waveBarMotion {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+
+@keyframes gradientBorderMotion {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes liveRadarPing {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+@keyframes popEntrance {
+  0% { opacity: 0; transform: translateY(16px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-badge-bounce {
+  animation: badgeBounce 2.5s ease-in-out infinite;
+}
+
+.animate-twinkle {
+  animation: twinkleStar 3s ease-in-out infinite;
+}
+
+.animate-glow-gold {
+  animation: glowPulseGold 3s ease-in-out infinite;
+}
+
+.animate-glow-red {
+  animation: glowPulseRed 3s ease-in-out infinite;
+}
+
+.animate-glow-purple {
+  animation: glowPulsePurple 3s ease-in-out infinite;
+}
+
+.animate-float-icon {
+  animation: floatIconMotion 4s ease-in-out infinite;
+}
+
+.animate-wave-bar {
+  animation: waveBarMotion 1.2s ease-in-out infinite;
+}
+
+.animate-radar-ping {
+  animation: liveRadarPing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.animate-pop-in {
+  animation: popEntrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.gradient-flowing-text {
+  background: linear-gradient(90deg, #f59e0b, #ef4444, #ec4899, #8b5cf6, #3b82f6, #10b981, #f59e0b);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientBorderMotion 6s linear infinite;
+}
+
+
