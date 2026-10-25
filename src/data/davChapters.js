@@ -716,7 +716,7 @@ export const DAV_CHAPTERS = {
         "badge": "Literature & Grammar ✍️",
         "solutionGyanUrl": "https://solutiongyan.com/dav-class-8-english-literature-book-solutions-chapter-1-three-questions/",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-english-literature-book-solutions-chapter-1/",
-        "ncertUrl": "https://ncertbookspdf.com/tenses-question-answers-dav-class-8-english-practice-book-chapter-1-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -728,7 +728,7 @@ export const DAV_CHAPTERS = {
         "badge": "Flora & Ecology 🌱",
         "solutionGyanUrl": "https://solutiongyan.com/dav-class-8-english-literature-book-solutions-chapter-2-grannys-tree-climbing/",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-english-literature-book-solutions-chapter-2/",
-        "ncertUrl": "https://ncertbookspdf.com/narration-question-answers-dav-class-8-english-practice-book-chapter-2-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -740,7 +740,7 @@ export const DAV_CHAPTERS = {
         "badge": "Literature & Grammar ✍️",
         "solutionGyanUrl": "https://solutiongyan.com/dav-class-8-english-literature-book-solutions-chapter-3-the-fun-they-had/",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-english-literature-book-solutions-chapter-3/",
-        "ncertUrl": "https://ncertbookspdf.com/modals-question-answers-dav-class-8-english-practice-book-chapter-3-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -752,7 +752,7 @@ export const DAV_CHAPTERS = {
         "badge": "Literature & Grammar ✍️",
         "solutionGyanUrl": "https://solutiongyan.com/dav-class-8-english-literature-book-solutions-chapter-4-fathers-help/",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-english-literature-book-solutions-chapter-4/",
-        "ncertUrl": "https://ncertbookspdf.com/subject-verb-agreement-question-answers-dav-class-8-english-practice-book-chapter-4-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -764,7 +764,7 @@ export const DAV_CHAPTERS = {
         "badge": "Literature & Grammar ✍️",
         "solutionGyanUrl": "https://solutiongyan.com/dav-class-8-english-literature-book-solutions-chapter-5-my-mother/",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-english-literature-book-solutions-chapter-5/",
-        "ncertUrl": "https://ncertbookspdf.com/clauses-and-complex-sentences-question-answers-dav-class-8-english-practice-book-chapter-5-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -774,9 +774,9 @@ export const DAV_CHAPTERS = {
         "icon": "BookOpen",
         "emoji": "📚",
         "badge": "Literature & Grammar ✍️",
-        "solutionGyanUrl": "https://solutiongyan.com/dav-class-8-english-literature-book-solutions-chapter-9-couplets/",
+        "solutionGyanUrl": "https://solutiongyan.com/dav-class-8-english-literature-book-solutions-chapter-6-the-luncheon/",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-english-literature-book-solutions-chapter-6/",
-        "ncertUrl": "https://ncertbookspdf.com/linkers-question-answers-dav-class-8-english-practice-book-chapter-6-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -786,9 +786,9 @@ export const DAV_CHAPTERS = {
         "icon": "BookOpen",
         "emoji": "📚",
         "badge": "Literature & Grammar ✍️",
-        "solutionGyanUrl": "https://solutiongyan.com/dav-class-8-english-literature-book-solutions-chapter-8-the-case-of-the-sharp-eyed-jeweller/",
+        "solutionGyanUrl": "https://solutiongyan.com/dav-class-8-english-literature-book-solutions-chapter-7-the-childrens-song/",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-english-literature-book-solutions-chapter-7/",
-        "ncertUrl": "https://ncertbookspdf.com/active-and-passive-voice-question-answers-dav-class-8-english-practice-book-chapter-7-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -936,7 +936,7 @@ export const DAV_CHAPTERS = {
         "badge": "Literature & Grammar ✍️",
         "solutionGyanUrl": "",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-english-practice-book-solutions-chapter-1/",
-        "ncertUrl": "https://ncertbookspdf.com/tenses-question-answers-dav-class-8-english-practice-book-chapter-1-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -948,7 +948,7 @@ export const DAV_CHAPTERS = {
         "badge": "Literature & Grammar ✍️",
         "solutionGyanUrl": "",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-english-practice-book-solutions-chapter-2/",
-        "ncertUrl": "https://ncertbookspdf.com/narration-question-answers-dav-class-8-english-practice-book-chapter-2-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -960,7 +960,7 @@ export const DAV_CHAPTERS = {
         "badge": "Literature & Grammar ✍️",
         "solutionGyanUrl": "",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-english-practice-book-solutions-chapter-3/",
-        "ncertUrl": "https://ncertbookspdf.com/modals-question-answers-dav-class-8-english-practice-book-chapter-3-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -972,7 +972,7 @@ export const DAV_CHAPTERS = {
         "badge": "Literature & Grammar ✍️",
         "solutionGyanUrl": "",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-english-practice-book-solutions-chapter-4/",
-        "ncertUrl": "https://ncertbookspdf.com/subject-verb-agreement-question-answers-dav-class-8-english-practice-book-chapter-4-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -984,7 +984,7 @@ export const DAV_CHAPTERS = {
         "badge": "Literature & Grammar ✍️",
         "solutionGyanUrl": "",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-english-practice-book-solutions-chapter-5/",
-        "ncertUrl": "https://ncertbookspdf.com/clauses-and-complex-sentences-question-answers-dav-class-8-english-practice-book-chapter-5-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -996,7 +996,7 @@ export const DAV_CHAPTERS = {
         "badge": "Literature & Grammar ✍️",
         "solutionGyanUrl": "",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-english-practice-book-solutions-chapter-6/",
-        "ncertUrl": "https://ncertbookspdf.com/linkers-question-answers-dav-class-8-english-practice-book-chapter-6-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -1008,7 +1008,7 @@ export const DAV_CHAPTERS = {
         "badge": "Literature & Grammar ✍️",
         "solutionGyanUrl": "",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-english-practice-book-solutions-chapter-7/",
-        "ncertUrl": "https://ncertbookspdf.com/active-and-passive-voice-question-answers-dav-class-8-english-practice-book-chapter-7-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -1155,7 +1155,7 @@ export const DAV_CHAPTERS = {
         "solutionGyanUrl": "",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-8-question-answer/",
         "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-8-solutions/",
-        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-8-dohe-davcmc-abhyas.html"
+        "onlineHindiUrl": "https://www.onlinehindi.in/2018/08/class-viii-chapter-8-dohe-davcmc-word.html"
       },
       {
         "number": 9,
@@ -1239,7 +1239,7 @@ export const DAV_CHAPTERS = {
         "solutionGyanUrl": "",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-15-question-answer/",
         "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-15-question-answer/",
-        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-15-kaamchor-davcmc.html"
+        "onlineHindiUrl": "https://www.onlinehindi.in/2017/11/class-viii-chapter-15-kaamchor-davcmc.html"
       },
       {
         "number": 16,
@@ -1275,7 +1275,7 @@ export const DAV_CHAPTERS = {
         "solutionGyanUrl": "",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-18-question-answer/",
         "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-18-question-answer-dukh-mein-haar-na-maano/",
-        "onlineHindiUrl": "https://www.onlinehindi.in/2020/12/class-viii-chapter-18-nirman-abhyas.html"
+        "onlineHindiUrl": "https://www.onlinehindi.in/2018/08/class-viii-chapter-18-jhansi-ki-rani.html"
       },
       {
         "number": 19,
@@ -1302,6 +1302,490 @@ export const DAV_CHAPTERS = {
         "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-20-iirshya-tu-na-gai.html"
       }
     ],
+    "hin8_gs": [
+      {
+        "number": 1,
+        "title": "हम पंछी उन्मुक्त गगन के",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-1-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-1-solutions/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-1-hum-panchhi-unmukt.html"
+      },
+      {
+        "number": 2,
+        "title": "असल धन",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-2-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-gyan-sagar-chapter-2-solutions/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-2-asal-dhan-davcmc.html"
+      },
+      {
+        "number": 3,
+        "title": "अच्छे पड़ोसी के गुण",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-3-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-book-solutions-chapter-3/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-3-acche-padosi-ke.html"
+      },
+      {
+        "number": 4,
+        "title": "दोपहरी",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-4-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-4-solutions/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-4-dopaharee-davcmc.html"
+      },
+      {
+        "number": 5,
+        "title": "आकाश को सात सीढ़ियाँ",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-5-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-5-solutions/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-5-akash-ko-saat.html"
+      },
+      {
+        "number": 6,
+        "title": "आश्रम के अतिथि और संस्मरण",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-6-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-book-solutions-chapter-6/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-6-aashram-ke-atithi.html"
+      },
+      {
+        "number": 7,
+        "title": "अन्याय के ख़िलाफ़ लड़ाई",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-7-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-7-solutions/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-7-anyay-ke-khilaf.html"
+      },
+      {
+        "number": 8,
+        "title": "दोहे",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-8-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-8-solutions/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2018/08/class-viii-chapter-8-dohe-davcmc-word.html"
+      },
+      {
+        "number": 9,
+        "title": "जब भोलाराम ने पंप लगाया",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-9-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-9-question-answer/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-9-jab-bholaram-ne.html"
+      },
+      {
+        "number": 10,
+        "title": "बातचीत की कला",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-10-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-10-solutions/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-10-baatcheet-ki-kala.html"
+      },
+      {
+        "number": 11,
+        "title": "सितारों से आगे",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-11-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-11-solutions/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-11-sitaron-se-aage.html"
+      },
+      {
+        "number": 12,
+        "title": "पौधे के पंख",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-12-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-12-solutions/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-12-poudhe-ke-pankh.html"
+      },
+      {
+        "number": 13,
+        "title": "सूर और तुलसी के पद",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-13-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-13-solutions-soor-aur-tulasee-ke-pad/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-13-soor-aur-tulasi.html"
+      },
+      {
+        "number": 14,
+        "title": "बहू की विदा",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-14-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-14-solutions/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-14-bahu-ki-vida.html"
+      },
+      {
+        "number": 15,
+        "title": "कामचोर",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-15-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-15-question-answer/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2017/11/class-viii-chapter-15-kaamchor-davcmc.html"
+      },
+      {
+        "number": 16,
+        "title": "एक तिनका",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-16-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-16-solutions/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-16-ek-tinka-davcmc.html"
+      },
+      {
+        "number": 17,
+        "title": "सोना",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-17-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-17-sona-solutions/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-17-sona-davcmc.html"
+      },
+      {
+        "number": 18,
+        "title": "दुख में हार न मानो",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-18-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-18-question-answer-dukh-mein-haar-na-maano/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2018/08/class-viii-chapter-18-jhansi-ki-rani.html"
+      },
+      {
+        "number": 19,
+        "title": "जीवन का सच",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-19-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-19-question-answer-jeevan-ka-sach/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-19-jeevan-ka-sach.html"
+      },
+      {
+        "number": 20,
+        "title": "ईर्ष्या: तू न गई मेरे मन से",
+        "tagline": "DAV Class 8 curriculum solutions, practice exercises & model Q&A",
+        "icon": "Languages",
+        "emoji": "📖",
+        "badge": "साहित्य एवं व्याकरण 🇮🇳",
+        "solutionGyanUrl": "",
+        "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-20-question-answer/",
+        "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-20-question-answer-eershya-too-na-gaee-mere-man-se/",
+        "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-20-iirshya-tu-na-gai.html"
+      }
+    ],
+    "hin8_as": [
+      {
+            "number": 1,
+            "title": "अनुस्वार, अनुनासिक एवं 'र' के विभिन्न रूप",
+            "tagline": "आधारित 'हम पंछी उन्मुक्त गगन के' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-1-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-1-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-1-hum-panchhi-unmukt.html"
+      },
+      {
+            "number": 2,
+            "title": "उपसर्ग एवं प्रत्यय",
+            "tagline": "आधारित 'असल धन' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-2-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-gyan-sagar-chapter-2-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-2-asal-dhan-davcmc.html"
+      },
+      {
+            "number": 3,
+            "title": "संधि (स्वर संधि के भेद)",
+            "tagline": "आधारित 'अच्छे पड़ोसी के गुण' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-3-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-book-solutions-chapter-3/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-3-acche-padosi-ke.html"
+      },
+      {
+            "number": 4,
+            "title": "अलंकार (अनुप्रास, उपमा, रूपक, मानवीकरण)",
+            "tagline": "आधारित 'दोपहरी' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-4-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-4-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-4-dopaharee-davcmc.html"
+      },
+      {
+            "number": 5,
+            "title": "सर्वनाम एवं उसके भेद",
+            "tagline": "आधारित 'आकाश को सात सीढ़ियाँ' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-5-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-5-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-5-akash-ko-saat.html"
+      },
+      {
+            "number": 6,
+            "title": "भाववाचक संज्ञा निर्माण",
+            "tagline": "आधारित 'आश्रम के अतिथि और संस्मरण' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-6-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-6-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-6-aashram-ke-atithi.html"
+      },
+      {
+            "number": 7,
+            "title": "कारक एवं उसके भेद",
+            "tagline": "आधारित 'अन्याय के ख़िलाफ़ लड़ाई' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-7-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-7-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-7-anyay-ke-khilaf.html"
+      },
+      {
+            "number": 8,
+            "title": "अलंकार (उत्प्रेक्षा, श्लेष, यमक, अतिशयोक्ति)",
+            "tagline": "आधारित 'दोहे' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-8-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-8-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-8-dohe-davcmc-abhyas.html"
+      },
+      {
+            "number": 9,
+            "title": "विशेषण और प्रविशेषण",
+            "tagline": "आधारित 'जब भोलाराम ने पंप लगाया' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-9-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-9-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-9-jab-bholaram-ne.html"
+      },
+      {
+            "number": 10,
+            "title": "बातचीत की कला (संवाद एवं विराम-चिह्न)",
+            "tagline": "आधारित 'बातचीत की कला' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-10-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-10-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-10-baatcheet-ki-kala.html"
+      },
+      {
+            "number": 11,
+            "title": "मुहावरे एवं लोकोक्तियाँ",
+            "tagline": "आधारित 'सितारों से आगे' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-11-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-11-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-11-sitaron-se-aage.html"
+      },
+      {
+            "number": 12,
+            "title": "वाक्य विचार (सरल, संयुक्त, मिश्र)",
+            "tagline": "आधारित 'पौधे के पंख' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-12-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-12-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-12-poudhe-ke-pankh.html"
+      },
+      {
+            "number": 13,
+            "title": "क्रिया एवं क्रिया-विशेषण",
+            "tagline": "आधारित 'सूर और तुलसी के पद' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-13-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-13-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-13-soor-aur-tulasi.html"
+      },
+      {
+            "number": 14,
+            "title": "समास (तत्पुरुष, कर्मधारय, द्विगु, द्वंद्व, बहुव्रीहि)",
+            "tagline": "आधारित 'बहू की विदा' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-14-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-14-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-14-bahu-ki-vida.html"
+      },
+      {
+            "number": 15,
+            "title": "कामचोर (व्याकरण अभ्यास)",
+            "tagline": "आधारित 'कामचोर' - व्याकरण एवं भाषा अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-15-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-15-question-answer/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-15-kaamchor-davcmc.html"
+      },
+      {
+            "number": 16,
+            "title": "प्रत्यय एवं शब्द-विचार",
+            "tagline": "आधारित 'एक तिनका' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-16-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-16-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-16-ek-tinka-davcmc.html"
+      },
+      {
+            "number": 17,
+            "title": "पद-परिचय (संज्ञा, सर्वनाम, क्रिया, विशेषण)",
+            "tagline": "आधारित 'सोना' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-17-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-17-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-17-sona-davcmc.html"
+      },
+      {
+            "number": 18,
+            "title": "निर्माण (अभ्यास सागर)",
+            "tagline": "आधारित 'दुख में हार न मानो / निर्माण' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-18-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-18-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/12/class-viii-chapter-18-nirman-abhyas.html"
+      },
+      {
+            "number": 19,
+            "title": "अशुद्धि शोधन (वर्तनी एवं वाक्य)",
+            "tagline": "आधारित 'जीवन का सच' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-19-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-19-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-19-jeevan-ka-sach.html"
+      },
+      {
+            "number": 20,
+            "title": "ईर्ष्या : तू न गई मेरे मन से (व्याकरण एवं रचना)",
+            "tagline": "आधारित 'ईर्ष्या : तू न गई मेरे मन से' - व्याकरण अभ्यास",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-8/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-20-abhyas-sagar-solutions/",
+            "ncertUrl": "https://ncertbookspdf.com/dav-class-8-hindi-chapter-20-solutions/",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-viii-chapter-20-iirshya-tu-na-gai.html"
+      }
+],
     "sans8": [
       {
         "number": 1,
@@ -2722,7 +3206,7 @@ export const DAV_CHAPTERS = {
         "badge": "Literature & Grammar ✍️",
         "solutionGyanUrl": "",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-english-practice-book-solutions-chapter-6/",
-        "ncertUrl": "https://ncertbookspdf.com/modals-question-answers-dav-class-7-english-practice-book-chapter-6-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -2782,7 +3266,7 @@ export const DAV_CHAPTERS = {
         "badge": "Literature & Grammar ✍️",
         "solutionGyanUrl": "",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-english-practice-book-solutions-chapter-11/",
-        "ncertUrl": "https://ncertbookspdf.com/linkers-question-answers-dav-class-7-english-practice-book-chapter-11-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -3040,6 +3524,248 @@ export const DAV_CHAPTERS = {
         "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-vii-chapter-20-karmaveer-bhasha.html"
       }
     ],
+    "hin7_as": [
+      {
+            "number": 1,
+            "title": "अनुस्वार एवं अनुनासिक",
+            "tagline": "आधारित 'बारहमासा' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-1-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-vii-chapter-1-barahmaasa-bhasha.html"
+      },
+      {
+            "number": 2,
+            "title": "उपसर्ग एवं प्रत्यय",
+            "tagline": "आधारित 'नाटक में नाटक' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-2-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-vii-chapter-2-natak-me-natak.html"
+      },
+      {
+            "number": 3,
+            "title": "संधि",
+            "tagline": "आधारित 'निर्मला, साँप और सयाल' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-3-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-vii-chapter-3-nirmala-saanp-aur.html"
+      },
+      {
+            "number": 4,
+            "title": "सर्वनाम",
+            "tagline": "आधारित 'बातूनी' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-4-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": "https://www.onlinehindi.in/2020/04/class-vii-chapter-4-batooni-davcmc.html"
+      },
+      {
+            "number": 5,
+            "title": "विशेषण",
+            "tagline": "आधारित 'राजू का सपना' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-5-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": ""
+      },
+      {
+            "number": 6,
+            "title": "काल (वर्तमान, भूत, भविष्यत)",
+            "tagline": "आधारित 'समय' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-6-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": ""
+      },
+      {
+            "number": 7,
+            "title": "कारक",
+            "tagline": "आधारित 'स्कूल की छुट्टियाँ' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-7-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": ""
+      },
+      {
+            "number": 8,
+            "title": "मुहावरे",
+            "tagline": "आधारित 'एवरेस्ट की चुनौती' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-8-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": ""
+      },
+      {
+            "number": 9,
+            "title": "क्रिया (सकर्मक एवं अकर्मक)",
+            "tagline": "आधारित 'सवाल का जवाब' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-9-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": ""
+      },
+      {
+            "number": 10,
+            "title": "विराम-चिह्न",
+            "tagline": "आधारित 'झंडा ऊँचा रहे हमारा' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-10-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": ""
+      },
+      {
+            "number": 11,
+            "title": "वाक्य-भेद",
+            "tagline": "आधारित 'उस रात की बात' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-11-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": ""
+      },
+      {
+            "number": 12,
+            "title": "दोहे (व्याकरण अभ्यास)",
+            "tagline": "आधारित 'दोहे' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-12-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": ""
+      },
+      {
+            "number": 13,
+            "title": "साहस को सलाम (व्याकरण अभ्यास)",
+            "tagline": "आधारित 'साहस को सलाम' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-13-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": ""
+      },
+      {
+            "number": 14,
+            "title": "समास",
+            "tagline": "आधारित 'एस. रामानुजन' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-14-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": ""
+      },
+      {
+            "number": 15,
+            "title": "अशुद्धि शोधन",
+            "tagline": "आधारित 'देशभक्त पुरु' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-15-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": ""
+      },
+      {
+            "number": 16,
+            "title": "पत्र लेखन",
+            "tagline": "आधारित 'काकी' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-16-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": ""
+      },
+      {
+            "number": 17,
+            "title": "संवाद लेखन",
+            "tagline": "आधारित 'अन्नदाता कृषक' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-17-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": ""
+      },
+      {
+            "number": 18,
+            "title": "अनुच्छेद लेखन",
+            "tagline": "आधारित 'बाल लीला और कुंडलिया' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-18-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": ""
+      },
+      {
+            "number": 19,
+            "title": "सूचना लेखन",
+            "tagline": "आधारित 'गणेशोत्सव' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-19-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": ""
+      },
+      {
+            "number": 20,
+            "title": "निबंध लेखन",
+            "tagline": "आधारित 'कर्मवीर' - अभ्यास सागर कक्षा 7",
+            "icon": "Languages",
+            "emoji": "✍️",
+            "badge": "अभ्यास सागर व्याकरण ✍️",
+            "solutionGyanUrl": "https://solutiongyan.com/dav-class-7/",
+            "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-20-abhyas-sagar-solutions/",
+            "ncertUrl": "",
+            "onlineHindiUrl": ""
+      }
+],
     "sans7": [
       {
         "number": 1,
@@ -4244,7 +4970,7 @@ export const DAV_CHAPTERS = {
         "badge": "Literature & Grammar ✍️",
         "solutionGyanUrl": "",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-6-english-practice-book-solutions-chapter-4/",
-        "ncertUrl": "https://ncertbookspdf.com/subject-verb-agreement-question-answers-dav-class-6-english-practice-book-chapter-4-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -4292,7 +5018,7 @@ export const DAV_CHAPTERS = {
         "badge": "Literature & Grammar ✍️",
         "solutionGyanUrl": "",
         "learnCramUrl": "https://www.learncram.com/dav-solutions/dav-class-6-english-practice-book-solutions-chapter-8/",
-        "ncertUrl": "https://ncertbookspdf.com/modals-question-answers-dav-class-6-english-practice-book-chapter-8-solutions/",
+        "ncertUrl": "",
         "onlineHindiUrl": ""
       },
       {
@@ -11534,7 +12260,12 @@ export const SOLUTION_GYAN_HUBS = {
     "math8": "https://solutiongyan.com/dav-class-8-maths-book-solutions/",
     "sst8": "https://solutiongyan.com/dav-class-8-sst-book-solutions/",
     "eng8": "https://solutiongyan.com/dav-class-8-english-literature-book-solutions/",
+    "eng8_lit": "https://solutiongyan.com/dav-class-8-english-literature-book-solutions/",
+    "eng8_reader": "https://solutiongyan.com/dav-class-8/",
+    "eng8_prac": "https://solutiongyan.com/dav-class-8/",
     "hin8": "https://solutiongyan.com/dav-class-8/",
+    "hin8_gs": "https://solutiongyan.com/dav-class-8/",
+    "hin8_as": "https://solutiongyan.com/dav-class-8/",
     "sans8": "https://solutiongyan.com/dav-class-8/",
     "comp8": "https://solutiongyan.com/dav-class-8/"
   },
@@ -11542,8 +12273,13 @@ export const SOLUTION_GYAN_HUBS = {
     "sci7": "https://solutiongyan.com/dav-class-7-science/",
     "math7": "https://solutiongyan.com/dav-class-7-maths/",
     "sst7": "https://solutiongyan.com/dav-class-7-social-science/",
+    "eng7": "https://solutiongyan.com/dav-class-7-english/",
     "eng7_lit": "https://solutiongyan.com/dav-class-7-english/",
+    "eng7_reader": "https://solutiongyan.com/dav-class-7-english/",
+    "eng7_prac": "https://solutiongyan.com/dav-class-7-english/",
+    "hin7": "https://solutiongyan.com/dav-class-7/",
     "hin7_gs": "https://solutiongyan.com/dav-class-7/",
+    "hin7_as": "https://solutiongyan.com/dav-class-7/",
     "sans7": "https://solutiongyan.com/dav-class-7/",
     "comp7": "https://solutiongyan.com/dav-class-7/"
   },
@@ -11551,24 +12287,71 @@ export const SOLUTION_GYAN_HUBS = {
     "sci6": "https://solutiongyan.com/dav-class-6-science/",
     "math6": "https://solutiongyan.com/dav-class-6-maths/",
     "sst6": "https://solutiongyan.com/dav-class-6-social-science/",
+    "eng6": "https://solutiongyan.com/dav-class-6/",
     "eng6_lit": "https://solutiongyan.com/dav-class-6/",
-    "hin6_gs": "https://solutiongyan.com/dav-class-6/"
+    "eng6_reader": "https://solutiongyan.com/dav-class-6/",
+    "eng6_prac": "https://solutiongyan.com/dav-class-6/",
+    "hin6": "https://solutiongyan.com/dav-class-6/",
+    "hin6_gs": "https://solutiongyan.com/dav-class-6/",
+    "hin6_as": "https://solutiongyan.com/dav-class-6/"
   },
   "5": {
     "sci5": "https://solutiongyan.com/dav-class-5-science/",
     "sst5": "https://solutiongyan.com/dav-class-5-social-science/",
     "math5": "https://solutiongyan.com/dav-class-5/",
-    "hin5_bm": "https://solutiongyan.com/dav-class-5/"
+    "eng5": "https://solutiongyan.com/dav-class-5/",
+    "eng5_reader": "https://solutiongyan.com/dav-class-5/",
+    "eng5_prac": "https://solutiongyan.com/dav-class-5/",
+    "hin5": "https://solutiongyan.com/dav-class-5/",
+    "hin5_bm": "https://solutiongyan.com/dav-class-5/",
+    "hin5_ba": "https://solutiongyan.com/dav-class-5/"
   },
   "4": {
     "sci4": "https://solutiongyan.com/dav-class-4-science/",
     "sst4": "https://solutiongyan.com/dav-class-4/",
-    "math4": "https://solutiongyan.com/dav-class-4/"
+    "math4": "https://solutiongyan.com/dav-class-4/",
+    "eng4": "https://solutiongyan.com/dav-class-4/",
+    "eng4_reader": "https://solutiongyan.com/dav-class-4/",
+    "eng4_prac": "https://solutiongyan.com/dav-class-4/",
+    "hin4": "https://solutiongyan.com/dav-class-4/",
+    "hin4_bm": "https://solutiongyan.com/dav-class-4/",
+    "hin4_ba": "https://solutiongyan.com/dav-class-4/"
   },
   "3": {
     "sci3": "https://solutiongyan.com/dav-class-3-science/",
     "evs3": "https://solutiongyan.com/dav-class-3/",
-    "math3": "https://solutiongyan.com/dav-class-3/"
+    "math3": "https://solutiongyan.com/dav-class-3/",
+    "eng3": "https://solutiongyan.com/dav-class-3/",
+    "eng3_reader": "https://solutiongyan.com/dav-class-3/",
+    "eng3_prac": "https://solutiongyan.com/dav-class-3/",
+    "hin3": "https://solutiongyan.com/dav-class-3/",
+    "hin3_bm": "https://solutiongyan.com/dav-class-3/",
+    "hin3_ba": "https://solutiongyan.com/dav-class-3/"
+  },
+  "2": {
+    "eng2": "https://solutiongyan.com/dav-class-2/",
+    "eng2_reader": "https://solutiongyan.com/dav-class-2/",
+    "eng2_prac": "https://solutiongyan.com/dav-class-2/",
+    "hin2": "https://solutiongyan.com/dav-class-2/",
+    "hin2_bm": "https://solutiongyan.com/dav-class-2/",
+    "hin2_abhyas": "https://solutiongyan.com/dav-class-2/"
+  },
+  "1": {
+    "eng1": "https://solutiongyan.com/dav-class-1/",
+    "eng1_reader": "https://solutiongyan.com/dav-class-1/",
+    "eng1_prac": "https://solutiongyan.com/dav-class-1/",
+    "hin1": "https://solutiongyan.com/dav-class-1/",
+    "hin1_bm": "https://solutiongyan.com/dav-class-1/",
+    "hin1_abhyas": "https://solutiongyan.com/dav-class-1/"
+  },
+  "UKG": {
+    "ukg_eng": "https://solutiongyan.com/",
+    "ukg_hin_bm": "https://solutiongyan.com/",
+    "ukg_hin_sa": "https://solutiongyan.com/"
+  },
+  "LKG": {
+    "lkg_eng": "https://solutiongyan.com/",
+    "lkg_hin": "https://solutiongyan.com/"
   }
 };
 
@@ -11579,32 +12362,95 @@ export const LEARN_CRAM_HUBS = {
     "math8": "https://www.learncram.com/dav-solutions/dav-class-8-maths-book-solutions/",
     "sst8": "https://www.learncram.com/dav-solutions/dav-class-8-sst-book-solutions/",
     "eng8": "https://www.learncram.com/dav-solutions/dav-class-8-english-book-solutions/",
+    "eng8_lit": "https://www.learncram.com/dav-solutions/dav-class-8-english-literature-book-solutions/",
+    "eng8_reader": "https://www.learncram.com/dav-solutions/dav-class-8-english-reader-book-solutions/",
+    "eng8_prac": "https://www.learncram.com/dav-solutions/dav-class-8-english-practice-book-solutions/",
     "hin8": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-book-solutions/",
+    "hin8_gs": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-book-solutions/",
+    "hin8_as": "https://www.learncram.com/dav-solutions/dav-class-8-hindi-chapter-1-abhyas-sagar-solutions/",
     "sans8": "https://www.learncram.com/dav-solutions/dav-class-8-sanskrit-book-solutions/"
   },
   "7": {
     "sci7": "https://www.learncram.com/dav-solutions/dav-class-7-science-book-solutions/",
     "math7": "https://www.learncram.com/dav-solutions/dav-class-7-maths-book-solutions/",
     "sst7": "https://www.learncram.com/dav-solutions/dav-class-7-social-science/",
-    "eng7_lit": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-7/",
-    "hin7_gs": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-7/"
+    "eng7": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-7/",
+    "eng7_lit": "https://www.learncram.com/dav-solutions/dav-class-7-english-literature-book-solutions/",
+    "eng7_reader": "https://www.learncram.com/dav-solutions/dav-class-7-english-reader-book-solutions/",
+    "eng7_prac": "https://www.learncram.com/dav-solutions/dav-class-7-english-practice-book-solutions/",
+    "hin7": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-7/",
+    "hin7_gs": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-1-question-answer/",
+    "hin7_as": "https://www.learncram.com/dav-solutions/dav-class-7-hindi-chapter-1-abhyas-sagar-solutions/"
   },
   "6": {
-    "sci6": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-6/",
-    "math6": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-6/",
-    "sst6": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-6/"
+    "sci6": "https://www.learncram.com/dav-solutions/dav-class-6-science/",
+    "math6": "https://www.learncram.com/dav-solutions/dav-class-6-maths/",
+    "sst6": "https://www.learncram.com/dav-solutions/dav-class-6-social-science/",
+    "eng6": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-6/",
+    "eng6_lit": "https://www.learncram.com/dav-solutions/dav-class-6-english-literature-book-solutions/",
+    "eng6_reader": "https://www.learncram.com/dav-solutions/dav-class-6-english-reader-book-solutions/",
+    "eng6_prac": "https://www.learncram.com/dav-solutions/dav-class-6-english-practice-book-solutions/",
+    "hin6": "https://www.learncram.com/dav-solutions/dav-class-6-hindi-chapter-1-question-answer/",
+    "hin6_gs": "https://www.learncram.com/dav-solutions/dav-class-6-hindi-chapter-1-question-answer/",
+    "hin6_as": "https://www.learncram.com/dav-solutions/dav-class-6-hindi-chapter-1-abhyas-sagar-solutions/"
   },
   "5": {
-    "sci5": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-5/",
-    "sst5": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-5/"
+    "sci5": "https://www.learncram.com/dav-solutions/dav-class-5-science/",
+    "sst5": "https://www.learncram.com/dav-solutions/dav-class-5-social-science/",
+    "math5": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-5/",
+    "eng5": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-5/",
+    "eng5_reader": "https://www.learncram.com/dav-solutions/dav-class-5-english-reader/",
+    "eng5_prac": "https://www.learncram.com/dav-solutions/dav-class-5-english-practice-book/",
+    "hin5": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-5/",
+    "hin5_bm": "https://www.learncram.com/dav-solutions/dav-class-5-hindi-bhasha-madhuri/",
+    "hin5_ba": "https://www.learncram.com/dav-solutions/dav-class-5-hindi-bhasha-abhyas/"
   },
   "4": {
     "sci4": "https://www.learncram.com/dav-solutions/dav-class-4-science-book-solutions/",
-    "sst4": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-4/"
+    "sst4": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-4/",
+    "math4": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-4/",
+    "eng4": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-4/",
+    "eng4_reader": "https://www.learncram.com/dav-solutions/dav-class-4-english-reader/",
+    "eng4_prac": "https://www.learncram.com/dav-solutions/dav-class-4-english-practice-book/",
+    "hin4": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-4/",
+    "hin4_bm": "https://www.learncram.com/dav-solutions/dav-class-4-hindi-bhasha-madhuri/",
+    "hin4_ba": "https://www.learncram.com/dav-solutions/dav-class-4-hindi-bhasha-abhyas/"
   },
   "3": {
     "sci3": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-3/",
-    "evs3": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-3/"
+    "evs3": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-3/",
+    "math3": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-3/",
+    "eng3": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-3/",
+    "eng3_reader": "https://www.learncram.com/dav-solutions/dav-class-3-english-reader/",
+    "eng3_prac": "https://www.learncram.com/dav-solutions/dav-class-3-english-practice-book/",
+    "hin3": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-3/",
+    "hin3_bm": "https://www.learncram.com/dav-solutions/dav-class-3-hindi-bhasha-madhuri/",
+    "hin3_ba": "https://www.learncram.com/dav-solutions/dav-class-3-hindi-bhasha-abhyas/"
+  },
+  "2": {
+    "eng2": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-2/",
+    "eng2_reader": "https://www.learncram.com/dav-solutions/dav-class-2-english-reader/",
+    "eng2_prac": "https://www.learncram.com/dav-solutions/dav-class-2-english-practice-book/",
+    "hin2": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-2/",
+    "hin2_bm": "https://www.learncram.com/dav-solutions/dav-class-2-hindi-bhasha-madhuri/",
+    "hin2_abhyas": "https://www.learncram.com/dav-solutions/dav-class-2-hindi-bhasha-abhyas/"
+  },
+  "1": {
+    "eng1": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-1/",
+    "eng1_reader": "https://www.learncram.com/dav-solutions/dav-class-1-english-reader/",
+    "eng1_prac": "https://www.learncram.com/dav-solutions/dav-class-1-english-practice-book/",
+    "hin1": "https://www.learncram.com/dav-solutions/dav-books-solutions-class-1/",
+    "hin1_bm": "https://www.learncram.com/dav-solutions/dav-class-1-hindi-bhasha-madhuri/",
+    "hin1_abhyas": "https://www.learncram.com/dav-solutions/dav-class-1-hindi-bhasha-abhyas/"
+  },
+  "UKG": {
+    "ukg_eng": "https://www.learncram.com/dav-solutions/",
+    "ukg_hin_bm": "https://www.learncram.com/dav-solutions/",
+    "ukg_hin_sa": "https://www.learncram.com/dav-solutions/"
+  },
+  "LKG": {
+    "lkg_eng": "https://www.learncram.com/dav-solutions/",
+    "lkg_hin": "https://www.learncram.com/dav-solutions/"
   }
 };
 
@@ -11614,16 +12460,29 @@ export const LEARN_CRAM_HUBS = {
 export function getSubjectChapters(grade, subjectId, subjectName = '') {
   const gKey = String(grade);
   if (DAV_CHAPTERS[gKey]) {
+    // 1. Direct key match
     if (DAV_CHAPTERS[gKey][subjectId] && DAV_CHAPTERS[gKey][subjectId].length > 0) {
       return DAV_CHAPTERS[gKey][subjectId];
     }
-    // Specific aliases for language sub-books
+    // 2. Specific verified aliases for language sub-books
     if (subjectId === 'eng8_lit' && DAV_CHAPTERS[gKey]['eng8']) return DAV_CHAPTERS[gKey]['eng8'];
-    if (subjectId === 'eng8_reader' && DAV_CHAPTERS[gKey]['eng8']) return DAV_CHAPTERS[gKey]['eng8'];
-    if (subjectId === 'eng8_prac' && DAV_CHAPTERS[gKey]['eng8']) return DAV_CHAPTERS[gKey]['eng8'];
     if (subjectId === 'hin8_gs' && DAV_CHAPTERS[gKey]['hin8']) return DAV_CHAPTERS[gKey]['hin8'];
-    if (subjectId === 'hin8_as' && DAV_CHAPTERS[gKey]['hin8']) return DAV_CHAPTERS[gKey]['hin8'];
-    if (subjectId === 'hin7_as' && DAV_CHAPTERS[gKey]['hin7_gs']) return DAV_CHAPTERS[gKey]['hin7_gs'];
+    if (subjectId === 'hin8_as' && DAV_CHAPTERS[gKey]['hin8_as']) return DAV_CHAPTERS[gKey]['hin8_as'];
+    if (subjectId === 'hin7_as' && DAV_CHAPTERS[gKey]['hin7_as']) return DAV_CHAPTERS[gKey]['hin7_as'];
+    if (subjectId === 'hin7' && DAV_CHAPTERS[gKey]['hin7_gs']) return DAV_CHAPTERS[gKey]['hin7_gs'];
+    if (subjectId === 'hin6' && DAV_CHAPTERS[gKey]['hin6_gs']) return DAV_CHAPTERS[gKey]['hin6_gs'];
+    if (subjectId === 'hin5' && DAV_CHAPTERS[gKey]['hin5_bm']) return DAV_CHAPTERS[gKey]['hin5_bm'];
+    if (subjectId === 'hin4' && DAV_CHAPTERS[gKey]['hin4_bm']) return DAV_CHAPTERS[gKey]['hin4_bm'];
+    if (subjectId === 'hin3' && DAV_CHAPTERS[gKey]['hin3_bm']) return DAV_CHAPTERS[gKey]['hin3_bm'];
+    if (subjectId === 'hin2' && DAV_CHAPTERS[gKey]['hin2_bm']) return DAV_CHAPTERS[gKey]['hin2_bm'];
+    if (subjectId === 'hin1' && DAV_CHAPTERS[gKey]['hin1_bm']) return DAV_CHAPTERS[gKey]['hin1_bm'];
+    if (subjectId === 'eng7' && DAV_CHAPTERS[gKey]['eng7_lit']) return DAV_CHAPTERS[gKey]['eng7_lit'];
+    if (subjectId === 'eng6' && DAV_CHAPTERS[gKey]['eng6_lit']) return DAV_CHAPTERS[gKey]['eng6_lit'];
+    if (subjectId === 'eng5' && DAV_CHAPTERS[gKey]['eng5_reader']) return DAV_CHAPTERS[gKey]['eng5_reader'];
+    if (subjectId === 'eng4' && DAV_CHAPTERS[gKey]['eng4_reader']) return DAV_CHAPTERS[gKey]['eng4_reader'];
+    if (subjectId === 'eng3' && DAV_CHAPTERS[gKey]['eng3_reader']) return DAV_CHAPTERS[gKey]['eng3_reader'];
+    if (subjectId === 'eng2' && DAV_CHAPTERS[gKey]['eng2_reader']) return DAV_CHAPTERS[gKey]['eng2_reader'];
+    if (subjectId === 'eng1' && DAV_CHAPTERS[gKey]['eng1']) return DAV_CHAPTERS[gKey]['eng1'];
   }
 
   // Fallback if custom subject requested

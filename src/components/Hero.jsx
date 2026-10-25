@@ -34,8 +34,8 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
         </div>
 
         {/* Big Bold Headline with Immersive 3D Text */}
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-tight animate-solar-flare animate-3d-float text-3d-white">
-          Welcome to <span className="gradient-flowing-text text-3d-gold inline-block">DAV Dictionary</span>
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white max-w-4xl mx-auto leading-tight animate-solar-flare animate-3d-float">
+          Welcome to <span className="text-3d-mega animate-holo-rim px-3 py-1 rounded-2xl bg-stone-900/90 border-2 border-amber-400">DAV Dictionary</span>
         </h1>
 
         {/* Subtitle */}
