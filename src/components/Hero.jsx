@@ -34,7 +34,7 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
         </div>
 
         {/* Big Bold Headline */}
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-tight">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-tight animate-solar-flare">
           Welcome to <span className="gradient-flowing-text">DAV Dictionary</span>
         </h1>
 

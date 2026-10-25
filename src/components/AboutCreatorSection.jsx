@@ -194,7 +194,7 @@ export function AboutCreatorSection() {
       </div>
 
       {/* Main Profile Showcase Card */}
-      <div className="bg-gradient-to-b from-stone-900 via-slate-900 to-stone-950 rounded-3xl border border-amber-500/30 shadow-2xl overflow-hidden relative mb-10 card-interactive shimmer-overlay">
+      <div className="bg-gradient-to-b from-stone-900 via-slate-900 to-stone-950 rounded-3xl border border-amber-500/30 shadow-2xl overflow-hidden relative mb-10 card-interactive shimmer-overlay card-super-interactive border-halo-gold animate-molten-gold">
         
         {/* Glow Highlights */}
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none animate-float-orb" />
