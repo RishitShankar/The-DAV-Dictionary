@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { 
+  X, ArrowLeft,
   Calculator,
   Play, Video, BookOpen, FileText, Award, CheckCircle2, 
   ExternalLink, Copy, Check, Search, Sparkles, Clock, 
