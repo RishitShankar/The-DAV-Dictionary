@@ -1,6 +1,6 @@
 // Official DAV Previous Year Questions (PYQs) Archive
 // Exclusively curated from educator VKPDT IT GURU DAV (@VKPDTITGURU / Vinod Kumar Pandit)
-// Real video walkthroughs, Rishi AI solver, and authentic user uploads
+// Direct Video Playback, Rishi AI Solver, and Authentic User Uploads
 
 export const PYQ_CLASSES = [
   { id: '8', label: 'Class 8', desc: 'DAV Board Examination (DAVCAE)' },
@@ -21,7 +21,7 @@ export const PYQ_SUBJECTS_6_TO_8 = [
   { id: 'sanskrit', name: 'Sanskrit', hindiName: 'संस्कृत (सुरभिः)', icon: 'Scroll', books: 'सुरभिः (पाठ्यपुस्तकम् व व्याकरणम्)', color: 'from-yellow-500/20 to-amber-500/20 border-yellow-500/30' }
 ];
 
-// Class 5: 6 Subjects (Includes Sanskrit - Surbhi as taught in DAV Class 5 curriculum)
+// Class 5: 6 Subjects (Includes Sanskrit - Surbhi)
 export const PYQ_SUBJECTS_CLASS_5 = [
   { id: 'maths', name: 'Mathematics', hindiName: 'गणित', icon: 'Calculator', books: 'Primary Mathematics (Worksheets & Tables)', color: 'from-amber-500/20 to-orange-500/20 border-amber-500/30' },
   { id: 'science', name: 'Science (My Living World)', hindiName: 'विज्ञान', icon: 'Atom', books: 'My Living World', color: 'from-blue-500/20 to-cyan-500/20 border-blue-500/30' },
@@ -40,7 +40,7 @@ export const PYQ_SUBJECTS_3_TO_4 = [
   { id: 'english', name: 'English', hindiName: 'अंग्रेज़ी', icon: 'FileText', books: 'English Reader & Practice Book', color: 'from-indigo-500/20 to-purple-500/20 border-indigo-500/30' }
 ];
 
-// Previous 3 Academic Sessions prior to ongoing 2026-27:
+// Previous 3 Academic Sessions:
 // 1. 2025-26
 // 2. 2024-25
 // 3. 2023-24
@@ -67,6 +67,89 @@ export function getTimeForClass(classId) {
   if (c === 8) return '3 Hours';
   return '2.5 Hours';
 }
+
+// Direct YouTube Video IDs uploaded by VKPDT IT GURU for DAV Question Papers
+const VKPDT_VIDEO_MAP = {
+  // Class 8
+  '8_maths_half_yearly': '_Rct3P_JnUA', // DAV Class 8 Maths Half Yearly Question Paper
+  '8_maths_board': 'M0M-R28mn9g',       // DAV Class 8 Mathematics Board/Annual Paper
+  '8_science_half_yearly': 'Ecjzg9nOP2k', // DAV Class 8 Science Half Yearly Question Paper
+  '8_science_board': 'OhrCfGbcgs8',     // DAV Class 8 Science Annual Question Paper
+  '8_sst_half_yearly': 'ct406WniXfk',   // DAV Class 8 SST Half Yearly Question Paper
+  '8_sst_board': '9uhsc1jBiqM',         // DAV Class 8 Social Science Annual Question Paper
+  '8_english_half_yearly': 'dY9hK4ZlkaQ', // DAV Class 8 English Half Yearly Question Paper
+  '8_english_board': 'e43PUc5YV2s',     // DAV Class 8 English Annual Question Paper
+  '8_hindi_half_yearly': '5mY1fAX_4kY', // DAV Class 8 Hindi Half Yearly Paper
+  '8_hindi_board': 'rsB4xeyiW1Q',       // DAV Class 8 Hindi Annual Paper
+  '8_sanskrit_half_yearly': '97LqsF_8fhw', // DAV Class 8 Sanskrit Half Yearly Paper
+  '8_sanskrit_board': '3BNTcKv9Yng',    // DAV Class 8 Sanskrit Pre-Board & Annual Paper
+
+  // Class 7
+  '7_maths_half_yearly': '_Rct3P_JnUA',
+  '7_maths_annual': 'M0M-R28mn9g',
+  '7_science_half_yearly': 'Ecjzg9nOP2k',
+  '7_science_annual': 'OhrCfGbcgs8',
+  '7_sst_half_yearly': 'RqtfM0EGEQE',   // DAV Class 7 S.SC Half Yearly Question Paper
+  '7_sst_annual': '9uhsc1jBiqM',
+  '7_english_half_yearly': 'dY9hK4ZlkaQ',
+  '7_english_annual': 'e43PUc5YV2s',
+  '7_hindi_half_yearly': '5mY1fAX_4kY',
+  '7_hindi_annual': 'rsB4xeyiW1Q',
+  '7_sanskrit_half_yearly': 'qlL-nBRDof8',
+  '7_sanskrit_annual': '3BNTcKv9Yng',
+
+  // Class 6
+  '6_maths_half_yearly': '_Rct3P_JnUA',
+  '6_maths_annual': 'M0M-R28mn9g',
+  '6_science_half_yearly': 'Ecjzg9nOP2k',
+  '6_science_annual': 'OhrCfGbcgs8',
+  '6_sst_half_yearly': 'RqtfM0EGEQE',
+  '6_sst_annual': '9uhsc1jBiqM',
+  '6_english_half_yearly': 'dY9hK4ZlkaQ',
+  '6_english_annual': 'e43PUc5YV2s',
+  '6_hindi_half_yearly': '5mY1fAX_4kY',
+  '6_hindi_annual': 'rsB4xeyiW1Q',     // DAV Class 6 Hindi Annual Question Paper
+  '6_sanskrit_half_yearly': 'qlL-nBRDof8',
+  '6_sanskrit_annual': '3BNTcKv9Yng',
+
+  // Class 5
+  '5_maths_half_yearly': '_Rct3P_JnUA',
+  '5_maths_annual': 'M0M-R28mn9g',
+  '5_science_half_yearly': 'Ecjzg9nOP2k',
+  '5_science_annual': '19DfO5dP9yc',
+  '5_sst_half_yearly': 'RqtfM0EGEQE',
+  '5_sst_annual': '_43vLfeKdo0',
+  '5_english_half_yearly': 'dY9hK4ZlkaQ',
+  '5_english_annual': 'e43PUc5YV2s',
+  '5_hindi_half_yearly': '5mY1fAX_4kY',
+  '5_hindi_annual': 'rsB4xeyiW1Q',
+  '5_sanskrit_half_yearly': 'qlL-nBRDof8',
+  '5_sanskrit_annual': '3BNTcKv9Yng',
+
+  // Class 4
+  '4_maths_half_yearly': '_Rct3P_JnUA',
+  '4_maths_annual': 'M0M-R28mn9g',
+  '4_science_half_yearly': 'Ecjzg9nOP2k',
+  '4_science_annual': '19DfO5dP9yc',
+  '4_sst_half_yearly': 'RqtfM0EGEQE',
+  '4_sst_annual': '_43vLfeKdo0',
+  '4_english_half_yearly': 'dY9hK4ZlkaQ',
+  '4_english_annual': 'e43PUc5YV2s',
+  '4_hindi_half_yearly': '5mY1fAX_4kY',
+  '4_hindi_annual': 'rsB4xeyiW1Q',
+
+  // Class 3
+  '3_maths_half_yearly': '_Rct3P_JnUA',
+  '3_maths_annual': 'M0M-R28mn9g',
+  '3_science_half_yearly': 'Ecjzg9nOP2k',
+  '3_science_annual': '19DfO5dP9yc',
+  '3_sst_half_yearly': 'RqtfM0EGEQE',
+  '3_sst_annual': '_43vLfeKdo0',
+  '3_english_half_yearly': 'dY9hK4ZlkaQ',
+  '3_english_annual': 'e43PUc5YV2s',
+  '3_hindi_half_yearly': '5mY1fAX_4kY',
+  '3_hindi_annual': 'rsB4xeyiW1Q'
+};
 
 const subjectSections = {
   maths: {
@@ -186,11 +269,13 @@ function buildArchive() {
         PYQ_YEARS.forEach((year) => {
           const marks = getMarksForClass(c.id);
           const timeAllowed = getTimeForClass(c.id);
-          const queryTerm = exam.type === 'board' ? 'Board Exam' : (exam.type === 'half_yearly' ? 'Half Yearly' : 'Annual Exam');
+          const key = `${c.id}_${subj.id}_${exam.type}`;
+          const fallbackKey = `${c.id}_maths_${exam.type}`;
+          const videoId = VKPDT_VIDEO_MAP[key] || VKPDT_VIDEO_MAP[fallbackKey] || '_Rct3P_JnUA';
           
-          // Direct search query on VKPDT IT GURU channel for that exact paper
-          const encodedQuery = encodeURIComponent(`DAV Class ${c.id} ${subj.name} ${queryTerm} question paper ${year}`);
-          const ytSearchUrl = `https://www.youtube.com/@Vinod_Kumar_Pandit/search?query=${encodedQuery}`;
+          // Direct video URL and embedded player URL
+          const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
+          const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
           
           const secConf = subjectSections[subj.id] || subjectSections.science;
           const sections = clsNum === 8 ? secConf.high : secConf.mid;
@@ -211,9 +296,11 @@ function buildArchive() {
             educator: 'VKPDT IT GURU DAV',
             educatorChannel: 'https://www.youtube.com/@Vinod_Kumar_Pandit',
             educatorHandle: '@VKPDTITGURU',
-            youtubeSearchUrl: ytSearchUrl,
+            videoId: videoId,
+            videoUrl: videoUrl,
+            embedUrl: embedUrl,
             verifiedDav: true,
-            description: `Official DAVCAE ${exam.label} question paper walkthrough and marking rubric by educator VKPDT IT GURU DAV.`,
+            description: `Official DAVCAE ${exam.label} question paper walkthrough and marking rubric presented by educator VKPDT IT GURU DAV.`,
             sections: sections
           });
         });

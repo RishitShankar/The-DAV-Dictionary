@@ -67,6 +67,7 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion, onOpenP
   const [pyqSelectedClass, setPyqSelectedClass] = useState('8');
   const [pyqSelectedSubject, setPyqSelectedSubject] = useState('science');
   const [showPyqSubjectModal, setShowPyqSubjectModal] = useState(false);
+  const [activePyqVideoModal, setActivePyqVideoModal] = useState(null);
   const [pyqSubjectSearch, setPyqSubjectSearch] = useState('');
   const [pyqExamFilter, setPyqExamFilter] = useState('all'); // 'all' | 'half_yearly' | 'board' | 'annual'
   const [attachedScannedPdfs, setAttachedScannedPdfs] = useState(() => {
