@@ -30,19 +30,19 @@ export function GeminiSidebar({
   const isGuest = user?.plan === 'guest';
 
   const sections = [
-    { id: 1, name: 'Section 1: Master Overview & Hub', icon: Compass, status: '11 Sections Hub' },
-    { id: 2, name: 'Section 2: Official DAV Textbooks (LKG–8)', icon: BookOpen, status: 'Digital Library' },
-    { id: 3, name: 'Section 3: Questions & Answers', icon: HelpCircle, status: 'Reserved' },
-    { id: 4, name: 'Section 4: Rishi AI Companion', icon: Sparkles, status: 'AI Workspace' },
-    { id: 5, name: 'Section 5: Dimension 5 Faculty OS', icon: Award, status: 'Teachers OS' },
-    { id: 6, name: 'Section 6: Video Explanations & PYQs', icon: Video, status: 'Lectures & PYQs' },
-    { id: 7, name: 'Section 7: Kids Fun & Live Bus GPS', icon: Bus, status: 'Kids Portal' },
-    { id: 8, name: 'Section 8: Campus Leaderboard & Focus Mode (Stopped)', icon: Trophy, status: 'Available in App Launch' },
-    { id: 9, name: 'Section 9: Student Personal Profile', icon: User, status: 'Smart ID Vault' },
-    { id: 10, name: 'Section 10: Donate & Reviews Hub', icon: Heart, status: '2 Pages: Donate & Review' },
-    { id: 11, name: 'Section 11: About Creator Rishit Shankar', icon: Award, status: 'Head Boy Profile' },
+    { id: 1, name: 'Section 1: Campus Overview', icon: Compass, status: 'Overview Hub' },
+    { id: 2, name: 'Section 2: Digital Textbooks', icon: BookOpen, status: 'Textbooks' },
+    { id: 3, name: 'Section 3: Question Answers', icon: HelpCircle, status: 'Q&A Bank' },
+    { id: 4, name: 'Section 4: Rishi AI', icon: Sparkles, status: 'AI Workspace' },
+    { id: 5, name: 'Section 5: Faculty Portal', icon: Award, status: 'Faculty OS' },
+    { id: 6, name: 'Section 6: Videos & Exams', icon: Video, status: 'Lectures & Exams' },
+    { id: 7, name: 'Section 7: Kids Fun Navigator', icon: Bus, status: 'Kids Portal' },
+    { id: 8, name: 'Section 8: Study Leaderboard', icon: Trophy, status: 'Leaderboard' },
+    { id: 9, name: 'Section 9: Student Profile', icon: User, status: 'Student ID' },
+    { id: 10, name: 'Section 10: Donate & Reviews', icon: Heart, status: 'Donate & Reviews' },
+    { id: 11, name: 'Section 11: About Creator', icon: Award, status: 'About Creator' },
     ...(isDimension4 ? [
-      { id: 12, name: 'Section 12: Developer Review Vault', icon: Star, status: 'Dimension 4 Person' }
+      { id: 12, name: 'Section 12: Review Vault', icon: Star, status: 'Review Vault' }
     ] : []),
   ];
 

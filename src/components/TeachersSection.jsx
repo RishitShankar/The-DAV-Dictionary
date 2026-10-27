@@ -10,7 +10,7 @@ import {
   CheckCheck, Volume2, VolumeX, Sparkle, Eye, Star, Layers, Zap, X,
   ExternalLink, RefreshCw, Bot, Smartphone, RotateCcw,
   ArrowRight, Play, CheckSquare, Radio, Maximize2, Minimize2,
-  PhoneOff, Hand, MessageSquareMore, CheckCircle,
+  PhoneOff, Hand, MessageSquareMore, CheckCircle, ArrowLeft, ArrowDownLeft, ArrowUpRight, PhoneMissed,
   ChevronLeft, Compass, Palette, Trash2, Trophy, Share, Phone, MoreVertical, Settings,
   Camera, UploadCloud, Edit3, Music, Film, FileCheck, Printer, PenTool
 } from 'lucide-react';
@@ -989,7 +989,7 @@ export function TeachersSection({
         }
         return students;
       } else {
-        // Student sees registered teachers
+        // Student sees registered teachers (clean actual names without forced 'Prof.')
         const teachers = allUsers
           .filter(u => {
             const isT = u.dimension === 5 || u.isTeacher || (u.role && u.role.toLowerCase().includes('teacher'));
@@ -998,7 +998,7 @@ export function TeachersSection({
           })
           .map((u, idx) => ({
             id: u.id || `tch_${idx}`,
-            name: (u.name && (u.name.startsWith('Prof.') || u.name.startsWith('Dr.') || u.name.startsWith('Mr.') || u.name.startsWith('Mrs.'))) ? u.name : `Prof. ${u.name || 'Faculty Member'}`,
+            name: String(u.name || 'Faculty Member').replace(/^Prof\.\s*/i, '').trim(),
             subtitle: u.subject || 'Faculty Teacher',
             role: 'Verified DAV Faculty',
             dp: u.dp || u.avatar || null,
@@ -1006,7 +1006,7 @@ export function TeachersSection({
             type: 'teacher',
             subject: u.subject || 'Science & Technology'
           }));
-// Only real user-registered teachers appear
+        // Only real user-registered teachers appear
         return teachers;
       }
     } catch (e) {
@@ -1066,7 +1066,7 @@ export function TeachersSection({
           })
           .map((u, idx) => ({
             id: u.id || `tch_${idx}`,
-            name: (u.name && (u.name.startsWith('Prof.') || u.name.startsWith('Dr.') || u.name.startsWith('Mr.') || u.name.startsWith('Mrs.'))) ? u.name : `Prof. ${u.name || 'Faculty Member'}`,
+            name: String(u.name || 'Faculty Member').replace(/^Prof\.\s*/i, '').trim(),
             subtitle: u.subject || 'Faculty Teacher',
             role: 'Verified DAV Faculty',
             dp: u.dp || u.avatar || null,
@@ -1143,8 +1143,60 @@ export function TeachersSection({
     return window.innerWidth < 640 ? 'roster' : 'chat';
   });
 
-  // WhatsApp Dock View: 'chats' | 'channels'
+  // WhatsApp Dock View: 'chats' | 'calls' | 'channels' | 'contacts' | 'ai'
   const [whatsAppDockView, setWhatsAppDockView] = useState('chats');
+
+  // Dedicated AI Tutor Messages inside Head Chat
+  const [headChatAiMessages, setHeadChatAiMessages] = useState(() => [
+    {
+      id: 'ai_init_1',
+      role: 'assistant',
+      text: 'Hello! I am your DAV Academic AI Tutor powered by ChatGPT. Ask me any homework doubt, math solution, science concept, or board exam question!',
+      time: 'Just now'
+    }
+  ]);
+  const [headChatAiInput, setHeadChatAiInput] = useState('');
+  const [isAiLoading, setIsAiLoading] = useState(false);
+
+  const handleSendHeadChatAiMessage = async (customPrompt) => {
+    const textToSend = (customPrompt || headChatAiInput).trim();
+    if (!textToSend || isAiLoading) return;
+    
+    const userMsg = {
+      id: `ai_usr_${Date.now()}`,
+      role: 'user',
+      text: textToSend,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    
+    setHeadChatAiMessages(prev => [...prev, userMsg]);
+    setHeadChatAiInput('');
+    setIsAiLoading(true);
+
+    setTimeout(() => {
+      let botResponse = '';
+      const lower = textToSend.toLowerCase();
+      if (lower.includes('algebra') || lower.includes('square') || lower.includes('math')) {
+        botResponse = '📘 **CBSE Class 8 Mathematics Solution:**\n\n1. **Standard Algebraic Identities:**\n   • $(a + b)^2 = a^2 + 2ab + b^2$\n   • $(a - b)^2 = a^2 - 2ab + b^2$\n   • $(a^2 - b^2) = (a + b)(a - b)$\n\n2. **Verification Method:** Factorize each term by grouping like terms and cross-verify with textbook chapter 6 criteria.\n\n3. *DAV Board Tip:* Always write the identity used in brackets `[using identity ...]` to secure full 4/4 marks in Section C!';
+      } else if (lower.includes('photo') || lower.includes('science') || lower.includes('reaction')) {
+        botResponse = '🔬 **DAV Board Science Concept Analysis:**\n\n• **Equation:** $6CO_2 + 6H_2O + \\text{Sunlight} \\rightarrow C_6H_{12}O_6 + 6O_2$\n• **Site:** Chloroplasts in mesophyll cells.\n• **Essential Raw Materials:** Carbon dioxide (stomata), water (xylem), sunlight (chlorophyll).\n\n*Key Exam Diagram:* Chloroplast internal structure (grana & stroma). Label both neatly!';
+      } else if (lower.includes('notice') || lower.includes('english') || lower.includes('letter')) {
+        botResponse = '📝 **CBSE Formal Notice Writing Format (5 Marks):**\n\n1. Name of School / Organization (Center, All Caps: `DAV PUBLIC SCHOOL, BIHAR ZONE`)\n2. The word `NOTICE` (Center, Bold)\n3. Date of issue (Left-aligned: `27th October 2026`)\n4. Catchy Heading / Title (Center)\n5. Body of Notice (Target audience, Event, Date, Time, Venue, Purpose)\n6. Authorized Signature, Full Name, and Designation (e.g. `Head Boy / Cultural Secretary`)\n\n*Important:* Put the entire notice in a neat rectangular pencil box!';
+      } else {
+        botResponse = `🎓 **Academic Guidance for:** *"${textToSend}"*\n\n1. **Primary Principle:** Follow the standard CBSE syllabus sequence and define core scientific/mathematical laws.\n2. **Step-by-Step Procedure:** Ensure every step is explicitly stated with reasons and units.\n3. **Exam Practice:** Review previous year DAV Board questions from Section 2 Digital Library.\n\n*(You can also consult verified subject teachers directly from the Chats tab!)*`;
+      }
+
+      const aiMsg = {
+        id: `ai_bot_${Date.now()}`,
+        role: 'assistant',
+        text: botResponse,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      setHeadChatAiMessages(prev => [...prev, aiMsg]);
+      setIsAiLoading(false);
+      playSoundChime('delivered');
+    }, 800);
+  };
 
   // Media Attachment State: null or { type: 'image'|'audio'|'video', dataUrl, name }
   const [pendingMedia, setPendingMedia] = useState(null);
@@ -1272,7 +1324,8 @@ export function TeachersSection({
 
   const handleDeleteForEveryone = (msg, contact) => {
     if (!msg || !contact) return;
-    const chKey = getConversationChannelKey(user, contact);
+    const chKey = getConversationChannelKey(user?.id, contact.id);
+    const nameKey = getNameChannelKey(user?.name, contact.name);
     const currentMsgs = typeof getMessagesForContact === 'function' ? getMessagesForContact(contact) : (teacherChatsMap[chKey] || []);
     const updatedMsgs = currentMsgs.map(m => {
       if (m.id === msg.id) {
@@ -1290,6 +1343,8 @@ export function TeachersSection({
       [chKey]: updatedMsgs,
       [contact.id]: updatedMsgs
     };
+    if (nameKey) updatedMap[nameKey] = updatedMsgs;
+    if (contact.name) updatedMap[contact.name] = updatedMsgs;
     persistChats(updatedMap);
     if (typeof saveCloudDoubtChats === 'function') {
       saveCloudDoubtChats(updatedMap).catch(() => {});
@@ -1298,13 +1353,81 @@ export function TeachersSection({
     playSoundChime('delivered');
   };
 
+  // Clear all chats globally across all contacts (as requested)
+  const handleClearAllChatsGlobally = () => {
+    persistChats({});
+    try {
+      localStorage.removeItem(TEACHER_CHATS_STORAGE_KEY);
+      localStorage.setItem(TEACHER_CHATS_STORAGE_KEY, '{}');
+    } catch (e) {}
+    if (typeof saveCloudDoubtChats === 'function') {
+      saveCloudDoubtChats({}).catch(() => {});
+    }
+    setShowChatMenu(false);
+    playSoundChime('delivered');
+  };
+
+  // Persistent Head Chat Call History
+  const [callHistory, setCallHistory] = useState(() => {
+    try {
+      const stored = localStorage.getItem('dav_headchat_call_history');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {}
+    return [
+      {
+        id: 'call_init_1',
+        contactName: 'Neha Srivastava',
+        contactId: 'tch_0',
+        contactRole: 'Mathematics Faculty',
+        dp: null,
+        type: 'video',
+        direction: 'incoming',
+        time: 'Today, 02:30 PM',
+        durationText: '3m 45s',
+        status: 'completed'
+      },
+      {
+        id: 'call_init_2',
+        contactName: 'Rajesh Sharma',
+        contactId: 'tch_1',
+        contactRole: 'Science & Technology',
+        dp: null,
+        type: 'voice',
+        direction: 'outgoing',
+        time: 'Yesterday, 05:15 PM',
+        durationText: '1m 50s',
+        status: 'completed'
+      },
+      {
+        id: 'call_init_3',
+        contactName: 'Sunita Verma',
+        contactId: 'tch_2',
+        contactRole: 'English Literature',
+        dp: null,
+        type: 'video',
+        direction: 'missed',
+        time: '25 Oct, 10:12 AM',
+        durationText: 'Missed',
+        status: 'missed'
+      }
+    ];
+  });
+
   // Chat Conversations Map (Local + Supabase Cloud synced)
   const [teacherChatsMap, setTeacherChatsMap] = useState(() => {
     try {
       const stored = localStorage.getItem(TEACHER_CHATS_STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (typeof parsed === 'object' && parsed !== null) return parsed;
+        if (typeof parsed === 'object' && parsed !== null) {
+          // Remove any legacy merged user-id keys that caused shared chats
+          const cleaned = { ...parsed };
+          if (user?.id && cleaned[user.id]) delete cleaned[user.id];
+          return cleaned;
+        }
       }
     } catch (e) {}
     return {};
@@ -2213,6 +2336,25 @@ export function TeachersSection({
       if (typeof saveCloudDoubtChats === 'function') {
         saveCloudDoubtChats(updatedMap).catch(() => {});
       }
+
+      // Append to Head Chat Call History log
+      const newCallItem = {
+        id: 'call_' + Date.now(),
+        contactName: contact.name || 'DAV Contact',
+        contactId: contact.id,
+        contactRole: contact.subtitle || contact.role || 'DAV Faculty',
+        dp: contact.dp || null,
+        type: isVid ? 'video' : 'voice',
+        direction: reason === 'no_answer' || reason === 'declined' ? 'missed' : 'outgoing',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ', Today',
+        durationText: durStr,
+        status: durationSec > 0 ? 'completed' : 'missed'
+      };
+      setCallHistory(prev => {
+        const next = [newCallItem, ...prev];
+        try { localStorage.setItem('dav_headchat_call_history', JSON.stringify(next)); } catch (e) {}
+        return next;
+      });
     }
 
     setCallState(prev => ({ ...prev, status: 'ended' }));
@@ -2310,26 +2452,20 @@ export function TeachersSection({
     return [cA, cB].sort().join('__');
   };
 
-  // Safe Multi-Key Message Lookup for foolproof cross-device delivery
+  // Safe Multi-Key Message Lookup strictly isolated per contact
   const getMessagesForContact = (contact) => {
-    if (!contact) return [];
+    if (!contact || !contact.id) return [];
     const chKey = getConversationChannelKey(user?.id, contact.id);
     const nameKey = getNameChannelKey(user?.name, contact.name);
 
-    if (teacherChatsMap[chKey] && Array.isArray(teacherChatsMap[chKey]) && teacherChatsMap[chKey].length > 0) {
+    if (teacherChatsMap[chKey] && Array.isArray(teacherChatsMap[chKey])) {
       return teacherChatsMap[chKey];
     }
-    if (nameKey && teacherChatsMap[nameKey] && Array.isArray(teacherChatsMap[nameKey]) && teacherChatsMap[nameKey].length > 0) {
-      return teacherChatsMap[nameKey];
-    }
-    if (teacherChatsMap[contact.id] && Array.isArray(teacherChatsMap[contact.id]) && teacherChatsMap[contact.id].length > 0) {
+    if (contact.id && teacherChatsMap[contact.id] && Array.isArray(teacherChatsMap[contact.id])) {
       return teacherChatsMap[contact.id];
     }
-    if (contact.name && teacherChatsMap[contact.name] && Array.isArray(teacherChatsMap[contact.name]) && teacherChatsMap[contact.name].length > 0) {
-      return teacherChatsMap[contact.name];
-    }
-    if (user?.id && teacherChatsMap[user.id] && Array.isArray(teacherChatsMap[user.id]) && teacherChatsMap[user.id].length > 0) {
-      return teacherChatsMap[user.id];
+    if (nameKey && teacherChatsMap[nameKey] && Array.isArray(teacherChatsMap[nameKey])) {
+      return teacherChatsMap[nameKey];
     }
     return [];
   };
@@ -3432,12 +3568,18 @@ export function TeachersSection({
     }));
   })();
 
-  // Update a Student's subject mark (allows empty/null, respects custom student maxMarks)
+  // Update a Student's subject mark or co-scholastic grade (A+ to D for GK, Drawing, Computer)
   const handleUpdateStudentMark = (roll, subjectKey, value) => {
     if (!isFacultyRole) return;
-    const currentStudent = currentMarksRoster.find(s => s.roll === roll);
-    const maxAllowed = currentStudent?.maxMarks ? Math.max(5, Number(currentStudent.maxMarks)) : (marksMaxConfig[subjectKey] || 100);
-    const numVal = value === '' ? null : Math.min(maxAllowed, Math.max(0, Number(value) || 0));
+    const isGradeSubject = ['computer', 'drawing', 'gk'].includes(subjectKey);
+    let finalVal = null;
+    if (isGradeSubject) {
+      finalVal = value ? String(value).trim().toUpperCase() : null;
+    } else {
+      const currentStudent = currentMarksRoster.find(s => s.roll === roll);
+      const maxAllowed = currentStudent?.maxMarks ? Math.max(5, Number(currentStudent.maxMarks)) : (marksMaxConfig[subjectKey] || 100);
+      finalVal = value === '' ? null : Math.min(maxAllowed, Math.max(0, Number(value) || 0));
+    }
 
     const updatedRoster = currentMarksRoster.map(s => {
       if (s.roll === roll) {
@@ -3445,7 +3587,7 @@ export function TeachersSection({
           ...s,
           marks: {
             ...s.marks,
-            [subjectKey]: numVal
+            [subjectKey]: finalVal
           }
         };
       }
@@ -3477,14 +3619,15 @@ export function TeachersSection({
   const computeOverallClassRankMap = () => {
     const allStudentsInClass = [];
     const sections = ['A', 'B', 'C', 'D', 'E'];
+    const scholasticSubs = DAV_SUBJECTS_10.filter(s => !['computer', 'drawing', 'gk'].includes(s.key));
     sections.forEach(sec => {
       const key = selectedMarksClass + '-' + sec + '-' + selectedMarksTerm;
       const roster = marksLedgerStore[key] || [];
       roster.forEach(st => {
         let studentTotal = 0;
         let hasAnyMark = false;
-        DAV_SUBJECTS_10.forEach(sub => {
-          if (st.marks && st.marks[sub.key] !== null && st.marks[sub.key] !== undefined) {
+        scholasticSubs.forEach(sub => {
+          if (st.marks && st.marks[sub.key] !== null && st.marks[sub.key] !== undefined && !isNaN(Number(st.marks[sub.key]))) {
             studentTotal += Number(st.marks[sub.key]);
             hasAnyMark = true;
           }
@@ -3512,23 +3655,19 @@ export function TeachersSection({
 
   const overallClassRankMap = computeOverallClassRankMap();
 
-  // Compute aggregates for a student row
+  // Compute aggregates for a student row (excluding co-curricular GK, Drawing, Computer from numeric sum)
   const computeRowAggregates = (student) => {
     let totalObtained = 0;
     let attemptedMax = 0;
     let filledCount = 0;
     const studentMaxMarks = Math.max(5, Number(student.maxMarks) || 100);
 
-    const GRADE_SET = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'D', 'E'];
-    DAV_SUBJECTS_10.forEach(sub => {
+    const scholasticSubs = DAV_SUBJECTS_10.filter(s => !['computer', 'drawing', 'gk'].includes(s.key));
+    scholasticSubs.forEach(sub => {
       const maxForSub = student.maxMarks ? studentMaxMarks : (marksMaxConfig[sub.key] || 100);
       const rawVal = student.marks?.[sub.key];
       if (rawVal !== null && rawVal !== undefined && rawVal !== '') {
-        const strVal = String(rawVal).trim().toUpperCase();
-        if (GRADE_SET.includes(strVal)) {
-          // Co-curricular letter grade: counted as assessed, but excluded from numeric total and %
-          filledCount++;
-        } else if (!isNaN(Number(rawVal))) {
+        if (!isNaN(Number(rawVal))) {
           totalObtained += Number(rawVal);
           attemptedMax += maxForSub;
           filledCount++;
@@ -3536,13 +3675,15 @@ export function TeachersSection({
       }
     });
 
-    const totalMaxPossible = student.maxMarks ? (studentMaxMarks * DAV_SUBJECTS_10.length) : DAV_SUBJECTS_10.reduce((acc, sub) => acc + (marksMaxConfig[sub.key] || 100), 0);
+    const totalMaxPossible = student.maxMarks 
+      ? (studentMaxMarks * scholasticSubs.length) 
+      : scholasticSubs.reduce((acc, sub) => acc + (marksMaxConfig[sub.key] || 100), 0);
     const percentage = attemptedMax > 0 ? ((totalObtained / attemptedMax) * 100).toFixed(1) : '-';
 
     // Section rank among currentMarksRoster
     const sortedSection = [...currentMarksRoster].sort((a, b) => {
-      const totA = DAV_SUBJECTS_10.reduce((s, sub) => s + (Number(a.marks?.[sub.key]) || 0), 0);
-      const totB = DAV_SUBJECTS_10.reduce((s, sub) => s + (Number(b.marks?.[sub.key]) || 0), 0);
+      const totA = scholasticSubs.reduce((s, sub) => s + (Number(a.marks?.[sub.key]) || 0), 0);
+      const totB = scholasticSubs.reduce((s, sub) => s + (Number(b.marks?.[sub.key]) || 0), 0);
       return totB - totA;
     });
 
@@ -3559,8 +3700,7 @@ export function TeachersSection({
       filledCount,
       percentage: percentage !== '-' ? (percentage + '%') : '-',
       sectionRank: (sectionRank !== '-' ? '#' + sectionRank : '-'),
-      overallRank: (overallRank !== '-' ? '#' + overallRank : '-'),
-      studentMax: studentMaxMarks
+      overallRank: (overallRank !== '-' ? '#' + overallRank : '-')
     };
   };
 
@@ -3812,38 +3952,40 @@ export function TeachersSection({
           /* ===================================================================== */
           <div className="w-full space-y-4 animate-fadeIn">
             
-            {/* Top Toolbar: Back to Handbook + Quick Tab Switcher */}
-            <div className="p-3 rounded-2xl bg-slate-900/90 border border-purple-800/80 flex items-center justify-between flex-wrap gap-2 shadow-xl">
-              <button
-                onClick={() => {
-                  setIsFullScreenInteractive(false);
-                  playSoundChime('sent');
-                }}
-                className="px-4 py-2 rounded-xl bg-purple-900/70 hover:bg-purple-800 border border-purple-600 text-white font-bold text-xs flex items-center gap-2 cursor-pointer transition shadow-xs"
-              >
-                <ChevronLeft className="w-4 h-4 text-teal-300" />
-                <span>Back to Academic Handbook (Page {currentPageIdx + 1} / 6)</span>
-              </button>
+            {/* Top Toolbar: Back to Handbook + Quick Tab Switcher (Hidden on Page 2 Head Chat for full-screen view) */}
+            {activePage !== 'doubts_chat' && (
+              <div className="p-3 rounded-2xl bg-slate-900/90 border border-purple-800/80 flex items-center justify-between flex-wrap gap-2 shadow-xl">
+                <button
+                  onClick={() => {
+                    setIsFullScreenInteractive(false);
+                    playSoundChime('sent');
+                  }}
+                  className="px-4 py-2 rounded-xl bg-purple-900/70 hover:bg-purple-800 border border-purple-600 text-white font-bold text-xs flex items-center gap-2 cursor-pointer transition shadow-xs"
+                >
+                  <ChevronLeft className="w-4 h-4 text-teal-300" />
+                  <span>Back to Academic Handbook (Page {currentPageIdx + 1} / 6)</span>
+                </button>
 
-              <div className="flex items-center gap-1.5 overflow-x-auto text-xs scrollbar-thin">
-                {PRESENTATION_PAGES.map(p => (
-                  <button
-                    key={p.id}
-                    onClick={() => {
-                      handlePageChange(p.id);
-                      playSoundChime('sent');
-                    }}
-                    className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap cursor-pointer transition text-xs ${
-                      activePage === p.id
-                        ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 font-black shadow-md'
-                        : 'bg-slate-950 text-purple-300 hover:text-white border border-purple-900'
-                    }`}
-                  >
-                    {p.title.replace(/^Page \d+:\s*/, '')}
-                  </button>
-                ))}
+                <div className="flex items-center gap-1.5 overflow-x-auto text-xs scrollbar-thin">
+                  {PRESENTATION_PAGES.map(p => (
+                    <button
+                      key={p.id}
+                      onClick={() => {
+                        handlePageChange(p.id);
+                        playSoundChime('sent');
+                      }}
+                      className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap cursor-pointer transition text-xs ${
+                        activePage === p.id
+                          ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 font-black shadow-md'
+                          : 'bg-slate-950 text-purple-300 hover:text-white border border-purple-900'
+                      }`}
+                    >
+                      {p.title.replace(/^Page \d+:\s*/, '')}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
 
             {/* --------------------------------------------------------------------- */}
@@ -4400,16 +4542,16 @@ export function TeachersSection({
               <div className="w-full animate-fadeIn font-sans">
                 
                 {/* Authentic WhatsApp Desktop Container */}
-                <div className="w-full rounded-2xl overflow-hidden shadow-2xl border border-[#d1d7db] bg-white flex flex-col h-[82vh] min-h-[580px] max-h-[860px]">
+                <div className="w-full rounded-2xl overflow-hidden shadow-2xl border border-[#d1d7db] bg-white flex flex-col h-[85vh] min-h-[640px]">
                   
-                  {/* WhatsApp Desktop Top App Bar (Title Bar) */}
-                  <div className="h-10 bg-[#f0f2f5] border-b border-[#d1d7db] px-4 flex items-center justify-between select-none shrink-0">
+                  {/* Head Chat Desktop Top App Bar (Title Bar) */}
+                  <div className="h-11 bg-[#f0f2f5] border-b border-[#d1d7db] px-4 flex items-center justify-between select-none shrink-0">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-5 h-5 rounded-full bg-[#25d366] flex items-center justify-center text-white shadow-xs animate-chat-avatar-glow">
-                        <MessageSquare className="w-3 h-3 fill-current" />
+                      <div className="w-6 h-6 rounded-full bg-[#25d366] flex items-center justify-center text-white shadow-xs">
+                        <MessageSquare className="w-3.5 h-3.5 fill-current" />
                       </div>
-                      <span className="text-xs font-bold text-[#111b21] tracking-tight">WhatsApp</span>
-                      <span className="text-[11px] text-[#667781] font-semibold border-l border-[#d1d7db] pl-2.5">
+                      <span className="text-sm font-black text-[#111b21] tracking-tight">Head Chat</span>
+                      <span className="text-xs text-[#667781] font-semibold border-l border-[#d1d7db] pl-2.5 hidden sm:inline">
                         {isDimension5 ? 'Faculty Academic Direct Desk' : 'Verified Faculty Doubt Portal'}
                       </span>
                     </div>
@@ -4426,90 +4568,99 @@ export function TeachersSection({
                         </button>
                       )}
 
-                      {/* Window Controls */}
-                      <div className="flex items-center gap-2 text-[#54656f] text-xs font-mono ml-2">
-                        <span className="w-3 h-3 flex items-center justify-center hover:text-[#111b21] cursor-pointer" title="Minimize">—</span>
-                        <span className="w-3 h-3 flex items-center justify-center hover:text-[#111b21] cursor-pointer" title="Maximize">□</span>
-                        <span className="w-3 h-3 flex items-center justify-center hover:text-rose-600 cursor-pointer" title="Close">✕</span>
-                      </div>
+                      {/* Prominent Cut / Close Button */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsFullScreenInteractive(false);
+                          playSoundChime('sent');
+                        }}
+                        className="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-white border border-rose-200 font-bold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
+                        title="Close Head Chat and return to Academic Handbook"
+                      >
+                        <X className="w-4 h-4" />
+                        <span>Close Head Chat</span>
+                      </button>
                     </div>
                   </div>
 
                   {/* Main Desktop Workspace Area (3 Columns: Dock + Chats Roster + Conversation) */}
                   <div className="flex-1 flex overflow-hidden min-h-0 bg-white">
                     
-                    {/* Column 1: WhatsApp Left Vertical Icon Dock (Far Left) */}
+                    {/* Column 1: Head Chat Left Vertical Icon Dock (Far Left) */}
                     <div className="w-14 sm:w-16 bg-[#f0f2f5] border-r border-[#d1d7db] flex flex-col items-center justify-between py-3 shrink-0">
                       
                       {/* Top Icons */}
                       <div className="flex flex-col items-center gap-4 w-full">
-                        {/* Chats with Badge */}
+                        {/* 1. Chats with Badge */}
                         <button 
                           type="button"
                           onClick={() => {
                             setWhatsAppDockView('chats');
                             setMobileChatTab('roster');
                           }}
-                          className={`relative p-2 rounded-xl shadow-xs cursor-pointer transition animate-chat-bubble-pop ${
+                          className={`relative p-2.5 rounded-xl shadow-xs cursor-pointer transition ${
                             whatsAppDockView === 'chats' ? 'bg-[#d9fdd3] text-[#008069]' : 'text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21]'
                           }`}
                           title="Direct Chats"
                         >
                           <MessageSquare className="w-5 h-5 fill-current" />
-                          <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-[#25d366] text-white text-[9px] font-black shadow-xs animate-chat-radar-ping">
+                          <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-[#25d366] text-white text-[9px] font-black shadow-xs">
                             {chatContactsList.filter(c => isUserOnline(c)).length || 2}
                           </span>
                         </button>
 
-                        {/* Calls */}
+                        {/* 2. Calls (Immediately below Chats!) */}
                         <button 
                           type="button"
-                          className="p-2 rounded-xl text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21] transition cursor-pointer"
-                          title="Calls"
+                          onClick={() => setWhatsAppDockView('calls')}
+                          className={`relative p-2.5 rounded-xl shadow-xs cursor-pointer transition ${
+                            whatsAppDockView === 'calls' ? 'bg-[#d9fdd3] text-[#008069]' : 'text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21]'
+                          }`}
+                          title="Calls & Call History"
                         >
-                          <Phone className="w-5 h-5 animate-chat-mic-record" />
+                          <Phone className="w-5 h-5" />
+                          {callHistory.length > 0 && (
+                            <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-[#00a884] text-white text-[9px] font-black shadow-xs">
+                              {callHistory.length}
+                            </span>
+                          )}
                         </button>
 
-                        {/* Status */}
-                        <button 
-                          type="button"
-                          className="p-2 rounded-xl text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21] transition cursor-pointer"
-                          title="Status"
-                        >
-                          <Radio className="w-5 h-5 animate-chat-typing-dots" />
-                        </button>
-
-                        {/* Channels */}
+                        {/* 3. Channels */}
                         <button 
                           type="button"
                           onClick={() => setWhatsAppDockView('channels')}
-                          className={`relative p-2 rounded-xl shadow-xs cursor-pointer transition ${
+                          className={`relative p-2.5 rounded-xl shadow-xs cursor-pointer transition ${
                             whatsAppDockView === 'channels' ? 'bg-[#d9fdd3] text-[#008069]' : 'text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21]'
                           }`}
-                          title="WhatsApp Channels"
+                          title="Head Chat Channels"
                         >
                           <Compass className="w-5 h-5" />
                         </button>
 
-                        {/* Communities */}
+                        {/* 4. Contacts & Profile Settings */}
                         <button 
                           type="button"
-                          className="p-2 rounded-xl text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21] transition cursor-pointer"
-                          title="Communities"
+                          onClick={() => setWhatsAppDockView('contacts')}
+                          className={`relative p-2.5 rounded-xl shadow-xs cursor-pointer transition ${
+                            whatsAppDockView === 'contacts' ? 'bg-[#d9fdd3] text-[#008069]' : 'text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21]'
+                          }`}
+                          title="Contacts & Profile Settings"
                         >
                           <Users className="w-5 h-5" />
                         </button>
 
-                        {/* Meta AI Gradient Icon */}
+                        {/* 5. ChatGPT Academic Tutor */}
                         <button 
                           type="button"
-                          onClick={handleInstantAIAnswer}
-                          className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-[1.5px] cursor-pointer hover:scale-105 transition shadow-sm animate-chat-instant-ai"
-                          title="Rishi AI Chat Assistant"
+                          onClick={() => setWhatsAppDockView('ai')}
+                          className={`relative p-2.5 rounded-xl shadow-xs cursor-pointer transition ${
+                            whatsAppDockView === 'ai' ? 'bg-[#d9fdd3] text-[#008069]' : 'text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21]'
+                          }`}
+                          title="ChatGPT Academic Tutor"
                         >
-                          <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
-                            <Sparkles className="w-3.5 h-3.5 text-purple-600" />
-                          </div>
+                          <Sparkles className="w-5 h-5 text-purple-600" />
                         </button>
                       </div>
 
@@ -4517,17 +4668,21 @@ export function TeachersSection({
                       <div className="flex flex-col items-center gap-3 w-full border-t border-[#d1d7db] pt-3">
                         <button 
                           type="button"
-                          onClick={() => isDimension5 && setShowTeacherProfileModal(true)}
+                          onClick={() => setWhatsAppDockView('contacts')}
                           className="p-2 rounded-xl text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21] transition cursor-pointer"
-                          title="Settings"
+                          title="Profile Settings"
                         >
                           <Settings className="w-5 h-5" />
                         </button>
 
                         {/* User Avatar */}
-                        <div className="relative cursor-pointer" title={user?.name || 'My Profile'}>
+                        <div 
+                          onClick={() => setWhatsAppDockView('contacts')}
+                          className="relative cursor-pointer" 
+                          title={customProfileForm.name || user?.name || 'My Profile'}
+                        >
                           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00a884] to-[#25d366] text-white font-bold flex items-center justify-center text-xs shadow-xs">
-                            {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                            {(customProfileForm.name || user?.name || 'U').charAt(0).toUpperCase()}
                           </div>
                           <span className="w-2.5 h-2.5 rounded-full bg-[#25d366] ring-2 ring-white absolute -bottom-0.5 -right-0.5" />
                         </div>
@@ -4535,7 +4690,7 @@ export function TeachersSection({
 
                     </div>
 
-                    {/* Main Workspace: Either WhatsApp Channels Module or Direct 1-on-1 Chats */}
+                    {/* Main Workspace: Channels, Calls, Contacts, AI or Direct 1-on-1 Chats */}
                     {whatsAppDockView === 'channels' ? (
                       <div className="flex-1 flex overflow-hidden min-h-0 bg-white">
                         <WhatsAppChannelsModule 
@@ -4543,6 +4698,393 @@ export function TeachersSection({
                           isDimension5={isDimension5} 
                           onSwitchToChats={() => setWhatsAppDockView('chats')} 
                         />
+                      </div>
+                    ) : whatsAppDockView === 'calls' ? (
+                      <div className="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0 bg-[#f0f2f5]">
+                        {/* Call History */}
+                        <div className="w-full md:w-96 bg-white border-r border-[#d1d7db] flex flex-col h-full">
+                          <div className="p-4 border-b border-[#f0f2f5] flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Phone className="w-5 h-5 text-[#00a884]" />
+                              <h2 className="text-base font-bold text-[#111b21]">Call Records</h2>
+                              <span className="px-2 py-0.5 rounded-full bg-[#d9fdd3] text-[#008069] text-xs font-bold">
+                                {callHistory.length}
+                              </span>
+                            </div>
+                            {callHistory.length > 0 && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (window.confirm('Clear all call history logs?')) {
+                                    setCallHistory([]);
+                                    try {
+                                      localStorage.removeItem('dav_headchat_call_history');
+                                    } catch (e) {}
+                                  }
+                                }}
+                                className="text-xs text-rose-600 hover:text-rose-700 font-bold flex items-center gap-1 cursor-pointer"
+                                title="Clear History"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                                <span>Clear</span>
+                              </button>
+                            )}
+                          </div>
+
+                          <div className="flex-1 overflow-y-auto divide-y divide-[#f0f2f5] scrollbar-thin">
+                            {callHistory.length === 0 ? (
+                              <div className="p-8 text-center space-y-2 text-[#667781] text-xs">
+                                <Phone className="w-8 h-8 text-[#00a884] mx-auto opacity-40" />
+                                <p className="font-bold text-[#111b21]">No call records yet</p>
+                                <p>Calls you make will appear here with instant call-back options.</p>
+                              </div>
+                            ) : (
+                              callHistory.map((call) => {
+                                const isMissed = call.direction === 'missed' || call.status === 'missed';
+                                const isIncoming = call.direction === 'incoming';
+                                const matchedContact = chatContactsList.find(c => c.id === call.contactId || c.name === call.contactName) || {
+                                  id: call.contactId || `contact_${call.id}`,
+                                  name: call.contactName,
+                                  subtitle: call.contactRole || 'Faculty'
+                                };
+
+                                return (
+                                  <div
+                                    key={call.id}
+                                    className="p-3.5 flex items-center justify-between gap-3 hover:bg-[#f5f6f6] transition"
+                                  >
+                                    <div className="flex items-center gap-3 min-w-0">
+                                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#dfe5e7] to-[#cfd8dc] text-[#111b21] font-bold flex items-center justify-center text-sm shrink-0 shadow-xs">
+                                        {(call.contactName || 'T').charAt(0)}
+                                      </div>
+                                      <div className="min-w-0">
+                                        <h4 className="text-sm font-bold text-[#111b21] truncate">{call.contactName}</h4>
+                                        <div className="flex items-center gap-1.5 text-xs text-[#667781] mt-0.5 font-medium">
+                                          {isMissed ? (
+                                            <PhoneMissed className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                                          ) : isIncoming ? (
+                                            <ArrowDownLeft className="w-3.5 h-3.5 text-[#00a884] shrink-0" />
+                                          ) : (
+                                            <ArrowUpRight className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                                          )}
+                                          <span className={isMissed ? 'text-rose-500 font-bold' : ''}>
+                                            {call.time} ({call.durationText || (isMissed ? 'Missed' : 'Completed')})
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    {/* Instant Callback */}
+                                    <div className="flex items-center gap-1 shrink-0">
+                                      <button
+                                        type="button"
+                                        onClick={() => handleStartCall(matchedContact, 'voice')}
+                                        className="p-2 rounded-lg bg-[#d9fdd3] hover:bg-[#c3f4bc] text-[#008069] transition cursor-pointer shadow-2xs"
+                                        title={`Call ${call.contactName} (Voice)`}
+                                      >
+                                        <Phone className="w-4 h-4" />
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleStartCall(matchedContact, 'video')}
+                                        className="p-2 rounded-lg bg-[#d9fdd3] hover:bg-[#c3f4bc] text-[#008069] transition cursor-pointer shadow-2xs"
+                                        title={`Video Call ${call.contactName}`}
+                                      >
+                                        <Video className="w-4 h-4" />
+                                      </button>
+                                    </div>
+                                  </div>
+                                );
+                              })
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Quick Dialer / Faculty Call List */}
+                        <div className="flex-1 bg-white hidden md:flex flex-col h-full p-6 space-y-4 overflow-y-auto">
+                          <div className="space-y-1">
+                            <h3 className="text-base font-bold text-[#111b21]">Quick Call Verified Faculty</h3>
+                            <p className="text-xs text-[#667781]">1-Tap live audio and video consultation with subject teachers.</p>
+                          </div>
+
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 pt-2">
+                            {chatContactsList.map((contact) => (
+                              <div
+                                key={contact.id}
+                                className="p-3.5 rounded-xl border border-[#d1d7db] bg-[#fcfdfd] hover:border-[#00a884] transition shadow-xs flex items-center justify-between gap-3"
+                              >
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <div className="relative shrink-0">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#00a884] to-[#25d366] text-white font-bold flex items-center justify-center text-sm shadow-xs">
+                                      {contact.name.charAt(0)}
+                                    </div>
+                                    {isUserOnline(contact) && (
+                                      <span className="w-2.5 h-2.5 rounded-full bg-[#25d366] ring-2 ring-white absolute bottom-0 right-0" />
+                                    )}
+                                  </div>
+                                  <div className="min-w-0">
+                                    <h4 className="text-xs font-bold text-[#111b21] truncate">{contact.name}</h4>
+                                    <p className="text-[11px] text-[#667781] truncate">{contact.subtitle || 'Subject Faculty'}</p>
+                                  </div>
+                                </div>
+
+                                <div className="flex items-center gap-1.5 shrink-0">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleStartCall(contact, 'voice')}
+                                    className="px-2.5 py-1.5 rounded-lg bg-[#00a884] hover:bg-[#008f6f] text-white font-bold text-xs flex items-center gap-1 transition cursor-pointer shadow-xs"
+                                    title="Voice Call"
+                                  >
+                                    <Phone className="w-3.5 h-3.5" />
+                                    <span>Call</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleStartCall(contact, 'video')}
+                                    className="px-2.5 py-1.5 rounded-lg bg-[#d9fdd3] hover:bg-[#c3f4bc] text-[#008069] font-bold text-xs flex items-center gap-1 transition cursor-pointer"
+                                    title="Video Call"
+                                  >
+                                    <Video className="w-3.5 h-3.5" />
+                                    <span>Video</span>
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ) : whatsAppDockView === 'contacts' ? (
+                      <div className="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0 bg-[#f0f2f5]">
+                        {/* Profile Settings */}
+                        <div className="w-full md:w-96 bg-white border-r border-[#d1d7db] flex flex-col h-full p-6 space-y-5 overflow-y-auto">
+                          <div>
+                            <h2 className="text-base font-bold text-[#111b21]">Head Chat Profile</h2>
+                            <p className="text-xs text-[#667781]">Change your display name and status bio visible across Head Chat.</p>
+                          </div>
+
+                          {/* Profile Avatar */}
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#00a884] to-[#25d366] text-white font-bold text-2xl flex items-center justify-center shadow-md">
+                              {(customProfileForm.name || user?.name || 'U').charAt(0).toUpperCase()}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setShowTeacherProfileModal(true)}
+                              className="text-xs text-[#00a884] font-bold hover:underline cursor-pointer flex items-center gap-1"
+                            >
+                              <Camera className="w-3.5 h-3.5" />
+                              <span>Change Photo</span>
+                            </button>
+                          </div>
+
+                          {/* Profile Form */}
+                          <div className="space-y-4 text-xs font-bold text-[#111b21]">
+                            <div className="space-y-1">
+                              <label className="text-[#54656f] block">Your Display Name:</label>
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="text"
+                                  value={customProfileForm.name}
+                                  onChange={(e) => setCustomProfileForm(prev => ({ ...prev, name: e.target.value }))}
+                                  placeholder="Enter your name"
+                                  className="flex-1 p-2 rounded-lg bg-[#f0f2f5] border border-[#d1d7db] text-xs font-bold text-[#111b21] focus:bg-white focus:border-[#00a884] focus:outline-none"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    handleSaveTeacherProfile(e);
+                                    playSoundChime('delivered');
+                                  }}
+                                  className="px-3 py-2 rounded-lg bg-[#00a884] hover:bg-[#008f6f] text-white font-bold text-xs cursor-pointer shadow-xs transition"
+                                >
+                                  Save
+                                </button>
+                              </div>
+                              <p className="text-[10px] text-[#667781] font-normal">This name will be displayed when you chat or call in Head Chat.</p>
+                            </div>
+
+                            <div className="space-y-1">
+                              <label className="text-[#54656f] block">Status Bio:</label>
+                              <input
+                                type="text"
+                                defaultValue="Hey there! I am using DAV Head Chat"
+                                placeholder="Status bio"
+                                className="w-full p-2 rounded-lg bg-[#f0f2f5] border border-[#d1d7db] text-xs font-bold text-[#111b21] focus:bg-white focus:border-[#00a884] focus:outline-none"
+                              />
+                            </div>
+
+                            <div className="p-3 rounded-xl bg-[#d9fdd3] text-[#008069] space-y-1 border border-[#c3f4bc]">
+                              <span className="text-[10px] font-black uppercase tracking-wider block">DAV Institutional Status</span>
+                              <p className="text-xs font-medium">Verified under DAV Public School Academic Registry.</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Verified Contacts Directory */}
+                        <div className="flex-1 bg-white hidden md:flex flex-col h-full p-6 space-y-4 overflow-y-auto">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h3 className="text-base font-bold text-[#111b21]">Verified Faculty Directory</h3>
+                              <p className="text-xs text-[#667781]">Start direct 1-on-1 consultations with faculty members.</p>
+                            </div>
+                            <span className="px-3 py-1 rounded-full bg-[#f0f2f5] text-[#54656f] text-xs font-bold">
+                              {chatContactsList.length} Teachers
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 pt-2">
+                            {chatContactsList.map((contact) => (
+                              <div
+                                key={contact.id}
+                                className="p-3.5 rounded-xl border border-[#d1d7db] bg-white hover:border-[#00a884] transition shadow-xs flex items-center justify-between gap-3"
+                              >
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#dfe5e7] to-[#cfd8dc] text-[#111b21] font-bold flex items-center justify-center text-sm shadow-xs shrink-0">
+                                    {contact.name.charAt(0)}
+                                  </div>
+                                  <div className="min-w-0">
+                                    <h4 className="text-xs font-bold text-[#111b21] truncate">{contact.name}</h4>
+                                    <p className="text-[11px] text-[#00a884] font-semibold truncate">{contact.subtitle || 'Available'}</p>
+                                  </div>
+                                </div>
+
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    handleSelectContact(contact.id);
+                                    setWhatsAppDockView('chats');
+                                    setMobileChatTab('chat');
+                                  }}
+                                  className="px-3 py-1.5 rounded-lg bg-[#00a884] hover:bg-[#008f6f] text-white font-bold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-xs shrink-0"
+                                >
+                                  <MessageSquare className="w-3.5 h-3.5" />
+                                  <span>Message</span>
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ) : whatsAppDockView === 'ai' ? (
+                      <div className="flex-1 flex flex-col h-full bg-[#efeae2] relative overflow-hidden"
+                           style={{
+                             backgroundColor: '#efeae2',
+                             backgroundImage: `url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2354656f' fill-opacity='0.06'%3E%3Cpath d='M40 30h20v20H40zM120 70h15v15h-15zM220 40h25v25h-25zM310 80h18v18h-18zM60 160h22v22H60zM180 140h30v30h-30zM290 170h20v20h-20zM30 270h25v25H30zM140 250h20v20h-20zM240 280h28v28h-28zM340 260h16v16h-16zM80 340h30v30H80zM200 350h22v22h-22zM310 340h25v25h-25z'/%3E%3C/g%3E%3C/svg%3E")`
+                           }}>
+                        {/* AI Header */}
+                        <div className="p-3 px-4 bg-[#f0f2f5] border-b border-[#d1d7db] flex items-center justify-between shrink-0 shadow-xs z-10">
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-[2px] shadow-sm">
+                              <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
+                                <Sparkles className="w-4 h-4 text-purple-600" />
+                              </div>
+                            </div>
+                            <div>
+                              <h3 className="text-sm font-bold text-[#111b21] flex items-center gap-1.5">
+                                <span>ChatGPT Academic Tutor</span>
+                                <span className="px-1.5 py-0.2 rounded bg-purple-100 text-purple-700 text-[9px] font-black uppercase">Active</span>
+                              </h3>
+                              <p className="text-[11px] font-semibold text-[#00a884]">Instant CBSE Curriculum &amp; Doubt Solver</p>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setHeadChatAiMessages([
+                                {
+                                  id: 'ai_welcome_reset',
+                                  role: 'assistant',
+                                  text: 'Academic chat cleared. What topic or doubt would you like to explore now?',
+                                  time: 'Just now'
+                                }
+                              ]);
+                            }}
+                            className="px-3 py-1 rounded-lg hover:bg-[#e9edef] text-xs font-bold text-[#54656f] transition cursor-pointer"
+                            title="Clear AI Chat"
+                          >
+                            Clear Chat
+                          </button>
+                        </div>
+
+                        {/* Messages Stream */}
+                        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3.5 scrollbar-thin">
+                          {/* Subject Chips */}
+                          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+                            {[
+                              'Class 8 Maths: Algebraic Identities',
+                              'Science: Photosynthesis Reactions',
+                              'English: Notice Writing Format',
+                              'SST: Revolt of 1857 5-mark answer'
+                            ].map((promptText) => (
+                              <button
+                                key={promptText}
+                                type="button"
+                                onClick={() => handleSendHeadChatAiMessage(promptText)}
+                                className="px-3 py-1.5 rounded-full bg-white border border-[#d1d7db] hover:border-[#00a884] text-[#111b21] hover:text-[#00a884] text-xs font-bold whitespace-nowrap shadow-xs transition cursor-pointer"
+                              >
+                                💡 {promptText}
+                              </button>
+                            ))}
+                          </div>
+
+                          {headChatAiMessages.map((msg) => {
+                            const isUser = msg.role === 'user';
+                            return (
+                              <div key={msg.id} className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} animate-fadeIn`}>
+                                <div
+                                  className={`max-w-[85%] sm:max-w-[70%] p-3 rounded-2xl shadow-xs space-y-1.5 ${
+                                    isUser
+                                      ? 'bg-[#d9fdd3] text-[#111b21] rounded-tr-none border border-[#c3f4bc]/50'
+                                      : 'bg-white text-[#111b21] rounded-tl-none border border-[#e9edef]'
+                                  }`}
+                                >
+                                  {!isUser && (
+                                    <div className="flex items-center gap-1.5 text-[10px] font-black text-purple-600">
+                                      <Sparkles className="w-3 h-3" />
+                                      <span>ChatGPT Academic Mentor</span>
+                                    </div>
+                                  )}
+                                  <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap font-medium">
+                                    {msg.text}
+                                  </p>
+                                  <div className="flex items-center justify-end gap-1 text-[10px] text-[#667781] font-semibold">
+                                    <span>{msg.time}</span>
+                                    {isUser && <CheckCheck className="w-3 h-3 text-[#53bdeb]" />}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+
+                          {isAiLoading && (
+                            <div className="flex items-center gap-2 text-xs font-bold text-purple-700 bg-white p-3 rounded-2xl max-w-xs shadow-xs animate-pulse">
+                              <Sparkles className="w-4 h-4 animate-spin text-purple-600" />
+                              <span>ChatGPT is formulating your academic solution...</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Composer Bar */}
+                        <div className="p-3 bg-[#f0f2f5] border-t border-[#d1d7db] flex items-center gap-2">
+                          <input
+                            type="text"
+                            placeholder="Ask ChatGPT any study doubt or question..."
+                            value={headChatAiInput}
+                            onChange={(e) => setHeadChatAiInput(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSendHeadChatAiMessage()}
+                            className="flex-1 bg-white rounded-xl border border-[#d1d7db] px-4 py-2 text-xs sm:text-sm font-medium text-[#111b21] focus:outline-none focus:border-[#00a884] shadow-xs"
+                          />
+                          <button
+                            type="button"
+                            disabled={!headChatAiInput.trim() || isAiLoading}
+                            onClick={() => handleSendHeadChatAiMessage()}
+                            className="w-10 h-10 rounded-full bg-[#00a884] hover:bg-[#008f6f] text-white flex items-center justify-center shrink-0 shadow-md transition disabled:opacity-40 cursor-pointer"
+                            title="Send Question"
+                          >
+                            <Send className="w-4 h-4 ml-0.5" />
+                          </button>
+                        </div>
                       </div>
                     ) : (
                       <>
@@ -4814,16 +5356,28 @@ export function TeachersSection({
                                 <MoreVertical className="w-4 h-4" />
                               </button>
 
-                              {/* WhatsApp Dropdown Menu */}
+                              {/* Head Chat Dropdown Menu */}
                               {showChatMenu && (
-                                <div className="absolute right-0 top-10 w-56 bg-white border border-[#d1d7db] rounded-xl shadow-2xl py-1.5 z-50 text-xs font-bold text-[#111b21] animate-fadeIn">
+                                <div className="absolute right-0 top-10 w-64 bg-white border border-[#d1d7db] rounded-xl shadow-2xl py-1.5 z-50 text-xs font-bold text-[#111b21] animate-fadeIn">
                                   <button
                                     type="button"
                                     onClick={() => handleClearAllChat(activeContact)}
                                     className="w-full px-4 py-2.5 text-left hover:bg-rose-50 text-rose-600 flex items-center gap-2 cursor-pointer transition"
                                   >
                                     <Trash2 className="w-4 h-4 animate-chat-delete-fade" />
-                                    <span>Delete all chat (Clear)</span>
+                                    <span>Delete this chat (Clear)</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      if (window.confirm('Clear all chat conversations across ALL teachers globally?')) {
+                                        handleClearAllChatsGlobally();
+                                      }
+                                    }}
+                                    className="w-full px-4 py-2.5 text-left hover:bg-rose-50 text-rose-700 flex items-center gap-2 cursor-pointer transition border-b border-[#f0f2f5]"
+                                  >
+                                    <Trash2 className="w-4 h-4 text-rose-600" />
+                                    <span>Clear All Chats (All Teachers)</span>
                                   </button>
                                   <button
                                     type="button"
@@ -7751,12 +8305,17 @@ export function TeachersSection({
                             <th className="p-3 sticky left-12 bg-purple-950 z-10">Student Full Name</th>
                             
                             {/* 10 DAV Subjects in exact order */}
-                            {DAV_SUBJECTS_10.map((s) => (
-                              <th key={s.key} className="p-3 text-center">
-                                <div>{s.name}</div>
-                                <div className="text-[9px] text-teal-400 font-normal lowercase">max {marksMaxConfig[s.key] || 100}</div>
-                              </th>
-                            ))}
+                            {DAV_SUBJECTS_10.map((s) => {
+                              const isGradedSubject = ['computer', 'drawing', 'gk'].includes(s.key);
+                              return (
+                                <th key={s.key} className="p-3 text-center">
+                                  <div>{s.name}</div>
+                                  <div className="text-[9px] text-teal-400 font-normal">
+                                    {isGradedSubject ? 'Grade (A+ to D)' : `max ${marksMaxConfig[s.key] || 100}`}
+                                  </div>
+                                </th>
+                              );
+                            })}
 
                             <th className="p-3 text-center">Total Marks</th>
                             <th className="p-3 text-center">Percentage</th>
@@ -7789,22 +8348,44 @@ export function TeachersSection({
                                 {DAV_SUBJECTS_10.map((sub) => {
                                   const markVal = s.marks?.[sub.key];
                                   const maxForSub = marksMaxConfig[sub.key] || 100;
+                                  const isGradedSubject = ['computer', 'drawing', 'gk'].includes(sub.key);
 
                                   return (
                                     <td key={sub.key} className="p-2 text-center">
                                       {isDimension5 ? (
-                                        <input
-                                          type="number"
-                                          min={0}
-                                          max={s.maxMarks ? Number(s.maxMarks) : maxForSub}
-                                          value={markVal !== null && markVal !== undefined ? markVal : ''}
-                                          placeholder="-"
-                                          onChange={(e) => handleUpdateStudentMark(s.roll, sub.key, e.target.value)}
-                                          className="w-14 p-1.5 rounded-lg bg-slate-950 border border-purple-700 text-center font-mono font-bold text-white text-xs focus:border-teal-400"
-                                          title={`Max marks: ${s.maxMarks ? Number(s.maxMarks) : maxForSub}`}
-                                        />
+                                        isGradedSubject ? (
+                                          <select
+                                            value={markVal !== null && markVal !== undefined ? markVal : ''}
+                                            onChange={(e) => handleUpdateStudentMark(s.roll, sub.key, e.target.value)}
+                                            className="w-16 p-1.5 rounded-lg bg-slate-950 border border-purple-700 text-center font-mono font-bold text-teal-300 text-xs focus:border-teal-400 cursor-pointer"
+                                            title="Select Co-Scholastic Grade (A+ to D)"
+                                          >
+                                            <option value="">-</option>
+                                            <option value="A+">A+</option>
+                                            <option value="A">A</option>
+                                            <option value="B+">B+</option>
+                                            <option value="B">B</option>
+                                            <option value="C">C</option>
+                                            <option value="D">D</option>
+                                          </select>
+                                        ) : (
+                                          <input
+                                            type="number"
+                                            min={0}
+                                            max={s.maxMarks ? Number(s.maxMarks) : maxForSub}
+                                            value={markVal !== null && markVal !== undefined ? markVal : ''}
+                                            placeholder="-"
+                                            onChange={(e) => handleUpdateStudentMark(s.roll, sub.key, e.target.value)}
+                                            className="w-14 p-1.5 rounded-lg bg-slate-950 border border-purple-700 text-center font-mono font-bold text-white text-xs focus:border-teal-400"
+                                            title={`Max marks: ${s.maxMarks ? Number(s.maxMarks) : maxForSub}`}
+                                          />
+                                        )
                                       ) : (
-                                        <span className="font-mono text-purple-200 font-bold px-1.5 py-1">
+                                        <span className={`font-mono font-bold px-2 py-0.5 rounded text-xs ${
+                                          isGradedSubject && markVal
+                                            ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40'
+                                            : 'text-purple-200'
+                                        }`}>
                                           {markVal !== null && markVal !== undefined ? markVal : '-'}
                                         </span>
                                       )}
@@ -8201,14 +8782,23 @@ export function TeachersSection({
                             {DAV_SUBJECTS_10.map((sub, idx) => {
                               const val = selectedReportStudent.marks?.[sub.key];
                               const maxForSub = selectedReportStudent.maxConfig?.[sub.key] || 100;
+                              const isGraded = ['computer', 'drawing', 'gk'].includes(sub.key);
 
                               return (
                                 <tr key={sub.key} className="hover:bg-slate-50">
                                   <td className="p-2.5 font-mono text-slate-500">{idx + 1}</td>
                                   <td className="p-2.5 font-bold text-slate-900">{sub.name}</td>
-                                  <td className="p-2.5 font-mono text-center text-slate-600">{maxForSub}</td>
+                                  <td className="p-2.5 font-mono text-center text-slate-600">
+                                    {isGraded ? 'GRADE (Co-Curricular)' : maxForSub}
+                                  </td>
                                   <td className="p-2.5 font-mono font-bold text-center text-teal-800">
-                                    {val !== null && val !== undefined ? val : '-'}
+                                    {val !== null && val !== undefined && val !== '' ? (
+                                      isGraded ? (
+                                        <span className="px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-900 font-black border border-teal-300">
+                                          {val}
+                                        </span>
+                                      ) : val
+                                    ) : '-'}
                                   </td>
                                 </tr>
                               );
@@ -8260,8 +8850,17 @@ export function TeachersSection({
                         </div>
                       </div>
 
-                      {/* Print button */}
-                      <div className="pt-2 flex justify-end gap-2 print:hidden">
+                      {/* Action buttons (Back to Ledger + Print) */}
+                      <div className="pt-2 flex items-center justify-between gap-3 print:hidden flex-wrap">
+                        <button
+                          type="button"
+                          onClick={() => setShowReportCardModal(false)}
+                          className="px-5 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-900 font-bold text-xs flex items-center gap-2 cursor-pointer transition shadow-xs"
+                        >
+                          <ChevronLeft className="w-4 h-4 text-slate-700" />
+                          <span>← Back to Marks Ledger</span>
+                        </button>
+
                         <button
                           onClick={() => window.print()}
                           className="px-6 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs flex items-center gap-2 cursor-pointer shadow-md"

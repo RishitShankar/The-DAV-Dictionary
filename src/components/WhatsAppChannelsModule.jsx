@@ -531,6 +531,41 @@ export function WhatsAppChannelsModule({ user, isDimension5, onSwitchToChats }) 
   };
 
   // -------------------------------------------------------------------------
+  // DELETE CHANNEL (Admins / Dimension 4 & 5)
+  // -------------------------------------------------------------------------
+  const handleDeleteChannel = (channelId) => {
+    if (!channelId) return;
+    if (window.confirm('Are you sure you want to delete this channel? All posts will be removed.')) {
+      setChannels(prev => {
+        const remaining = prev.filter(c => c.id !== channelId);
+        if (activeChannelId === channelId) {
+          setActiveChannelId(remaining[0]?.id || null);
+        }
+        return remaining;
+      });
+      setShowManageModal(false);
+    }
+  };
+
+  // -------------------------------------------------------------------------
+  // DELETE POST FROM CHANNEL (Author / Admins)
+  // -------------------------------------------------------------------------
+  const handleDeletePost = (postId) => {
+    if (!postId || !activeChannelId) return;
+    if (window.confirm('Delete this broadcast message from the channel?')) {
+      setChannels(prev => prev.map(c => {
+        if (c.id === activeChannelId) {
+          return {
+            ...c,
+            posts: (c.posts || []).filter(p => p.id !== postId)
+          };
+        }
+        return c;
+      }));
+    }
+  };
+
+  // -------------------------------------------------------------------------
   // ACCEPT / DECLINE JOIN REQUESTS (Dimension 4 & 5)
   // -------------------------------------------------------------------------
   const handleAcceptRequest = (requestId) => {
@@ -965,6 +1000,18 @@ export function WhatsAppChannelsModule({ user, isDimension5, onSwitchToChats }) 
                   </div>
                 )}
 
+                {/* Delete Channel Option (Admins / Dimension 4 & 5) */}
+                {(isChannelAdmin || canCreateChannel) && (
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteChannel(currentChannel.id)}
+                    className="p-1.5 rounded-lg hover:bg-rose-100 text-rose-600 text-xs font-bold transition cursor-pointer"
+                    title="Delete Channel"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+
                 {/* Switch back to Direct 1-on-1 chats */}
                 {onSwitchToChats && (
                   <button
@@ -1028,7 +1075,19 @@ export function WhatsAppChannelsModule({ user, isDimension5, onSwitchToChats }) 
                             {post.authorRole || 'Channel Admin'}
                           </span>
                         </div>
-                        <span className="text-[10px] text-[#667781] font-semibold">{post.timestamp}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] text-[#667781] font-semibold">{post.timestamp}</span>
+                          {(isChannelAdmin || canCreateChannel || post.authorId === user?.id) && (
+                            <button
+                              type="button"
+                              onClick={() => handleDeletePost(post.id)}
+                              className="p-1 rounded-md text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"
+                              title="Delete broadcast message"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
                       </div>
 
                       {/* Text Body */}

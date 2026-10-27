@@ -204,16 +204,16 @@ export function PurpleFooter({ currentUser, onSelectSection }) {
 
             <div className="grid grid-cols-1 gap-1 text-[11px]">
               {[
-                { id: 1, name: 'Section 1: Master Directory' },
-                { id: 2, name: 'Section 2: Official Textbooks (LKG-8)' },
-                { id: 3, name: 'Section 3: Questions & Answers' },
-                { id: 6, name: 'Section 6: Video Explanations & PYQs' },
-                { id: 7, name: 'Section 7: Kids Fun & Gadgets' },
-                { id: 8, name: 'Section 8: Study Leaderboard & Focus' },
-                { id: 9, name: 'Section 9: Student Personal Profile' },
-                { id: 10, name: 'Section 10: Donate & Reviews Hub' },
-                { id: 11, name: 'Section 11: About Creator Rishit' },
-                ...(isDimension4 ? [{ id: 12, name: 'Section 12: Developer Reviews Vault' }] : [])
+                { id: 1, name: 'Section 1: Campus Overview' },
+                { id: 2, name: 'Section 2: Digital Textbooks' },
+                { id: 3, name: 'Section 3: Question Answers' },
+                { id: 6, name: 'Section 6: Videos & Exams' },
+                { id: 7, name: 'Section 7: Kids Fun Navigator' },
+                { id: 8, name: 'Section 8: Study Leaderboard' },
+                { id: 9, name: 'Section 9: Student Profile' },
+                { id: 10, name: 'Section 10: Donate & Reviews' },
+                { id: 11, name: 'Section 11: About Creator' },
+                ...(isDimension4 ? [{ id: 12, name: 'Section 12: Review Vault' }] : [])
               ].map(sec => (
                 <button
                   key={sec.id}
@@ -245,7 +245,7 @@ export function PurpleFooter({ currentUser, onSelectSection }) {
             © 2026 DAV Dictionary • Built with excellence by <strong>Rishit Shankar</strong> (Head Boy, DAV Public School).
           </div>
           <div className="flex items-center gap-2">
-            <span>Class 8-D • 96% Scholar • 100/100 Sanskrit • Digital India 🇮🇳</span>
+            <span>Class 8-D • 95% Scholar • 80/80 Sanskrit • Digital India 🇮🇳</span>
           </div>
         </div>
 
