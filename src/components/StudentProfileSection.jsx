@@ -29,8 +29,8 @@ export function StudentProfileSection({ user }) {
         residentialAddress: 'Khabra, Muzaffarpur, Bihar',
         city: 'Muzaffarpur',
         phoneNumber: '8092261750',
-        email: 'rishitshankar@gmail.com',
-        instagram: 'https://www.instagram.com/rishit_shankar?cplk=MXNlYzVmajBtdzFxag==',
+        email: 'headboyrishitshankar@gmail.com',
+        instagram: 'https://www.instagram.com/dav_dictionary?vrfl=MWcwYmRoMWVyeWNtOA==',
         linkedin: 'https://www.linkedin.com/in/rishit-shankar',
         currentAmbition: 'Master Full-Stack Software Developer, Chess Champion & Sanskrit Scholar',
         favoriteTeacher: 'Sanskrit & Science Teachers',
@@ -554,7 +554,7 @@ export function StudentProfileSection({ user }) {
                     type="email"
                     value={profile.email || ''}
                     onChange={(e) => handleChange('email', e.target.value)}
-                    placeholder="e.g. rishitshankar@gmail.com"
+                    placeholder="e.g. headboyrishitshankar@gmail.com"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-stone-950 border border-stone-700 text-white focus:outline-none focus:border-amber-400 font-mono"
                   />
                 </div>

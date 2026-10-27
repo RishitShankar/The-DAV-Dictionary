@@ -9,7 +9,7 @@ import {
   CloudSun, Bus, MapPin, Eye, Trophy, Layers, Video, ClipboardList,
   UserCheck as UserCheckIcon, Shield, Zap, ExternalLink, Rocket
 } from 'lucide-react';
-import { WhatsAppLogo, InstagramLogo, LinkedInLogo, SnapchatLogo } from './SocialLogos';
+import { WhatsAppLogo, InstagramLogo, LinkedInLogo, SnapchatLogo, YouTubeLogo, XTwitterLogo } from './SocialLogos';
 import { RangoliCursorEffect } from './RangoliCursorEffect';
 
 export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
@@ -960,21 +960,51 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
                   </a>
 
                   <a
-                    href="mailto:rishitshankar@gmail.com?subject=Hello%20Rishit%20-%20The%20DAV%20Dictionary"
+                    href="mailto:headboyrishitshankar@gmail.com?subject=Hello%20DAV%20Dictionary"
                     className="px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-rose-500 text-rose-300 hover:text-white border border-stone-700 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
                   >
                     <Mail className="w-3.5 h-3.5" />
-                    <span>rishitshankar@gmail.com</span>
+                    <span>headboyrishitshankar@gmail.com</span>
                   </a>
 
                   <a
-                    href="https://www.instagram.com/rishit_shankar?cplk=MXNlYzVmajBtdzFxag=="
+                    href="https://www.instagram.com/dav_dictionary?vrfl=MWcwYmRoMWVyeWNtOA=="
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-3.5 py-2 rounded-xl bg-pink-500/20 hover:bg-pink-500 text-pink-300 hover:text-white border border-pink-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
                   >
                     <InstagramLogo className="w-3.5 h-3.5 fill-current" />
                     <span>Instagram</span>
+                  </a>
+
+                  <a
+                    href="https://www.snapchat.com/add/dav_dictionary?share_id=PtOPLG5tAR8&locale=en-IN"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3.5 py-2 rounded-xl bg-yellow-400/20 hover:bg-yellow-400 text-yellow-300 hover:text-stone-950 border border-yellow-400/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                  >
+                    <SnapchatLogo className="w-3.5 h-3.5" />
+                    <span>Snapchat</span>
+                  </a>
+
+                  <a
+                    href="https://x.com/Dav_Dictionary"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3.5 py-2 rounded-xl bg-black hover:bg-stone-800 text-stone-200 border border-stone-700 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                  >
+                    <XTwitterLogo className="w-3.5 h-3.5 fill-current" />
+                    <span>X</span>
+                  </a>
+
+                  <a
+                    href="https://youtube.com/@davdictionary?si=5FCxn4yecqP35l6O"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3.5 py-2 rounded-xl bg-red-600/20 hover:bg-red-600 text-red-300 hover:text-white border border-red-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                  >
+                    <YouTubeLogo className="w-3.5 h-3.5 fill-current" />
+                    <span>YouTube</span>
                   </a>
 
                   <a

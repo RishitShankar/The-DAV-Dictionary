@@ -254,7 +254,7 @@ Verified by Developer Rishit Shankar. Thank you for your support!`);
             <span>•</span>
             <span>WhatsApp: <strong>+91 94700 33984</strong></span>
             <span>•</span>
-            <span>Email: <strong>rishitshankar@gmail.com</strong></span>
+            <span>Email: <strong>headboyrishitshankar@gmail.com</strong></span>
           </div>
 
         </div>

@@ -29,18 +29,18 @@ export function AboutCreatorSection() {
   const rawPhoneNumber = "8092261750";
   const myWhatsAppNumber = "+91 94700 33984";
   const rawWhatsAppNumber = "9470033984";
-  const myEmailId = "rishitshankar@gmail.com";
+  const myEmailId = "headboyrishitshankar@gmail.com";
   
-  // Official Links Provided by Rishit Shankar
-  const myInstagramUrl = "https://www.instagram.com/rishit_shankar?cplk=MXNlYzVmajBtdzFxag==";
+  // Official Links Provided for DAV Dictionary
+  const myInstagramUrl = "https://www.instagram.com/dav_dictionary?vrfl=MWcwYmRoMWVyeWNtOA==";
   const myLinkedInUrl = "https://www.linkedin.com/in/rishit-shankar-05559b2bb";
-  const myFacebookUrl = "https://www.facebook.com/share/1DqeFxcLH5/";
-  const mySnapchatUrl = "https://www.snapchat.com/add/rishitshankar?share_id=-ZCpwO3-VMM&locale=en-IN";
-  const myPinterestUrl = "https://pin.it/62wWl4pk8";
-  const myXTwitterUrl = "https://x.com/RishitShan59909";
-  const myYouTubeUrl = "https://youtube.com/@tofaugerman8214?si=NvJkQQPIn";
+  const myFacebookUrl = "https://www.facebook.com/share/1K3NutKTY6/";
+  const mySnapchatUrl = "https://www.snapchat.com/add/dav_dictionary?share_id=PtOPLG5tAR8&locale=en-IN";
+  const myPinterestUrl = "https://pin.it/7gVcr0dpk";
+  const myXTwitterUrl = "https://x.com/Dav_Dictionary";
+  const myYouTubeUrl = "https://youtube.com/@davdictionary?si=5FCxn4yecqP35l6O";
   const myGitHubUrl = "https://github.com/RishitShankar";
-  const myTelegramUrl = "https://t.me/+919470033984";
+  const myTelegramUrl = "https://t.me/Dav_Dictionary";
 
   const handleCopyWhatsApp = () => {
     navigator.clipboard.writeText(myWhatsAppNumber);
@@ -1011,15 +1011,15 @@ export function AboutCreatorSection() {
 
                 <div className="space-y-2">
                   {[
-                    { name: 'Instagram', handle: '@rishit_shankar', url: myInstagramUrl, Logo: InstagramLogo, color: 'bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600', badge: 'Official Profile' },
-                    { name: 'Snapchat', handle: '@rishitshankar', url: mySnapchatUrl, Logo: SnapchatLogo, color: 'bg-yellow-400 text-black', badge: 'Snap & Stories' },
+                    { name: 'Instagram', handle: '@dav_dictionary', url: myInstagramUrl, Logo: InstagramLogo, color: 'bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600', badge: 'Official Profile' },
+                    { name: 'Snapchat', handle: '@dav_dictionary', url: mySnapchatUrl, Logo: SnapchatLogo, color: 'bg-yellow-400 text-black', badge: 'Snap & Stories' },
                     { name: 'LinkedIn', handle: 'Rishit Shankar', url: myLinkedInUrl, Logo: LinkedInLogo, color: 'bg-[#0077b5]', badge: 'Developer Network' },
-                    { name: 'Facebook', handle: 'Rishit Shankar', url: myFacebookUrl, Logo: FacebookLogo, color: 'bg-[#1877f2]', badge: 'Community' },
-                    { name: 'Pinterest', handle: 'Rishit Shankar', url: myPinterestUrl, Logo: PinterestLogo, color: 'bg-[#e60023]', badge: 'Art & Pinboards' },
-                    { name: 'X / Twitter', handle: '@RishitShan59909', url: myXTwitterUrl, Logo: XTwitterLogo, color: 'bg-black border border-stone-700', badge: 'Official Announcements' },
-                    { name: 'YouTube', handle: '@tofaugerman8214', url: myYouTubeUrl, Logo: YouTubeLogo, color: 'bg-[#ff0000]', badge: 'Channel' },
+                    { name: 'Facebook', handle: 'DAV Dictionary', url: myFacebookUrl, Logo: FacebookLogo, color: 'bg-[#1877f2]', badge: 'Community' },
+                    { name: 'Pinterest', handle: 'DAV Dictionary', url: myPinterestUrl, Logo: PinterestLogo, color: 'bg-[#e60023]', badge: 'Art & Pinboards' },
+                    { name: 'X / Twitter', handle: '@Dav_Dictionary', url: myXTwitterUrl, Logo: XTwitterLogo, color: 'bg-black border border-stone-700', badge: 'Official Announcements' },
+                    { name: 'YouTube', handle: '@davdictionary', url: myYouTubeUrl, Logo: YouTubeLogo, color: 'bg-[#ff0000]', badge: 'Channel' },
                     { name: 'GitHub', handle: '@RishitShankar', url: myGitHubUrl, Logo: GitHubLogo, color: 'bg-stone-900 border border-stone-700', badge: 'Source Code' },
-                    { name: 'Telegram', handle: '+91 94700 33984', url: myTelegramUrl, Logo: TelegramLogo, color: 'bg-[#229ed9]', badge: 'Instant Ping' }
+                    { name: 'Telegram', handle: '@Dav_Dictionary', url: myTelegramUrl, Logo: TelegramLogo, color: 'bg-[#229ed9]', badge: 'Official Channel' }
                   ].map((soc, idx) => {
                     const LogoComponent = soc.Logo;
                     return (

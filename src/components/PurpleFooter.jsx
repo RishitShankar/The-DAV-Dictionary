@@ -5,7 +5,8 @@ import {
 } from 'lucide-react';
 import { 
   WhatsAppLogo, InstagramLogo, LinkedInLogo, SnapchatLogo, 
-  FacebookLogo, YouTubeLogo, XTwitterLogo, GitHubLogo 
+  FacebookLogo, YouTubeLogo, XTwitterLogo, GitHubLogo,
+  PinterestLogo, TelegramLogo 
 } from './SocialLogos';
 
 export function PurpleFooter({ currentUser, onSelectSection }) {
@@ -127,30 +128,39 @@ export function PurpleFooter({ currentUser, onSelectSection }) {
               </a>
 
               <a 
-                href="mailto:rishitshankar@gmail.com" 
+                href="mailto:headboyrishitshankar@gmail.com" 
                 className="flex items-center gap-2 text-amber-300 hover:text-amber-200 font-bold"
               >
                 <Mail className="w-4 h-4 shrink-0" />
-                <span>Email: rishitshankar@gmail.com</span>
+                <span>Email: headboyrishitshankar@gmail.com</span>
               </a>
             </div>
 
             {/* Social Channels Row */}
             <div className="pt-2 flex flex-wrap gap-1.5">
-              <a href="https://www.instagram.com/rishit_shankar?cplk=MXNlYzVmajBtdzFxag==" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-pink-600/30 hover:bg-pink-600 text-white transition" title="Instagram">
+              <a href="https://www.instagram.com/dav_dictionary?vrfl=MWcwYmRoMWVyeWNtOA==" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-pink-600/30 hover:bg-pink-600 text-white transition" title="Instagram (@dav_dictionary)">
                 <InstagramLogo className="w-3.5 h-3.5 fill-current" />
               </a>
-              <a href="https://www.snapchat.com/add/rishitshankar?share_id=-ZCpwO3-VMM&locale=en-IN" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-yellow-400 text-black transition" title="Snapchat">
+              <a href="https://www.snapchat.com/add/dav_dictionary?share_id=PtOPLG5tAR8&locale=en-IN" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-yellow-400 text-black transition" title="Snapchat (dav_dictionary)">
                 <SnapchatLogo className="w-3.5 h-3.5" />
+              </a>
+              <a href="https://www.facebook.com/share/1K3NutKTY6/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-indigo-600/30 hover:bg-indigo-600 text-white transition" title="Facebook (DAV Dictionary)">
+                <FacebookLogo className="w-3.5 h-3.5 fill-current" />
+              </a>
+              <a href="https://x.com/Dav_Dictionary" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-black hover:bg-stone-800 text-white border border-stone-700 transition" title="X / Twitter (@Dav_Dictionary)">
+                <XTwitterLogo className="w-3.5 h-3.5 fill-current" />
+              </a>
+              <a href="https://youtube.com/@davdictionary?si=5FCxn4yecqP35l6O" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-red-600/30 hover:bg-red-600 text-white transition" title="YouTube (@davdictionary)">
+                <YouTubeLogo className="w-3.5 h-3.5 fill-current" />
+              </a>
+              <a href="https://pin.it/7gVcr0dpk" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-red-700/30 hover:bg-red-700 text-white transition" title="Pinterest (DAV Dictionary)">
+                <PinterestLogo className="w-3.5 h-3.5 fill-current" />
+              </a>
+              <a href="https://t.me/Dav_Dictionary" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-[#229ed9]/30 hover:bg-[#229ed9] text-white transition" title="Telegram (@Dav_Dictionary)">
+                <TelegramLogo className="w-3.5 h-3.5 fill-current" />
               </a>
               <a href="https://www.linkedin.com/in/rishit-shankar-05559b2bb" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-blue-600/30 hover:bg-blue-600 text-white transition" title="LinkedIn">
                 <LinkedInLogo className="w-3.5 h-3.5 fill-current" />
-              </a>
-              <a href="https://www.facebook.com/share/1DqeFxcLH5/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-indigo-600/30 hover:bg-indigo-600 text-white transition" title="Facebook">
-                <FacebookLogo className="w-3.5 h-3.5 fill-current" />
-              </a>
-              <a href="https://youtube.com/@tofaugerman8214?si=NvJkQQPIn" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-red-600/30 hover:bg-red-600 text-white transition" title="YouTube">
-                <YouTubeLogo className="w-3.5 h-3.5 fill-current" />
               </a>
               <a href="https://github.com/RishitShankar" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-stone-700/50 hover:bg-stone-700 text-white transition" title="GitHub">
                 <GitHubLogo className="w-3.5 h-3.5 fill-current" />
