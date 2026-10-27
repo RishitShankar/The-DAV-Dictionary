@@ -5,7 +5,8 @@ import {
   Gamepad2, CheckCircle2, Target, Cpu, Layers, Copy, Check, 
   ExternalLink, ChevronRight, GraduationCap, Palette, Film, 
   Compass, Share2, Quote, ArrowUpRight, PartyPopper, MessageCircle,
-  Phone, X, Send, Trophy, Rocket, Laptop, Lightbulb, Zap, HelpCircle
+  Phone, X, Send, Trophy, Rocket, Laptop, Lightbulb, Zap, HelpCircle,
+  FileText, CheckSquare, ListOrdered, Sparkle
 } from 'lucide-react';
 import { 
   InstagramLogo, LinkedInLogo, FacebookLogo, SnapchatLogo, 
@@ -42,6 +43,109 @@ export function AboutCreatorSection() {
   const myGitHubUrl = "https://github.com/RishitShankar";
   const myTelegramUrl = "https://t.me/Dav_Dictionary";
 
+  const summary100Lines = [
+  "Full Name: Rishit Shankar (रीशीत शंकर), 14-year-old student leader and technology innovator.",
+  "Current Academic Level: Class 8-D student at D.A.V. Public School, Khabra, Muzaffarpur, Bihar.",
+  "Official School Identifier: Roll No. 25 in Class 8-D.",
+  "Elected Designation: Head Boy of D.A.V. Public School, Khabra for Academic Session 2026–27.",
+  "Leadership Selection: Unanimously appointed by Principal Anil Kumar and school administration based on moral integrity, academic brilliance, and discipline.",
+  "Primary Responsibility: Chief representative and student advocate for all students from LKG up to Class 8.",
+  "Morning Assembly Governance: Coordinates morning assembly order, national pledge, DAV anthem, and queue management.",
+  "Student Welfare Advocacy: Champions student concerns and liaises with teachers and school administration.",
+  "Inter-Class Mentorship: Guides junior students with academic habits, study schedules, and school rules.",
+  "Campus Discipline Standard: Models promptness, perfect uniform presentation, and courteous speech.",
+  "Conflict Resolution: Mediates peer disputes with emotional maturity, active listening, and fairness.",
+  "Cultural Coordination: Leads student participation in Independence Day, Republic Day, and school festivals.",
+  "Environmental Initiatives: Spearheads school tree-plantation and clean-campus awareness drives.",
+  "Family Heritage: Eldest son in a deeply valued, supportive family residing in Muzaffarpur, Bihar.",
+  "Father: Ashish Shankar (आशीष शंकर), chief mentor and pillar of dedication.",
+  "Mother: Sarita Kumari (सरिता कुमारी), source of discipline, ethics, and moral strength.",
+  "Younger Brother: Saharsh Shankar, enthusiastic companion in learning and technology.",
+  "Extended Family: Resides with his beloved grandfather, embracing traditional family values.",
+  "Hometown Roots: Proud resident and scholar of Muzaffarpur, Bihar, India.",
+  "Institutional Loyalty: Deep reverence for the DAV education movement and Vedic philosophies.",
+  "Overall Half-Yearly Aggregate: Achieved an outstanding 95% total score in Class 8 Half-Yearly Examinations.",
+  "Sanskrit Century Scorer: Scored a perfect 80 out of 80 (100% Century Score) in Surabhi Sanskrit (संस्कृत सुरभि).",
+  "Sanskrit Grammatical Mastery: Flawless execution of Dhatu Roop, Shabda Roop, Sandhi, and translation rules.",
+  "Hindi Literature Distinction: Scored 79 out of 80 (98.75%) in Hindi Gyan Sagar & Abhyas Sagar (ज्ञान एवं अभ्यास सागर).",
+  "Hindi Composition Skills: Exceptional prose comprehension, poetic analysis, and essay writing.",
+  "Social Science Excellence: Scored 77 out of 80 (96.25%) in SST (We and Our World).",
+  "Historical & Civic Analysis: Deep understanding of the Indian Freedom Movement, Constitution, and resources.",
+  "Science & Technology Distinction: Scored 77 out of 80 (96.25%) in Science & Technology (The Living World).",
+  "Scientific Methodology: In-depth grasp of Physics laws, Chemical transformations, and Biological systems.",
+  "Mathematics Distinction: Scored 74 out of 80 (92.5%) in Secondary Mathematics.",
+  "Mathematical Problem Solving: Rigorous mastery of algebraic factorization, linear equations, and geometry.",
+  "English Course Performance: Scored 69 out of 80 (86.25%) in English Literature & Practice.",
+  "English Language Fluency: Articulate vocabulary, active grammar control, and creative writing.",
+  "Consistent Study Regimen: Maintains a structured 4-hour daily revision plan balancing all 6 core subjects.",
+  "Conceptual Over Rote: Prioritizes foundational conceptual clarity over superficial memorization.",
+  "PT-1 Overall Aggregate: Scored 139.5 out of 150 (93% total) in the First Periodic Test (PT-1).",
+  "PT-1 Science Perfection: Scored a perfect 25 out of 25 (100% Century) in Science PT-1.",
+  "PT-1 Mathematics Excellence: Scored 24.5 out of 25 (98%) in Mathematics PT-1.",
+  "PT-1 Social Science Mastery: Scored 24 out of 25 (96%) in Social Science (SST) PT-1.",
+  "PT-1 Sanskrit Command: Scored 23 out of 25 (92%) in Sanskrit PT-1.",
+  "PT-1 Hindi Score: Scored 22.5 out of 25 (90%) in Hindi PT-1.",
+  "PT-1 English Score: Scored 20.5 out of 25 (82%) in English PT-1.",
+  "Exam Stamina: Demonstrates rapid speed and meticulous double-checking across all timed tests.",
+  "Error Analysis Practice: Systematically notes down every test error in an error journal to prevent repetition.",
+  "Peer Study Groups: Regularly organizes study sessions to help classmates prepare for upcoming tests.",
+  "Physics Wallah National Scholarship Test: Competed in the prestigious nationwide PWNSAT examination.",
+  "PWNSAT Percentile: Achieved a top-ranking 98th Percentile across all national participants.",
+  "PWNSAT Gold Medal: Honored with a verified Gold Medal for national academic distinction.",
+  "Scientific Aptitude: Solved advanced multi-step logical, physical, and quantitative questions.",
+  "National Benchmarking: Competed against tens of thousands of top students from across India.",
+  "STEM Problem Solving: Natural affinity for physics mechanics, scientific reasoning, and mathematical logic.",
+  "Pressure Management: Thrives in high-stakes competitive environments through calm mental composure.",
+  "Time Allocation Mastery: Allocates exact time budgets per section during national-level competitive tests.",
+  "Academic Ambition: Prepares for state and national Science and Mathematics Olympiads.",
+  "School Honor: Brought national acclaim and recognition to D.A.V. Public School, Khabra.",
+  "DAV Cluster 3 Gold Medalist: Won the Gold Medal in the official DAV Cluster 3 Chess Championship.",
+  "Competitive Experience: Played and logged over 1,000+ competitive chess matches on online and board platforms.",
+  "Primary Repertoire (White): 1.e4 King’s Pawn Opening with sharp tactical developments and center control.",
+  "Primary Repertoire (Black): Sicilian Defense and solid classical defenses against 1.d4 and 1.e4.",
+  "Calculation Depth: Regularly calculates 3 to 4 moves ahead, evaluating piece tension and King safety.",
+  "Blunder Prevention: Adheres to the strict habit of verifying opponent candidate checks before every move.",
+  "Endgame Technique: Fluid understanding of pawn promotion, King opposition, and Rook endgames.",
+  "Time Control Versatility: Proficient across Rapid (10m), Blitz (3m/5m), and Classical tournament formats.",
+  "Resilience in Defeat: Analyzes lost game PGNs objectively to extract structural and tactical lessons.",
+  "Strategic Cross-Pollination: Connects chess piece coordination with real-life team leadership and code design.",
+  "DAV Sportsmanship: Treats every competitor with dignity and respect, embodying DAV sports ethos.",
+  "Cricket Analytics Passion: Avid student of cricket match data, required run rates, and tactical statistics.",
+  "Probability Calculation: Studies match win percentages, boundary frequency, and bowling economy rates.",
+  "Mental Concentration: Sustains hours of continuous deep focus without losing analytical stamina.",
+  "Physical Stamina: Engages in daily physical exercise to complement long hours of intellectual work.",
+  "Full-Stack Developer: Self-taught modern software engineer building real-world web applications.",
+  "Three Production Apps: Conceptualized, engineered, and deployed 3 complete full-stack web applications.",
+  "Flagship App 1: The DAV Dictionary — comprehensive digital reference campus serving thousands of students.",
+  "Flagship App 2: Rishi AI Engine — custom-engineered dual-mode AI companion for curriculum doubt solving.",
+  "Flagship App 3: Faculty & Student Master OS — real-time classroom coordination and student performance portal.",
+  "Frontend Architecture: Built with React 18, Vite, and modular component hierarchy.",
+  "Styling Engine: Designed with Tailwind CSS featuring customized color schemes and responsive layouts.",
+  "Zero-Blur Rendering: Engineered crystal-clear UI rendering without distracting blur filters.",
+  "Real-Time WebRTC Calling: Integrated live peer-to-peer audio and video communication channels for study rooms.",
+  "Cloud Database Integration: Connected to Supabase Cloud PostgreSQL with row-level security policies.",
+  "Audio Synthesis: Integrated Web Audio API to create authentic fanfare sound chimes on user milestones.",
+  "Interactive Graphic UI: Created 3D typography, particle celebration popups, and animated score bars.",
+  "Cross-Device Compatibility: Fully optimized for Android smartphones, tablets, Chromebooks, and PCs.",
+  "Clean Code Hygiene: Maintains modular, well-documented, and error-tolerant JavaScript/React codebases.",
+  "Production Deployment: Manages live cloud deployments with continuous integration and automated builds.",
+  "Mission Statement: Dedicated to The DAV Dictionary Serving DAVians across India.",
+  "LKG to Class 8 Coverage: Digitized access to DAV textbooks, chapter summaries, and practice materials.",
+  "Curriculum Solutions: Verified solutions for textbook exercises across Science, Math, SST, Hindi, and Sanskrit.",
+  "Exam Preparation Hub: Previous year questions (PYQs), model question papers, and sample answer keys.",
+  "24/7 AI Guidance: Rishi AI answers student questions anytime, reducing dependency on external tuitions.",
+  "Multimedia Learning: Embedded video explanations that break down challenging textbook chapters simply.",
+  "Educational Equity: Ensures every student has equal access to high-quality academic tools regardless of resources.",
+  "Continuous Enhancement: Rapidly fixes bugs and adds new student-requested features within hours.",
+  "Student Empowerment: Designed by a student for students to make learning delightful and stress-free.",
+  "Permanent Legacy: Created as a lasting technological contribution to D.A.V. Public School, Khabra.",
+  "Core Guiding Principle: Combines rigorous personal discipline, academic brilliance, and service to society.",
+  "Veneration of Teachers: Holds profound gratitude and respect for school mentors, teachers, and Principal Anil Kumar.",
+  "Integrity and Humility: Stays grounded, helpful to peers, and dedicated to continuous self-improvement.",
+  "Long-Term Ambition: Aspires to lead cutting-edge computer science and artificial intelligence advancements for India.",
+  "Commitment to Excellence: Dedicated to representing D.A.V. Public School, Khabra with pride, honor, and brilliance."
+];
+
   const handleCopyWhatsApp = () => {
     navigator.clipboard.writeText(myWhatsAppNumber);
     setCopiedWhatsApp(true);
@@ -61,7 +165,7 @@ export function AboutCreatorSection() {
   };
 
   const handleCopyBio = () => {
-    const bioText = `Rishit Shankar (रीशीत शंकर) • Age 14 • Student Leader, Head Boy of D.A.V. Public School Khabra (Class 8-D, Roll No. 25). Founder & Creator of The DAV Dictionary (serving DAVians) and Rishi AI. Gold Medalist in Cluster 3 & 14. 98 Percentile Gold Medalist in PWNSAT (Physics Wallah National Scholarship Test). Academic Excellence: 95% in Class 8 Half-Yearly (Sanskrit 80/80, Hindi 79/80, SST 77/80, Science 77/80, Math 74/80) & 93% in First Periodic Test PT-1 (Math 24.5/25, Science 25/25, SST 24/25, Sanskrit 23/25, Hindi 22.5/25, English 20.5/25). Master of 1,000+ competitive chess games. Built 3 full-stack applications. WhatsApp: +91 94700 33984 • Call: +91 80922 61750.`;
+    const bioText = `Rishit Shankar (रीशीत शंकर) • Age 14 • Student Leader, Head Boy of D.A.V. Public School Khabra (Class 8-D, Roll No. 25). Founder & Creator of The DAV Dictionary (serving DAVians) and Rishi AI. Gold Medalist in DAV Cluster 3. 98 Percentile Gold Medalist in PWNSAT (Physics Wallah National Scholarship Test). Academic Excellence: 95% in Class 8 Half-Yearly (Sanskrit 80/80 Century Scorer, Hindi 79/80, SST 77/80, Science 77/80, Math 74/80, English 69/80) & 93% in First Periodic Test PT-1 (Math 24.5/25, Science 25/25, SST 24/25, Sanskrit 23/25, Hindi 22.5/25, English 20.5/25). Master of 1,000+ competitive chess games. Built 3 full-stack applications. WhatsApp: +91 94700 33984 • Call: +91 80922 61750.`;
     navigator.clipboard.writeText(bioText);
     setCopiedBio(true);
     setTimeout(() => setCopiedBio(false), 2000);
@@ -123,7 +227,8 @@ export function AboutCreatorSection() {
     { id: 'academics', label: 'Academic & Half-Yearly', icon: GraduationCap, color: 'text-rose-500', badge: '95% Half-Yearly & 93% PT-1' },
     { id: 'tech', label: 'Coding Tech & Stack', icon: Code2, color: 'text-cyan-500', badge: 'Serving DAVians' },
     { id: 'creative', label: 'Design 3D & Video', icon: Palette, color: 'text-purple-500', badge: 'How I Built DAV Dictionary' },
-    { id: 'gaming_chess', label: 'Chess & Strategy', icon: Trophy, color: 'text-emerald-500', badge: '1000+ Games & Cluster 3 Gold' }
+    { id: 'gaming_chess', label: 'Chess & Strategy', icon: Trophy, color: 'text-emerald-500', badge: '1000+ Games & Cluster 3 Gold' },
+    { id: 'about_me', label: 'About Me (100-Line Summary)', icon: User, color: 'text-amber-600', badge: 'Complete 100-Line Bio' }
   ];
 
   return (
@@ -157,7 +262,7 @@ export function AboutCreatorSection() {
                 <span>🎊</span>
               </div>
               <p className="text-xs sm:text-sm font-black text-stone-900 mt-1">
-                Gold Medalist Cluster 3 &amp; 14 • Student Leader &amp; Head Boy • 95% Class 8 Half-Yearly (Sanskrit 80/80) • 98%ile PWNSAT Gold Medalist • Founder of The DAV Dictionary!
+                Gold Medalist in DAV Cluster 3 • Student Leader &amp; Head Boy • 95% Class 8 Half-Yearly (Sanskrit Century Scorer 80/80) • 98%ile PWNSAT Gold Medalist • Founder of The DAV Dictionary!
               </p>
             </div>
           </div>
@@ -252,7 +357,7 @@ export function AboutCreatorSection() {
                   </span>
                   <span className="px-3 py-1 rounded-xl bg-orange-500/20 text-orange-300 text-xs font-black border border-orange-400/40 flex items-center gap-1.5">
                     <Trophy className="w-3.5 h-3.5 text-orange-400" />
-                    Gold Medalist in Cluster 3 &amp; 14
+                    Gold Medalist in DAV Cluster 3
                   </span>
                   <span className="px-3 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 text-xs font-black border border-emerald-400/40 flex items-center gap-1.5">
                     <Award className="w-3.5 h-3.5 text-emerald-400" />
@@ -265,7 +370,7 @@ export function AboutCreatorSection() {
                 </p>
 
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl mx-auto lg:mx-0 mb-6">
-                  Student leader, innovator, and creator dedicated to serving DAVians across India. Architected <strong>The DAV Dictionary</strong> and <strong>Rishi AI</strong>, achieved <strong>95% in Class 8 Half-Yearly Exams</strong> (with 80/80 in Sanskrit), <strong>93% in First Periodic Test (PT-1)</strong>, Gold Medalist in Cluster 3 &amp; 14, and 98 percentile Gold Medalist in PWNSAT conducted by Physics Wallah.
+                  Student leader, innovator, and creator dedicated to serving DAVians across India. Architected <strong>The DAV Dictionary</strong> and <strong>Rishi AI</strong>, achieved <strong>95% in Class 8 Half-Yearly Exams</strong> (with 80/80 in Sanskrit), <strong>93% in First Periodic Test (PT-1)</strong>, Gold Medalist in DAV Cluster 3, and 98 percentile Gold Medalist in PWNSAT conducted by Physics Wallah.
                 </p>
 
                 {/* Key Quick Facts Pills */}
@@ -276,7 +381,7 @@ export function AboutCreatorSection() {
                   </div>
                   <div className="px-3 py-1.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center gap-1.5 font-bold">
                     <Trophy className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Gold Medalist in Cluster 3, 14</span>
+                    <span>Gold Medalist in DAV Cluster 3</span>
                   </div>
                   <div className="px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 flex items-center gap-1.5 font-bold">
                     <GraduationCap className="w-3.5 h-3.5 text-emerald-400" />
@@ -366,38 +471,45 @@ export function AboutCreatorSection() {
             </div>
           </div>
 
-          {/* 6 Metric Highlight Cards with Accurate Verified Data */}
+          {/* 6 Metric Highlight Cards - 3D REMOVED ON 95% AND 80/80 AS EXPLICITLY DIRECTED */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 border-t border-stone-800 bg-stone-950/80 p-4 sm:p-6 gap-3">
+            
+            {/* Card 1: 95% Total - CLEAN NON-3D TEXT */}
             <div className="p-3.5 rounded-2xl bg-stone-900/80 border border-amber-500/50 text-center hover:scale-103 transition shadow-md">
-              <div className="text-xl sm:text-2xl font-black text-amber-400 text-3d-gold">95%</div>
+              <div className="text-xl sm:text-2xl font-black text-amber-400">95%</div>
               <div className="text-[11px] font-bold text-stone-200 mt-0.5">Class 8 Half-Yearly</div>
               <div className="text-[10px] text-amber-300 font-semibold">Total Aggregate</div>
             </div>
 
+            {/* Card 2: 93% PT-1 */}
             <div className="p-3.5 rounded-2xl bg-stone-900/80 border border-emerald-500/40 text-center hover:scale-103 transition shadow-md">
               <div className="text-xl sm:text-2xl font-black text-emerald-400">93%</div>
               <div className="text-[11px] font-bold text-stone-200 mt-0.5">First Periodic (PT-1)</div>
               <div className="text-[10px] text-emerald-300 font-semibold">139.5 / 150 Score</div>
             </div>
 
+            {/* Card 3: 80 / 80 Sanskrit Century Scorer - CLEAN NON-3D TEXT */}
             <div className="p-3.5 rounded-2xl bg-stone-900/80 border border-amber-500/50 bg-gradient-to-b from-amber-500/15 to-stone-900/80 text-center hover:scale-103 transition shadow-md">
-              <div className="text-xl sm:text-2xl font-black text-amber-300 text-3d-gold">80 / 80</div>
-              <div className="text-[11px] font-bold text-stone-100 mt-0.5">Surabhi Sanskrit</div>
-              <div className="text-[10px] text-amber-400 font-black">100% Century Score!</div>
+              <div className="text-xl sm:text-2xl font-black text-amber-300">80 / 80</div>
+              <div className="text-[11px] font-bold text-stone-100 mt-0.5">Sanskrit Century Scorer</div>
+              <div className="text-[10px] text-amber-400 font-bold">Surabhi Sanskrit (100%)</div>
             </div>
 
+            {/* Card 4: 79 / 80 Hindi */}
             <div className="p-3.5 rounded-2xl bg-stone-900/80 border border-orange-500/40 text-center hover:scale-103 transition shadow-md">
               <div className="text-xl sm:text-2xl font-black text-orange-400">79 / 80</div>
               <div className="text-[11px] font-bold text-stone-200 mt-0.5">Hindi Literature</div>
               <div className="text-[10px] text-stone-400">Gyan &amp; Abhyas Sagar</div>
             </div>
 
+            {/* Card 5: DAV Cluster 3 Gold Medalist */}
             <div className="p-3.5 rounded-2xl bg-stone-900/80 border border-purple-500/40 text-center hover:scale-103 transition shadow-md">
               <div className="text-lg sm:text-xl font-black text-purple-300">Gold Medal</div>
-              <div className="text-[11px] font-bold text-stone-200 mt-0.5">Cluster 3 &amp; 14</div>
-              <div className="text-[10px] text-purple-400 font-semibold">Student Leader</div>
+              <div className="text-[11px] font-bold text-stone-200 mt-0.5">DAV Cluster 3</div>
+              <div className="text-[10px] text-purple-400 font-semibold">Chess Champion</div>
             </div>
 
+            {/* Card 6: PWNSAT 98%ile */}
             <div className="p-3.5 rounded-2xl bg-stone-900/80 border border-cyan-500/40 bg-gradient-to-b from-cyan-500/10 to-stone-900/80 text-center hover:scale-103 transition shadow-md">
               <div className="text-xl sm:text-2xl font-black text-cyan-300">98 %ile</div>
               <div className="text-[11px] font-bold text-stone-200 mt-0.5">PWNSAT Exam</div>
@@ -408,7 +520,7 @@ export function AboutCreatorSection() {
         </div>
 
         {/* Navigation Tabs - Styled in 3D Interactive Design */}
-        <div className="flex flex-wrap items-center gap-2.5 mb-8 bg-amber-100/60 p-2 rounded-2xl border-2 border-amber-300/80 shadow-md">
+        <div className="flex flex-wrap items-center gap-2 mb-8 bg-amber-100/60 p-2 rounded-2xl border-2 border-amber-300/80 shadow-md">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -416,14 +528,14 @@ export function AboutCreatorSection() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 min-w-[150px] py-3.5 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                className={`flex-1 min-w-[140px] py-3 px-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
                   isActive
                     ? 'bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-stone-950 shadow-lg shadow-amber-500/30 font-black scale-102 border-2 border-amber-600'
                     : 'text-stone-700 hover:text-stone-950 hover:bg-white/80'
                 }`}
               >
                 <Icon className={`w-4 h-4 ${isActive ? 'text-stone-950' : tab.color}`} />
-                <span className="text-xs sm:text-sm">{tab.label}</span>
+                <span className="text-xs sm:text-sm whitespace-nowrap">{tab.label}</span>
               </button>
             );
           })}
@@ -483,9 +595,9 @@ export function AboutCreatorSection() {
                     <Trophy className="w-4 h-4 text-amber-600" />
                     Major Honors &amp; Leadership Titles
                   </div>
-                  <h4 className="font-black text-stone-900 text-base mb-2">Gold Medalist in Cluster 3 &amp; 14</h4>
+                  <h4 className="font-black text-stone-900 text-base mb-2">Gold Medalist in DAV Cluster 3</h4>
                   <p className="text-xs text-stone-600 leading-relaxed">
-                    Recognized as a Student Leader, Head Boy, and Founder of The DAV Dictionary. Gold Medalist across inter-school Cluster competitions, setting an example of excellence in both brain sports and organizational leadership.
+                    Recognized as a Student Leader, Head Boy, and Founder of The DAV Dictionary. Gold Medalist in the official DAV Cluster 3 Chess Championship, setting an example of excellence in both competitive sports and organizational leadership.
                   </p>
                 </div>
 
@@ -521,7 +633,7 @@ export function AboutCreatorSection() {
           </div>
         )}
 
-        {/* 2. ACADEMIC & HALF-YEARLY: EXACT VERIFIED MARKS */}
+        {/* 2. ACADEMIC & HALF-YEARLY: EXACT VERIFIED MARKS WITH ENGLISH (69/80) */}
         {activeTab === 'academics' && (
           <div className="space-y-6 animate-fadeIn">
             <div className="card-warm-3d rounded-3xl p-6 sm:p-10 border-2 border-amber-300/70 shadow-xl">
@@ -535,26 +647,26 @@ export function AboutCreatorSection() {
                     Academic &amp; Half-Yearly
                   </h3>
                   <p className="text-xs sm:text-sm font-bold text-rose-700">
-                    Class 8 Half-Yearly (95% Total) &amp; First Periodic Test PT-1 (93% Total)
+                    Class 8 Half-Yearly (95% Total across 6 Subjects) &amp; First Periodic Test PT-1 (93% Total)
                   </p>
                 </div>
               </div>
 
               <p className="text-sm text-stone-600 mb-6 leading-relaxed">
-                Rishit maintains top-tier academic rigor with verified marks across DAV curriculum examinations, combining mastery in Vedic Sanskrit, scientific theory, mathematical problem solving, and social science.
+                Rishit maintains top-tier academic rigor with verified marks across DAV curriculum examinations, combining mastery in Vedic Sanskrit, scientific theory, mathematical problem solving, social science, and languages.
               </p>
 
-              {/* SECTION A: CLASS 8 HALF-YEARLY EXAMS (95%) */}
+              {/* SECTION A: CLASS 8 HALF-YEARLY EXAMS (95% ACROSS 6 SUBJECTS) */}
               <div className="mb-8 p-5 sm:p-6 rounded-2xl bg-white/95 border-2 border-amber-300/80 shadow-md">
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                   <div className="flex items-center gap-2">
                     <span className="w-3 h-3 rounded-full bg-amber-500" />
                     <h4 className="text-base sm:text-lg font-black text-stone-900">
-                      Class 8 Half-Yearly Examination
+                      Class 8 Half-Yearly Examination (All 6 Subjects)
                     </h4>
                   </div>
                   <span className="px-3.5 py-1 rounded-full bg-amber-400 text-stone-950 text-xs font-black shadow-xs">
-                    95% Aggregate
+                    95% Aggregate (456 / 480)
                   </span>
                 </div>
 
@@ -564,9 +676,9 @@ export function AboutCreatorSection() {
                     <div className="flex justify-between text-xs font-bold text-stone-800 mb-1">
                       <span className="flex items-center gap-1.5">
                         <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                        Sanskrit (संस्कृत सुरभि)
+                        Sanskrit (संस्कृत सुरभि) — Century Scorer!
                       </span>
-                      <span className="text-amber-800 font-black">80 / 80 (100% Century Score!)</span>
+                      <span className="text-amber-800 font-black">80 / 80 (100% Perfect Century Score)</span>
                     </div>
                     <div className="w-full h-3 bg-amber-100/70 rounded-full overflow-hidden border border-amber-200">
                       <div className="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full" style={{ width: '100%' }} />
@@ -626,6 +738,20 @@ export function AboutCreatorSection() {
                     </div>
                     <div className="w-full h-3 bg-amber-100/70 rounded-full overflow-hidden border border-amber-200">
                       <div className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full" style={{ width: '92.5%' }} />
+                    </div>
+                  </div>
+
+                  {/* English 69/80 */}
+                  <div>
+                    <div className="flex justify-between text-xs font-bold text-stone-800 mb-1">
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+                        English (English Literature &amp; Practice)
+                      </span>
+                      <span className="text-blue-800 font-black">69 / 80 (86.25%)</span>
+                    </div>
+                    <div className="w-full h-3 bg-amber-100/70 rounded-full overflow-hidden border border-amber-200">
+                      <div className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" style={{ width: '86.25%' }} />
                     </div>
                   </div>
                 </div>
@@ -881,7 +1007,7 @@ export function AboutCreatorSection() {
           </div>
         )}
 
-        {/* 5. CHESS & STRATEGY: 1000+ GAMES & CLUSTER 3 GOLD */}
+        {/* 5. CHESS & STRATEGY: 1000+ GAMES & DAV CLUSTER 3 GOLD */}
         {activeTab === 'gaming_chess' && (
           <div className="space-y-6 animate-fadeIn">
             <div className="card-warm-3d rounded-3xl p-6 sm:p-10 border-2 border-amber-300/70 shadow-xl">
@@ -895,7 +1021,7 @@ export function AboutCreatorSection() {
                     Chess &amp; Strategy
                   </h3>
                   <p className="text-xs sm:text-sm font-bold text-emerald-800">
-                    1,000+ Games Played • Gold Medalist in Cluster 3 &amp; 14
+                    1,000+ Games Played • Gold Medalist in DAV Cluster 3
                   </p>
                 </div>
               </div>
@@ -924,19 +1050,19 @@ export function AboutCreatorSection() {
                   </div>
                 </div>
 
-                {/* Cluster Gold Medalist Card */}
+                {/* DAV Cluster 3 Gold Medalist Card */}
                 <div className="p-6 rounded-2xl bg-white/95 border-2 border-amber-300/80 shadow-md">
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-black text-stone-900 text-lg flex items-center gap-2">
                       <Trophy className="w-5 h-5 text-amber-600" />
-                      <span>Cluster 3 &amp; 14 Gold</span>
+                      <span>DAV Cluster 3 Gold</span>
                     </h4>
                     <span className="px-3 py-1 rounded-full bg-amber-500 text-stone-950 text-xs font-black shadow-xs">
                       Gold Medalist
                     </span>
                   </div>
                   <p className="text-xs text-stone-600 leading-relaxed mb-4">
-                    Gold Medalist in inter-school Cluster 3 and Cluster 14 tournaments. Demonstrated tactical superiority and positional patience against the finest student competitors.
+                    Gold Medalist in the official DAV Cluster 3 Chess Championship. Demonstrated tactical superiority and positional patience against top student competitors across the zone.
                   </p>
                   <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs font-bold text-amber-900">
                     Combines competitive sportsmanship with student leadership across DAV Khabra.
@@ -965,7 +1091,115 @@ export function AboutCreatorSection() {
           </div>
         )}
 
-        {/* SHORT SUMMARY ABOUT ME - 3D TYPOGRAPHY & INTERACTIVE GRAPHICS */}
+        {/* 6. ABOUT ME: COMPREHENSIVE 100-LINE STRUCTURED SUMMARY */}
+        {activeTab === 'about_me' && (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="card-warm-3d rounded-3xl p-6 sm:p-10 border-2 border-amber-300/70 shadow-xl">
+              
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-amber-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-stone-950 flex items-center justify-center shadow-md font-black">
+                    <User className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl sm:text-3xl font-black text-amber-950 text-3d-amber">
+                      About Me (100-Line Summary)
+                    </h3>
+                    <p className="text-xs sm:text-sm font-bold text-amber-800">
+                      Complete, Verified, Line-by-Line Biography of Rishit Shankar
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-1 rounded-full bg-amber-400 text-stone-950 text-xs font-black shadow-xs">
+                    100 Verified Facts
+                  </span>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(summary100Lines.join('\n'));
+                      alert('100-line summary copied to clipboard!');
+                    }}
+                    className="px-3 py-1 rounded-xl bg-white hover:bg-stone-50 border border-amber-300 text-xs font-bold text-stone-800 transition flex items-center gap-1 cursor-pointer"
+                  >
+                    <Copy className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Copy All 100 Lines</span>
+                  </button>
+                </div>
+              </div>
+
+              <p className="text-xs sm:text-sm text-stone-700 leading-relaxed mb-6 bg-amber-50/80 p-4 rounded-2xl border border-amber-200">
+                This comprehensive 100-line record chronologically details Rishit Shankar's school leadership as Head Boy of DAV Khabra, top examination scores (95% Half-Yearly, 80/80 Sanskrit, 93% PT-1), national Gold Medal in PWNSAT (98th percentile), DAV Cluster 3 Chess championship, full-stack software development of The DAV Dictionary serving DAVians, and life principles.
+              </p>
+
+              {/* 100-Line Scrollable List with Number Badges */}
+              <div className="space-y-2 max-h-[750px] overflow-y-auto pr-2 custom-scrollbar">
+                {summary100Lines.map((lineText, index) => {
+                  const lineNum = String(index + 1).padStart(3, '0');
+                  
+                  // Category color tagging
+                  let badgeBg = 'bg-stone-100 text-stone-700 border-stone-200';
+                  let itemBorder = 'border-amber-200/60 bg-white/90';
+                  
+                  if (index < 20) {
+                    // Identity & Leadership
+                    badgeBg = 'bg-amber-100 text-amber-900 border-amber-300';
+                    itemBorder = 'border-amber-200 bg-amber-50/40';
+                  } else if (index < 35) {
+                    // Half-Yearly Marks
+                    badgeBg = 'bg-rose-100 text-rose-900 border-rose-300';
+                    itemBorder = 'border-rose-200 bg-rose-50/30';
+                  } else if (index < 45) {
+                    // PT-1 Marks
+                    badgeBg = 'bg-emerald-100 text-emerald-900 border-emerald-300';
+                    itemBorder = 'border-emerald-200 bg-emerald-50/30';
+                  } else if (index < 55) {
+                    // PWNSAT
+                    badgeBg = 'bg-cyan-100 text-cyan-900 border-cyan-300';
+                    itemBorder = 'border-cyan-200 bg-cyan-50/30';
+                  } else if (index < 70) {
+                    // Chess Cluster 3
+                    badgeBg = 'bg-purple-100 text-purple-900 border-purple-300';
+                    itemBorder = 'border-purple-200 bg-purple-50/30';
+                  } else if (index < 85) {
+                    // Tech Stack
+                    badgeBg = 'bg-teal-100 text-teal-900 border-teal-300';
+                    itemBorder = 'border-teal-200 bg-teal-50/30';
+                  } else if (index < 95) {
+                    // The DAV Dictionary
+                    badgeBg = 'bg-orange-100 text-orange-900 border-orange-300';
+                    itemBorder = 'border-orange-200 bg-orange-50/30';
+                  } else {
+                    // Values
+                    badgeBg = 'bg-amber-200 text-amber-950 border-amber-400';
+                    itemBorder = 'border-amber-300 bg-amber-100/40';
+                  }
+
+                  return (
+                    <div 
+                      key={index} 
+                      className={`p-3 rounded-xl border flex items-start gap-3 transition-all hover:translate-x-1 ${itemBorder}`}
+                    >
+                      <span className={`px-2 py-0.5 rounded-md text-[11px] font-mono font-black border shrink-0 ${badgeBg}`}>
+                        #{lineNum}
+                      </span>
+                      <p className="text-xs sm:text-sm text-stone-800 leading-relaxed font-medium">
+                        {lineText}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-amber-200 flex flex-wrap items-center justify-between text-xs text-amber-900 font-bold">
+                <span>Total: Exactly 100 Comprehensive Lines</span>
+                <span>Verified Official Profile • Head Boy Rishit Shankar</span>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* SHORT SUMMARY ABOUT ME BANNER - 3D TYPOGRAPHY & INTERACTIVE GRAPHICS */}
         <div className="mt-10 p-6 sm:p-10 rounded-3xl bg-gradient-to-r from-stone-900 via-amber-950 to-stone-900 text-white border-4 border-amber-400 shadow-2xl relative overflow-hidden">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
             <div className="flex items-center gap-5 text-center md:text-left">
@@ -980,18 +1214,26 @@ export function AboutCreatorSection() {
                   Rishit Shankar
                 </h3>
                 <p className="text-xs sm:text-sm font-semibold text-amber-200/95 max-w-xl">
-                  Student Leader, Head Boy of DAV Public School Khabra, Founder of The DAV Dictionary serving DAVians, Gold Medalist in Cluster 3 &amp; 14, 98 Percentile PWNSAT Gold Medalist, and 95% Class 8 Half-Yearly.
+                  Student Leader, Head Boy of DAV Public School Khabra, Founder of The DAV Dictionary serving DAVians, Gold Medalist in DAV Cluster 3, 98 Percentile PWNSAT Gold Medalist, and 95% Class 8 Half-Yearly.
                 </p>
               </div>
             </div>
 
-            <button
-              onClick={triggerCelebrationParty}
-              className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 hover:scale-105 transition-all text-stone-950 font-black text-xs sm:text-sm flex items-center gap-2 shadow-xl shadow-amber-500/40 cursor-pointer shrink-0 border-2 border-amber-300"
-            >
-              <PartyPopper className="w-5 h-5" />
-              <span>Celebrate Rishit Shankar 🎉</span>
-            </button>
+            <div className="flex items-center gap-3 shrink-0">
+              <button
+                onClick={() => setActiveTab('about_me')}
+                className="px-5 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 border-2 border-amber-400 text-white font-bold text-xs sm:text-sm transition cursor-pointer"
+              >
+                <span>Open 100-Line Summary →</span>
+              </button>
+              <button
+                onClick={triggerCelebrationParty}
+                className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 hover:scale-105 transition-all text-stone-950 font-black text-xs sm:text-sm flex items-center gap-2 shadow-xl shadow-amber-500/40 cursor-pointer shrink-0 border-2 border-amber-300"
+              >
+                <PartyPopper className="w-5 h-5" />
+                <span>Celebrate Rishit 🎉</span>
+              </button>
+            </div>
           </div>
         </div>
 

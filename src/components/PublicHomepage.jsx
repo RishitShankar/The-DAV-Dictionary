@@ -235,7 +235,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
       color: 'from-amber-500 to-orange-500',
       glowClass: 'hover:border-amber-400/80 shadow-amber-500/20',
       badge: 'Double VIP',
-      desc: 'Meet Head Boy Rishit Shankar (Class 8, Roll 25), Chess Cluster 3 Gold Medalist, 96% academic topper. Direct sub-second chat, Launch Celebration Confetti, and community reviews.',
+      desc: 'Meet Head Boy Rishit Shankar (Class 8, Roll 25), DAV Cluster 3 Chess Gold Medalist, 96% academic topper. Direct sub-second chat, Launch Celebration Confetti, and community reviews.',
       features: ['Direct Chat with Rishit Shankar', 'Screen Shake Party Popper', 'Verified Social Handles', 'Official Student Endorsements'],
       demoReady: '100% Unlocked for Demo (Double VIP!)'
     }
@@ -300,7 +300,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
     },
     {
       q: "Who is the developer of DAV Dictionary?",
-      a: "The platform was conceived, designed, and developed by Rishit Shankar (Head Boy, Class 8 DAV Khabra, Roll 25). He scored 96% in his Class 8 exams (with 100/100 in Sanskrit and 99/100 in Hindi) and is a Chess Cluster 3 Gold Medalist. He engineered this platform as a student-led initiative to empower every DAVian."
+      a: "The platform was conceived, designed, and developed by Rishit Shankar (Head Boy, Class 8 DAV Khabra, Roll 25). He scored 95% in his Class 8 Half-Yearly exams (with 80/80 in Sanskrit and 79/80 in Hindi), 93% in PT-1, and is a DAV Cluster 3 Gold Medalist. He engineered this platform as a student-led initiative to empower every DAVian."
     }
   ];
 
@@ -926,8 +926,8 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
                 {/* Developer Highlights */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
                   <div className="p-3 rounded-xl bg-stone-950/70 border border-stone-800">
-                    <div className="text-amber-400 font-black text-sm">96% Score</div>
-                    <div className="text-[10px] text-stone-400">Class 8 Half-Yearly (100/100 Sanskrit)</div>
+                    <div className="text-amber-400 font-black text-sm">95% Score</div>
+                    <div className="text-[10px] text-stone-400">Class 8 Half-Yearly (80/80 Sanskrit)</div>
                   </div>
                   <div className="p-3 rounded-xl bg-stone-950/70 border border-stone-800">
                     <div className="text-emerald-400 font-black text-sm">Gold Medalist</div>
