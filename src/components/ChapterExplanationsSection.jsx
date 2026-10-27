@@ -1812,7 +1812,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                   {PYQ_CLASSES.map((c) => {
                     const isSelected = pyqSelectedClass === c.id;
                     const isC8 = c.id === '8';
-                    const numSubjs = parseInt(c.id, 10) >= 6 ? 6 : 5;
+                    const numSubjs = parseInt(c.id, 10) >= 5 ? 6 : 5;
                     return (
                       <button
                         key={c.id}
@@ -1871,7 +1871,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                         Class {pyqSelectedClass} • {activeSubjectObj.name} ({activeSubjectObj.hindiName})
                       </span>
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                        {parseInt(pyqSelectedClass) >= 6 ? '6 Subjects Track' : '5 Subjects Track'}
+                        {parseInt(pyqSelectedClass) >= 5 ? '6 Subjects Track (Includes Sanskrit)' : '5 Subjects Track'}
                       </span>
                     </div>
                     <div className="text-[11px] text-stone-300 mt-0.5 flex items-center gap-2 flex-wrap">
@@ -1930,7 +1930,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                         DAVCAE OFFICIAL ARCHIVE • CLASS {pyqSelectedClass} • STEP 2
                       </div>
                       <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2 mt-0.5">
-                        <span>Select Subject ({parseInt(pyqSelectedClass) >= 6 ? '6 Subjects' : '5 Subjects'})</span>
+                        <span>Select Subject ({parseInt(pyqSelectedClass) >= 5 ? '6 Subjects' : '5 Subjects'})</span>
                         <span className="text-blue-400">⚡</span>
                       </h2>
                       <p className="text-xs text-stone-300 mt-0.5">
@@ -1955,7 +1955,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                         type="text"
                         value={pyqSubjectSearch}
                         onChange={(e) => setPyqSubjectSearch(e.target.value)}
-                        placeholder={`Search Class ${pyqSelectedClass} subjects (e.g. Science, Maths, Hindi, SST, Sanskrit)... fudge`}
+                        placeholder={`Search Class ${pyqSelectedClass} subjects (e.g. Science, Maths, Hindi, SST, Sanskrit)...`}
                         className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-blue-950/60 border border-blue-700 text-white placeholder-blue-400/60 text-xs focus:outline-none focus:border-amber-400"
                         autoFocus
                       />
