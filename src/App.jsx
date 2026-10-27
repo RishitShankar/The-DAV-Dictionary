@@ -417,6 +417,7 @@ export function App() {
           <ChapterExplanationsSection 
             user={user} 
             onOpenAIWithQuestion={handleOpenAIWithQuestion}
+            onOpenPdfReader={handleOpenPdfReader}
             onRequireLogin={handleRequireLogin}
           />
         ) : activeSection === 7 ? (

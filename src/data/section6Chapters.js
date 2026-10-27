@@ -1,4 +1,4 @@
-import { DAV_CHAPTERS_MAP } from './curriculumData.js';
+import { DAV_CHAPTERS_MAP, getChaptersForClassSubject } from './curriculumData.js';
 
 // Dedicated Abhyas Sagar chapters for Class 8, 7, 6, 5, 4, 3
 const HINDI_ABHYAS_8 = [
@@ -50,18 +50,25 @@ export function getSection6Chapters(classId, subjectId) {
   const normClass = String(classId).replace(/class\s*/i, '').trim();
   const rawSubj = String(subjectId).toLowerCase().trim();
 
-  // 1. Hindi Abhyas Sagar
-  if (rawSubj.includes('abhyas')) {
-    if (normClass === '8') return HINDI_ABHYAS_8;
-    // Map to base hindi chapters with Abhyas title
-    const base = DAV_CHAPTERS_MAP[`${normClass}_hindi`] || [];
-    return base.map(ch => ({
-      num: ch.num,
-      title: `अभ्यास ${ch.num}: ${ch.title.replace(/\(.*?\)/g, '').trim()} व्याकरण कार्य`
-    }));
+  // 1. Primary Source: Universal Curriculum Database with Full Subject & Class Coverage
+  const curriculumChapters = getChaptersForClassSubject(normClass, rawSubj);
+  if (curriculumChapters && curriculumChapters.length > 0) {
+    return curriculumChapters;
   }
 
-  // 2. English Practice Book
+  // 2. Hindi Abhyas Sagar Fallback
+  if (rawSubj.includes('abhyas')) {
+    if (normClass === '8') return HINDI_ABHYAS_8;
+    const base = DAV_CHAPTERS_MAP[`${normClass}_hindi`] || [];
+    if (base.length > 0) {
+      return base.map(ch => ({
+        num: ch.num,
+        title: `अभ्यास ${ch.num}: ${ch.title.replace(/\(.*?\)/g, '').trim()} व्याकरण कार्य`
+      }));
+    }
+  }
+
+  // 3. English Practice Book Fallback
   if (rawSubj.includes('english_practice') || rawSubj.includes('practice')) {
     if (normClass === '8' || normClass === '7' || normClass === '6') return ENGLISH_PRACTICE_8;
     return [
@@ -75,7 +82,7 @@ export function getSection6Chapters(classId, subjectId) {
     ];
   }
 
-  // 3. English Reader
+  // 4. English Reader Fallback
   if (rawSubj.includes('english_reader') || (rawSubj.includes('reader') && !rawSubj.includes('lit'))) {
     if (normClass === '8' || normClass === '7' || normClass === '6') return ENGLISH_READER_8;
     const base = DAV_CHAPTERS_MAP[`${normClass}_english`] || [];
@@ -83,27 +90,25 @@ export function getSection6Chapters(classId, subjectId) {
     return ENGLISH_READER_8;
   }
 
-  // 4. English Literature
+  // 5. English Literature Fallback
   if (rawSubj.includes('english_lit') || rawSubj.includes('literature') || rawSubj === 'english') {
     return DAV_CHAPTERS_MAP[`${normClass}_english`] || [];
   }
 
-  // 5. Hindi Gyan Sagar / Bhasha Madhuri
+  // 6. Hindi Gyan Sagar / Bhasha Madhuri Fallback
   if (rawSubj.includes('gyan') || rawSubj.includes('madhuri') || rawSubj === 'hindi') {
     return DAV_CHAPTERS_MAP[`${normClass}_hindi`] || [];
   }
 
-  // 6. Default standard mappings (maths, science, sst, sanskrit)
+  // 7. Direct mappings
   const directKey = `${normClass}_${rawSubj}`;
   if (DAV_CHAPTERS_MAP[directKey]) {
     return DAV_CHAPTERS_MAP[directKey];
   }
 
-  // Fallbacks
-  if (rawSubj.includes('sci')) return DAV_CHAPTERS_MAP[`${normClass}_science`] || [];
-  if (rawSubj.includes('sst') || rawSubj.includes('soc')) return DAV_CHAPTERS_MAP[`${normClass}_sst`] || [];
-  if (rawSubj.includes('math')) return DAV_CHAPTERS_MAP[`${normClass}_maths`] || [];
-  if (rawSubj.includes('sans')) return DAV_CHAPTERS_MAP[`${normClass}_sanskrit`] || [];
-
-  return [];
+  return [
+    { num: 1, title: 'Chapter 1: Foundations & Concepts' },
+    { num: 2, title: 'Chapter 2: Core Learning Units' },
+    { num: 3, title: 'Chapter 3: Assessment & Exercises' }
+  ];
 }

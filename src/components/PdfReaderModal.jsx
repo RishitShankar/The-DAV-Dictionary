@@ -1066,14 +1066,14 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
           <div className="flex items-center gap-2">
             <a
-              href={resolvedPdfUrl}
+              href={gdriveDirectUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white border border-stone-700 text-[11px] font-bold flex items-center gap-1.5 transition cursor-pointer"
-              title="Open stream in dedicated browser tab"
+              title="Open cloud stream in dedicated tab (Zero download)"
             >
               <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
-              <span className="hidden md:inline">Open Fullpage Tab</span>
+              <span className="hidden md:inline">Open Fullpage Cloud Viewer</span>
             </a>
             <button
               type="button"
@@ -1280,13 +1280,13 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
             </div>
           )}
 
-          {/* 1. INSTANT CONTINUOUS CLOUD STREAM & SCROLL MODE (DEFAULT - 0 WAITING TIME!) */}
+          {/* 1. INSTANT CONTINUOUS CLOUD STREAM & SCROLL MODE (DEFAULT - 0 WAITING TIME & ZERO DOWNLOAD) */}
           {viewerMode === 'stream' && (
             <div className="w-full h-full flex flex-col bg-stone-900 rounded-xl overflow-hidden border border-stone-800 shadow-2xl relative">
               <iframe
                 key={`stream-${effectivePdfSource}`}
-                src={`${resolvedPdfUrl}#page=${currentPage}&toolbar=1&navpanes=0`}
-                title={`${book.title} - Textbook Continuous Stream`}
+                src={gdriveEmbedUrl}
+                title={`${book.title} - Textbook Cloud Continuous Stream`}
                 className="w-full flex-1 border-none bg-stone-900 block"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               />

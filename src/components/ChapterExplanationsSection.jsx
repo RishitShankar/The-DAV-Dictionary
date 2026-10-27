@@ -4,7 +4,7 @@ import {
   ExternalLink, Copy, Check, Search, Sparkles, Clock, 
   User, Layers, Filter, Download, ChevronRight, ChevronLeft, 
   Flame, ShieldCheck, HelpCircle, ArrowRight, Share2, Compass,
-  Star, Lock, AlertCircle, RefreshCw, Sparkle, Smile
+  Star, Lock, AlertCircle, RefreshCw, Sparkle, Smile, Plus, Trash2, Upload, Eye
 } from 'lucide-react';
 import { 
   SECTION6_CLASSES, 
@@ -20,8 +20,8 @@ import {
   DAV_SAMPLE_PAPERS 
 } from '../data/videoLecturesData.js';
 
-export function ChapterExplanationsSection({ user, onOpenAIWithQuestion, onRequireLogin }) {
-  // Sub-Section Tabs (1: Video Lectures, 2: PYQs, 3: Sample Papers)
+export function ChapterExplanationsSection({ user, onOpenAIWithQuestion, onOpenPdfReader, onRequireLogin }) {
+  // Sub-Section Tabs (1: Video Lectures, 2: Notes, 3: PYQs, 4: Sample Papers)
   const [activeSubTab, setActiveSubTab] = useState('videos');
 
   // Video Hub State
@@ -34,6 +34,25 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion, onRequi
   const [playerMode, setPlayerMode] = useState('chapter'); // 'chapter' | 'playlist'
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedLink, setCopiedLink] = useState(false);
+
+  // =========================================================================
+  // SUB-SECTION 2: NOTES & HANDOUTS STATE (Zero demo data, authentic upload)
+  // =========================================================================
+  const [uploadedNotes, setUploadedNotes] = useState(() => {
+    try {
+      const saved = localStorage.getItem('dav_official_chapter_notes_v2');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return [];
+  });
+  const [isUploadingNote, setIsUploadingNote] = useState(false);
+  const [noteTitle, setNoteTitle] = useState('');
+  const [noteChapter, setNoteChapter] = useState(1);
+  const [noteFileData, setNoteFileData] = useState(null);
+  const [noteFileName, setNoteFileName] = useState('');
+  const [noteFileSize, setNoteFileSize] = useState('');
+  const [uploadNoteError, setUploadNoteError] = useState('');
+  const [selectedNotesChapterFilter, setSelectedNotesChapterFilter] = useState('all');
 
   // Available classes in Section 6
   const sectionClasses = SECTION6_CLASSES;
@@ -247,6 +266,94 @@ Please write each question clearly and show all steps, formulas, and reasoning s
     });
   }, [selectedClass, selectedSampleSubject]);
 
+  // Notes PDF File Picker handler
+  const handlePdfFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+      setUploadNoteError('Please select a valid PDF file.');
+      return;
+    }
+    setNoteFileName(file.name);
+    setNoteFileSize(`${(file.size / (1024 * 1024)).toFixed(1)} MB`);
+    setUploadNoteError('');
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setNoteFileData(event.target.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Save uploaded note (Stored locally in cloud-ready persistent state)
+  const handleSaveNote = () => {
+    if (!noteTitle.trim()) {
+      setUploadNoteError('Please enter a note title.');
+      return;
+    }
+    if (!noteFileData) {
+      setUploadNoteError('Please choose a PDF file.');
+      return;
+    }
+    const chNum = Number(noteChapter);
+    const matchedCh = availableChapters.find(c => Number(c.num) === chNum);
+    const newNote = {
+      id: `note_${Date.now()}`,
+      title: noteTitle.trim(),
+      classNum: selectedClass,
+      subjectId: currentSubjectObj.id,
+      subjectName: currentSubjectObj.name,
+      chapterNum: chNum,
+      chapterTitle: matchedCh ? matchedCh.title : `Chapter ${chNum}`,
+      fileName: noteFileName,
+      fileSize: noteFileSize,
+      pdfUrl: noteFileData,
+      uploadedAt: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+      uploadedBy: user?.name || 'Rishit Shankar (Head Boy)'
+    };
+    const next = [newNote, ...uploadedNotes];
+    setUploadedNotes(next);
+    try {
+      localStorage.setItem('dav_official_chapter_notes_v2', JSON.stringify(next));
+    } catch (e) {}
+    setIsUploadingNote(false);
+    setNoteTitle('');
+    setNoteFileData(null);
+    setNoteFileName('');
+    setNoteFileSize('');
+    setUploadNoteError('');
+  };
+
+  const handleDeleteNote = (noteId) => {
+    const next = uploadedNotes.filter(n => n.id !== noteId);
+    setUploadedNotes(next);
+    try {
+      localStorage.setItem('dav_official_chapter_notes_v2', JSON.stringify(next));
+    } catch (e) {}
+  };
+
+  const handleOpenNotePdf = (note) => {
+    if (onOpenPdfReader) {
+      onOpenPdfReader({
+        title: note.title,
+        subject: note.subjectName,
+        classNum: note.classNum,
+        pdfUrl: note.pdfUrl,
+        fileData: note.pdfUrl,
+        summary: `Official DAV Chapter Notes: ${note.title} (Class ${note.classNum})`
+      });
+    }
+  };
+
+  // Filtered Notes for Subsection 2
+  const filteredNotes = useMemo(() => {
+    return uploadedNotes.filter(n => {
+      const matchClass = String(n.classNum) === String(selectedClass);
+      const matchSubj = n.subjectId === currentSubjectObj.id;
+      const matchChapter = selectedNotesChapterFilter === 'all' || Number(n.chapterNum) === Number(selectedNotesChapterFilter);
+      return matchClass && matchSubj && matchChapter;
+    });
+  }, [uploadedNotes, selectedClass, currentSubjectObj, selectedNotesChapterFilter]);
+
   return (
     <div className="min-h-screen bg-stone-900 text-stone-100 font-sans pb-24 selection:bg-amber-500 selection:text-stone-950">
       
@@ -293,11 +400,11 @@ Please write each question clearly and show all steps, formulas, and reasoning s
             </div>
           </div>
 
-          {/* SUB-TABS SELECTOR (1: Video Lectures, 2: PYQs, 3: Sample Papers) */}
-          <div className="flex items-center gap-2 mt-8 p-1.5 bg-stone-950/80 rounded-2xl border border-stone-800 max-w-fit shadow-lg">
+          {/* SUB-TABS SELECTOR (1: Video Lectures, 2: Notes, 3: PYQs, 4: Sample Papers) */}
+          <div className="flex flex-wrap items-center gap-2 mt-8 p-1.5 bg-stone-950/80 rounded-2xl border border-stone-800 shadow-lg">
             <button
               onClick={() => setActiveSubTab('videos')}
-              className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition cursor-pointer flex items-center gap-2 ${
+              className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition cursor-pointer flex items-center gap-2 ${
                 activeSubTab === 'videos'
                   ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 shadow-md scale-[1.02]'
                   : 'text-stone-300 hover:text-white hover:bg-stone-900/60'
@@ -308,27 +415,39 @@ Please write each question clearly and show all steps, formulas, and reasoning s
             </button>
 
             <button
+              onClick={() => setActiveSubTab('notes')}
+              className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition cursor-pointer flex items-center gap-2 ${
+                activeSubTab === 'notes'
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md scale-[1.02]'
+                  : 'text-stone-300 hover:text-white hover:bg-stone-900/60'
+              }`}
+            >
+              <FileText className="w-4 h-4" />
+              <span>2. Notes & Handouts</span>
+            </button>
+
+            <button
               onClick={() => setActiveSubTab('pyqs')}
-              className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition cursor-pointer flex items-center gap-2 ${
+              className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition cursor-pointer flex items-center gap-2 ${
                 activeSubTab === 'pyqs'
                   ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md scale-[1.02]'
                   : 'text-stone-300 hover:text-white hover:bg-stone-900/60'
               }`}
             >
               <FileText className="w-4 h-4" />
-              <span>2. Board PYQs Archive</span>
+              <span>3. Board PYQs Archive</span>
             </button>
 
             <button
               onClick={() => setActiveSubTab('sample_papers')}
-              className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition cursor-pointer flex items-center gap-2 ${
+              className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition cursor-pointer flex items-center gap-2 ${
                 activeSubTab === 'sample_papers'
                   ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md scale-[1.02]'
                   : 'text-stone-300 hover:text-white hover:bg-stone-900/60'
               }`}
             >
               <Award className="w-4 h-4" />
-              <span>3. DAVCAE Sample Papers</span>
+              <span>4. DAV Sample Papers</span>
             </button>
           </div>
         </div>
@@ -452,6 +571,48 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                       </button>
                     );
                   })}
+                </div>
+              </div>
+
+              {/* STEP 3: PROMINENT CHAPTER SELECTOR TOOLBAR (ALWAYS VISIBLE & INSTANT TO SELECT) */}
+              <div className="bg-stone-950 p-4 rounded-3xl border border-stone-800 shadow-xl flex flex-wrap items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="text-xs font-black uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                    <Layers className="w-4 h-4 text-amber-400" />
+                    <span>Select Chapter ({availableChapters.length} Total Chapters):</span>
+                  </span>
+                  <select
+                    value={selectedChapterNum}
+                    onChange={(e) => handleChapterChange(Number(e.target.value))}
+                    className="bg-stone-900 border border-amber-500/60 text-white text-xs sm:text-sm font-black rounded-2xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-400 cursor-pointer max-w-xs sm:max-w-md shadow-lg"
+                  >
+                    {availableChapters.map((ch) => (
+                      <option key={ch.num} value={ch.num}>
+                        Chapter {ch.num}: {ch.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleChapterChange(Math.max(1, selectedChapterNum - 1))}
+                    disabled={selectedChapterNum <= 1}
+                    className="px-3.5 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 disabled:opacity-30 text-stone-200 text-xs font-bold border border-stone-800 flex items-center gap-1.5 cursor-pointer disabled:cursor-not-allowed transition"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    <span>Previous Chapter</span>
+                  </button>
+                  <span className="text-xs font-mono font-bold text-amber-400 px-3 py-1.5 rounded-xl bg-stone-900 border border-stone-800">
+                    {selectedChapterNum} / {availableChapters.length}
+                  </span>
+                  <button
+                    onClick={() => handleChapterChange(Math.min(availableChapters.length, selectedChapterNum + 1))}
+                    disabled={selectedChapterNum >= availableChapters.length}
+                    className="px-3.5 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 disabled:opacity-30 text-stone-200 text-xs font-bold border border-stone-800 flex items-center gap-1.5 cursor-pointer disabled:cursor-not-allowed transition"
+                  >
+                    <span>Next Chapter</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
 
@@ -1023,7 +1184,299 @@ Please write each question clearly and show all steps, formulas, and reasoning s
       )}
 
       {/* ========================================================= */}
-      {/* SUB-SECTION 2: PREVIOUS YEAR QUESTIONS (PYQs) */}
+      {/* SUB-SECTION 2: CHAPTER NOTES & OFFICIAL HANDOUTS VAULT */}
+      {/* ========================================================= */}
+      {activeSubTab === 'notes' && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
+          
+          {/* Header Banner */}
+          <div className="bg-stone-950 p-6 sm:p-8 rounded-3xl border border-stone-800 shadow-2xl">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-black uppercase tracking-widest mb-2">
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>Sub-Section 2 • Official DAV Chapter Notes & Handouts</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black text-white">
+                  Chapter Notes & Official Handouts Vault
+                </h2>
+                <p className="text-xs sm:text-sm text-stone-300 mt-1 max-w-2xl leading-relaxed">
+                  Verified handwritten and typed notes, chapter summaries, and formula sheets for DAV students. Clean PDF reader integration with cloud streaming.
+                </p>
+              </div>
+
+              {/* Upload Button */}
+              <button
+                onClick={() => setIsUploadingNote(true)}
+                className="px-5 py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-black flex items-center gap-2 shadow-lg shadow-purple-950/30 transition cursor-pointer shrink-0"
+              >
+                <Plus className="w-4 h-4" />
+                <span>+ Upload Chapter Notes PDF</span>
+              </button>
+            </div>
+
+            {/* Step 1: Class Selector */}
+            <div className="pt-4 border-t border-stone-800">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-black uppercase tracking-wider text-purple-400">
+                  Select Class:
+                </span>
+                <span className="text-xs text-stone-400 font-mono">
+                  Currently Viewing: Class {selectedClass}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+                {sectionClasses.map((cls) => (
+                  <button
+                    key={cls.id}
+                    onClick={() => handleClassChange(cls.id)}
+                    className={`px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer whitespace-nowrap flex items-center gap-2 border ${
+                      selectedClass === cls.id
+                        ? 'bg-purple-600 text-white border-purple-400 shadow-md scale-105'
+                        : 'bg-stone-900 text-stone-300 hover:bg-stone-800 border-stone-800'
+                    }`}
+                  >
+                    <span>{cls.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Step 2: Subject Selector */}
+            <div className="pt-4 mt-3 border-t border-stone-800/60">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-black uppercase tracking-wider text-blue-400">
+                  Select Subject:
+                </span>
+                <span className="text-xs text-stone-400">
+                  {availableSubjects.length} Core Subjects
+                </span>
+              </div>
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+                {availableSubjects.map((s) => {
+                  const isSelected = selectedSubject === s.id;
+                  return (
+                    <button
+                      key={s.id}
+                      onClick={() => handleSubjectChange(s.id)}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap flex items-center gap-1.5 border ${
+                        isSelected
+                          ? 'bg-blue-600 text-white border-blue-400 font-black shadow-md scale-105'
+                          : 'bg-stone-900 text-stone-300 hover:bg-stone-800 border-stone-800'
+                      }`}
+                    >
+                      <span>{s.icon || '📚'}</span>
+                      <span>{s.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Step 3: Chapter Filter */}
+            <div className="pt-4 mt-3 border-t border-stone-800/60 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-stone-400">Filter Chapter:</span>
+                <select
+                  value={selectedNotesChapterFilter}
+                  onChange={(e) => setSelectedNotesChapterFilter(e.target.value)}
+                  className="bg-stone-900 border border-stone-700 text-white text-xs font-bold rounded-xl px-3 py-1.5 focus:outline-none focus:border-purple-500"
+                >
+                  <option value="all">All Chapters ({availableChapters.length})</option>
+                  {availableChapters.map((ch) => (
+                    <option key={ch.num} value={ch.num}>
+                      Ch {ch.num}: {ch.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="text-xs text-stone-400 font-mono">
+                Total Notes in Vault: <strong className="text-purple-400">{filteredNotes.length}</strong>
+              </div>
+            </div>
+          </div>
+
+          {/* Upload Drawer / Modal */}
+          {isUploadingNote && (
+            <div className="bg-stone-950 p-6 rounded-3xl border-2 border-purple-500/60 shadow-2xl animate-fadeIn space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-black text-white flex items-center gap-2">
+                  <Upload className="w-5 h-5 text-purple-400" />
+                  <span>Upload Official Notes PDF for Class {selectedClass} • {currentSubjectObj.name}</span>
+                </h3>
+                <button
+                  onClick={() => setIsUploadingNote(false)}
+                  className="p-1 rounded-lg bg-stone-900 hover:bg-stone-800 text-stone-400 hover:text-white"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {uploadNoteError && (
+                <div className="p-3 rounded-xl bg-rose-950/60 border border-rose-500/50 text-rose-300 text-xs font-bold">
+                  {uploadNoteError}
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold text-stone-300 block mb-1">
+                    Notes Title:
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Chapter 1: Living World Complete Formula & Notes"
+                    value={noteTitle}
+                    onChange={(e) => setNoteTitle(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-stone-900 border border-stone-700 rounded-xl text-xs text-white placeholder-stone-500 focus:outline-none focus:border-purple-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-stone-300 block mb-1">
+                    Applicable Chapter:
+                  </label>
+                  <select
+                    value={noteChapter}
+                    onChange={(e) => setNoteChapter(Number(e.target.value))}
+                    className="w-full px-3.5 py-2.5 bg-stone-900 border border-stone-700 rounded-xl text-xs text-white focus:outline-none focus:border-purple-400"
+                  >
+                    {availableChapters.map((ch) => (
+                      <option key={ch.num} value={ch.num}>
+                        Ch {ch.num}: {ch.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-stone-300 block mb-1">
+                  Choose PDF File:
+                </label>
+                <input
+                  type="file"
+                  accept="application/pdf,.pdf"
+                  onChange={handlePdfFileChange}
+                  className="w-full text-xs text-stone-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-purple-600 file:text-white hover:file:bg-purple-500 cursor-pointer bg-stone-900 p-2 rounded-xl border border-stone-700"
+                />
+                {noteFileName && (
+                  <p className="text-[11px] text-emerald-400 mt-1">
+                    Selected: {noteFileName} ({noteFileSize})
+                  </p>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsUploadingNote(false)}
+                  className="px-4 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-stone-300 text-xs font-bold cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveNote}
+                  className="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black flex items-center gap-2 cursor-pointer shadow-lg"
+                >
+                  <Check className="w-4 h-4" />
+                  <span>Save &amp; Publish Notes PDF</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Notes Cards Display */}
+          {filteredNotes.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredNotes.map((note) => (
+                <div
+                  key={note.id}
+                  className="bg-stone-950 p-6 rounded-3xl border border-stone-800 shadow-xl flex flex-col justify-between hover:border-purple-500/50 transition group"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-black">
+                        DAV Chapter Note
+                      </span>
+                      <span className="text-xs font-mono text-stone-400 font-bold">
+                        Ch {note.chapterNum}
+                      </span>
+                    </div>
+
+                    <h3 className="text-base font-black text-white leading-snug group-hover:text-purple-300 transition-colors">
+                      {note.title}
+                    </h3>
+                    <div className="text-xs text-amber-400 font-semibold mt-1">
+                      {note.chapterTitle}
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-stone-800 text-[11px] text-stone-400 space-y-1">
+                      <div>Class: <strong className="text-white">Class {note.classNum} • {note.subjectName}</strong></div>
+                      <div>File: <strong className="text-stone-300">{note.fileName || 'Notes.pdf'} ({note.fileSize || 'PDF'})</strong></div>
+                      <div>Uploaded: <strong className="text-stone-300">{note.uploadedAt}</strong> by {note.uploadedBy}</div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-stone-800 flex items-center justify-between gap-2">
+                    <button
+                      onClick={() => handleOpenNotePdf(note)}
+                      className="flex-1 py-2 px-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black flex items-center justify-center gap-1.5 transition cursor-pointer shadow-md"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Open Notes PDF</span>
+                    </button>
+
+                    {note.pdfUrl && (
+                      <a
+                        href={note.pdfUrl}
+                        download={`${note.title}.pdf`}
+                        className="p-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-stone-300 hover:text-white border border-stone-700 cursor-pointer"
+                        title="Download PDF"
+                      >
+                        <Download className="w-3.5 h-3.5 text-emerald-400" />
+                      </a>
+                    )}
+
+                    <button
+                      onClick={() => handleDeleteNote(note.id)}
+                      className="p-2 rounded-xl bg-stone-900 hover:bg-rose-950 text-stone-400 hover:text-rose-400 border border-stone-700 cursor-pointer"
+                      title="Delete Note"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-stone-950 rounded-3xl border border-stone-800 p-8 sm:p-12 text-center max-w-2xl mx-auto shadow-2xl">
+              <div className="w-16 h-16 rounded-2xl bg-purple-500/10 border border-purple-500/30 text-purple-400 flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-black text-white">
+                Official Notes Vault for Class {selectedClass} • {currentSubjectObj.name}
+              </h3>
+              <p className="text-xs sm:text-sm text-stone-400 mt-2 leading-relaxed">
+                No notes uploaded yet for this subject. Rishit Shankar will upload verified DAV chapter notes in PDF format directly into this vault.
+              </p>
+              <button
+                onClick={() => setIsUploadingNote(true)}
+                className="mt-6 px-6 py-3 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white font-black text-xs inline-flex items-center gap-2 cursor-pointer shadow-lg shadow-purple-950/40"
+              >
+                <Plus className="w-4 h-4" />
+                <span>+ Upload Notes PDF Now</span>
+              </button>
+            </div>
+          )}
+
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* SUB-SECTION 3: PREVIOUS YEAR QUESTIONS (PYQs) */}
       {/* ========================================================= */}
       {activeSubTab === 'pyqs' && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
@@ -1033,7 +1486,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
               <div>
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-black uppercase tracking-widest mb-2">
                   <FileText className="w-3.5 h-3.5" />
-                  <span>Sub-Section 2 • DAV Board Previous Year Questions (PYQs)</span>
+                  <span>Sub-Section 3 • DAV Board Previous Year Questions (PYQs)</span>
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-black text-white">
                   Board & Annual Examination Question Papers
@@ -1152,7 +1605,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
       )}
 
       {/* ========================================================= */}
-      {/* SUB-SECTION 3: SAMPLE PAPERS & MODEL TEST PAPERS */}
+      {/* SUB-SECTION 4: SAMPLE PAPERS & MODEL TEST PAPERS */}
       {/* ========================================================= */}
       {activeSubTab === 'sample_papers' && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
@@ -1162,7 +1615,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
               <div>
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-black uppercase tracking-widest mb-2">
                   <Award className="w-3.5 h-3.5" />
-                  <span>Sub-Section 3 • Official DAVCAE Blueprint & Model Test Papers</span>
+                  <span>Sub-Section 4 • Official DAVCAE Blueprint & Model Test Papers</span>
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-black text-white">
                   Pre-Board & Model Practice Examination Series
