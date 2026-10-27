@@ -141,8 +141,8 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   const [aiQuestion, setAiQuestion] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
 
-  // Viewer Mode: 'reading' (Native Fast In-Modal PDF Reader) | 'gdrive' (Google Drive Live Cloud PDF Editor)
-  const [viewerMode, setViewerMode] = useState(book.initialMode === 'gdrive' ? 'gdrive' : book.initialMode === 'annotator' ? 'annotator' : 'stream');
+  // Viewer Mode: 'annotator' (In-Modal High-Performance PDF Engine with zero file size limits) | 'stream' | 'gdrive'
+  const [viewerMode, setViewerMode] = useState(book.initialMode === 'gdrive' ? 'gdrive' : book.initialMode === 'stream' ? 'stream' : 'annotator');
 
   // Custom Google Drive Link support
   const storageKeyGDrive = `dav_gdrive_custom_${book.title}`;
@@ -241,11 +241,11 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
   const gdriveEmbedUrl = driveFileId
     ? `https://drive.google.com/file/d/${driveFileId}/preview`
-    : `https://docs.google.com/viewer?url=${encodeURIComponent(getAbsolutePdfUrl(effectivePdfSource))}&embedded=true`;
+    : resolvedPdfUrl;
 
   const gdriveDirectUrl = driveFileId
     ? `https://drive.google.com/file/d/${driveFileId}/view`
-    : `https://docs.google.com/viewer?url=${encodeURIComponent(getAbsolutePdfUrl(effectivePdfSource))}`;
+    : resolvedPdfUrl;
 
   // Helper to load PDF.js from local /vendor/ or CDN fallback
   const loadPdfJs = async () => {
@@ -343,10 +343,10 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
       setCurrentPage(Math.max(1, book.page || 1));
       if (book.initialMode === 'gdrive') {
         setViewerMode('gdrive');
-      } else if (book.initialMode === 'annotator') {
-        setViewerMode('annotator');
-      } else {
+      } else if (book.initialMode === 'stream') {
         setViewerMode('stream');
+      } else {
+        setViewerMode('annotator');
       }
     }
   }, [book]);
@@ -369,17 +369,27 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
         const pdfjs = await loadPdfJs();
         if (isCancelled) return;
 
-        const isDataUrl = rawSource.startsWith('data:');
-        const docParams = isDataUrl 
-          ? { data: atob(rawSource.split(',')[1] || '') }
-          : { 
-              url: resolvedPdfUrl,
-              cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
-              cMapPacked: true,
-              enableXfa: true,
-              disableRange: false,
-              disableStream: false
-            };
+        let docParams;
+        if (rawSource.startsWith('data:')) {
+          try {
+            const base64 = rawSource.split(',')[1] || '';
+            const binStr = atob(base64);
+            const bytes = new Uint8Array(binStr.length);
+            for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
+            docParams = { data: bytes };
+          } catch (e) {
+            docParams = { url: resolvedPdfUrl };
+          }
+        } else {
+          docParams = { 
+            url: resolvedPdfUrl,
+            cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+            cMapPacked: true,
+            enableXfa: true,
+            disableRange: false,
+            disableStream: false
+          };
+        }
 
         loadingTask = pdfjs.getDocument(docParams);
 
@@ -833,7 +843,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
               {viewerMode === 'stream' ? (
                 <span className="text-emerald-400 font-semibold flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Instant Cloud Stream • Continuous Vertical Scroll
+                  Native Browser PDF Stream • Zero Size Restrictions
                 </span>
               ) : viewerMode === 'gdrive' ? (
                 <span className="text-blue-300 font-semibold flex items-center gap-1">
@@ -842,7 +852,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                 </span>
               ) : (
                 <span>
-                  Interactive Canvas Annotator • <strong className="text-amber-300 font-mono">Page {currentPage} of {maxBookPages}</strong>
+                  ⚡ HD Interactive Reader &amp; Annotator • <strong className="text-amber-300 font-mono">Page {currentPage} of {maxBookPages}</strong>
                   {totalPages > 0 && <span className="text-stone-400 ml-1 font-mono text-[9px]">(PDF p.{physicalPage}/{totalPages})</span>}
                 </span>
               )}
@@ -965,20 +975,23 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
         {/* Right Action Bar */}
         <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Mode Switcher: Stream & Scroll (Default) | Neon Highlighter & Draw | Google Drive */}
+          {/* Mode Switcher: HD Reader (Default) | Neon Draw | Native Embed | Google Drive */}
           <div className="flex items-center bg-stone-950 p-1 rounded-xl border border-stone-700 text-xs">
             <button
               type="button"
-              onClick={() => setViewerMode('stream')}
+              onClick={() => {
+                setViewerMode('annotator');
+                setAnnotationTool('none');
+              }}
               className={`px-2.5 sm:px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition cursor-pointer ${
-                viewerMode === 'stream'
+                viewerMode === 'annotator' && annotationTool === 'none'
                   ? 'bg-amber-500 text-stone-950 font-black shadow-md'
                   : 'text-stone-300 hover:text-white hover:bg-stone-800'
               }`}
-              title="Instant Continuous Cloud Stream with Smooth Scroll (Zero Waiting Time)"
+              title="Built-in High-Speed HD Reader (Zero File Size Limits, High Definition)"
             >
               <BookOpen className="w-3.5 h-3.5" />
-              <span>Stream &amp; Scroll</span>
+              <span>HD Reader</span>
             </button>
 
             <button
@@ -988,29 +1001,45 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                 setAnnotationTool('highlighter');
               }}
               className={`px-2.5 sm:px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition cursor-pointer ${
-                viewerMode === 'annotator'
+                viewerMode === 'annotator' && annotationTool !== 'none'
                   ? 'bg-purple-600 text-white font-black shadow-md shadow-purple-500/30'
                   : 'text-stone-300 hover:text-white hover:bg-stone-800'
               }`}
               title="Interactive Canvas Drawing & Neon Highlighter"
             >
               <PenTool className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Neon Highlighter &amp; Draw</span>
+              <span className="hidden sm:inline">Neon Draw</span>
             </button>
 
             <button
               type="button"
-              onClick={() => setViewerMode('gdrive')}
+              onClick={() => setViewerMode('stream')}
               className={`px-2.5 sm:px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition cursor-pointer ${
-                viewerMode === 'gdrive'
+                viewerMode === 'stream'
                   ? 'bg-blue-600 text-white font-black shadow-md shadow-blue-500/30'
                   : 'text-stone-300 hover:text-white hover:bg-stone-800'
               }`}
-              title="Open Google Drive Cloud PDF Editor"
+              title="Native Browser Stream & Direct PDF Embed"
             >
-              <GoogleDriveIcon className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Google Drive</span>
+              <Layers className="w-3.5 h-3.5" />
+              <span className="hidden md:inline">Native Embed</span>
             </button>
+
+            {driveFileId && (
+              <button
+                type="button"
+                onClick={() => setViewerMode('gdrive')}
+                className={`px-2.5 sm:px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition cursor-pointer ${
+                  viewerMode === 'gdrive'
+                    ? 'bg-blue-600 text-white font-black shadow-md shadow-blue-500/30'
+                    : 'text-stone-300 hover:text-white hover:bg-stone-800'
+                }`}
+                title="Open Google Drive Cloud PDF Editor"
+              >
+                <GoogleDriveIcon className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Google Drive</span>
+              </button>
+            )}
           </div>
 
           {/* AI Guide Toggle */}
@@ -1026,6 +1055,20 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
             <BlackDogLogo className="w-3.5 h-3.5" bgClassName="bg-stone-950" />
             <span className="hidden sm:inline">AI Guide</span>
           </button>
+
+          {/* Direct Fullscreen Tab (Zero limits, direct native browser viewer) */}
+          {hasRealPdf && (
+            <a
+              href={resolvedPdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-1.5 sm:p-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-amber-300 hover:text-amber-200 border border-stone-700 transition cursor-pointer flex items-center gap-1 text-xs font-bold"
+              title="Open direct PDF in new browser tab at maximum speed"
+            >
+              <ExternalLink className="w-4 h-4" />
+              <span className="hidden xl:inline">New Tab</span>
+            </a>
+          )}
 
           {/* Dedicated Download Button (ONLY downloads when clicked by user) */}
           {hasRealPdf && (
@@ -1280,16 +1323,62 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
             </div>
           )}
 
-          {/* 1. INSTANT CONTINUOUS CLOUD STREAM & SCROLL MODE (DEFAULT - 0 WAITING TIME & ZERO DOWNLOAD) */}
+          {/* 1. NATIVE BROWSER EMBED & STREAM MODE */}
           {viewerMode === 'stream' && (
             <div className="w-full h-full flex flex-col bg-stone-900 rounded-xl overflow-hidden border border-stone-800 shadow-2xl relative">
-              <iframe
-                key={`stream-${effectivePdfSource}`}
-                src={gdriveEmbedUrl}
-                title={`${book.title} - Textbook Cloud Continuous Stream`}
+              <div className="p-2.5 bg-stone-950 border-b border-stone-800 flex items-center justify-between flex-wrap gap-2 text-xs">
+                <span className="text-amber-300 font-bold flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Native Browser PDF Engine • Zero Size Restrictions</span>
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setViewerMode('annotator');
+                      setAnnotationTool('none');
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-[11px] flex items-center gap-1 transition cursor-pointer"
+                  >
+                    <BookOpen className="w-3.5 h-3.5" />
+                    <span>Open in Built-in HD Reader</span>
+                  </button>
+                  <a
+                    href={resolvedPdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 text-white font-bold text-[11px] flex items-center gap-1 transition"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Open Direct Fullscreen (New Tab)</span>
+                  </a>
+                </div>
+              </div>
+
+              <object
+                data={resolvedPdfUrl}
+                type="application/pdf"
                 className="w-full flex-1 border-none bg-stone-900 block"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              />
+              >
+                <iframe
+                  key={`stream-${effectivePdfSource}`}
+                  src={resolvedPdfUrl}
+                  title={`${book.title} - Textbook Direct Stream`}
+                  className="w-full flex-1 border-none bg-stone-900 block"
+                >
+                  <div className="p-8 text-center text-white flex flex-col items-center justify-center h-full">
+                    <p className="text-sm font-bold text-amber-300 mb-3">Direct PDF Preview</p>
+                    <a
+                      href={resolvedPdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 rounded-xl bg-amber-500 text-stone-950 font-black text-xs"
+                    >
+                      Click here to Open Fullscreen PDF
+                    </a>
+                  </div>
+                </iframe>
+              </object>
             </div>
           )}
 
