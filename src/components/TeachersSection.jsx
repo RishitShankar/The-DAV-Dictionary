@@ -5102,7 +5102,7 @@ export function TeachersSection({
                               type="button"
                               onClick={() => setWhatsAppDockView('channels')}
                               className="px-2 py-0.5 rounded-full bg-[#d9fdd3] hover:bg-[#c3f4bc] text-[#008069] text-[10px] font-black tracking-wider uppercase transition cursor-pointer flex items-center gap-1 shadow-2xs"
-                              title="Switch to WhatsApp Channels"
+                              title="Switch to Head Chat Channels"
                             >
                               <Compass className="w-3 h-3" />
                               <span>Channels</span>
@@ -5251,7 +5251,7 @@ export function TeachersSection({
                                             <span className="truncate">{lastMsg.text || (lastMsg.media ? `[${lastMsg.media.type}]` : 'Message')}</span>
                                           </>
                                         ) : (
-                                          <span className="text-[#00a884] font-semibold">{contact.subtitle || 'Available on WhatsApp'}</span>
+                                          <span className="text-[#00a884] font-semibold">{contact.subtitle || 'Available on Head Chat'}</span>
                                         )}
                                       </p>
                                     </div>
@@ -5678,9 +5678,9 @@ export function TeachersSection({
                           <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-xs">
                             <MessageSquare className="w-8 h-8 text-[#00a884]" />
                           </div>
-                          <h3 className="text-xl font-bold text-[#111b21]">WhatsApp Web for DAV</h3>
+                          <h3 className="text-xl font-bold text-[#111b21]">Head Chat Web for DAV</h3>
                           <p className="text-xs text-[#667781] max-w-sm font-medium">
-                            Select a faculty teacher or student from the directory on the left to start real-time messaging with media support.
+                            Select a verified teacher or student from the directory on the left to start real-time Head Chat messaging with media support.
                           </p>
                         </div>
                       )}
@@ -6184,7 +6184,7 @@ export function TeachersSection({
                             <span>End-to-end encrypted</span>
                           </div>
                           <span className="text-[11px] font-bold tracking-wider uppercase text-[#00a884] bg-[#00a884]/15 px-2.5 py-0.5 rounded-full border border-[#00a884]/30">
-                            DAV WhatsApp Voice Call
+                            DAV Head Chat Voice Call
                           </span>
                         </div>
 
