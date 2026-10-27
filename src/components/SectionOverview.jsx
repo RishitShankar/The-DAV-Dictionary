@@ -121,9 +121,9 @@ export function SectionOverview({ currentUser, onSelectSection }) {
       color: 'from-amber-500 to-yellow-600',
       cardBg: 'from-amber-500/10 via-yellow-50/80 to-white',
       borderHover: 'hover:border-amber-500',
-      tag: 'Live Ranks • Focus Mode',
-      tagColor: 'bg-amber-100 text-amber-950 border-amber-300 font-black',
-      description: 'Track your real study time, earn campus ranks on the live DAV Khabra student leaderboard, and enter strict deep study focus mode with ambient audio, streak tracking, and anti-tab switch protection!'
+      tag: 'Available In App Launch',
+      tagColor: 'bg-rose-100 text-rose-950 border-rose-300 font-black',
+      description: 'Campus Leaderboard and Deep Study Focus Mode will be officially available when we launch the app with system-level YouTube & Instagram blocking and verified campus rankings.'
     },
     {
       id: 9,
