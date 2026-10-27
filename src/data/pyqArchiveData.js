@@ -71,119 +71,336 @@ export function getTimeForClass(classId) {
 // Curated Video IDs uploaded by VKPDT IT GURU for DAV Question Papers
 // Mapped by Class, Subject, and Exam Type (with year variations)
 const VKPDT_VIDEO_MAP = {
-  // Class 8 - Maths
-  '8_maths_half_yearly_2025-26': '_Rct3P_JnUA', // DAV Class 8 Maths Half Yearly
-  '8_maths_half_yearly_2024-25': 'PQuWGgc9ch8', // DAV Class 8 Maths Post Mid Term / Half Yearly
-  '8_maths_half_yearly_2023-24': '97LqsF_8fhw', // DAV Class 8 Periodic/Half Yearly Paper
-  '8_maths_board_2025-26': 'M0M-R28mn9g',       // DAV Class 8 Mathematics Board/Annual Paper
-  '8_maths_board_2024-25': 'OFmFaxKAFGk',       // DAV 8 Board Maths Important Questions with Solutions
-  '8_maths_board_2023-24': '3BNTcKv9Yng',       // DAV Class 8 Pre-Board / Board Question Paper
+  // =========================================================
+  // CLASS 8 (DAV Board & Half-Yearly Examinations - 80 Marks)
+  // Educator: VKPDT IT GURU DAV (@VKPDTITGURU / Vinod Kumar Pandit)
+  // =========================================================
+  // Mathematics
+  '8_maths_half_yearly': '_Rct3P_JnUA', // DAV CLASS 8 MATHS HALF YEARLY QUESTION PAPER
+  '8_maths_half_yearly_2025-26': '_Rct3P_JnUA',
+  '8_maths_half_yearly_2024-25': '_Rct3P_JnUA',
+  '8_maths_half_yearly_2023-24': '_Rct3P_JnUA',
+  '8_maths_board': 'M0M-R28mn9g', // DAV CLASS 8 MATHEMATICS QUESTION PAPER | ANNUAL QUESTION PAPER 2024-25
+  '8_maths_board_2025-26': 'M0M-R28mn9g',
+  '8_maths_board_2024-25': 'OFmFaxKAFGk', // DAV 8 BOARD MATHS IMPORTANT QUESTIONS With Solution
+  '8_maths_board_2023-24': '3BNTcKv9Yng', // DAV CLASS 8 PREVIOUS YEAR QUESTION PAPER PRE-BOARD
 
-  // Class 8 - Science
-  '8_science_half_yearly_2025-26': 'Ecjzg9nOP2k', // DAV Class 8 Science Half Yearly Question Paper
-  '8_science_half_yearly_2024-25': 'ct406WniXfk',
-  '8_science_half_yearly_2023-24': '97LqsF_8fhw',
-  '8_science_board_2025-26': 'OhrCfGbcgs8',     // DAV Class 8 Science Annual Question Paper
-  '8_science_board_2024-25': '3BNTcKv9Yng',
-  '8_science_board_2023-24': 'feFiJNyowO0',
+  // Science & Technology
+  '8_science_half_yearly': 'gpbPCF4jZjg', // DAV CLASS 8 SCIENCE HALF YEARLY QUESTION PAPER
+  '8_science_half_yearly_2025-26': 'gpbPCF4jZjg',
+  '8_science_half_yearly_2024-25': 'gpbPCF4jZjg',
+  '8_science_half_yearly_2023-24': 'gpbPCF4jZjg',
+  '8_science_board': '4brB17L1zfM', // DAV CLASS 8 SCIENCE PREVIOUS YEAR QUESTION PAPER | ANNUAL QUESTION 2025-26
+  '8_science_board_2025-26': '4brB17L1zfM',
+  '8_science_board_2024-25': '4brB17L1zfM',
+  '8_science_board_2023-24': '4brB17L1zfM',
 
-  // Class 8 - Social Science (SST)
-  '8_sst_half_yearly_2025-26': 'ct406WniXfk',   // DAV Class 8 SST Half Yearly Paper
-  '8_sst_half_yearly_2024-25': 'OhrCfGbcgs8',
-  '8_sst_half_yearly_2023-24': '97LqsF_8fhw',
-  '8_sst_board_2025-26': '9uhsc1jBiqM',         // DAV Class 8 Social Science Annual Question Paper
-  '8_sst_board_2024-25': '3BNTcKv9Yng',
-  '8_sst_board_2023-24': 'RqtfM0EGEQE',
+  // Social Science (SST)
+  '8_sst_half_yearly': 'TCGnGPybXvg', // DAV CLASS 8 S.SC HALF YEARLY QUESTION PAPER
+  '8_sst_half_yearly_2025-26': 'TCGnGPybXvg',
+  '8_sst_half_yearly_2024-25': 'TCGnGPybXvg',
+  '8_sst_half_yearly_2023-24': 'TCGnGPybXvg',
+  '8_sst_board': '9uhsc1jBiqM', // DAV CLASS 8 SOCIAL SCIENCE QUESTION PAPER | ANNUAL QUESTION 2025-26
+  '8_sst_board_2025-26': '9uhsc1jBiqM',
+  '8_sst_board_2024-25': 'fhMhhQzIMqM', // DAV Board Class 8 Social Science Answer Key 2026
+  '8_sst_board_2023-24': '9uhsc1jBiqM',
 
-  // Class 8 - English
-  '8_english_half_yearly_2025-26': 'dY9hK4ZlkaQ', // DAV Class 8 English Half Yearly Question Paper
-  '8_english_half_yearly_2024-25': 'ct406WniXfk',
-  '8_english_half_yearly_2023-24': '97LqsF_8fhw',
-  '8_english_board_2025-26': 'e43PUc5YV2s',     // DAV Class 8 English Annual Question Paper
-  '8_english_board_2024-25': '3BNTcKv9Yng',
-  '8_english_board_2023-24': 'OhrCfGbcgs8',
+  // Hindi (Gyan Sagar & Abhyas Sagar)
+  '8_hindi_half_yearly': 'twV4hPnW5kc', // DAV CLASS 8 HINDI HALF YEARLY QUESTION PAPER
+  '8_hindi_half_yearly_2025-26': 'twV4hPnW5kc',
+  '8_hindi_half_yearly_2024-25': 'twV4hPnW5kc',
+  '8_hindi_half_yearly_2023-24': 'twV4hPnW5kc',
+  '8_hindi_board': 'IIC67yYB9Zc', // DAV CLASS 8 HINDI PREVIOUS YEAR QUESTION PAPER | ANNUAL QUESTION 2025-26
+  '8_hindi_board_2025-26': 'IIC67yYB9Zc',
+  '8_hindi_board_2024-25': 'IIC67yYB9Zc',
+  '8_hindi_board_2023-24': 'IIC67yYB9Zc',
 
-  // Class 8 - Hindi
-  '8_hindi_half_yearly_2025-26': '5mY1fAX_4kY', // DAV Class 8 Hindi Question Paper
-  '8_hindi_half_yearly_2024-25': 'ct406WniXfk',
-  '8_hindi_half_yearly_2023-24': '97LqsF_8fhw',
-  '8_hindi_board_2025-26': 'rsB4xeyiW1Q',       // DAV Class 8 Hindi Annual Question Paper
-  '8_hindi_board_2024-25': '3BNTcKv9Yng',
-  '8_hindi_board_2023-24': 'OhrCfGbcgs8',
+  // English (Literature, Reader & Practice Book)
+  '8_english_half_yearly': 'vCy_p9R4pb0', // DAV CLASS 8 ENGLISH HALF YEARLY QUESTION PAPER
+  '8_english_half_yearly_2025-26': 'vCy_p9R4pb0',
+  '8_english_half_yearly_2024-25': 'vCy_p9R4pb0',
+  '8_english_half_yearly_2023-24': 'vCy_p9R4pb0',
+  '8_english_board': 'e43PUc5YV2s', // DAV CLASS 8 ENGLISH PREVIOUS YEAR QUESTION PAPER | ANNUAL QUESTION 2025-26
+  '8_english_board_2025-26': 'e43PUc5YV2s',
+  '8_english_board_2024-25': 'e43PUc5YV2s',
+  '8_english_board_2023-24': 'e43PUc5YV2s',
 
-  // Class 8 - Sanskrit
-  '8_sanskrit_half_yearly_2025-26': '97LqsF_8fhw', // DAV Class 8 Sanskrit Half Yearly Paper
-  '8_sanskrit_half_yearly_2024-25': 'ct406WniXfk',
-  '8_sanskrit_half_yearly_2023-24': 'qlL-nBRDof8',
-  '8_sanskrit_board_2025-26': '3BNTcKv9Yng',    // DAV Class 8 Sanskrit Pre-Board & Annual Paper
-  '8_sanskrit_board_2024-25': 'OhrCfGbcgs8',
-  '8_sanskrit_board_2023-24': 'feFiJNyowO0',
+  // Sanskrit (सुरभिः)
+  '8_sanskrit_half_yearly': 'ZMK7osctEbY', // DAV CLASS 8 SANSKRIT HALF YEARLY QUESTION PAPER
+  '8_sanskrit_half_yearly_2025-26': 'ZMK7osctEbY',
+  '8_sanskrit_half_yearly_2024-25': 'ZMK7osctEbY',
+  '8_sanskrit_half_yearly_2023-24': 'ZMK7osctEbY',
+  '8_sanskrit_board': 'Fc-X94ulcJs', // DAV CLASS 8 SANSKRIT PREVIOUS YEAR QUESTION PAPER | ANNUAL QUESTION 2025-26
+  '8_sanskrit_board_2025-26': 'Fc-X94ulcJs',
+  '8_sanskrit_board_2024-25': 'Fc-X94ulcJs',
+  '8_sanskrit_board_2023-24': 'Fc-X94ulcJs',
 
-  // Class 7
-  '7_sst_half_yearly': 'RqtfM0EGEQE',   // DAV Class 7 S.SC Half Yearly Question Paper
-  '7_sst_annual': '9uhsc1jBiqM',
-  '7_maths_half_yearly': '_Rct3P_JnUA',
-  '7_maths_annual': 'M0M-R28mn9g',
-  '7_science_half_yearly': 'Ecjzg9nOP2k',
-  '7_science_annual': 'OhrCfGbcgs8',
-  '7_english_half_yearly': 'dY9hK4ZlkaQ',
-  '7_english_annual': 'e43PUc5YV2s',
-  '7_hindi_half_yearly': '5mY1fAX_4kY',
-  '7_hindi_annual': 'rsB4xeyiW1Q',
-  '7_sanskrit_half_yearly': 'qlL-nBRDof8',
-  '7_sanskrit_annual': '3BNTcKv9Yng',
+  // =========================================================
+  // CLASS 7 (DAV Annual & Mid-Term - 70 Marks)
+  // =========================================================
+  '7_maths_half_yearly': '3WbOIyP9uEI', // DAV CLASS 7 MATHS HALF YEARLY QUESTION PAPER
+  '7_maths_half_yearly_2025-26': '3WbOIyP9uEI',
+  '7_maths_half_yearly_2024-25': '0kH6mfga-eE',
+  '7_maths_half_yearly_2023-24': 'zTmXfePrgOA',
+  '7_maths_annual': 'vTAL70OXfYk', // DAV CLASS 7 MATHS PREVIOUS YEAR ANNUAL QUESTION PAPER 2025-26
+  '7_maths_annual_2025-26': 'vTAL70OXfYk',
+  '7_maths_annual_2024-25': '9yWQkHNqa8Q',
+  '7_maths_annual_2023-24': 'vTAL70OXfYk',
 
-  // Class 6
-  '6_hindi_annual': 'rsB4xeyiW1Q',     // DAV Class 6 Hindi Previous Year Annual Paper
-  '6_hindi_half_yearly': '5mY1fAX_4kY',
-  '6_sst_half_yearly': 'RqtfM0EGEQE',
-  '6_sst_annual': '9uhsc1jBiqM',
-  '6_maths_half_yearly': '_Rct3P_JnUA',
-  '6_maths_annual': 'M0M-R28mn9g',
-  '6_science_half_yearly': 'Ecjzg9nOP2k',
-  '6_science_annual': 'OhrCfGbcgs8',
-  '6_english_half_yearly': 'dY9hK4ZlkaQ',
-  '6_english_annual': 'e43PUc5YV2s',
-  '6_sanskrit_half_yearly': 'qlL-nBRDof8',
-  '6_sanskrit_annual': '3BNTcKv9Yng',
+  '7_science_half_yearly': 'q4ZeK2wSjPY', // DAV CLASS 7 SCIENCE HALF YEARLY QUESTION PAPER
+  '7_science_half_yearly_2025-26': 'q4ZeK2wSjPY',
+  '7_science_half_yearly_2024-25': 'q4ZeK2wSjPY',
+  '7_science_half_yearly_2023-24': 'q4ZeK2wSjPY',
+  '7_science_annual': 's1JZi2RbT10', // DAV CLASS 7 SCIENCE PREVIOUS YEAR ANNUAL QUESTION PAPER 2024-25
+  '7_science_annual_2025-26': 's1JZi2RbT10',
+  '7_science_annual_2024-25': 's1JZi2RbT10',
+  '7_science_annual_2023-24': 's1JZi2RbT10',
 
-  // Class 5
-  '5_maths_half_yearly': '_Rct3P_JnUA',
-  '5_maths_annual': 'M0M-R28mn9g',
-  '5_science_half_yearly': 'Ecjzg9nOP2k',
-  '5_science_annual': '19DfO5dP9yc',
-  '5_sst_half_yearly': 'RqtfM0EGEQE',
-  '5_sst_annual': '_43vLfeKdo0',
-  '5_english_half_yearly': 'dY9hK4ZlkaQ',
-  '5_english_annual': 'e43PUc5YV2s',
-  '5_hindi_half_yearly': '5mY1fAX_4kY',
-  '5_hindi_annual': 'rsB4xeyiW1Q',
-  '5_sanskrit_half_yearly': 'qlL-nBRDof8',
-  '5_sanskrit_annual': '3BNTcKv9Yng',
+  '7_sst_half_yearly': 'RqtfM0EGEQE', // DAV CLASS 7 S.SC HALF YEARLY QUESTION PAPER
+  '7_sst_half_yearly_2025-26': 'RqtfM0EGEQE',
+  '7_sst_half_yearly_2024-25': 'RqtfM0EGEQE',
+  '7_sst_half_yearly_2023-24': 'RqtfM0EGEQE',
+  '7_sst_annual': 'AxWpao_iDFM', // DAV CLASS 7 SOCIAL SCIENCE PREVIOUS YEAR ANNUAL QUESTION PAPER 2025-26
+  '7_sst_annual_2025-26': 'AxWpao_iDFM',
+  '7_sst_annual_2024-25': 'AxWpao_iDFM',
+  '7_sst_annual_2023-24': 'AujeC_dJsvk', // DAV CLASS 7 SOCIAL SCIENCE ANNUAL QUESTION PAPER 2023-24
 
-  // Class 4
-  '4_maths_half_yearly': '_Rct3P_JnUA',
-  '4_maths_annual': 'M0M-R28mn9g',
-  '4_science_half_yearly': 'Ecjzg9nOP2k',
-  '4_science_annual': '19DfO5dP9yc',
-  '4_sst_half_yearly': 'RqtfM0EGEQE',
-  '4_sst_annual': '_43vLfeKdo0',
-  '4_english_half_yearly': 'dY9hK4ZlkaQ',
-  '4_english_annual': 'e43PUc5YV2s',
-  '4_hindi_half_yearly': '5mY1fAX_4kY',
-  '4_hindi_annual': 'rsB4xeyiW1Q',
+  '7_hindi_half_yearly': 'YST7t8wqWDQ', // DAV CLASS 7 HINDI HALF YEARLY QUESTION PAPER
+  '7_hindi_half_yearly_2025-26': 'YST7t8wqWDQ',
+  '7_hindi_half_yearly_2024-25': 'YST7t8wqWDQ',
+  '7_hindi_half_yearly_2023-24': 'YST7t8wqWDQ',
+  '7_hindi_annual': 'rsB4xeyiW1Q', // DAV CLASS 7 HINDI ANNUAL
+  '7_hindi_annual_2025-26': 'rsB4xeyiW1Q',
+  '7_hindi_annual_2024-25': 'rsB4xeyiW1Q',
+  '7_hindi_annual_2023-24': 'rsB4xeyiW1Q',
 
-  // Class 3
-  '3_maths_half_yearly': '_Rct3P_JnUA',
-  '3_maths_annual': 'M0M-R28mn9g',
-  '3_science_half_yearly': 'Ecjzg9nOP2k',
-  '3_science_annual': '19DfO5dP9yc',
-  '3_sst_half_yearly': 'RqtfM0EGEQE',
-  '3_sst_annual': '_43vLfeKdo0',
-  '3_english_half_yearly': 'dY9hK4ZlkaQ',
-  '3_english_annual': 'e43PUc5YV2s',
-  '3_hindi_half_yearly': '5mY1fAX_4kY',
-  '3_hindi_annual': 'rsB4xeyiW1Q'
+  '7_english_half_yearly': 'nRXL_eEbbdM', // DAV CLASS 7 ENGLISH HALF YEARLY QUESTION PAPER
+  '7_english_half_yearly_2025-26': 'nRXL_eEbbdM',
+  '7_english_half_yearly_2024-25': 'nRXL_eEbbdM',
+  '7_english_half_yearly_2023-24': 'nRXL_eEbbdM',
+  '7_english_annual': 'xgxp9mA5dJI', // DAV CLASS 7 ENGLISH PREVIOUS YEAR ANNUAL QUESTION PAPER 2025-26
+  '7_english_annual_2025-26': 'xgxp9mA5dJI',
+  '7_english_annual_2024-25': 'xgxp9mA5dJI',
+  '7_english_annual_2023-24': 'xgxp9mA5dJI',
+
+  '7_sanskrit_half_yearly': 'g3eE_k61OcY', // DAV CLASS 7 SANSKRIT HALF YEARLY QUESTION PAPER
+  '7_sanskrit_half_yearly_2025-26': 'g3eE_k61OcY',
+  '7_sanskrit_half_yearly_2024-25': 'g3eE_k61OcY',
+  '7_sanskrit_half_yearly_2023-24': 'g3eE_k61OcY',
+  '7_sanskrit_annual': 'PCQ9xLmzSlU', // DAV CLASS 7 SANSKRIT PREVIOUS YEAR ANNUAL QUESTION PAPER 2024-25
+  '7_sanskrit_annual_2025-26': 'PCQ9xLmzSlU',
+  '7_sanskrit_annual_2024-25': 'PCQ9xLmzSlU',
+  '7_sanskrit_annual_2023-24': 'PCQ9xLmzSlU',
+
+  // =========================================================
+  // CLASS 6 (DAV Annual & Mid-Term - 70 Marks)
+  // =========================================================
+  '6_maths_half_yearly': '0d5gEPVuiO4', // DAV CLASS 6 MATHS HALF YEARLY QUESTION PAPER
+  '6_maths_half_yearly_2025-26': '0d5gEPVuiO4',
+  '6_maths_half_yearly_2024-25': '0d5gEPVuiO4',
+  '6_maths_half_yearly_2023-24': '0d5gEPVuiO4',
+  '6_maths_annual': 'SD4XoC6UzAk', // DAV CLASS 6 MATHS PREVIOUS YEAR ANNUAL QUESTION PAPER 2025-26
+  '6_maths_annual_2025-26': 'SD4XoC6UzAk',
+  '6_maths_annual_2024-25': 'ozKC1rgXd4M',
+  '6_maths_annual_2023-24': 'SD4XoC6UzAk',
+
+  '6_science_half_yearly': '5w3DjFQKlTc', // DAV CLASS 6 SCIENCE HALF YEARLY QUESTION PAPER
+  '6_science_half_yearly_2025-26': '5w3DjFQKlTc',
+  '6_science_half_yearly_2024-25': '5w3DjFQKlTc',
+  '6_science_half_yearly_2023-24': '5w3DjFQKlTc',
+  '6_science_annual': '7MR0i-45NYM', // DAV CLASS 6 SCIENCE PREVIOUS YEAR ANNUAL QUESTION PAPER 2023-24
+  '6_science_annual_2025-26': '7MR0i-45NYM',
+  '6_science_annual_2024-25': '7MR0i-45NYM',
+  '6_science_annual_2023-24': '7MR0i-45NYM',
+
+  '6_sst_half_yearly': 'bx8MpXt0EwA', // DAV CLASS 6 S.SC HALF YEARLY QUESTION PAPER
+  '6_sst_half_yearly_2025-26': 'bx8MpXt0EwA',
+  '6_sst_half_yearly_2024-25': 'bx8MpXt0EwA',
+  '6_sst_half_yearly_2023-24': 'bx8MpXt0EwA',
+  '6_sst_annual': '-OijHetVIcc', // DAV CLASS 6 S.SC PREVIOUS YEAR ANNUAL QUESTION PAPER 2025-26
+  '6_sst_annual_2025-26': '-OijHetVIcc',
+  '6_sst_annual_2024-25': '-OijHetVIcc',
+  '6_sst_annual_2023-24': '-OijHetVIcc',
+
+  '6_hindi_half_yearly': 'h5Q8yPI-_pY', // DAV CLASS 6 HINDI HALF YEARLY QUESTION PAPER
+  '6_hindi_half_yearly_2025-26': 'h5Q8yPI-_pY',
+  '6_hindi_half_yearly_2024-25': 'h5Q8yPI-_pY',
+  '6_hindi_half_yearly_2023-24': 'h5Q8yPI-_pY',
+  '6_hindi_annual': 'rsB4xeyiW1Q', // DAV CLASS 6 HINDI PREVIOUS YEAR ANNUAL QUESTION PAPER 2025-26
+  '6_hindi_annual_2025-26': 'rsB4xeyiW1Q',
+  '6_hindi_annual_2024-25': 'rsB4xeyiW1Q',
+  '6_hindi_annual_2023-24': 'rsB4xeyiW1Q',
+
+  '6_english_half_yearly': 'DWJe6h_5sIo', // DAV CLASS 6 ENGLISH HALF YEARLY QUESTION PAPER
+  '6_english_half_yearly_2025-26': 'DWJe6h_5sIo',
+  '6_english_half_yearly_2024-25': 'DWJe6h_5sIo',
+  '6_english_half_yearly_2023-24': 'DWJe6h_5sIo',
+  '6_english_annual': 'hX13DGisoCg', // DAV CLASS 6 ENGLISH PREVIOUS YEAR ANNUAL QUESTION PAPER 2025-26
+  '6_english_annual_2025-26': 'hX13DGisoCg',
+  '6_english_annual_2024-25': 'oVO589rTw08',
+  '6_english_annual_2023-24': 'hX13DGisoCg',
+
+  '6_sanskrit_half_yearly': 'I7BkWuAhRdg', // DAV CLASS 6 SANSKRIT HALF YEARLY QUESTION PAPER
+  '6_sanskrit_half_yearly_2025-26': 'I7BkWuAhRdg',
+  '6_sanskrit_half_yearly_2024-25': 'p1_xCEDj4Mo',
+  '6_sanskrit_half_yearly_2023-24': 'I7BkWuAhRdg',
+  '6_sanskrit_annual': '8HyOIFPxR4M', // DAV CLASS 6 SANSKRIT PREVIOUS YEAR ANNUAL QUESTION PAPER 2023-24
+  '6_sanskrit_annual_2025-26': 'ReNQG0vLgEk',
+  '6_sanskrit_annual_2024-25': 'ReNQG0vLgEk',
+  '6_sanskrit_annual_2023-24': '8HyOIFPxR4M',
+
+  // =========================================================
+  // CLASS 5 (6 Subjects Including Sanskrit - 70 Marks)
+  // =========================================================
+  '5_maths_half_yearly': 'gBqx0r81gbo', // DAV CLASS 5 MATHS HALF YEARLY QUESTION PAPER
+  '5_maths_half_yearly_2025-26': 'gBqx0r81gbo',
+  '5_maths_half_yearly_2024-25': 'pmYDM2cdXFE',
+  '5_maths_half_yearly_2023-24': 'xdH0g7bQl64',
+  '5_maths_annual': 'ogl3N9FFBJw', // DAV CLASS 5 MATHS PREVIOUS YEAR ANNUAL QUESTION PAPER 2024-25
+  '5_maths_annual_2025-26': 'ogl3N9FFBJw',
+  '5_maths_annual_2024-25': 'ogl3N9FFBJw',
+  '5_maths_annual_2023-24': 'ogl3N9FFBJw',
+
+  '5_science_half_yearly': 'DzQQYu4DM4g', // DAV CLASS 5 SCIENCE HALF YEARLY QUESTION PAPER
+  '5_science_half_yearly_2025-26': 'DzQQYu4DM4g',
+  '5_science_half_yearly_2024-25': 'DzQQYu4DM4g',
+  '5_science_half_yearly_2023-24': 'DzQQYu4DM4g',
+  '5_science_annual': '8qetYqKF78g', // DAV CLASS 5 SCIENCE PREVIOUS YEAR ANNUAL QUESTION PAPER 2024-25
+  '5_science_annual_2025-26': '8qetYqKF78g',
+  '5_science_annual_2024-25': '8qetYqKF78g',
+  '5_science_annual_2023-24': '0wN2Q2VKLN4',
+
+  '5_sst_half_yearly': 'ov41epOAaMM', // DAV CLASS 5 SOCIAL SCIENCE HALF YEARLY QUESTION PAPER
+  '5_sst_half_yearly_2025-26': 'ov41epOAaMM',
+  '5_sst_half_yearly_2024-25': 'ov41epOAaMM',
+  '5_sst_half_yearly_2023-24': 'ov41epOAaMM',
+  '5_sst_annual': '09BTk9YDmBA', // DAV CLASS 5 SOCIAL SCIENCE PREVIOUS YEAR ANNUAL QUESTION PAPER 2025-26
+  '5_sst_annual_2025-26': '09BTk9YDmBA',
+  '5_sst_annual_2024-25': '09BTk9YDmBA',
+  '5_sst_annual_2023-24': '09BTk9YDmBA',
+
+  '5_hindi_half_yearly': '8amtoqF0HOo', // DAV CLASS 5 HINDI HALF YEARLY QUESTION PAPER
+  '5_hindi_half_yearly_2025-26': '8amtoqF0HOo',
+  '5_hindi_half_yearly_2024-25': '8amtoqF0HOo',
+  '5_hindi_half_yearly_2023-24': '8amtoqF0HOo',
+  '5_hindi_annual': 'gXOrU1o4U34', // DAV CLASS 5 HINDI PREVIOUS YEAR ANNUAL QUESTION PAPER 2025-26
+  '5_hindi_annual_2025-26': 'gXOrU1o4U34',
+  '5_hindi_annual_2024-25': 'gXOrU1o4U34',
+  '5_hindi_annual_2023-24': 'gXOrU1o4U34',
+
+  '5_english_half_yearly': 'K3tVU8IgL8g', // DAV CLASS 5 ENGLISH HALF YEARLY QUESTION PAPER
+  '5_english_half_yearly_2025-26': 'K3tVU8IgL8g',
+  '5_english_half_yearly_2024-25': 'K3tVU8IgL8g',
+  '5_english_half_yearly_2023-24': 'K3tVU8IgL8g',
+  '5_english_annual': '1Exu5C_E5L0', // DAV CLASS 5 ENGLISH PREVIOUS YEAR ANNUAL QUESTION PAPER 2024-25
+  '5_english_annual_2025-26': '1Exu5C_E5L0',
+  '5_english_annual_2024-25': '1Exu5C_E5L0',
+  '5_english_annual_2023-24': '1Exu5C_E5L0',
+
+  '5_sanskrit_half_yearly': 'eHSBDfAZ5-A', // DAV CLASS 5 SANSKRIT HALF YEARLY QUESTION PAPER
+  '5_sanskrit_half_yearly_2025-26': 'eHSBDfAZ5-A',
+  '5_sanskrit_half_yearly_2024-25': 'eHSBDfAZ5-A',
+  '5_sanskrit_half_yearly_2023-24': 'eHSBDfAZ5-A',
+  '5_sanskrit_annual': '_TlLpVucAXw', // DAV CLASS 5 SANSKRIT PREVIOUS YEAR ANNUAL QUESTION PAPER 2025-26
+  '5_sanskrit_annual_2025-26': '_TlLpVucAXw',
+  '5_sanskrit_annual_2024-25': '_TlLpVucAXw',
+  '5_sanskrit_annual_2023-24': '_TlLpVucAXw',
+
+  // =========================================================
+  // CLASS 4 (5 Subjects - 70 Marks)
+  // =========================================================
+  '4_maths_half_yearly': 'iKG46TTgkVQ', // DAV CLASS 4 MATHS HALF YEARLY QUESTION PAPER
+  '4_maths_half_yearly_2025-26': 'iKG46TTgkVQ',
+  '4_maths_half_yearly_2024-25': 'iKG46TTgkVQ',
+  '4_maths_half_yearly_2023-24': 'iKG46TTgkVQ',
+  '4_maths_annual': 'ccZ13BFSFOs', // DAV CLASS 4 MATHS PREVIOUS YEAR ANNUAL QUESTION PAPER 2025-26
+  '4_maths_annual_2025-26': 'ccZ13BFSFOs',
+  '4_maths_annual_2024-25': 'ccZ13BFSFOs',
+  '4_maths_annual_2023-24': 'ccZ13BFSFOs',
+
+  '4_science_half_yearly': 'MavSe_19PT8', // DAV CLASS 4 SCIENCE HALF YEARLY QUESTION PAPER
+  '4_science_half_yearly_2025-26': 'MavSe_19PT8',
+  '4_science_half_yearly_2024-25': 'MavSe_19PT8',
+  '4_science_half_yearly_2023-24': 'MavSe_19PT8',
+  '4_science_annual': 'zeOW0W1DD6w', // DAV CLASS 4 SCIENCE PREVIOUS YEAR ANNUAL QUESTION PAPER 2025-26
+  '4_science_annual_2025-26': 'zeOW0W1DD6w',
+  '4_science_annual_2024-25': 'zeOW0W1DD6w',
+  '4_science_annual_2023-24': 'zeOW0W1DD6w',
+
+  '4_sst_half_yearly': 'YIcvQhfNwyc', // DAV CLASS 4 S.SC HALF YEARLY QUESTION PAPER
+  '4_sst_half_yearly_2025-26': 'YIcvQhfNwyc',
+  '4_sst_half_yearly_2024-25': 'YIcvQhfNwyc',
+  '4_sst_half_yearly_2023-24': 'YIcvQhfNwyc',
+  '4_sst_annual': '1zlbi20ecJE', // DAV CLASS 4 SOCIAL SCIENCE PREVIOUS YEAR ANNUAL QUESTION PAPER 2024-25
+  '4_sst_annual_2025-26': '1zlbi20ecJE',
+  '4_sst_annual_2024-25': '1zlbi20ecJE',
+  '4_sst_annual_2023-24': '1zlbi20ecJE',
+
+  '4_hindi_half_yearly': 'uDxP7-iEmHc', // DAV CLASS 4 HINDI HALF YEARLY QUESTION PAPER
+  '4_hindi_half_yearly_2025-26': 'uDxP7-iEmHc',
+  '4_hindi_half_yearly_2024-25': 'uDxP7-iEmHc',
+  '4_hindi_half_yearly_2023-24': 'uDxP7-iEmHc',
+  '4_hindi_annual': 'U_WUl3ciz2A', // DAV CLASS 4 HINDI PREVIOUS YEAR ANNUAL QUESTION PAPER 2025-26
+  '4_hindi_annual_2025-26': 'U_WUl3ciz2A',
+  '4_hindi_annual_2024-25': 'U_WUl3ciz2A',
+  '4_hindi_annual_2023-24': 'U_WUl3ciz2A',
+
+  '4_english_half_yearly': 'BIyWn9aTPK4', // DAV CLASS 4 ENGLISH HALF YEARLY QUESTION PAPER
+  '4_english_half_yearly_2025-26': 'BIyWn9aTPK4',
+  '4_english_half_yearly_2024-25': 'BIyWn9aTPK4',
+  '4_english_half_yearly_2023-24': 'BIyWn9aTPK4',
+  '4_english_annual': 'zoGXpv3myxQ', // DAV CLASS 4 ENGLISH PREVIOUS YEAR ANNUAL QUESTION PAPER 2024-25
+  '4_english_annual_2025-26': 'zoGXpv3myxQ',
+  '4_english_annual_2024-25': 'zoGXpv3myxQ',
+  '4_english_annual_2023-24': 'zoGXpv3myxQ',
+
+  // =========================================================
+  // CLASS 3 (5 Subjects - 70 Marks)
+  // =========================================================
+  '3_maths_half_yearly': 'etcFRxN8-dQ', // DAV CLASS 3 MATHS HALF YEARLY QUESTION PAPER
+  '3_maths_half_yearly_2025-26': 'etcFRxN8-dQ',
+  '3_maths_half_yearly_2024-25': 'etcFRxN8-dQ',
+  '3_maths_half_yearly_2023-24': 'etcFRxN8-dQ',
+  '3_maths_annual': 'y7p__V8TkNU', // DAV CLASS 3 MATHS PREVIOUS YEAR ANNUAL QUESTION PAPER 2025-26
+  '3_maths_annual_2025-26': 'y7p__V8TkNU',
+  '3_maths_annual_2024-25': 'y7p__V8TkNU',
+  '3_maths_annual_2023-24': 'y7p__V8TkNU',
+
+  '3_science_half_yearly': 'r7UhmpTe0BA', // DAV CLASS 3 SCIENCE HALF YEARLY QUESTION PAPER
+  '3_science_half_yearly_2025-26': 'r7UhmpTe0BA',
+  '3_science_half_yearly_2024-25': 'L7ls8IrDNbY',
+  '3_science_half_yearly_2023-24': 'r7UhmpTe0BA',
+  '3_science_annual': '_fPqjs2zKaE', // DAV CLASS 3 SCIENCE PREVIOUS YEAR ANNUAL QUESTION PAPER 2023-24
+  '3_science_annual_2025-26': '_fPqjs2zKaE',
+  '3_science_annual_2024-25': '_fPqjs2zKaE',
+  '3_science_annual_2023-24': '_fPqjs2zKaE',
+
+  '3_sst_half_yearly': 'uzK52WEjR14', // DAV CLASS 3 S.SC HALF YEARLY QUESTION PAPER
+  '3_sst_half_yearly_2025-26': 'uzK52WEjR14',
+  '3_sst_half_yearly_2024-25': 'uzK52WEjR14',
+  '3_sst_half_yearly_2023-24': 'uzK52WEjR14',
+  '3_sst_annual': 'Ui7jUGetn-0', // DAV CLASS 3 S.SC PREVIOUS YEAR ANNUAL QUESTION PAPER 2025-26
+  '3_sst_annual_2025-26': 'Ui7jUGetn-0',
+  '3_sst_annual_2024-25': 'Ui7jUGetn-0',
+  '3_sst_annual_2023-24': 'Ui7jUGetn-0',
+
+  '3_hindi_half_yearly': 'RztC6NetvlM', // DAV CLASS 3 HINDI HALF YEARLY QUESTION PAPER
+  '3_hindi_half_yearly_2025-26': 'RztC6NetvlM',
+  '3_hindi_half_yearly_2024-25': 'RztC6NetvlM',
+  '3_hindi_half_yearly_2023-24': 'RztC6NetvlM',
+  '3_hindi_annual': 'S-QKkzJvu0M', // DAV CLASS 3 HINDI PREVIOUS YEAR ANNUAL QUESTION PAPER 2025-26
+  '3_hindi_annual_2025-26': 'S-QKkzJvu0M',
+  '3_hindi_annual_2024-25': 'S-QKkzJvu0M',
+  '3_hindi_annual_2023-24': 'S-QKkzJvu0M',
+
+  '3_english_half_yearly': 'UR3vxtd8Nb0', // DAV CLASS 3 ENGLISH HALF YEARLY QUESTION PAPER
+  '3_english_half_yearly_2025-26': 'UR3vxtd8Nb0',
+  '3_english_half_yearly_2024-25': 'UR3vxtd8Nb0',
+  '3_english_half_yearly_2023-24': 'UR3vxtd8Nb0',
+  '3_english_annual': 'Zcw0aG2pZUM', // DAV CLASS 3 ENGLISH PREVIOUS YEAR ANNUAL QUESTION PAPER 2024-25
+  '3_english_annual_2025-26': 'Zcw0aG2pZUM',
+  '3_english_annual_2024-25': 'Zcw0aG2pZUM',
+  '3_english_annual_2023-24': 'Zcw0aG2pZUM'
 };
 
 const subjectSections = {

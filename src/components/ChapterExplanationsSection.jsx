@@ -2182,10 +2182,11 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                               href={paper.videoUrl || `https://www.youtube.com/watch?v=${paper.videoId}`}
                               target="_blank"
                               rel="noreferrer"
-                              className="p-2 rounded-xl bg-stone-900 hover:bg-stone-800 border border-stone-700 text-stone-300 hover:text-white transition cursor-pointer flex items-center justify-center"
-                              title="Open Direct Video on YouTube"
+                              className="px-2.5 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white transition cursor-pointer flex items-center justify-center shadow-md gap-1 text-xs font-bold"
+                              title="Open Directly on YouTube (VKPDT IT GURU)"
                             >
                               <ExternalLink className="w-3.5 h-3.5" />
+                              <span className="hidden sm:inline">YouTube</span>
                             </a>
 
                             {/* Solve with Rishi AI */}
@@ -2350,10 +2351,11 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                               href={paper.videoUrl || `https://www.youtube.com/watch?v=${paper.videoId}`}
                               target="_blank"
                               rel="noreferrer"
-                              className="p-2 rounded-xl bg-stone-900 hover:bg-stone-800 border border-stone-700 text-stone-300 hover:text-white transition cursor-pointer flex items-center justify-center"
-                              title="Open Direct Video on YouTube"
+                              className="px-2.5 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white transition cursor-pointer flex items-center justify-center shadow-md gap-1 text-xs font-bold"
+                              title="Open Directly on YouTube (VKPDT IT GURU)"
                             >
                               <ExternalLink className="w-3.5 h-3.5" />
+                              <span className="hidden sm:inline">YouTube</span>
                             </a>
 
                             {/* Solve with Rishi AI */}
@@ -2570,14 +2572,34 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                   </div>
 
                   {/* Embedded YouTube Player */}
-                  <div className="aspect-video w-full bg-black">
+                  <div className="aspect-video w-full bg-black relative">
                     <iframe
                       src={activePyqVideoModal.embedUrl || `https://www.youtube.com/embed/${activePyqVideoModal.videoId}?autoplay=1&rel=0`}
                       title={`${activePyqVideoModal.className} ${activePyqVideoModal.subjectName} ${activePyqVideoModal.examLabel}`}
                       className="w-full h-full border-0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
                     />
+                  </div>
+
+                  {/* Playback Helper Banner */}
+                  <div className="px-4 py-2 bg-stone-900 border-t border-stone-800 text-[11px] text-stone-400 flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                      <span>Curated from educator <strong>VKPDT IT GURU DAV</strong> (@VKPDTITGURU)</span>
+                    </div>
+                    <div className="text-stone-400">
+                      If embedded player is restricted by your network, click{' '}
+                      <a
+                        href={activePyqVideoModal.videoUrl || `https://www.youtube.com/watch?v=${activePyqVideoModal.videoId}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-red-400 hover:text-red-300 font-bold underline inline-flex items-center gap-0.5"
+                      >
+                        <span>Open on YouTube</span>
+                        <ExternalLink className="w-2.5 h-2.5" />
+                      </a>
+                    </div>
                   </div>
 
                   {/* Modal Footer Controls */}
@@ -2585,18 +2607,29 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                     <div className="text-stone-300">
                       <span className="font-bold text-white">Full Video Walkthrough:</span> Step-by-step marking rubrics and model solutions analyzed by VKPDT IT GURU DAV.
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (onOpenAIWithQuestion) {
-                          onOpenAIWithQuestion(`Please solve all questions from DAV Class ${activePyqVideoModal.classId} ${activePyqVideoModal.subjectName} ${activePyqVideoModal.examLabel} (${activePyqVideoModal.year}) paper with detailed step-by-step marking rubrics as analyzed by educator VKPDT IT GURU DAV.`);
-                        }
-                      }}
-                      className="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-black flex items-center gap-1.5 cursor-pointer shadow-md transition"
-                    >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>Solve with Rishi AI</span>
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <a
+                        href={activePyqVideoModal.videoUrl || `https://www.youtube.com/watch?v=${activePyqVideoModal.videoId}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-3.5 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black flex items-center gap-1.5 cursor-pointer shadow-md transition"
+                      >
+                        <Play className="w-3.5 h-3.5 fill-current" />
+                        <span>Watch on YouTube</span>
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (onOpenAIWithQuestion) {
+                            onOpenAIWithQuestion(`Please solve all questions from DAV Class ${activePyqVideoModal.classId} ${activePyqVideoModal.subjectName} ${activePyqVideoModal.examLabel} (${activePyqVideoModal.year}) paper with detailed step-by-step marking rubrics as analyzed by educator VKPDT IT GURU DAV.`);
+                          }
+                        }}
+                        className="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-black flex items-center gap-1.5 cursor-pointer shadow-md transition"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>Solve with Rishi AI</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
