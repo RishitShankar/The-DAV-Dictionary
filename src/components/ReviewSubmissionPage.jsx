@@ -20,9 +20,12 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
   // Voice Writing (Speech-to-Text / Dictation)
   const [isDictating, setIsDictating] = useState(false);
   const [dictationSupported, setDictationSupported] = useState(true);
+  const [dictationLang, setDictationLang] = useState('en-IN'); // 'en-IN' | 'hi-IN'
+  const dictationLangRef = useRef('en-IN');
   const recognitionRef = useRef(null);
   const baseTextRef = useRef('');
   const isDictatingRef = useRef(false);
+  const restartTimeoutRef = useRef(null);
 
   // Voice Review (High-Definition Audio Recording with MediaRecorder)
   const [isRecordingAudio, setIsRecordingAudio] = useState(false);
@@ -81,7 +84,22 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
     }
   };
 
-  // 2. Setup SpeechRecognition (Voice Writing with Zero Word Duplication)
+  // Change dictation language (English 'en-IN' vs Hindi 'hi-IN')
+  const handleSetDictationLang = (newLang) => {
+    setDictationLang(newLang);
+    dictationLangRef.current = newLang;
+    if (recognitionRef.current) {
+      recognitionRef.current.lang = newLang;
+      // Seamlessly restart with the new language if already speaking
+      if (isDictatingRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch (e) {}
+      }
+    }
+  };
+
+  // 2. Setup SpeechRecognition (Continuous Infinite Voice Writing with Zero Word Duplication)
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -93,7 +111,7 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
       const recognition = new SpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
-      recognition.lang = 'en-IN'; // Indian English pronunciation friendly for DAV students
+      recognition.lang = dictationLangRef.current || 'en-IN';
 
       recognition.onresult = (event) => {
         let finalChunk = '';
@@ -111,13 +129,13 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
 
         // When words are finalized, permanently append them to baseTextRef
         if (finalChunk.trim()) {
-          const prev = baseTextRef.current.trim();
+          const prev = baseTextRef.current ? baseTextRef.current.trim() : '';
           const added = finalChunk.trim();
           baseTextRef.current = prev ? `${prev} ${added}` : added;
         }
 
         // Current text preview = base finalized text + current live interim words
-        const base = baseTextRef.current.trim();
+        const base = baseTextRef.current ? baseTextRef.current.trim() : '';
         const interim = interimChunk.trim();
         const currentFull = (base && interim) ? `${base} ${interim}` : (base || interim);
 
@@ -130,21 +148,37 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
       };
 
       recognition.onerror = (e) => {
-        console.warn('Speech recognition status:', e.error);
+        console.warn('Speech recognition status notice:', e.error);
+        // Only terminate dictation if user permanently blocked or denied microphone
         if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
           setIsDictating(false);
           isDictatingRef.current = false;
         }
+        // Notice: 'no-speech', 'network', 'audio-capture' are recoverable and will auto-reconnect via onend
       };
 
       recognition.onend = () => {
+        // Continuous Voice Flow: Automatically restart session if user hasn't pressed stop
         if (isDictatingRef.current) {
-          try {
-            recognition.start();
-          } catch (err) {
-            setIsDictating(false);
-            isDictatingRef.current = false;
-          }
+          if (restartTimeoutRef.current) clearTimeout(restartTimeoutRef.current);
+          restartTimeoutRef.current = setTimeout(() => {
+            if (isDictatingRef.current && recognitionRef.current) {
+              try {
+                recognitionRef.current.lang = dictationLangRef.current || 'en-IN';
+                recognitionRef.current.start();
+              } catch (err) {
+                // If audio pipe was busy releasing, retry after 200ms
+                setTimeout(() => {
+                  if (isDictatingRef.current && recognitionRef.current) {
+                    try {
+                      recognitionRef.current.lang = dictationLangRef.current || 'en-IN';
+                      recognitionRef.current.start();
+                    } catch (e2) {}
+                  }
+                }, 200);
+              }
+            }
+          }, 80);
         } else {
           setIsDictating(false);
         }
@@ -157,11 +191,32 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
 
     return () => {
       isDictatingRef.current = false;
+      if (restartTimeoutRef.current) clearTimeout(restartTimeoutRef.current);
       if (recognitionRef.current) {
         try { recognitionRef.current.stop(); } catch (e) {}
       }
     };
   }, []);
+
+  // Watchdog Keep-Alive: Ensures continuous dictation never dies or drops silently
+  useEffect(() => {
+    let watchdog = null;
+    if (isDictating) {
+      watchdog = setInterval(() => {
+        if (isDictatingRef.current && recognitionRef.current) {
+          try {
+            recognitionRef.current.lang = dictationLangRef.current || 'en-IN';
+            recognitionRef.current.start();
+          } catch (e) {
+            // Already active and capturing speech
+          }
+        }
+      }, 3500);
+    }
+    return () => {
+      if (watchdog) clearInterval(watchdog);
+    };
+  }, [isDictating]);
 
   const toggleVoiceWriting = () => {
     if (!recognitionRef.current) {
@@ -171,6 +226,7 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
 
     if (isDictating) {
       isDictatingRef.current = false;
+      if (restartTimeoutRef.current) clearTimeout(restartTimeoutRef.current);
       try {
         recognitionRef.current.stop();
       } catch (e) {}
@@ -180,15 +236,17 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
       baseTextRef.current = reviewText.trim();
       isDictatingRef.current = true;
       try {
+        recognitionRef.current.lang = dictationLangRef.current || 'en-IN';
         recognitionRef.current.start();
         setIsDictating(true);
         if (errorMessage) setErrorMessage('');
       } catch (e) {
-        console.warn('Restarting speech recognition:', e);
+        console.warn('Restarting speech recognition instance:', e);
         try {
           recognitionRef.current.stop();
           setTimeout(() => {
             try {
+              recognitionRef.current.lang = dictationLangRef.current || 'en-IN';
               recognitionRef.current.start();
               setIsDictating(true);
             } catch (err2) {
@@ -526,6 +584,32 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
                 {currentWords} / {MAX_WORD_LIMIT} words used • <strong>{Math.max(0, wordsLeft)} words left</strong>
               </span>
 
+              {/* Dictation Language Switcher: English vs Hindi */}
+              {dictationSupported && (
+                <div className="flex items-center rounded-full bg-amber-100/90 border border-amber-300 p-0.5 text-[11px] font-bold">
+                  <button
+                    type="button"
+                    onClick={() => handleSetDictationLang('en-IN')}
+                    className={`px-2 py-0.5 rounded-full transition cursor-pointer ${
+                      dictationLang === 'en-IN' ? 'bg-amber-700 text-white shadow-xs font-black' : 'text-amber-900 hover:bg-amber-200'
+                    }`}
+                    title="Speak in English (India)"
+                  >
+                    EN
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSetDictationLang('hi-IN')}
+                    className={`px-2 py-0.5 rounded-full transition cursor-pointer ${
+                      dictationLang === 'hi-IN' ? 'bg-amber-700 text-white shadow-xs font-black' : 'text-amber-900 hover:bg-amber-200'
+                    }`}
+                    title="हिन्दी (Hindi) में बोलें"
+                  >
+                    हिन्दी
+                  </button>
+                </div>
+              )}
+
               {/* Voice Writing (Speech-to-Text) Toggle */}
               {dictationSupported && (
                 <button
@@ -536,17 +620,17 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
                       ? 'bg-rose-600 text-white animate-pulse' 
                       : 'bg-amber-100 text-amber-900 hover:bg-amber-200 border border-amber-300'
                   }`}
-                  title={isDictating ? 'Click to stop voice writing' : 'Click to speak and write automatically'}
+                  title={isDictating ? 'Click to stop continuous voice writing' : `Click to speak continuously in ${dictationLang === 'hi-IN' ? 'Hindi' : 'English'}`}
                 >
                   {isDictating ? (
                     <>
                       <MicOff className="w-3.5 h-3.5 text-white" />
-                      <span>Listening... (Stop)</span>
+                      <span>Listening ({dictationLang === 'hi-IN' ? 'हिन्दी' : 'English'})... (Stop)</span>
                     </>
                   ) : (
                     <>
                       <Mic className="w-3.5 h-3.5 text-amber-800" />
-                      <span>🎙️ Voice Writing (Dictate)</span>
+                      <span>🎙️ Continuous Voice Writing ({dictationLang === 'hi-IN' ? 'हिन्दी' : 'EN'})</span>
                     </>
                   )}
                 </button>
@@ -559,14 +643,25 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
               rows={6}
               value={reviewText}
               onChange={handleTextChange}
-              placeholder="Write your honest review, feedback, suggestions, or words of encouragement for developer Rishit Shankar here... As you type or speak, the system automatically detects words left in real-time."
+              placeholder={
+                dictationLang === 'hi-IN'
+                  ? 'अपना रिव्यू या सुझाव यहाँ लिखें या बोलें... continuous voice writing सक्रिय है, आप हिन्दी या इंग्लिश में जितनी देर चाहें लगातार बोल सकते हैं।'
+                  : 'Write your honest review, feedback, suggestions, or words of encouragement for developer Rishit Shankar here... Continuous voice writing is active, speak as long as you want without interruption.'
+              }
               className="w-full p-4 rounded-2xl border border-slate-300 text-slate-800 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 bg-slate-50/50"
             />
             
             {isDictating && (
-              <div className="absolute bottom-3 right-3 flex items-center gap-1.5 bg-rose-600/95 text-white px-3 py-1 rounded-lg text-xs font-bold shadow-lg animate-pulse">
-                <span className="w-2 h-2 rounded-full bg-white animate-ping" />
-                <span>Microphone active • Speak your thoughts</span>
+              <div className="absolute bottom-3 right-3 flex items-center gap-2 bg-rose-600/95 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-xl animate-pulse">
+                <span className="w-2.5 h-2.5 rounded-full bg-white animate-ping" />
+                <span>Continuous Flow Active ({dictationLang === 'hi-IN' ? 'हिन्दी' : 'English'}) • Keep Speaking</span>
+                <button
+                  type="button"
+                  onClick={toggleVoiceWriting}
+                  className="ml-1 px-2 py-0.5 rounded-md bg-white text-rose-800 text-[11px] font-black hover:bg-rose-50 cursor-pointer shadow-xs"
+                >
+                  Done
+                </button>
               </div>
             )}
           </div>
