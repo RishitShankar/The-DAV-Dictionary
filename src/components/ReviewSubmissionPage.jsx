@@ -21,11 +21,14 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
   const [isDictating, setIsDictating] = useState(false);
   const [dictationSupported, setDictationSupported] = useState(true);
   const recognitionRef = useRef(null);
+  const baseTextRef = useRef('');
+  const isDictatingRef = useRef(false);
 
-  // Voice Review (Audio Recording with MediaRecorder)
+  // Voice Review (High-Definition Audio Recording with MediaRecorder)
   const [isRecordingAudio, setIsRecordingAudio] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [recordedAudioUrl, setRecordedAudioUrl] = useState(null);
+  const [recordedAudioDataUrl, setRecordedAudioDataUrl] = useState(null);
   const [recordedAudioBlob, setRecordedAudioBlob] = useState(null);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const mediaRecorderRef = useRef(null);
@@ -62,12 +65,15 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
   // Handle textarea change with strict word clamp
   const handleTextChange = (e) => {
     const newText = e.target.value;
+    baseTextRef.current = newText;
     const wordCount = countWords(newText);
     
     if (wordCount > MAX_WORD_LIMIT) {
       // Trim to MAX_WORD_LIMIT words
       const words = newText.trim().split(/\s+/).slice(0, MAX_WORD_LIMIT);
-      setReviewText(words.join(' '));
+      const clamped = words.join(' ');
+      setReviewText(clamped);
+      baseTextRef.current = clamped;
       setErrorMessage(`Maximum word limit of ${MAX_WORD_LIMIT} words reached.`);
     } else {
       setReviewText(newText);
@@ -75,7 +81,7 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
     }
   };
 
-  // 2. Setup SpeechRecognition (Voice Writing)
+  // 2. Setup SpeechRecognition (Voice Writing with Zero Word Duplication)
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -90,30 +96,58 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
       recognition.lang = 'en-IN'; // Indian English pronunciation friendly for DAV students
 
       recognition.onresult = (event) => {
-        let transcript = '';
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript;
+        let finalChunk = '';
+        let interimChunk = '';
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const item = event.results[i];
+          const transcriptText = item[0]?.transcript || '';
+          if (item.isFinal) {
+            finalChunk += transcriptText;
+          } else {
+            interimChunk += transcriptText;
+          }
         }
 
-        if (transcript.trim()) {
-          setReviewText((prev) => {
-            const combined = prev ? `${prev} ${transcript.trim()}` : transcript.trim();
-            const words = countWords(combined);
-            if (words > MAX_WORD_LIMIT) {
-              return combined.trim().split(/\s+/).slice(0, MAX_WORD_LIMIT).join(' ');
-            }
-            return combined;
-          });
+        // When words are finalized, permanently append them to baseTextRef
+        if (finalChunk.trim()) {
+          const prev = baseTextRef.current.trim();
+          const added = finalChunk.trim();
+          baseTextRef.current = prev ? `${prev} ${added}` : added;
+        }
+
+        // Current text preview = base finalized text + current live interim words
+        const base = baseTextRef.current.trim();
+        const interim = interimChunk.trim();
+        const currentFull = (base && interim) ? `${base} ${interim}` : (base || interim);
+
+        const words = countWords(currentFull);
+        if (words > MAX_WORD_LIMIT) {
+          setReviewText(currentFull.trim().split(/\s+/).slice(0, MAX_WORD_LIMIT).join(' '));
+        } else {
+          setReviewText(currentFull);
         }
       };
 
       recognition.onerror = (e) => {
-        console.warn('Speech recognition error:', e.error);
-        setIsDictating(false);
+        console.warn('Speech recognition status:', e.error);
+        if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+          setIsDictating(false);
+          isDictatingRef.current = false;
+        }
       };
 
       recognition.onend = () => {
-        setIsDictating(false);
+        if (isDictatingRef.current) {
+          try {
+            recognition.start();
+          } catch (err) {
+            setIsDictating(false);
+            isDictatingRef.current = false;
+          }
+        } else {
+          setIsDictating(false);
+        }
       };
 
       recognitionRef.current = recognition;
@@ -122,6 +156,7 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
     }
 
     return () => {
+      isDictatingRef.current = false;
       if (recognitionRef.current) {
         try { recognitionRef.current.stop(); } catch (e) {}
       }
@@ -135,51 +170,127 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
     }
 
     if (isDictating) {
+      isDictatingRef.current = false;
       try {
         recognitionRef.current.stop();
       } catch (e) {}
       setIsDictating(false);
     } else {
+      // Synchronize base text with whatever is currently in reviewText
+      baseTextRef.current = reviewText.trim();
+      isDictatingRef.current = true;
       try {
         recognitionRef.current.start();
         setIsDictating(true);
         if (errorMessage) setErrorMessage('');
       } catch (e) {
-        console.warn('Failed to start speech recognition:', e);
+        console.warn('Restarting speech recognition:', e);
+        try {
+          recognitionRef.current.stop();
+          setTimeout(() => {
+            try {
+              recognitionRef.current.start();
+              setIsDictating(true);
+            } catch (err2) {
+              setIsDictating(false);
+              isDictatingRef.current = false;
+            }
+          }, 150);
+        } catch (err) {
+          setIsDictating(false);
+          isDictatingRef.current = false;
+        }
       }
     }
   };
 
-  // 3. Audio Recording (Voice Review) using MediaRecorder
+  // 3. Audio Recording (Voice Review) using High-Definition MediaRecorder
   const startAudioRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // High-Definition Studio Audio Capture
+      let stream = null;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            channelCount: 1, // Mono voice capture avoids acoustic phase cancellation
+            sampleRate: 48000, // 48kHz HD sample rate
+            sampleSize: 16,
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          }
+        });
+      } catch (e1) {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+              noiseSuppression: true,
+              autoGainControl: true
+            }
+          });
+        } catch (e2) {
+          stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        }
+      }
+
       audioChunksRef.current = [];
-      const mediaRecorder = new MediaRecorder(stream);
+
+      // Detect highest quality supported audio MIME type
+      const mimeCandidates = [
+        'audio/webm;codecs=opus',
+        'audio/webm',
+        'audio/mp4',
+        'audio/ogg;codecs=opus',
+        'audio/aac'
+      ];
+      let chosenMime = '';
+      for (const m of mimeCandidates) {
+        if (typeof MediaRecorder.isTypeSupported === 'function' && MediaRecorder.isTypeSupported(m)) {
+          chosenMime = m;
+          break;
+        }
+      }
+
+      const recorderOptions = {
+        audioBitsPerSecond: 160000 // 160 kbps pristine audio clarity
+      };
+      if (chosenMime) {
+        recorderOptions.mimeType = chosenMime;
+      }
+
+      const mediaRecorder = new MediaRecorder(stream, recorderOptions);
 
       mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
+        if (event.data && event.data.size > 0) {
           audioChunksRef.current.push(event.data);
         }
       };
 
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const finalType = chosenMime || 'audio/webm';
+        const audioBlob = new Blob(audioChunksRef.current, { type: finalType });
+        const objectUrl = URL.createObjectURL(audioBlob);
+        
+        setRecordedAudioBlob(audioBlob);
+        setRecordedAudioUrl(objectUrl);
+
+        // Convert to dataUrl for persistence & cloud submission
         const reader = new FileReader();
-        reader.readAsDataURL(audioBlob);
         reader.onloadend = () => {
-          setRecordedAudioUrl(reader.result);
-          setRecordedAudioBlob(audioBlob);
+          setRecordedAudioDataUrl(reader.result);
         };
-        // Stop all tracks to release mic
+        reader.readAsDataURL(audioBlob);
+
+        // Stop all tracks to release hardware mic
         stream.getTracks().forEach(track => track.stop());
       };
 
       mediaRecorderRef.current = mediaRecorder;
-      mediaRecorder.start();
+      mediaRecorder.start(250); // 250ms chunks for smooth recording & clean audio headers
       setIsRecordingAudio(true);
       setRecordingSeconds(0);
 
+      if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
       recordingTimerRef.current = setInterval(() => {
         setRecordingSeconds(prev => prev + 1);
       }, 1000);
@@ -197,7 +308,11 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
   };
 
   const deleteRecordedAudio = () => {
+    if (recordedAudioUrl && recordedAudioUrl.startsWith('blob:')) {
+      try { URL.revokeObjectURL(recordedAudioUrl); } catch (e) {}
+    }
     setRecordedAudioUrl(null);
+    setRecordedAudioDataUrl(null);
     setRecordedAudioBlob(null);
     setRecordingSeconds(0);
     setIsPlayingAudio(false);
@@ -280,7 +395,7 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
       wordCount: currentWords,
       // If user clicked a star: 1..5. If no star clicked / skipped: null (will display "nothing")
       rating: selectedStars,
-      voiceAudioUrl: recordedAudioUrl || null,
+      voiceAudioUrl: recordedAudioDataUrl || recordedAudioUrl || null,
       voiceAudioName: recordedAudioUrl ? `voice_review_${studentName.replace(/\s+/g, '_')}.webm` : null,
       videoUrl: attachedFiles.find(a => a.kind === 'video')?.dataUrl || null,
       videoName: attachedFiles.find(a => a.kind === 'video')?.name || null,
@@ -298,6 +413,7 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
       // Reset form
       setReviewText('');
       setRecordedAudioUrl(null);
+      setRecordedAudioDataUrl(null);
       setRecordedAudioBlob(null);
       setAttachedFiles([]);
       setSelectedStars(null);
@@ -470,7 +586,7 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
             </div>
 
             {/* Recording Controls */}
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2.5">
               {!isRecordingAudio && !recordedAudioUrl && (
                 <button
                   type="button"
@@ -478,7 +594,7 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
                   className="px-4 py-2 rounded-xl bg-gradient-to-r from-red-700 to-rose-700 hover:from-red-600 hover:to-rose-600 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition cursor-pointer"
                 >
                   <Mic className="w-4 h-4" />
-                  <span>Start Voice Recording</span>
+                  <span>Start Voice Recording (HD 48kHz)</span>
                 </button>
               )}
 
@@ -489,36 +605,40 @@ export function ReviewSubmissionPage({ currentUser, onSwitchToDonate }) {
                   className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-2 shadow-md animate-pulse cursor-pointer"
                 >
                   <span className="w-2.5 h-2.5 rounded-full bg-white animate-ping" />
-                  <span>Stop Recording ({recordingSeconds}s)</span>
+                  <span>Stop Recording ({recordingSeconds}s) • High Quality HD</span>
                 </button>
               )}
 
               {recordedAudioUrl && (
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 bg-white/80 p-2 rounded-xl border border-amber-300 shadow-xs">
                   <button
                     type="button"
                     onClick={togglePlayAudio}
-                    className="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition cursor-pointer"
+                    className="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition cursor-pointer"
                   >
                     {isPlayingAudio ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
                     <span>{isPlayingAudio ? 'Pause Voice' : 'Play Voice Note'}</span>
                   </button>
 
+                  {/* Native HTML5 Audio Controls for Crystal Clear HD Playback & Volume Control */}
+                  <audio
+                    ref={audioPlayerRef}
+                    src={recordedAudioUrl}
+                    controls
+                    onPlay={() => setIsPlayingAudio(true)}
+                    onPause={() => setIsPlayingAudio(false)}
+                    onEnded={() => setIsPlayingAudio(false)}
+                    className="h-8 w-44 sm:w-56"
+                  />
+
                   <button
                     type="button"
                     onClick={deleteRecordedAudio}
-                    className="p-1.5 rounded-xl bg-slate-200 hover:bg-rose-100 text-slate-700 hover:text-rose-700 transition cursor-pointer"
+                    className="p-1.5 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 transition cursor-pointer"
                     title="Delete and re-record voice note"
                   >
                     <RotateCcw className="w-4 h-4" />
                   </button>
-
-                  <audio
-                    ref={audioPlayerRef}
-                    src={recordedAudioUrl}
-                    onEnded={() => setIsPlayingAudio(false)}
-                    className="hidden"
-                  />
                 </div>
               )}
             </div>
