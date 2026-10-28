@@ -454,7 +454,7 @@ export function BookLibrary({
           return (
             <div
               key={sub.id}
-              className={`bg-white rounded-3xl border-2 ${art.neonBorder || 'border-amber-500/60'} ${art.neonGlow || 'hover:shadow-2xl'} overflow-hidden shadow-md transition-all duration-300 transform hover:-translate-y-2.5 hover:scale-[1.015] flex flex-col justify-between group relative card-real-3d animate-anti-gravity`}
+              className={`bg-white rounded-3xl border-2 ${art.neonBorder || 'border-amber-500/60'} ${art.neonGlow || 'hover:shadow-2xl'} overflow-hidden shadow-md transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between group relative card-real-3d animate-anti-gravity`}
             >
               {/* Top Accent Stripe */}
               <div className={`h-1.5 w-full bg-gradient-to-r ${sub.color}`} />
@@ -525,7 +525,7 @@ export function BookLibrary({
                         {/* Bottom: Interactive Hover Indicator Pill */}
                         <div className="pl-3 relative z-10">
                           <div className="w-full py-1 rounded-lg bg-black/60 border border-amber-400/40 text-[9px] font-black uppercase text-amber-300 text-center tracking-wider shadow-inner group-hover/book:bg-amber-400 group-hover/book:text-stone-950 transition-colors">
-                            Open PDF 📖
+                            Click to Read 📖
                           </div>
                         </div>
 
@@ -605,7 +605,7 @@ export function BookLibrary({
               </div>
 
               {/* =================================================================== */}
-              {/* ACTION BUTTON: OPEN PDF BOOK                                        */}
+              {/* ACTION BUTTON: BIG, BOLD "OPEN PDF BOOK" ONLY (Brain icon removed)  */}
               {/* =================================================================== */}
               <div className="p-5 pt-0">
                 <button
