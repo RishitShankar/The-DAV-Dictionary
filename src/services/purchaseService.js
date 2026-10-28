@@ -1,5 +1,6 @@
 import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
 import { saveCloudStudent } from './supabaseClient';
+import { safeSetUser } from '../utils/safeStorage';
 
 const PURCHASES_STORAGE_KEY = 'dav_pending_purchases';
 
@@ -187,7 +188,7 @@ export async function verifyAndApprovePurchase(purchaseId, adminName = 'Rishit S
           trialEnded: true,
           subscriptionStatus: 'active'
         };
-        localStorage.setItem('dav_user', JSON.stringify(refreshedUser));
+        safeSetUser(refreshedUser);
         window.dispatchEvent(new CustomEvent('dav_user_plan_updated', { detail: refreshedUser }));
       }
     }

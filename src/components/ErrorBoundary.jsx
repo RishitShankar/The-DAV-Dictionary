@@ -1,5 +1,6 @@
 import React from 'react';
 import { AlertTriangle, RefreshCw, Home, Trash2 } from 'lucide-react';
+import { isQuotaExceededError, cleanupExpendableStorage, sanitizeUserForStorage } from '../utils/safeStorage';
 
 export class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -13,9 +14,22 @@ export class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    if (isQuotaExceededError(error)) {
+      // Auto-heal storage quota: clear heavy expendable items & sanitize dav_user
+      cleanupExpendableStorage();
+      try {
+        const raw = localStorage.getItem('dav_user');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          const sanitized = sanitizeUserForStorage(parsed);
+          localStorage.setItem('dav_user', JSON.stringify(sanitized));
+        }
+      } catch (e) {}
+    }
   }
 
   handleReload = () => {
+    cleanupExpendableStorage();
     this.setState({ hasError: false, error: null });
     try {
       sessionStorage.clear();
@@ -25,12 +39,13 @@ export class ErrorBoundary extends React.Component {
   };
 
   handleResetState = () => {
-    // Try clearing error in React state directly without page reload
+    cleanupExpendableStorage();
     this.setState({ hasError: false, error: null });
   };
 
   handleCleanRecover = () => {
     try {
+      cleanupExpendableStorage();
       localStorage.removeItem('dav_user');
       localStorage.removeItem('dav_teacher_sub_dim');
       sessionStorage.clear();

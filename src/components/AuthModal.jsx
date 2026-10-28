@@ -8,6 +8,7 @@ import { saveCloudStudent } from '../services/supabaseClient';
 import { checkDeviceSession, registerDeviceSession } from '../services/deviceAuthManager';
 import { GoogleIcon } from './GoogleIcon';
 import { GoogleAuthModal } from './GoogleAuthModal';
+import { compressImageFile } from '../utils/safeStorage';
 
 export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGuide, onGoToSection }) {
   const [isRegister, setIsRegister] = useState(false);
@@ -346,14 +347,15 @@ export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGu
                         accept="image/*"
                         id="auth-teacher-dp-upload"
                         className="hidden"
-                        onChange={(e) => {
+                        onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (file) {
-                            const reader = new FileReader();
-                            reader.onload = (ev) => {
-                              setTeacherDp(ev.target.result);
-                            };
-                            reader.readAsDataURL(file);
+                            try {
+                              const compressed = await compressImageFile(file, 256, 0.8);
+                              if (compressed) setTeacherDp(compressed);
+                            } catch (err) {
+                              console.warn('Teacher DP compression failed:', err);
+                            }
                           }
                         }}
                       />

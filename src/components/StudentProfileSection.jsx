@@ -7,6 +7,7 @@ import {
 import { updateCloudPassword } from '../services/supabaseClient';
 import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
 import { getDeviceMetadata } from '../services/deviceAuthManager';
+import { safeSetItem, compressImageFile } from '../utils/safeStorage';
 
 const PROFILE_STORAGE_KEY = 'dav_student_personal_profile';
 
@@ -143,41 +144,38 @@ export function StudentProfileSection({ user, onLogout }) {
   const handleChange = (field, value) => {
     setProfile(prev => {
       const updated = { ...prev, [field]: value };
-      // Save continuously to localStorage for 100% persistence on refresh
-      try {
-        localStorage.setItem(storageKey, JSON.stringify(updated));
-      } catch (err) {
-        console.warn('Storage error:', err);
-      }
+      safeSetItem(storageKey, JSON.stringify(updated));
       return updated;
     });
   };
 
-  const handlePhotoUpload = (e) => {
+  const handlePhotoUpload = async (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64Data = reader.result;
-        setPhotoPreview(base64Data);
-        handleChange('photoUrl', base64Data);
-        // Instant synchronization with Navbar and site-wide mini-profile
-        window.dispatchEvent(new CustomEvent('dav_profile_photo_updated', {
-          detail: { photoUrl: base64Data, userId: currentUserId }
-        }));
-      };
-      reader.readAsDataURL(file);
+      try {
+        const compressedBase64 = await compressImageFile(file, 256, 0.8);
+        if (compressedBase64) {
+          setPhotoPreview(compressedBase64);
+          handleChange('photoUrl', compressedBase64);
+          // Instant synchronization with Navbar and site-wide mini-profile
+          window.dispatchEvent(new CustomEvent('dav_profile_photo_updated', {
+            detail: { photoUrl: compressedBase64, userId: currentUserId }
+          }));
+        }
+      } catch (err) {
+        console.warn('Failed to compress uploaded photo:', err);
+      }
     }
   };
 
   const handleManualSave = (e) => {
     e.preventDefault();
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(profile));
+    const success = safeSetItem(storageKey, JSON.stringify(profile));
+    if (success) {
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 2500);
-    } catch (err) {
-      alert('Photo size is too large for browser storage. Please choose a smaller photo.');
+    } else {
+      alert('Browser storage is full. Non-essential cache was cleared, please try saving again.');
     }
   };
 

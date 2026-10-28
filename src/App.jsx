@@ -35,6 +35,7 @@ import { registerDeviceSession, releaseDeviceSession, startDeviceGuard, getDevic
 import { ShieldAlert } from 'lucide-react';
 import { getSupabaseClient } from './services/supabaseClient';
 import { findUserByGoogleEmail, createStudentWithGoogle } from './services/googleAuthService';
+import { safeSetUser, safeSetItem } from './utils/safeStorage';
 
 export function App() {
   const [activeSection, setActiveSection] = useState(1);
@@ -130,15 +131,11 @@ export function App() {
   const [remoteLogoutNotice, setRemoteLogoutNotice] = useState(null);
 
   useEffect(() => {
-    if (user && user.plan !== 'guest') {
-      localStorage.setItem('dav_user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('dav_user');
-    }
+    safeSetUser(user);
   }, [user]);
 
   useEffect(() => {
-    localStorage.setItem('dav_uploaded_pdfs', JSON.stringify(uploadedPdfs));
+    safeSetItem('dav_uploaded_pdfs', JSON.stringify(uploadedPdfs));
   }, [uploadedPdfs]);
 
   // Real-time Single Device Session Guard: Listen for remote logout or login on another device
@@ -152,7 +149,7 @@ export function App() {
       // User was logged out because another device logged in or remote logout occurred
       setUser(null);
       setViewMode('home');
-      localStorage.removeItem('dav_user');
+      try { localStorage.removeItem('dav_user'); } catch (e) {}
       setRemoteLogoutNotice(event);
     });
 
@@ -170,10 +167,11 @@ export function App() {
     };
     const handleUserUpdate = (e) => {
       if (e?.detail) {
-        setUser(prev => ({ ...prev, ...e.detail }));
-        try {
-          localStorage.setItem('dav_user', JSON.stringify({ ...(user || {}), ...e.detail }));
-        } catch (err) {}
+        setUser(prev => {
+          const updated = { ...(prev || {}), ...e.detail };
+          safeSetUser(updated);
+          return updated;
+        });
       }
     };
     const handlePhotoUpdate = (e) => {
@@ -182,9 +180,7 @@ export function App() {
         setUser(prev => {
           if (!prev) return prev;
           const updated = { ...prev, dp: photo, avatar: photo, photoUrl: photo };
-          try {
-            localStorage.setItem('dav_user', JSON.stringify(updated));
-          } catch (err) {}
+          safeSetUser(updated);
           return updated;
         });
       }

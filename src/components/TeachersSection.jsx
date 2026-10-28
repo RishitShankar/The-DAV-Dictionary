@@ -19,6 +19,7 @@ import { WhatsAppChannelsModule } from './WhatsAppChannelsModule';
 import { getAllTeachers } from '../data/davTeachers50';
 import { getRegisteredUsers, MASTER_DEVELOPER_ACCOUNT } from '../data/preloadedUsers';
 import { askRishiAI } from '../services/geminiService';
+import { safeSetUser, safeSetItem } from '../utils/safeStorage';
 
 // Helper to compress uploaded images to lightweight data URLs (avoids 5MB localStorage quota limit)
 const compressImageToDataUrl = (file, maxDim = 256, quality = 0.82) => {
@@ -1308,9 +1309,9 @@ export function TeachersSection({
     setStatusBio(bioToSave);
     try {
       const uid = String(user?.id || 'me').toLowerCase();
-      localStorage.setItem('dav_status_bio_' + uid, bioToSave);
+      safeSetItem('dav_status_bio_' + uid, bioToSave);
       const updatedUser = { ...(user || {}), bio: bioToSave };
-      localStorage.setItem('dav_user', JSON.stringify(updatedUser));
+      safeSetUser(updatedUser);
       if (typeof saveCloudStudent === 'function') {
         saveCloudStudent(updatedUser).catch(() => {});
       }
@@ -2702,9 +2703,9 @@ export function TeachersSection({
         updatedUser.subject = cleanSubject;
         updatedUser.department = cleanSubject;
       }
-      localStorage.setItem('dav_user', JSON.stringify(updatedUser));
-      localStorage.setItem(`dav_student_profile_${uid}`, JSON.stringify(updatedUser));
-      localStorage.setItem(`dav_status_bio_${uid}`, cleanBio);
+      safeSetUser(updatedUser);
+      safeSetItem(`dav_student_profile_${uid}`, JSON.stringify(updatedUser));
+      safeSetItem(`dav_status_bio_${uid}`, cleanBio);
 
       // 2. Update user in dav_registered_users
       try {
