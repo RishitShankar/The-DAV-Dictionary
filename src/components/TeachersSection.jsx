@@ -957,6 +957,50 @@ export function TeachersSection({
       const currentId = user?.id?.toLowerCase();
       const currentName = user?.name?.toLowerCase();
 
+      // Unified contact mapper ensuring strict role integrity:
+      // Students have NO teaching department/subject; teachers have verified subject wings.
+      const mapUserToContact = (u, idx) => {
+        const isT = u.dimension === 5 || u.isTeacher || (u.role && u.role.toLowerCase().includes('teacher'));
+        const uid = String(u.id || '').toLowerCase();
+        const uname = String(u.name || '').toLowerCase();
+        let storedBio = null;
+        try {
+          storedBio = localStorage.getItem('dav_status_bio_' + uid) || localStorage.getItem('dav_status_bio_' + uname);
+        } catch (e) {}
+        const finalBio = u.bio || storedBio || (isT ? 'DAV Faculty Academic Consultation Desk' : 'How are you?');
+        const userDp = u.dp || u.avatar || u.photoUrl || u.photoURL || null;
+
+        if (isT) {
+          return {
+            id: u.id || ('tch_' + idx),
+            name: String(u.name || 'Faculty Member').replace(/^Prof\.\s*/i, '').trim(),
+            subtitle: u.subject || 'Faculty Teacher',
+            role: 'Verified DAV Faculty',
+            dp: userDp,
+            status: 'Online',
+            type: 'teacher',
+            dimension: 5,
+            subject: u.subject || 'Science & Technology',
+            department: u.department || u.subject || 'Science & Technology',
+            bio: finalBio
+          };
+        } else {
+          return {
+            id: u.id || ('std_' + idx),
+            name: u.name || u.id || ('Student ' + (idx + 1)),
+            subtitle: 'Class ' + (u.classNum || '8') + '-' + (u.section || 'D') + ' Student',
+            role: u.isAdmin ? 'Master Administrator' : 'DAV Student',
+            dp: userDp,
+            status: 'Online',
+            type: 'student',
+            dimension: u.dimension || 1,
+            classNum: u.classNum || '8',
+            section: u.section || 'D',
+            bio: finalBio
+          };
+        }
+      };
+
       if (isDimension5) {
         // Teacher sees registered students
         const students = allUsers
@@ -965,51 +1009,35 @@ export function TeachersSection({
             const isSelf = (u.id && currentId && u.id.toLowerCase() === currentId) || (u.name && currentName && u.name.toLowerCase() === currentName);
             return !isT && !isSelf;
           })
-          .map((u, idx) => ({
-            id: u.id || `std_${idx}`,
-            name: u.name || u.id || `Student ${idx + 1}`,
-            subtitle: `Class ${u.classNum || '8'}-${u.section || 'D'} Student`,
-            role: 'DAV Student',
-            dp: u.dp || u.avatar || null,
-            status: 'Online',
-            type: 'student',
-            classNum: u.classNum || '8',
-            section: u.section || 'D'
-          }));
+          .map(mapUserToContact);
+
         if (students.length === 0 && MASTER_DEVELOPER_ACCOUNT) {
+          const adm = MASTER_DEVELOPER_ACCOUNT;
           students.push({
-            id: MASTER_DEVELOPER_ACCOUNT.id,
-            name: MASTER_DEVELOPER_ACCOUNT.name,
-            subtitle: `Class ${MASTER_DEVELOPER_ACCOUNT.classNum || '8'}-D Student`,
-            role: 'DAV Student',
-            dp: MASTER_DEVELOPER_ACCOUNT.dp || '/rishit_shankar.jpg',
+            id: adm.id,
+            name: adm.name,
+            subtitle: 'Class ' + (adm.classNum || '8') + '-D Student',
+            role: 'Master Administrator',
+            dp: adm.dp || '/rishit_shankar.jpg',
             status: 'Online',
             type: 'student',
+            dimension: 4,
             classNum: '8',
-            section: 'D'
+            section: 'D',
+            bio: 'How are you?'
           });
         }
         return students;
       } else {
-        // Student sees registered teachers (clean actual names without forced 'Prof.')
-        const teachers = allUsers
+        // Student sees registered teachers + fellow registered students (never self)
+        const contacts = allUsers
           .filter(u => {
-            const isT = u.dimension === 5 || u.isTeacher || (u.role && u.role.toLowerCase().includes('teacher'));
             const isSelf = (u.id && currentId && u.id.toLowerCase() === currentId) || (u.name && currentName && u.name.toLowerCase() === currentName);
-            return isT && !isSelf;
+            return !isSelf;
           })
-          .map((u, idx) => ({
-            id: u.id || `tch_${idx}`,
-            name: String(u.name || 'Faculty Member').replace(/^Prof\.\s*/i, '').trim(),
-            subtitle: u.subject || 'Faculty Teacher',
-            role: 'Verified DAV Faculty',
-            dp: u.dp || u.avatar || null,
-            status: 'Online',
-            type: 'teacher',
-            subject: u.subject || 'Science & Technology'
-          }));
-        // Only real user-registered teachers appear
-        return teachers;
+          .map(mapUserToContact);
+
+        return contacts;
       }
     } catch (e) {
       return [];
@@ -1027,6 +1055,48 @@ export function TeachersSection({
       const currentId = user?.id?.toLowerCase();
       const currentName = user?.name?.toLowerCase();
 
+      const mapUserToContact = (u, idx) => {
+        const isT = u.dimension === 5 || u.isTeacher || (u.role && u.role.toLowerCase().includes('teacher'));
+        const uid = String(u.id || '').toLowerCase();
+        const uname = String(u.name || '').toLowerCase();
+        let storedBio = null;
+        try {
+          storedBio = localStorage.getItem('dav_status_bio_' + uid) || localStorage.getItem('dav_status_bio_' + uname);
+        } catch (e) {}
+        const finalBio = u.bio || storedBio || (isT ? 'DAV Faculty Academic Consultation Desk' : 'How are you?');
+        const userDp = u.dp || u.avatar || u.photoUrl || u.photoURL || null;
+
+        if (isT) {
+          return {
+            id: u.id || ('tch_' + idx),
+            name: String(u.name || 'Faculty Member').replace(/^Prof\.\s*/i, '').trim(),
+            subtitle: u.subject || 'Faculty Teacher',
+            role: 'Verified DAV Faculty',
+            dp: userDp,
+            status: 'Online',
+            type: 'teacher',
+            dimension: 5,
+            subject: u.subject || 'Science & Technology',
+            department: u.department || u.subject || 'Science & Technology',
+            bio: finalBio
+          };
+        } else {
+          return {
+            id: u.id || ('std_' + idx),
+            name: u.name || u.id || ('Student ' + (idx + 1)),
+            subtitle: 'Class ' + (u.classNum || '8') + '-' + (u.section || 'D') + ' Student',
+            role: u.isAdmin ? 'Master Administrator' : 'DAV Student',
+            dp: userDp,
+            status: 'Online',
+            type: 'student',
+            dimension: u.dimension || 1,
+            classNum: u.classNum || '8',
+            section: u.section || 'D',
+            bio: finalBio
+          };
+        }
+      };
+
       if (isDimension5) {
         let students = allUsers
           .filter(u => {
@@ -1034,49 +1104,34 @@ export function TeachersSection({
             const isSelf = (u.id && currentId && u.id.toLowerCase() === currentId) || (u.name && currentName && u.name.toLowerCase() === currentName);
             return !isT && !isSelf;
           })
-          .map((u, idx) => ({
-            id: u.id || `std_${idx}`,
-            name: u.name || u.id || `Student ${idx + 1}`,
-            subtitle: `Class ${u.classNum || '8'}-${u.section || 'D'} Student`,
-            role: 'DAV Student',
-            dp: u.dp || u.avatar || null,
-            status: 'Online',
-            type: 'student',
-            classNum: u.classNum || '8',
-            section: u.section || 'D'
-          }));
+          .map(mapUserToContact);
+
         if (students.length === 0 && MASTER_DEVELOPER_ACCOUNT) {
+          const adm = MASTER_DEVELOPER_ACCOUNT;
           students.push({
-            id: MASTER_DEVELOPER_ACCOUNT.id,
-            name: MASTER_DEVELOPER_ACCOUNT.name,
-            subtitle: `Class ${MASTER_DEVELOPER_ACCOUNT.classNum || '8'}-D Student`,
-            role: 'DAV Student',
-            dp: MASTER_DEVELOPER_ACCOUNT.dp || '/rishit_shankar.jpg',
+            id: adm.id,
+            name: adm.name,
+            subtitle: 'Class ' + (adm.classNum || '8') + '-D Student',
+            role: 'Master Administrator',
+            dp: adm.dp || '/rishit_shankar.jpg',
             status: 'Online',
             type: 'student',
+            dimension: 4,
             classNum: '8',
-            section: 'D'
+            section: 'D',
+            bio: 'How are you?'
           });
         }
         setChatContactsList(students);
       } else {
-        let teachers = allUsers
+        let contacts = allUsers
           .filter(u => {
-            const isT = u.dimension === 5 || u.isTeacher || (u.role && u.role.toLowerCase().includes('teacher'));
             const isSelf = (u.id && currentId && u.id.toLowerCase() === currentId) || (u.name && currentName && u.name.toLowerCase() === currentName);
-            return isT && !isSelf;
+            return !isSelf;
           })
-          .map((u, idx) => ({
-            id: u.id || `tch_${idx}`,
-            name: String(u.name || 'Faculty Member').replace(/^Prof\.\s*/i, '').trim(),
-            subtitle: u.subject || 'Faculty Teacher',
-            role: 'Verified DAV Faculty',
-            dp: u.dp || u.avatar || null,
-            status: 'Online',
-            type: 'teacher',
-            subject: u.subject || 'Science & Technology'
-          }));
-        setChatContactsList(teachers);
+          .map(mapUserToContact);
+
+        setChatContactsList(contacts);
       }
     } catch (e) {}
   };
@@ -1232,6 +1287,10 @@ export function TeachersSection({
     subject: user?.subject || 'Science & Technology',
     dp: user?.dp || user?.avatar || user?.photoUrl || ''
   });
+
+  // Contact Profile Modal State & Full Photo Lightbox
+  const [viewingContactProfile, setViewingContactProfile] = useState(null);
+  const [isEnlargedPhotoOpen, setIsEnlargedPhotoOpen] = useState(false);
 
   // Dedicated Student & Teacher Status Bio state
   const [statusBio, setStatusBio] = useState(() => {
@@ -5007,11 +5066,15 @@ export function TeachersSection({
                         <div className="flex-1 bg-white hidden md:flex flex-col h-full p-6 space-y-4 overflow-y-auto">
                           <div className="flex items-center justify-between">
                             <div>
-                              <h3 className="text-base font-bold text-[#111b21]">Verified Faculty Directory</h3>
-                              <p className="text-xs text-[#667781]">Start direct 1-on-1 consultations with faculty members.</p>
+                              <h3 className="text-base font-bold text-[#111b21]">
+                                {isDimension5 ? 'Verified Students Directory' : 'Verified Faculty & Members Directory'}
+                              </h3>
+                              <p className="text-xs text-[#667781]">
+                                {isDimension5 ? 'View student profiles, status bios, and start direct consultations.' : 'View faculty profiles, status bios, and start 1-on-1 consultations.'}
+                              </p>
                             </div>
                             <span className="px-3 py-1 rounded-full bg-[#f0f2f5] text-[#54656f] text-xs font-bold">
-                              {chatContactsList.length} Teachers
+                              {chatContactsList.length} {isDimension5 ? 'Students' : 'Members'}
                             </span>
                           </div>
 
@@ -5021,28 +5084,47 @@ export function TeachersSection({
                                 key={contact.id}
                                 className="p-3.5 rounded-xl border border-[#d1d7db] bg-white hover:border-[#00a884] transition shadow-xs flex items-center justify-between gap-3"
                               >
-                                <div className="flex items-center gap-3 min-w-0">
-                                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#dfe5e7] to-[#cfd8dc] text-[#111b21] font-bold flex items-center justify-center text-sm shadow-xs shrink-0">
-                                    {contact.name.charAt(0)}
-                                  </div>
-                                  <div className="min-w-0">
-                                    <h4 className="text-xs font-bold text-[#111b21] truncate">{contact.name}</h4>
-                                    <p className="text-[11px] text-[#00a884] font-semibold truncate">{contact.subtitle || 'Available'}</p>
-                                  </div>
-                                </div>
-
                                 <button
                                   type="button"
-                                  onClick={() => {
-                                    handleSelectContact(contact.id);
-                                    setWhatsAppDockView('chats');
-                                    setMobileChatTab('chat');
-                                  }}
-                                  className="px-3 py-1.5 rounded-lg bg-[#00a884] hover:bg-[#008f6f] text-white font-bold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-xs shrink-0"
+                                  onClick={() => setViewingContactProfile(contact)}
+                                  className="flex items-center gap-3 min-w-0 text-left cursor-pointer hover:opacity-85 transition"
+                                  title="Click to view full profile & photo"
                                 >
-                                  <MessageSquare className="w-3.5 h-3.5" />
-                                  <span>Message</span>
+                                  <div className="w-10 h-10 rounded-full overflow-hidden border border-[#d1d7db] bg-gradient-to-br from-[#dfe5e7] to-[#cfd8dc] text-[#111b21] font-bold flex items-center justify-center text-sm shadow-xs shrink-0">
+                                    {contact.dp ? (
+                                      <img src={contact.dp} alt={contact.name} className="w-full h-full object-cover" />
+                                    ) : (
+                                      contact.name.charAt(0)
+                                    )}
+                                  </div>
+                                  <div className="min-w-0">
+                                    <h4 className="text-xs font-bold text-[#111b21] truncate hover:text-[#00a884]">{contact.name}</h4>
+                                    <p className="text-[11px] text-[#00a884] font-semibold truncate">{contact.subtitle || 'Available'}</p>
+                                  </div>
                                 </button>
+
+                                <div className="flex items-center gap-1.5 shrink-0">
+                                  <button
+                                    type="button"
+                                    onClick={() => setViewingContactProfile(contact)}
+                                    className="p-1.5 rounded-lg border border-[#d1d7db] hover:border-[#00a884] hover:bg-[#f0f2f5] text-[#54656f] hover:text-[#00a884] text-xs font-bold transition cursor-pointer"
+                                    title="View Bio & Info"
+                                  >
+                                    <Eye className="w-3.5 h-3.5" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      handleSelectContact(contact.id);
+                                      setWhatsAppDockView('chats');
+                                      setMobileChatTab('chat');
+                                    }}
+                                    className="px-3 py-1.5 rounded-lg bg-[#00a884] hover:bg-[#008f6f] text-white font-bold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                                  >
+                                    <MessageSquare className="w-3.5 h-3.5" />
+                                    <span>Message</span>
+                                  </button>
+                                </div>
                               </div>
                             ))}
                           </div>
@@ -5302,7 +5384,14 @@ export function TeachersSection({
                                   }`}
                                 >
                                   {/* Avatar */}
-                                  <div className="relative shrink-0">
+                                  <div 
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setViewingContactProfile(contact);
+                                    }}
+                                    className="relative shrink-0 cursor-pointer group/avatar hover:scale-105 transition"
+                                    title="Click to view profile & DP"
+                                  >
                                     {contact.dp ? (
                                       <img
                                         src={contact.dp}
@@ -5370,38 +5459,45 @@ export function TeachersSection({
                                 <ChevronLeft className="w-5 h-5" />
                               </button>
                               
-                              <div className="relative">
-                                {activeContact.dp ? (
-                                  <img
-                                    src={activeContact.dp}
-                                    alt={activeContact.name}
-                                    className="w-10 h-10 rounded-full object-cover border border-[#d1d7db]"
-                                  />
-                                ) : (
-                                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#dfe5e7] to-[#cfd8dc] text-[#111b21] font-bold flex items-center justify-center text-sm shadow-xs">
-                                    {activeContact.name.charAt(0)}
-                                  </div>
-                                )}
-                                {isUserOnline(activeContact) && (
-                                  <span className="w-2.5 h-2.5 rounded-full bg-[#25d366] ring-2 ring-white absolute bottom-0 right-0" />
-                                )}
-                              </div>
-
-                              <div>
-                                <h3 className="text-sm font-bold text-[#111b21] flex items-center gap-1.5 leading-tight">
-                                  <span>{activeContact.name}</span>
-                                </h3>
-                                <p className="text-[11px] font-semibold text-[#667781]">
-                                  {isUserOnline(activeContact) ? (
-                                    <span className="text-[#00a884] font-bold flex items-center gap-1.5">
-                                      <span className="w-1.5 h-1.5 rounded-full bg-[#25d366] animate-pulse" />
-                                      online
-                                    </span>
+                              <button
+                                type="button"
+                                onClick={() => setViewingContactProfile(activeContact)}
+                                className="flex items-center gap-3 text-left hover:opacity-85 transition cursor-pointer"
+                                title="Click to view profile & DP"
+                              >
+                                <div className="relative">
+                                  {activeContact.dp ? (
+                                    <img
+                                      src={activeContact.dp}
+                                      alt={activeContact.name}
+                                      className="w-10 h-10 rounded-full object-cover border border-[#d1d7db]"
+                                    />
                                   ) : (
-                                    <span>{formatLastSeenTime(activeContact)}</span>
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#dfe5e7] to-[#cfd8dc] text-[#111b21] font-bold flex items-center justify-center text-sm shadow-xs">
+                                      {activeContact.name.charAt(0)}
+                                    </div>
                                   )}
-                                </p>
-                              </div>
+                                  {isUserOnline(activeContact) && (
+                                    <span className="w-2.5 h-2.5 rounded-full bg-[#25d366] ring-2 ring-white absolute bottom-0 right-0" />
+                                  )}
+                                </div>
+
+                                <div>
+                                  <h3 className="text-sm font-bold text-[#111b21] flex items-center gap-1.5 leading-tight hover:underline">
+                                    <span>{activeContact.name}</span>
+                                  </h3>
+                                  <p className="text-[11px] font-semibold text-[#667781]">
+                                    {isUserOnline(activeContact) ? (
+                                      <span className="text-[#00a884] font-bold flex items-center gap-1.5">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[#25d366] animate-pulse" />
+                                        online
+                                      </span>
+                                    ) : (
+                                      <span>{formatLastSeenTime(activeContact)}</span>
+                                    )}
+                                  </p>
+                                </div>
+                              </button>
                             </div>
 
                             {/* Top Right Actions */}
@@ -5447,7 +5543,11 @@ export function TeachersSection({
                                 <div className="absolute right-0 top-10 w-64 bg-white border border-[#d1d7db] rounded-xl shadow-2xl py-1.5 z-50 text-xs font-bold text-[#111b21] animate-fadeIn">
                                   <button
                                     type="button"
-                                    onClick={() => handleClearAllChat(activeContact)}
+                                    onClick={() => {
+                                        if (window.confirm('Clear chat history with ' + activeContact.name + '? (This cannot be undone)')) {
+                                          handleClearAllChat(activeContact);
+                                        }
+                                      }}
                                     className="w-full px-4 py-2.5 text-left hover:bg-rose-50 text-rose-600 flex items-center gap-2 cursor-pointer transition"
                                   >
                                     <Trash2 className="w-4 h-4 animate-chat-delete-fade" />
@@ -5883,6 +5983,199 @@ export function TeachersSection({
                   </div>
                 )}
 
+
+                {/* WhatsApp-Style Contact Profile & Bio Viewer Modal */}
+                {viewingContactProfile && (
+                  <div className="fixed inset-0 z-[100000] bg-black/80 flex items-center justify-center p-4 backdrop-blur-xs animate-fadeIn">
+                    <div className="w-full max-w-sm sm:max-w-md bg-[#111b21] border border-[#222d34] rounded-3xl shadow-2xl overflow-hidden text-white animate-scaleUp">
+                      
+                      {/* Top Bar */}
+                      <div className="p-4 bg-[#202c33] flex items-center justify-between border-b border-[#222d34]">
+                        <div className="flex items-center gap-2">
+                          <ShieldCheck className="w-5 h-5 text-[#00a884]" />
+                          <h3 className="text-sm font-bold text-white tracking-wide">
+                            {viewingContactProfile.type === 'teacher' ? 'Faculty Profile' : 'Student Profile'}
+                          </h3>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setViewingContactProfile(null);
+                            setIsEnlargedPhotoOpen(false);
+                          }}
+                          className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center text-[#aebac1] hover:text-white transition cursor-pointer"
+                          title="Close"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+
+                      {/* Photo Section */}
+                      <div className="p-6 flex flex-col items-center justify-center bg-gradient-to-b from-[#202c33] to-[#111b21] border-b border-[#222d34]">
+                        <div className="relative group cursor-pointer" onClick={() => setIsEnlargedPhotoOpen(true)} title="Click to enlarge photo">
+                          <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-[#00a884] shadow-2xl bg-gradient-to-br from-[#00a884] to-[#25d366] text-white font-bold flex items-center justify-center text-4xl">
+                            {viewingContactProfile.dp ? (
+                              <img
+                                src={viewingContactProfile.dp}
+                                alt={viewingContactProfile.name}
+                                className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                              />
+                            ) : (
+                              viewingContactProfile.name.charAt(0).toUpperCase()
+                            )}
+                          </div>
+                          {viewingContactProfile.dp && (
+                            <span className="absolute bottom-1 right-1 p-1.5 rounded-full bg-[#00a884] text-white shadow-md opacity-90 group-hover:opacity-100 group-hover:scale-110 transition">
+                              <Maximize2 className="w-4 h-4" />
+                            </span>
+                          )}
+                          {isUserOnline(viewingContactProfile) && (
+                            <span className="w-4 h-4 rounded-full bg-[#25d366] ring-3 ring-[#111b21] absolute top-1 right-2" title="Online" />
+                          )}
+                        </div>
+
+                        <h2 className="text-lg font-bold text-white mt-4 text-center">{viewingContactProfile.name}</h2>
+                        <div className="mt-1 flex items-center gap-2">
+                          <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                            viewingContactProfile.type === 'teacher'
+                              ? 'bg-purple-950 text-purple-300 border border-purple-700'
+                              : 'bg-[#00a884]/20 text-[#25d366] border border-[#00a884]/40'
+                          }`}>
+                            {viewingContactProfile.role || (viewingContactProfile.type === 'teacher' ? 'Verified DAV Faculty' : 'DAV Student')}
+                          </span>
+                          <span className="text-xs text-[#aebac1] font-semibold">
+                            {isUserOnline(viewingContactProfile) ? (
+                              <span className="text-[#00a884] font-bold">online</span>
+                            ) : (
+                              formatLastSeenTime(viewingContactProfile)
+                            )}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Profile Details & Bio Section */}
+                      <div className="p-5 space-y-4 text-xs">
+                        
+                        {/* Status Bio */}
+                        <div className="p-3.5 rounded-2xl bg-[#202c33] border border-[#222d34] space-y-1">
+                          <span className="text-[10px] font-bold text-[#00a884] uppercase tracking-wider block">About / Status Bio</span>
+                          <p className="text-xs text-[#e9edef] font-medium leading-relaxed italic">
+                            "{viewingContactProfile.bio || (typeof localStorage !== 'undefined' ? localStorage.getItem('dav_status_bio_' + String(viewingContactProfile.id).toLowerCase()) : null) || (viewingContactProfile.type === 'teacher' ? 'Available on DAV Faculty Desk' : 'How are you?')}"
+                          </p>
+                        </div>
+
+                        {/* Role-Specific Details (Students NEVER see teaching department) */}
+                        {viewingContactProfile.type === 'teacher' || viewingContactProfile.dimension === 5 ? (
+                          <div className="p-3.5 rounded-2xl bg-[#202c33] border border-purple-900/50 space-y-2">
+                            <span className="text-[10px] font-bold text-purple-300 uppercase tracking-wider block">Faculty Academic Details</span>
+                            <div className="grid grid-cols-2 gap-2 text-[11px]">
+                              <div>
+                                <span className="text-[#8696a0] block">Teaching Subject:</span>
+                                <span className="text-white font-bold">{viewingContactProfile.subject || 'All Subjects'}</span>
+                              </div>
+                              <div>
+                                <span className="text-[#8696a0] block">Department:</span>
+                                <span className="text-white font-bold">{viewingContactProfile.department || viewingContactProfile.subject || 'Academic Wing'}</span>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="p-3.5 rounded-2xl bg-[#202c33] border border-[#00a884]/30 space-y-2">
+                            <span className="text-[10px] font-bold text-[#25d366] uppercase tracking-wider block">Student Academic Details</span>
+                            <div className="grid grid-cols-2 gap-2 text-[11px]">
+                              <div>
+                                <span className="text-[#8696a0] block">Class & Section:</span>
+                                <span className="text-white font-bold">Class {viewingContactProfile.classNum || '8'}-{viewingContactProfile.section || 'D'}</span>
+                              </div>
+                              <div>
+                                <span className="text-[#8696a0] block">Student ID:</span>
+                                <span className="text-white font-bold">{viewingContactProfile.id}</span>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Direct Action Buttons */}
+                        <div className="grid grid-cols-3 gap-2 pt-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleSelectContact(viewingContactProfile.id);
+                              setWhatsAppDockView('chats');
+                              setMobileChatTab('chat');
+                              setViewingContactProfile(null);
+                            }}
+                            className="py-2.5 px-3 rounded-xl bg-[#00a884] hover:bg-[#008f6f] text-white font-bold text-xs flex flex-col items-center justify-center gap-1 shadow-md transition cursor-pointer"
+                          >
+                            <MessageSquare className="w-4 h-4" />
+                            <span>Message</span>
+                          </button>
+                          
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const target = viewingContactProfile;
+                              setViewingContactProfile(null);
+                              handleStartCall(target, 'voice');
+                            }}
+                            className="py-2.5 px-3 rounded-xl bg-[#202c33] hover:bg-[#2a3942] border border-[#222d34] text-white font-bold text-xs flex flex-col items-center justify-center gap-1 shadow-md transition cursor-pointer"
+                          >
+                            <Phone className="w-4 h-4 text-[#00a884]" />
+                            <span>Voice Call</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const target = viewingContactProfile;
+                              setViewingContactProfile(null);
+                              handleStartCall(target, 'video');
+                            }}
+                            className="py-2.5 px-3 rounded-xl bg-[#202c33] hover:bg-[#2a3942] border border-[#222d34] text-white font-bold text-xs flex flex-col items-center justify-center gap-1 shadow-md transition cursor-pointer"
+                          >
+                            <Video className="w-4 h-4 text-[#00a884]" />
+                            <span>Video Call</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Full-Screen Enlarged Profile Photo Lightbox */}
+                {isEnlargedPhotoOpen && viewingContactProfile && (
+                  <div
+                    onClick={() => setIsEnlargedPhotoOpen(false)}
+                    className="fixed inset-0 z-[100010] bg-black/95 flex flex-col items-center justify-center p-4 cursor-pointer animate-fadeIn"
+                  >
+                    <div className="relative max-w-lg w-full flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
+                      <div className="w-full flex items-center justify-between pb-3 text-white">
+                        <span className="text-sm font-bold">{viewingContactProfile.name} - Profile Picture</span>
+                        <button
+                          type="button"
+                          onClick={() => setIsEnlargedPhotoOpen(false)}
+                          className="p-1 rounded-full hover:bg-white/10 text-white cursor-pointer"
+                        >
+                          <X className="w-6 h-6" />
+                        </button>
+                      </div>
+                      <div className="w-72 h-72 sm:w-96 sm:h-96 rounded-2xl overflow-hidden border-2 border-[#00a884] shadow-2xl bg-[#111b21]">
+                        {viewingContactProfile.dp ? (
+                          <img
+                            src={viewingContactProfile.dp}
+                            alt={viewingContactProfile.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-7xl font-bold text-white bg-gradient-to-br from-[#00a884] to-[#25d366]">
+                            {viewingContactProfile.name.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-xs text-[#8696a0] mt-3 font-medium">Click outside or press X to close</p>
+                    </div>
+                  </div>
+                )}
 
                 {/* Edit Faculty / Student Profile & DP Modal */}
                 {showTeacherProfileModal && (
