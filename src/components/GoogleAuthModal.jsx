@@ -308,24 +308,15 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
               </div>
             </div>
 
-            {dispatchedCode && (
-              <div className="p-3.5 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 text-center space-y-1.5 shadow-xs">
-                <div className="text-[10px] font-black uppercase text-blue-800 tracking-wider flex items-center justify-center gap-1.5">
-                  <Shield className="w-3.5 h-3.5 text-blue-700" />
-                  <span>Google Security Code Dispatched</span>
-                </div>
-                <div className="text-2xl font-black font-mono text-blue-900 tracking-widest py-0.5">
-                  {dispatchedCode}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setOtpCode(dispatchedCode)}
-                  className="text-[11px] font-black text-blue-700 bg-blue-100 hover:bg-blue-200 px-3 py-1 rounded-lg transition cursor-pointer"
-                >
-                  Click to Auto-Fill {dispatchedCode}
-                </button>
+            <div className="p-3.5 rounded-2xl bg-blue-50/80 border border-blue-200 text-center space-y-1 shadow-xs">
+              <div className="text-[11px] font-bold text-blue-900 flex items-center justify-center gap-1.5">
+                <Mail className="w-3.5 h-3.5 text-blue-600" />
+                <span>Check Your Gmail Inbox</span>
               </div>
-            )}
+              <p className="text-[11px] text-blue-700 leading-relaxed">
+                A secure 6-digit verification code has been dispatched to your email address. Please open Gmail (inbox or spam folder) to enter the code below.
+              </p>
+            </div>
 
             <form onSubmit={handleVerifyOtp} className="space-y-4">
               <div>

@@ -6,7 +6,7 @@ import {
   BookmarkCheck, MessageCircle, ShieldCheck, Video, Bus, Navigation, MapPin, Trophy
 } from 'lucide-react';
 
-export function SectionOverview({ currentUser, onSelectSection }) {
+export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseModal }) {
   const [clickedCardId, setClickedCardId] = useState(null);
   const [isSparkleActive, setIsSparkleActive] = useState(false);
 
@@ -274,6 +274,16 @@ export function SectionOverview({ currentUser, onSelectSection }) {
 
             {/* Right: Quick Action Launch Button */}
             <div className="shrink-0 flex flex-col sm:flex-row lg:flex-col gap-2.5 w-full sm:w-auto">
+              {onOpenPurchaseModal && (
+                <button
+                  onClick={onOpenPurchaseModal}
+                  className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-500 text-stone-950 font-black text-xs uppercase tracking-wider shadow-xl flex items-center justify-center gap-2 cursor-pointer transition transform hover:scale-105"
+                >
+                  <Sparkles className="w-4 h-4 text-stone-950" />
+                  <span>⭐ Purchase / Upgrade Plan</span>
+                </button>
+              )}
+
               <button
                 onClick={() => onSelectSection(2)}
                 className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 font-black text-xs uppercase tracking-wider shadow-xl flex items-center justify-center gap-2 cursor-pointer transition transform hover:scale-105 btn-interactive"

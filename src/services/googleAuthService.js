@@ -239,10 +239,10 @@ export async function createStudentWithGoogle({ name, email, avatar = null, clas
     role: 'Student',
     isTeacher: false,
     isAdmin: false,
-    // Strictly Trial / Unpaid until verified by Admin!
-    plan: 'trial',
-    dimension: 0,
-    dimensionName: 'Initial Trial (Subscription Required)',
+    // Strictly Dimension 1: Free until verified by Admin!
+    plan: 'free',
+    dimension: 1,
+    dimensionName: 'Dimension 1: Free',
     isPaid: false,
     paidAmount: '₹0',
     trialEnded: false,

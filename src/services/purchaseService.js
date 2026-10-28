@@ -62,12 +62,27 @@ export function submitPurchaseRequest({
   studentName,
   studentEmail,
   studentPhoto = null,
-  plan = 'vip',
-  planName = 'Dimension 2: VIP Plan',
+  plan = 'normal',
+  planName = 'Dimension 2: Normal Plan',
   amount = 99,
-  paymentMethod = 'UPI / Online',
-  referenceNote = ''
+  paymentMethod = 'Online (Paytm QR)',
+  referenceNote = '',
+  profileDetails = {}
 }) {
+  const current = getPurchases();
+
+  // Spam Prevention: Maximum 3 pending verification requests allowed per student!
+  const pendingCount = current.filter(p => 
+    p.status === 'pending' && 
+    ((studentId && p.studentId === studentId) || (studentEmail && p.studentEmail === studentEmail))
+  ).length;
+
+  if (pendingCount >= 3) {
+    return {
+      success: false,
+      error: 'You already have 3 pending verification requests. Please wait for Administrator Rishit Shankar to review them.'
+    };
+  }
   const numericAmount = Math.min(100000, Math.max(0, Number(amount) || 0));
 
   const newPurchase = {
@@ -76,11 +91,12 @@ export function submitPurchaseRequest({
     studentName: studentName || 'DAV Scholar',
     studentEmail: studentEmail || 'student@gmail.com',
     studentPhoto: studentPhoto || null,
-    plan: plan, // 'normal' | 'vip' | 'vvip'
+    plan: plan, // 'normal' (dim 2) | 'vip' (dim 3) | 'vvip' (dim 4) | 'teacher' (dim 6)
     planName: planName,
     amount: numericAmount,
-    paymentMethod: paymentMethod,
+    paymentMethod: paymentMethod, // 'Cash' | 'Online (Paytm QR)'
     referenceNote: referenceNote.trim(),
+    profileDetails: profileDetails || {},
     status: 'pending', // 'pending' | 'verified' | 'rejected'
     createdAt: new Date().toISOString(),
     formattedDate: new Date().toLocaleDateString('en-IN', {
@@ -93,12 +109,11 @@ export function submitPurchaseRequest({
     verifiedAt: null
   };
 
-  const current = getPurchases();
   const updated = [newPurchase, ...current];
   savePurchases(updated);
 
   window.dispatchEvent(new CustomEvent('dav_purchase_submitted', { detail: newPurchase }));
-  return newPurchase;
+  return { success: true, purchase: newPurchase };
 }
 
 /**
@@ -124,13 +139,28 @@ export async function verifyAndApprovePurchase(purchaseId, adminName = 'Rishit S
   });
   savePurchases(updatedPurchases);
 
-  // 2. Resolve Plan Parameters
-  const targetPlan = purchase.plan || 'vip';
-  const targetDimension = targetPlan === 'vvip' ? 3 : targetPlan === 'vip' ? 2 : 1;
+  // 2. Resolve Plan Parameters (6-Dimension Concept)
+  // Dimension 1: Free (Unpaid / Demo)
+  // Dimension 2: Normal (Normal Plan)
+  // Dimension 3: VIP (VIP Plan)
+  // Dimension 4: VVIP (Double VIP Plan)
+  // Dimension 5: Developer (Master Dev Rishit Shankar)
+  // Dimension 6: Teacher (Faculty OS)
+  const targetPlan = (purchase.plan || 'normal').toLowerCase();
+  const targetDimension = 
+    targetPlan === 'teacher' ? 6 :
+    targetPlan === 'developer' ? 5 :
+    targetPlan === 'vvip' ? 4 :
+    targetPlan === 'vip' ? 3 :
+    targetPlan === 'normal' ? 2 : 1;
+
   const targetDimensionName = 
-    targetPlan === 'vvip' ? 'Dimension 3: VVIP Plan' :
-    targetPlan === 'vip' ? 'Dimension 2: VIP Plan' : 
-    'Dimension 1: Normal Plan';
+    targetPlan === 'teacher' ? 'Dimension 6: Teacher' :
+    targetPlan === 'developer' ? 'Dimension 5: Developer' :
+    targetPlan === 'vvip' ? 'Dimension 4: VVIP' :
+    targetPlan === 'vip' ? 'Dimension 3: VIP' :
+    targetPlan === 'normal' ? 'Dimension 2: Normal' :
+    'Dimension 1: Free';
 
   // 3. Update student in registered users
   const registered = getRegisteredUsers();

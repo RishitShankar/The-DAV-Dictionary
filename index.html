@@ -166,6 +166,11 @@
       if (window.pdfjsLib) {
         window.pdfjsLib.GlobalWorkerOptions.workerSrc = '/vendor/pdf.worker.min.js';
       }
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/dav-pdf-sw.js').catch(function() {});
+        });
+      }
     </script>
   </head>
   <body class="bg-slate-50 text-slate-800 antialiased selection:bg-amber-400 selection:text-maroon-900">

@@ -20,11 +20,27 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   const resolvePdfUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('data:') || url.startsWith('blob:')) return url;
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+
+    // Supabase already serves with Content-Type: application/pdf & inline disposition!
+    // This is why English Literature opens inline with continuous streaming.
+    if (url.includes('supabase.co')) {
+      return url;
+    }
+
+    // GitHub Media CDN serves with Content-Type: application/octet-stream, which forces
+    // browsers to download the file instead of previewing. Route through our streaming proxy
+    // to guarantee Content-Type: application/pdf and inline disposition for ALL books!
+    if (url.includes('githubusercontent.com')) {
+      return `/api/pdf-stream?url=${encodeURIComponent(url)}`;
+    }
+
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
 
     const cleanPath = url.startsWith('/') ? url : `/${url}`;
     
-    // In production on Vercel or HTTPS, route /books/ to GitHub Media CDN for direct byte-range access
+    // In production on Vercel or HTTPS, route /books/ to GitHub Media CDN via streaming proxy
     const isVercelOrProduction = typeof window !== 'undefined' && (
       window.location.hostname.includes('vercel.app') || 
       window.location.hostname.includes('dav-dictionary') ||
@@ -33,7 +49,8 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     );
 
     if (isVercelOrProduction && cleanPath.startsWith('/books/')) {
-      return `${GITHUB_MEDIA_BASE}${encodeURI(cleanPath)}`;
+      const fullGhUrl = `${GITHUB_MEDIA_BASE}${encodeURI(cleanPath)}`;
+      return `/api/pdf-stream?url=${encodeURIComponent(fullGhUrl)}`;
     }
 
     return encodeURI(cleanPath);

@@ -77,6 +77,7 @@ export function App() {
   });
 
   const isTeacher = Boolean(
+    user?.dimension === 6 ||
     user?.dimension === 5 ||
     user?.plan === 'teacher' ||
     user?.isTeacher ||
@@ -328,9 +329,10 @@ export function App() {
       studentId: 'DEMO-PREVIEW',
       classNum: '8',
       section: 'D',
-      plan: 'guest',
-      dimension: 0,
-      dimensionName: 'Demo Preview Mode',
+      plan: 'free',
+      dimension: 1,
+      dimensionName: 'Dimension 1: Free',
+      isPaid: false,
       isAdmin: false,
       isDemo: true
     };
@@ -462,7 +464,7 @@ export function App() {
             onToggleSubDimension={handleToggleTeacherSubDimension}
           />
         ) : activeSection === 1 ? (
-          <SectionOverview currentUser={user} onSelectSection={handleSelectSection} />
+          <SectionOverview currentUser={user} onSelectSection={handleSelectSection} onOpenPurchaseModal={() => setIsPricingOpen(true)} />
         ) : activeSection === 2 ? (
           <>
             <Hero
