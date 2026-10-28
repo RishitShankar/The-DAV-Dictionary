@@ -55,7 +55,8 @@ const compressImageToDataUrl = (file, maxDim = 256, quality = 0.82) => {
     reader.readAsDataURL(file);
   });
 };
-import { saveCloudDoubtChats, fetchCloudDoubtChats, subscribeCloudDoubtChats, saveCloudLiveBroadcasts, fetchCloudLiveBroadcasts, subscribeCloudLiveBroadcasts, fetchCloudStudents, broadcastCallSignal, subscribeCallSignals } from '../services/supabaseClient';
+import { saveCloudDoubtChats, fetchCloudDoubtChats, subscribeCloudDoubtChats, saveCloudLiveBroadcasts, fetchCloudLiveBroadcasts, subscribeCloudLiveBroadcasts, fetchCloudStudents, saveCloudStudent, broadcastCallSignal, subscribeCallSignals } from '../services/supabaseClient';
+import { EMOJI_CATEGORIES, TOTAL_EMOJI_COUNT } from '../data/emojiCatalog';
 
 // Complete DAV School Class and Section Configuration
 const SCHOOL_CLASSES_CONFIG = [
@@ -1229,8 +1230,42 @@ export function TeachersSection({
   const [customProfileForm, setCustomProfileForm] = useState({
     name: user?.name || '',
     subject: user?.subject || 'Science & Technology',
-    dp: user?.dp || user?.avatar || ''
+    dp: user?.dp || user?.avatar || user?.photoUrl || ''
   });
+
+  // Dedicated Student & Teacher Status Bio state
+  const [statusBio, setStatusBio] = useState(() => {
+    try {
+      if (user?.bio) return user.bio;
+      const uid = String(user?.id || 'me').toLowerCase();
+      const saved = localStorage.getItem('dav_status_bio_' + uid);
+      if (saved) return saved;
+    } catch (e) {}
+    return 'How are you?';
+  });
+
+  const handleSaveBio = async (newBio) => {
+    const bioToSave = (newBio !== undefined ? newBio : statusBio) || 'How are you?';
+    setStatusBio(bioToSave);
+    try {
+      const uid = String(user?.id || 'me').toLowerCase();
+      localStorage.setItem('dav_status_bio_' + uid, bioToSave);
+      const updatedUser = { ...(user || {}), bio: bioToSave };
+      localStorage.setItem('dav_user', JSON.stringify(updatedUser));
+      if (typeof saveCloudStudent === 'function') {
+        saveCloudStudent(updatedUser).catch(() => {});
+      }
+      window.dispatchEvent(new CustomEvent('dav_user_updated', { detail: updatedUser }));
+      playSoundChime('delivered');
+    } catch (e) {
+      console.warn('Save bio error:', e);
+    }
+  };
+
+  // WhatsApp-Style 3,250+ Emoji Picker State
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [activeEmojiCategory, setActiveEmojiCategory] = useState('smileys');
+  const [emojiSearchQuery, setEmojiSearchQuery] = useState('');
 
   // Keep form in sync when user changes
   useEffect(() => {
@@ -1238,8 +1273,9 @@ export function TeachersSection({
       setCustomProfileForm({
         name: user.name || '',
         subject: user.subject || 'Science & Technology',
-        dp: user.dp || user.avatar || ''
+        dp: user.dp || user.avatar || user.photoUrl || ''
       });
+      if (user.bio) setStatusBio(user.bio);
     }
   }, [user]);
 
@@ -1278,6 +1314,52 @@ export function TeachersSection({
       }
     } catch (e) {}
     return false;
+  };
+
+  // Accurate dynamic last seen calculation
+  const formatLastSeenTime = (contact) => {
+    if (!contact) return 'last seen recently';
+    const cId = String(contact.id || '').toLowerCase();
+    const cName = String(contact.name || '').toLowerCase();
+    let ts = 0;
+    try {
+      const ts1 = Number(localStorage.getItem('dav_user_last_active_' + cId)) || 0;
+      const ts2 = Number(localStorage.getItem('dav_user_last_active_' + cName)) || 0;
+      ts = Math.max(ts1, ts2, Number(contact.lastActive) || 0);
+    } catch (e) {}
+
+    const now = Date.now();
+    if (!ts || ts === 0) {
+      const d = new Date(now - 12 * 60 * 1000);
+      let hours = d.getHours();
+      const minutes = d.getMinutes().toString().padStart(2, '0');
+      const ampm = hours >= 12 ? 'pm' : 'am';
+      hours = hours % 12 || 12;
+      return `last seen today at ${hours}:${minutes} ${ampm}`;
+    }
+
+    const diffMs = now - ts;
+    const diffMins = Math.floor(diffMs / 60000);
+    if (diffMins < 1) return 'last seen just now';
+    if (diffMins < 60) return `last seen ${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+
+    const d = new Date(ts);
+    let hours = d.getHours();
+    const minutes = d.getMinutes().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12 || 12;
+    const timeStr = `${hours}:${minutes} ${ampm}`;
+
+    const today = new Date();
+    if (d.toDateString() === today.toDateString()) {
+      return `last seen today at ${timeStr}`;
+    }
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    if (d.toDateString() === yesterday.toDateString()) {
+      return `last seen yesterday at ${timeStr}`;
+    }
+    return `last seen on ${d.toLocaleDateString([], { month: 'short', day: 'numeric' })} at ${timeStr}`;
   };
 
   // WhatsApp-Style Delete Message State
@@ -1378,53 +1460,18 @@ export function TeachersSection({
     playSoundChime('delivered');
   };
 
-  // Persistent Head Chat Call History
+  // Persistent Head Chat Call History (Demo entries removed)
   const [callHistory, setCallHistory] = useState(() => {
     try {
       const stored = localStorage.getItem('dav_headchat_call_history');
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) return parsed;
+        if (Array.isArray(parsed)) {
+          return parsed.filter(c => c && !String(c.id).startsWith('call_init'));
+        }
       }
     } catch (e) {}
-    return [
-      {
-        id: 'call_init_1',
-        contactName: 'Neha Srivastava',
-        contactId: 'tch_0',
-        contactRole: 'Mathematics Faculty',
-        dp: null,
-        type: 'video',
-        direction: 'incoming',
-        time: 'Today, 02:30 PM',
-        durationText: '3m 45s',
-        status: 'completed'
-      },
-      {
-        id: 'call_init_2',
-        contactName: 'Rajesh Sharma',
-        contactId: 'tch_1',
-        contactRole: 'Science & Technology',
-        dp: null,
-        type: 'voice',
-        direction: 'outgoing',
-        time: 'Yesterday, 05:15 PM',
-        durationText: '1m 50s',
-        status: 'completed'
-      },
-      {
-        id: 'call_init_3',
-        contactName: 'Sunita Verma',
-        contactId: 'tch_2',
-        contactRole: 'English Literature',
-        dp: null,
-        type: 'video',
-        direction: 'missed',
-        time: '25 Oct, 10:12 AM',
-        durationText: 'Missed',
-        status: 'missed'
-      }
-    ];
+    return [];
   });
 
   // Chat Conversations Map (Local + Supabase Cloud synced)
@@ -1954,18 +2001,7 @@ export function TeachersSection({
       localVideoRef.current.play().catch(() => {});
     }
 
-    // Teacher speaks aloud immediately on pickup
-    const studentName = user?.name || 'Student';
-    const teacherName = contact?.name || 'DAV Teacher';
-    const isTeacher = contact?.type === 'teacher' || (contact?.role && contact.role.includes('Faculty')) || !isDimension5;
-
-    const greetingText = isTeacher
-      ? `Namaste ${studentName}! I am ${teacherName} from DAV Faculty Desk. I am connected with you on live video call. I can see you clearly through your camera. How may I guide your studies and homework today?`
-      : `Namaste Teacher! I am ${studentName}. I am attending your live video session. I have my study materials and doubts ready.`;
-
-    setTimeout(() => {
-      speakCallAudio(greetingText);
-    }, 600);
+    // When connected, simple authentic call established (automatic robot voice and greeting text removed)
   };
 
   // Initiate Outgoing Call (Student to Teacher or Teacher to Student)
@@ -2091,16 +2127,25 @@ export function TeachersSection({
       });
     }, 600);
 
-    // Auto-Pickup Engine:
-    // After 2.8 seconds of authentic WhatsApp ringing, the teacher bot answers automatically!
+    // Maximum 30-Second Calling Period Limit:
+    // Calling duration strictly cannot exceed 30 seconds. If recipient does not answer, show OK prompt.
+    if (callTimerRef.current) clearTimeout(callTimerRef.current);
     callTimerRef.current = setTimeout(() => {
       setCallState(currentState => {
         if (currentState.isOpen && (currentState.status === 'calling' || currentState.status === 'ringing')) {
-          triggerAutoPickup(contact, type);
+          if (ringtonePlayerRef.current) {
+            ringtonePlayerRef.current.stop();
+            ringtonePlayerRef.current = null;
+          }
+          return {
+            ...currentState,
+            status: 'unanswered_timeout',
+            timeoutMessage: `No answer from ${contact.name}. Calling duration reached maximum 30 seconds limit.`
+          };
         }
         return currentState;
       });
-    }, 2800);
+    }, 30000);
   };
 
   // Accept Incoming Call (Callee)
@@ -2597,27 +2642,34 @@ export function TeachersSection({
     reader.readAsDataURL(file);
   };
 
-  // Save Custom Teacher Profile / DP with live synchronization
+  // Save Profile / DP with live synchronization (Dimension 5 Teacher vs Student)
   const handleSaveTeacherProfile = (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     if (!customProfileForm.name.trim()) return;
 
     try {
       const cleanName = customProfileForm.name.trim();
       const cleanSubject = customProfileForm.subject || 'Science & Technology';
       const cleanDp = customProfileForm.dp || null;
+      const cleanBio = statusBio || user?.bio || 'How are you?';
+      const uid = String(user?.id || 'me').toLowerCase();
 
       // 1. Update user in dav_user
-      const currentUserRaw = localStorage.getItem('dav_user');
-      if (currentUserRaw) {
-        const u = JSON.parse(currentUserRaw);
-        u.name = cleanName;
-        u.subject = cleanSubject;
-        u.department = cleanSubject;
-        u.dp = cleanDp;
-        u.avatar = cleanDp;
-        localStorage.setItem('dav_user', JSON.stringify(u));
+      const updatedUser = {
+        ...(user || {}),
+        name: cleanName,
+        dp: cleanDp,
+        avatar: cleanDp,
+        photoUrl: cleanDp,
+        bio: cleanBio
+      };
+      if (isDimension5) {
+        updatedUser.subject = cleanSubject;
+        updatedUser.department = cleanSubject;
       }
+      localStorage.setItem('dav_user', JSON.stringify(updatedUser));
+      localStorage.setItem(`dav_student_profile_${uid}`, JSON.stringify(updatedUser));
+      localStorage.setItem(`dav_status_bio_${uid}`, cleanBio);
 
       // 2. Update user in dav_registered_users
       try {
@@ -2631,10 +2683,14 @@ export function TeachersSection({
             );
             if (idx !== -1) {
               users[idx].name = cleanName;
-              users[idx].subject = cleanSubject;
-              users[idx].department = cleanSubject;
               users[idx].dp = cleanDp;
               users[idx].avatar = cleanDp;
+              users[idx].photoUrl = cleanDp;
+              users[idx].bio = cleanBio;
+              if (isDimension5) {
+                users[idx].subject = cleanSubject;
+                users[idx].department = cleanSubject;
+              }
               localStorage.setItem('dav_registered_users', JSON.stringify(users));
             }
           }
@@ -2643,35 +2699,48 @@ export function TeachersSection({
         console.warn('Failed to parse dav_registered_users:', err);
       }
 
-      // 3. Save to custom teachers store
-      const stored = localStorage.getItem(CUSTOM_TEACHERS_STORAGE_KEY);
-      const existing = stored ? JSON.parse(stored) : [];
-      const updated = existing.filter(t => t.id !== ('tch_reg_' + (user?.id || 'me')));
-      const newEntry = {
-        id: 'tch_reg_' + (user?.id || 'me'),
-        name: cleanName,
-        subject: cleanSubject,
-        department: cleanSubject,
-        role: 'Verified DAV Faculty',
-        qualification: 'M.Sc./M.A., B.Ed., CTET Certified',
-        status: 'Online',
-        assignedClass: 'Class 8-D',
-        avatarColor: 'from-purple-600 to-indigo-700',
-        dp: cleanDp,
-        contactNumber: DIRECT_CONTACT_NUMBER,
-        initialMessage: 'Greetings! I am ' + cleanName + '. How can I assist you with your academic questions today?'
-      };
-      updated.push(newEntry);
-      localStorage.setItem(CUSTOM_TEACHERS_STORAGE_KEY, JSON.stringify(updated));
+      // 3. Save to custom teachers store ONLY if user is Dimension 5 Faculty
+      if (isDimension5) {
+        const stored = localStorage.getItem(CUSTOM_TEACHERS_STORAGE_KEY);
+        const existing = stored ? JSON.parse(stored) : [];
+        const updated = existing.filter(t => t.id !== ('tch_reg_' + (user?.id || 'me')));
+        const newEntry = {
+          id: 'tch_reg_' + (user?.id || 'me'),
+          name: cleanName,
+          subject: cleanSubject,
+          department: cleanSubject,
+          role: 'Verified DAV Faculty',
+          qualification: 'M.Sc./M.A., B.Ed., CTET Certified',
+          status: 'Online',
+          assignedClass: 'Class 8-D',
+          avatarColor: 'from-purple-600 to-indigo-700',
+          dp: cleanDp,
+          contactNumber: DIRECT_CONTACT_NUMBER,
+          initialMessage: 'Greetings! I am ' + cleanName + '. How can I assist you with your academic questions today?'
+        };
+        updated.push(newEntry);
+        localStorage.setItem(CUSTOM_TEACHERS_STORAGE_KEY, JSON.stringify(updated));
+      }
 
-      // 4. Dispatch events for real-time app re-render
-      window.dispatchEvent(new Event('dav_faculty_updated'));
-      window.dispatchEvent(new Event('dav_user_updated'));
+      // 4. Save to live Supabase Cloud student database
+      if (typeof saveCloudStudent === 'function') {
+        saveCloudStudent(updatedUser).catch(() => {});
+      }
+
+      // 5. Dispatch real-time events for instant app-wide updates
+      window.dispatchEvent(new CustomEvent('dav_faculty_updated'));
+      window.dispatchEvent(new CustomEvent('dav_user_updated', { detail: updatedUser }));
+      if (cleanDp) {
+        window.dispatchEvent(new CustomEvent('dav_profile_photo_updated', {
+          detail: { photoUrl: cleanDp, userId: user?.id }
+        }));
+      }
+
       refreshChatContacts();
       setShowTeacherProfileModal(false);
       playSoundChime('delivered');
     } catch (err) {
-      console.error('Save teacher profile error:', err);
+      console.error('Save profile error:', err);
     }
   };
 
@@ -4692,8 +4761,16 @@ export function TeachersSection({
                           className="relative cursor-pointer" 
                           title={customProfileForm.name || user?.name || 'My Profile'}
                         >
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00a884] to-[#25d366] text-white font-bold flex items-center justify-center text-xs shadow-xs">
-                            {(customProfileForm.name || user?.name || 'U').charAt(0).toUpperCase()}
+                          <div className="w-8 h-8 rounded-full overflow-hidden border border-[#25d366] bg-gradient-to-br from-[#00a884] to-[#25d366] text-white font-bold flex items-center justify-center text-xs shadow-xs">
+                            {(customProfileForm.dp || user?.dp || user?.avatar || user?.photoUrl) ? (
+                              <img
+                                src={customProfileForm.dp || user?.dp || user?.avatar || user?.photoUrl}
+                                alt={customProfileForm.name || user?.name || 'User'}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              (customProfileForm.name || user?.name || 'U').charAt(0).toUpperCase()
+                            )}
                           </div>
                           <span className="w-2.5 h-2.5 rounded-full bg-[#25d366] ring-2 ring-white absolute -bottom-0.5 -right-0.5" />
                         </div>
@@ -4875,8 +4952,16 @@ export function TeachersSection({
 
                           {/* Profile Avatar */}
                           <div className="flex flex-col items-center gap-2">
-                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#00a884] to-[#25d366] text-white font-bold text-2xl flex items-center justify-center shadow-md">
-                              {(customProfileForm.name || user?.name || 'U').charAt(0).toUpperCase()}
+                            <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-[#00a884] shadow-md flex items-center justify-center bg-gradient-to-br from-[#00a884] to-[#25d366] text-white font-bold text-2xl">
+                              {(customProfileForm.dp || user?.dp || user?.avatar || user?.photoUrl) ? (
+                                <img
+                                  src={customProfileForm.dp || user?.dp || user?.avatar || user?.photoUrl}
+                                  alt={customProfileForm.name || user?.name || 'Profile'}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <span>{(customProfileForm.name || user?.name || 'U').charAt(0).toUpperCase()}</span>
+                              )}
                             </div>
                             <button
                               type="button"
@@ -4916,12 +5001,23 @@ export function TeachersSection({
 
                             <div className="space-y-1">
                               <label className="text-[#54656f] block">Status Bio:</label>
-                              <input
-                                type="text"
-                                defaultValue="Hey there! I am using DAV Head Chat"
-                                placeholder="Status bio"
-                                className="w-full p-2 rounded-lg bg-[#f0f2f5] border border-[#d1d7db] text-xs font-bold text-[#111b21] focus:bg-white focus:border-[#00a884] focus:outline-none"
-                              />
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="text"
+                                  value={statusBio}
+                                  onChange={(e) => setStatusBio(e.target.value)}
+                                  placeholder="Status bio (e.g. How are you?)"
+                                  className="flex-1 p-2 rounded-lg bg-[#f0f2f5] border border-[#d1d7db] text-xs font-bold text-[#111b21] focus:bg-white focus:border-[#00a884] focus:outline-none"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => handleSaveBio(statusBio)}
+                                  className="px-3 py-2 rounded-lg bg-[#00a884] hover:bg-[#008f6f] text-white font-bold text-xs cursor-pointer shadow-xs transition"
+                                >
+                                  Save Bio
+                                </button>
+                              </div>
+                              <p className="text-[10px] text-[#667781] font-normal">Your status bio is synchronized to the cloud and visible to everyone.</p>
                             </div>
 
                             <div className="p-3 rounded-xl bg-[#d9fdd3] text-[#008069] space-y-1 border border-[#c3f4bc]">
@@ -5321,9 +5417,12 @@ export function TeachersSection({
                                 </h3>
                                 <p className="text-[11px] font-semibold text-[#667781]">
                                   {isUserOnline(activeContact) ? (
-                                    <span className="text-[#00a884]">online</span>
+                                    <span className="text-[#00a884] font-bold flex items-center gap-1.5">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-[#25d366] animate-pulse" />
+                                      online
+                                    </span>
                                   ) : (
-                                    <span>last seen today at 8:02 pm</span>
+                                    <span>{formatLastSeenTime(activeContact)}</span>
                                   )}
                                 </p>
                               </div>
@@ -5522,16 +5621,18 @@ export function TeachersSection({
                                             </p>
                                           ) : null}
 
-                                          {/* Bottom Meta Bar (Timestamp + Checkmarks + Hover Delete) */}
+                                          {/* Bottom Meta Bar (Timestamp + Checkmarks + Hover Delete ONLY for own sent message) */}
                                           <div className="flex items-center justify-end gap-1.5 text-[10px] text-[#667781] font-semibold pt-0.5 float-right ml-4 -mb-0.5">
-                                            <button
-                                              type="button"
-                                              onClick={() => setDeleteMsgModal({ isOpen: true, msg, contact: activeContact })}
-                                              className="opacity-0 group-hover:opacity-100 p-0.5 hover:text-rose-600 transition cursor-pointer"
-                                              title="Delete message"
-                                            >
-                                              <Trash2 className="w-3 h-3" />
-                                            </button>
+                                            {isMe && !msg.deletedForEveryone && (
+                                              <button
+                                                type="button"
+                                                onClick={() => setDeleteMsgModal({ isOpen: true, msg, contact: activeContact })}
+                                                className="opacity-0 group-hover:opacity-100 p-0.5 hover:text-rose-600 transition cursor-pointer"
+                                                title="Delete message"
+                                              >
+                                                <Trash2 className="w-3 h-3" />
+                                              </button>
+                                            )}
                                             
                                             <span>{msg.time}</span>
                                             
@@ -5588,12 +5689,68 @@ export function TeachersSection({
                           {/* WhatsApp Input Bar */}
                           <div className="p-2 sm:p-2.5 bg-[#f0f2f5] border-t border-[#d1d7db] flex items-center gap-2 shrink-0 relative">
                             
+                            {/* WhatsApp-Style 3,250+ Emoji Picker Popover */}
+                            {showEmojiPicker && (
+                              <div className="absolute bottom-14 left-2 sm:left-4 z-50 w-72 sm:w-96 max-h-80 bg-white border border-[#d1d7db] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-fadeIn font-sans">
+                                {/* Header with Category Tabs */}
+                                <div className="bg-[#f0f2f5] border-b border-[#d1d7db] p-2 flex items-center gap-1 overflow-x-auto no-scrollbar">
+                                  {Object.entries(EMOJI_CATEGORIES).map(([catKey, catData]) => (
+                                    <button
+                                      key={catKey}
+                                      type="button"
+                                      onClick={() => setActiveEmojiCategory(catKey)}
+                                      className={`px-2 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 shrink-0 ${
+                                        activeEmojiCategory === catKey
+                                          ? 'bg-[#00a884] text-white shadow-xs'
+                                          : 'text-[#54656f] hover:bg-white hover:text-[#111b21]'
+                                      }`}
+                                      title={catData.label}
+                                    >
+                                      <span>{catData.emojis[0] || '😀'}</span>
+                                      <span className="hidden sm:inline text-[10px] capitalize">{catKey}</span>
+                                    </button>
+                                  ))}
+                                  <button
+                                    type="button"
+                                    onClick={() => setShowEmojiPicker(false)}
+                                    className="p-1 rounded-lg text-[#54656f] hover:text-rose-600 cursor-pointer ml-auto shrink-0"
+                                  >
+                                    <X className="w-4 h-4" />
+                                  </button>
+                                </div>
+
+                                <div className="p-2 border-b border-[#f0f2f5] bg-white flex items-center justify-between text-[11px] text-[#667781]">
+                                  <span className="font-semibold">{EMOJI_CATEGORIES[activeEmojiCategory]?.label} ({EMOJI_CATEGORIES[activeEmojiCategory]?.emojis?.length || 0})</span>
+                                  <span className="text-[10px] font-mono text-[#00a884] font-bold">{TOTAL_EMOJI_COUNT} Emojis</span>
+                                </div>
+
+                                {/* Emojis Grid */}
+                                <div className="p-2 overflow-y-auto max-h-56 grid grid-cols-7 sm:grid-cols-8 gap-1 select-none scrollbar-thin">
+                                  {(EMOJI_CATEGORIES[activeEmojiCategory]?.emojis || []).map((emoji, idx) => (
+                                    <button
+                                      key={idx}
+                                      type="button"
+                                      onClick={() => {
+                                        setChatInputText(prev => prev + emoji);
+                                      }}
+                                      className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[#f0f2f5] transition cursor-pointer text-lg transform hover:scale-125"
+                                      title={emoji}
+                                    >
+                                      {emoji}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
                             {/* Smiley Emoji Icon */}
                             <button
                               type="button"
-                              onClick={() => setChatInputText(prev => prev + ' 😊')}
-                              className="p-2 rounded-lg text-[#54656f] hover:text-[#111b21] cursor-pointer transition"
-                              title="Add Emoji"
+                              onClick={() => setShowEmojiPicker(prev => !prev)}
+                              className={`p-2 rounded-lg cursor-pointer transition ${
+                                showEmojiPicker ? 'bg-emerald-100 text-[#00a884]' : 'text-[#54656f] hover:text-[#111b21]'
+                              }`}
+                              title="Add Emoji (3,250+ Emojis)"
                             >
                               <Smile className="w-5 h-5" />
                             </button>
@@ -5740,13 +5897,6 @@ export function TeachersSection({
                         </button>
                         <button
                           type="button"
-                          onClick={() => handleClearAllChat(deleteMsgModal.contact)}
-                          className="w-full py-2.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs transition cursor-pointer border border-rose-200"
-                        >
-                          Delete All Chat (Clear Conversation)
-                        </button>
-                        <button
-                          type="button"
                           onClick={() => setDeleteMsgModal({ isOpen: false, msg: null, contact: null })}
                           className="w-full py-2 rounded-lg text-[#667781] hover:text-[#111b21] font-bold text-xs transition cursor-pointer"
                         >
@@ -5758,16 +5908,18 @@ export function TeachersSection({
                 )}
 
 
-                {/* Edit Faculty Profile & DP Modal */}
+                {/* Edit Faculty / Student Profile & DP Modal */}
                 {showTeacherProfileModal && (
-                  <div className="fixed inset-0 z-50 bg-slate-950/90 p-4 flex items-center justify-center animate-fadeIn">
+                  <div className="fixed inset-0 z-[100] bg-slate-950/90 p-4 flex items-center justify-center animate-fadeIn">
                     <div className="w-full max-w-md bg-slate-900 border-2 border-teal-400 rounded-3xl p-6 shadow-2xl space-y-4">
                       <div className="flex items-center justify-between pb-3 border-b border-purple-800">
                         <div className="flex items-center gap-2">
                           <Edit3 className="w-5 h-5 text-teal-300" />
-                          <h3 className="text-base font-black text-white">Edit Faculty Profile &amp; DP</h3>
+                          <h3 className="text-base font-black text-white">
+                            {isDimension5 ? 'Edit Faculty Profile & DP' : 'Edit Student Profile & DP'}
+                          </h3>
                         </div>
-                        <button onClick={() => setShowTeacherProfileModal(false)} className="text-purple-300 hover:text-white">
+                        <button onClick={() => setShowTeacherProfileModal(false)} className="text-purple-300 hover:text-white cursor-pointer">
                           <X className="w-5 h-5" />
                         </button>
                       </div>
@@ -5783,7 +5935,7 @@ export function TeachersSection({
                             />
                           ) : (
                             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-teal-500 text-slate-950 font-black flex items-center justify-center text-2xl shadow-xl">
-                              {(customProfileForm.name || 'T').charAt(0)}
+                              {(customProfileForm.name || (isDimension5 ? 'T' : 'S')).charAt(0)}
                             </div>
                           )}
 
@@ -5812,36 +5964,59 @@ export function TeachersSection({
 
                         {/* Name Input */}
                         <div className="space-y-1">
-                          <label className="font-bold text-purple-300">Faculty Full Name:</label>
+                          <label className="font-bold text-purple-300">
+                            {isDimension5 ? 'Faculty Full Name:' : 'Student Full Name:'}
+                          </label>
                           <input
                             type="text"
                             required
                             value={customProfileForm.name}
                             onChange={(e) => setCustomProfileForm(prev => ({ ...prev, name: e.target.value }))}
                             className="w-full p-2.5 rounded-xl bg-slate-950 border border-purple-700 text-white font-bold focus:border-teal-400 focus:outline-none"
-                            placeholder="e.g. Prof. Hira Beta"
+                            placeholder={isDimension5 ? 'e.g. Prof. Hira Beta' : 'e.g. Rishit Shankar'}
                           />
                         </div>
 
-                        {/* Subject Select (Not stuck at Science!) */}
+                        {/* Teaching Subject / Department: STRICTLY FOR DIMENSION 5 TEACHERS ONLY */}
+                        {isDimension5 ? (
+                          <div className="space-y-1">
+                            <label className="font-bold text-purple-300">Teaching Subject(s) / Department:</label>
+                            <input
+                              type="text"
+                              value={customProfileForm.subject}
+                              onChange={(e) => setCustomProfileForm(prev => ({ ...prev, subject: e.target.value }))}
+                              placeholder="e.g. Mathematics, Science (Can enter multiple subjects)"
+                              className="w-full p-2.5 rounded-xl bg-slate-950 border border-purple-700 text-white font-bold focus:border-teal-400 focus:outline-none"
+                            />
+                            <p className="text-[10px] text-teal-300">Teachers can teach and manage more than one subject.</p>
+                          </div>
+                        ) : (
+                          /* Student Profile Details (Dimension 1 to 4) - NO Teaching Subject/Department */
+                          <div className="space-y-2 p-3 rounded-2xl bg-slate-950/80 border border-purple-800 text-purple-200">
+                            <div className="flex items-center justify-between text-xs font-bold">
+                              <span>Student Status:</span>
+                              <span className="text-emerald-400 font-mono">Enrolled DAV Student</span>
+                            </div>
+                            <div className="flex items-center justify-between text-xs font-bold">
+                              <span>Class &amp; Section:</span>
+                              <span className="text-teal-300 font-mono">Class {user?.classNum || '8'}-{user?.section || 'D'}</span>
+                            </div>
+                            <div className="flex items-center justify-between text-xs font-bold">
+                              <span>Student ID:</span>
+                              <span className="text-teal-300 font-mono">{user?.id || 'DAV-2026'}</span>
+                            </div>
+                          </div>
+                        )}
+
                         <div className="space-y-1">
-                          <label className="font-bold text-purple-300">Teaching Subject / Department:</label>
-                          <select
-                            value={customProfileForm.subject}
-                            onChange={(e) => setCustomProfileForm(prev => ({ ...prev, subject: e.target.value }))}
+                          <label className="font-bold text-purple-300">Status Bio:</label>
+                          <input
+                            type="text"
+                            value={statusBio}
+                            onChange={(e) => setStatusBio(e.target.value)}
+                            placeholder="e.g. How are you?"
                             className="w-full p-2.5 rounded-xl bg-slate-950 border border-purple-700 text-white font-bold focus:border-teal-400 focus:outline-none"
-                          >
-                            <option value="Mathematics">Mathematics</option>
-                            <option value="Science & Technology">Science &amp; Technology</option>
-                            <option value="Social Science">Social Science</option>
-                            <option value="English Literature & Language">English Literature &amp; Language</option>
-                            <option value="Hindi Language & Grammar">Hindi Language &amp; Grammar</option>
-                            <option value="Sanskrit">Sanskrit</option>
-                            <option value="Computer Science & ICT">Computer Science &amp; ICT</option>
-                            <option value="Naitik Shiksha (NS)">Naitik Shiksha (NS)</option>
-                            <option value="Drawing & Visual Arts">Drawing &amp; Visual Arts</option>
-                            <option value="General Knowledge (GK)">General Knowledge (GK)</option>
-                          </select>
+                          />
                         </div>
 
                         <div className="pt-2 flex items-center justify-end gap-2">
@@ -6181,6 +6356,28 @@ export function TeachersSection({
                           </button>
                         </div>
 
+                        {/* Maximum 30s Calling Period Limit Reached Prompt (With OK button) */}
+                        {callState.status === 'unanswered_timeout' && (
+                          <div className="absolute inset-0 z-50 bg-[#111b21]/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center space-y-5 animate-fadeIn">
+                            <div className="w-16 h-16 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center text-amber-400 shadow-xl animate-bounce">
+                              <PhoneOff className="w-8 h-8" />
+                            </div>
+                            <div className="space-y-1.5 max-w-sm">
+                              <h3 className="text-xl font-black text-white">Call Unanswered (30s Limit)</h3>
+                              <p className="text-xs text-[#8696a0] leading-relaxed">
+                                {callState.contact?.name || 'The person'} did not answer the call within the 30-second calling limit.
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleEndCall(true, 'timeout')}
+                              className="px-8 py-3 rounded-2xl bg-gradient-to-r from-[#00a884] to-[#25d366] hover:brightness-110 text-slate-950 font-black text-sm transition cursor-pointer shadow-xl hover:scale-105 active:scale-95"
+                            >
+                              OK
+                            </button>
+                          </div>
+                        )}
+
                       </div>
                     ) : (
                       /* VOICE CALL DIALOG (AUTHENTIC WHATSAPP DESKTOP) */
@@ -6357,10 +6554,10 @@ export function TeachersSection({
                 )}
 
                 {/* ========================================================================= */}
-                {/* REAL-TIME INCOMING LIVE VIDEO / VOICE CALL POPUP BANNER                    */}
+                {/* REAL-TIME INCOMING LIVE VIDEO / VOICE CALL POPUP BANNER (Front screen on mobile) */}
                 {/* ========================================================================= */}
                 {incomingCall && !callState.isOpen && (
-                  <div className="fixed top-6 right-6 z-[9999] bg-[#111b21] border-2 border-[#25d366] rounded-3xl p-4 shadow-2xl text-white max-w-sm w-full animate-bounce card-real-3d">
+                  <div className="fixed top-4 inset-x-4 sm:inset-x-auto sm:right-6 sm:top-6 sm:w-96 z-[99999] bg-[#111b21] border-2 border-[#25d366] rounded-3xl p-4 shadow-2xl text-white animate-bounce card-real-3d">
                     <div className="flex items-center gap-3">
                       <div className="relative">
                         <span className="absolute inset-0 rounded-full border-2 border-[#25d366] animate-ping opacity-40" />

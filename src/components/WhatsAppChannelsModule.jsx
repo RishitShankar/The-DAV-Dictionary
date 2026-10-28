@@ -152,18 +152,27 @@ export function WhatsAppChannelsModule({ user, isDimension5, onSwitchToChats }) 
     user?.plan === 'dev'
   );
 
-  // Load Channels from LocalStorage or Fallback
+  // Load Channels from LocalStorage or Fallback (Demo channels removed)
   const [channels, setChannels] = useState(() => {
     try {
       const stored = localStorage.getItem(CHANNELS_STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) {
+          // Remove legacy demo mock channels
+          const filtered = parsed.filter(c => 
+            c && c.id && 
+            !c.id.startsWith('dav_official_circulars') && 
+            !c.id.startsWith('dav_olympiad_wing') && 
+            !c.id.startsWith('dav_demo')
+          );
+          return filtered;
+        }
       }
     } catch (e) {
       console.warn('Error reading channels store:', e);
     }
-    return INITIAL_DAV_CHANNELS;
+    return [];
   });
 
   // Save Channels to LocalStorage on update

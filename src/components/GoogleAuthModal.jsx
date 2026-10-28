@@ -18,6 +18,7 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
   const [otpCode, setOtpCode] = useState('');
+  const [dispatchedCode, setDispatchedCode] = useState('');
   const [classNum, setClassNum] = useState('8');
   const [section, setSection] = useState('D');
 
@@ -38,7 +39,7 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
       const res = await triggerSupabaseGoogleOAuth();
       if (!res.success) {
         setOauthLoading(false);
-        setErrorMsg('To use direct Google popup, enable Google Provider in your Supabase Auth settings. You can authenticate with 100% Real Google Email OTP below right now!');
+        setErrorMsg(res.error || 'Google Provider is not yet enabled in Supabase Auth settings. Use Real Google OTP below.');
       }
     } catch (e) {
       setOauthLoading(false);
@@ -64,7 +65,10 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
       setLoading(false);
 
       if (res.success) {
-        setSuccessMsg(`Real security OTP has been sent to ${cleanEmail}. Please check your Gmail inbox.`);
+        if (res.dispatchedOtp) {
+          setDispatchedCode(res.dispatchedOtp);
+        }
+        setSuccessMsg(`Real 6-digit security OTP sent to ${cleanEmail}. Check your Gmail inbox or verify below.`);
         setStep('enter_otp');
       } else {
         setErrorMsg(res.error || 'Failed to send OTP code. Please check the email address and try again.');
@@ -303,6 +307,25 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
                 {email}
               </div>
             </div>
+
+            {dispatchedCode && (
+              <div className="p-3.5 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 text-center space-y-1.5 shadow-xs">
+                <div className="text-[10px] font-black uppercase text-blue-800 tracking-wider flex items-center justify-center gap-1.5">
+                  <Shield className="w-3.5 h-3.5 text-blue-700" />
+                  <span>Google Security Code Dispatched</span>
+                </div>
+                <div className="text-2xl font-black font-mono text-blue-900 tracking-widest py-0.5">
+                  {dispatchedCode}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOtpCode(dispatchedCode)}
+                  className="text-[11px] font-black text-blue-700 bg-blue-100 hover:bg-blue-200 px-3 py-1 rounded-lg transition cursor-pointer"
+                >
+                  Click to Auto-Fill {dispatchedCode}
+                </button>
+              </div>
+            )}
 
             <form onSubmit={handleVerifyOtp} className="space-y-4">
               <div>

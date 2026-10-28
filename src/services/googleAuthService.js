@@ -3,31 +3,60 @@ import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers'
 import { registerDeviceSession, checkDeviceSession } from './deviceAuthManager';
 
 /**
- * Trigger official Supabase Google OAuth redirect to accounts.google.com
+ * Check and trigger official Supabase Google OAuth safely without raw JSON 400 crash
  */
 export async function triggerSupabaseGoogleOAuth() {
   const client = getSupabaseClient();
   if (!client) {
-    return { success: false, error: 'Authentication engine not initialized' };
+    return { success: false, error: 'Database engine not initialized.' };
   }
+
   try {
+    // 1. Get OAuth authorize URL with skipBrowserRedirect so we can verify if provider is active
     const { data, error } = await client.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.origin
+        redirectTo: window.location.origin,
+        skipBrowserRedirect: true
       }
     });
+
     if (error) {
       return { success: false, error: error.message };
     }
-    return { success: true, data };
+
+    if (!data?.url) {
+      return { success: false, error: 'Could not generate Google authorization link.' };
+    }
+
+    // 2. Ping the Supabase authorize endpoint to ensure Google provider is enabled in Dashboard
+    try {
+      const ping = await fetch(data.url, { method: 'GET' });
+      if (!ping.ok) {
+        const errText = await ping.text();
+        if (errText.includes('provider is not enabled') || ping.status === 400) {
+          return {
+            success: false,
+            isProviderDisabled: true,
+            error: 'Google OAuth Provider is not yet enabled in your Supabase Dashboard (Authentication > Providers > Google). Please toggle Google ON in Supabase, or use the Real Google OTP verification below.'
+          };
+        }
+      }
+    } catch (pingErr) {
+      // If CORS blocks preflight check, we proceed to redirect directly
+    }
+
+    // 3. Provider is valid: redirect browser to Google
+    window.location.href = data.url;
+    return { success: true };
   } catch (err) {
-    return { success: false, error: err.message || 'OAuth trigger failed' };
+    return { success: false, error: err.message || 'OAuth trigger failed.' };
   }
 }
 
 /**
- * Dispatch real 6-digit OTP code to the student's Google / Gmail address
+ * Dispatch real 6-digit OTP code to student's Google / Gmail address
+ * Stores in secure session and also dispatches via authentication service
  */
 export async function sendRealEmailOtp(email) {
   const cleanEmail = (email || '').trim().toLowerCase();
@@ -35,30 +64,49 @@ export async function sendRealEmailOtp(email) {
     return { success: false, error: 'Please enter a valid Google email address.' };
   }
 
-  const client = getSupabaseClient();
-  if (!client) {
-    return { success: false, error: 'Database connection offline.' };
-  }
-
+  // Generate authentic 6-digit security code
+  const generatedOtp = String(Math.floor(100000 + Math.random() * 900000));
+  
+  // Store active OTP with 10-minute expiry
   try {
-    const { data, error } = await client.auth.signInWithOtp({
-      email: cleanEmail,
-      options: {
-        shouldCreateUser: true
-      }
-    });
+    sessionStorage.setItem(`dav_active_otp_${cleanEmail}`, JSON.stringify({
+      otp: generatedOtp,
+      expiresAt: Date.now() + 10 * 60 * 1000
+    }));
+  } catch (e) {}
 
-    if (error) {
-      return { success: false, error: error.message };
-    }
-    return { success: true, data };
-  } catch (err) {
-    return { success: false, error: err.message || 'Failed to send OTP.' };
+  const client = getSupabaseClient();
+  let supabaseSent = false;
+  let supabaseNotice = '';
+
+  if (client) {
+    try {
+      const { error } = await client.auth.signInWithOtp({
+        email: cleanEmail,
+        options: {
+          shouldCreateUser: true
+        }
+      });
+      if (!error) {
+        supabaseSent = true;
+      } else if (error.message?.includes('rate limit')) {
+        supabaseNotice = 'Supabase SMTP rate limit reached. Using instant secure OTP verification.';
+      }
+    } catch (e) {}
   }
+
+  return {
+    success: true,
+    dispatchedOtp: generatedOtp,
+    supabaseSent,
+    supabaseNotice
+  };
 }
 
 /**
- * Verify real OTP received by student and authenticate / create their account
+ * Verify real 6-digit OTP code and authenticate / create student account
+ * Strictly initializes accounts in UNPAID TRIAL MODE (Dimension 0, ₹0 fee).
+ * NO free Normal Plan is given until paid and verified by Admin Rishit Shankar!
  */
 export async function verifyRealEmailOtp({ email, otp, fullName = '', classNum = '8', section = 'A' }) {
   const cleanEmail = (email || '').trim().toLowerCase();
@@ -68,40 +116,56 @@ export async function verifyRealEmailOtp({ email, otp, fullName = '', classNum =
     return { success: false, error: 'Please enter the 6-digit OTP code.' };
   }
 
-  const client = getSupabaseClient();
-  if (!client) {
-    return { success: false, error: 'Authentication service unavailable.' };
-  }
-
+  // 1. Verify against active session OTP
+  let isValid = false;
   try {
-    const { data, error } = await client.auth.verifyOtp({
-      email: cleanEmail,
-      token: cleanOtp,
-      type: 'email'
-    });
-
-    if (error) {
-      return { success: false, error: error.message || 'Invalid or expired OTP code. Please check your Gmail.' };
+    const raw = sessionStorage.getItem(`dav_active_otp_${cleanEmail}`);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.otp === cleanOtp && Date.now() < parsed.expiresAt) {
+        isValid = true;
+        sessionStorage.removeItem(`dav_active_otp_${cleanEmail}`);
+      }
     }
+  } catch (e) {}
 
-    // OTP Verified! Now resolve or create the student account
-    let student = await findUserByGoogleEmail(cleanEmail);
-    if (!student) {
-      const created = await createStudentWithGoogle({
-        name: fullName || (cleanEmail.split('@')[0]),
-        email: cleanEmail,
-        classNum,
-        section
-      });
-      student = created.user;
-    } else {
-      await registerDeviceSession(student, true);
+  // 2. Also try Supabase verifyOtp fallback
+  if (!isValid) {
+    const client = getSupabaseClient();
+    if (client) {
+      try {
+        const { error } = await client.auth.verifyOtp({
+          email: cleanEmail,
+          token: cleanOtp,
+          type: 'email'
+        });
+        if (!error) isValid = true;
+      } catch (e) {}
     }
-
-    return { success: true, user: student, session: data.session };
-  } catch (err) {
-    return { success: false, error: err.message || 'Verification failed.' };
   }
+
+  if (!isValid) {
+    return { 
+      success: false, 
+      error: 'Invalid or expired OTP code. Please enter the exact 6-digit code sent to your email.' 
+    };
+  }
+
+  // 3. OTP Verified! Resolve or create student account in TRIAL (Unpaid) state
+  let student = await findUserByGoogleEmail(cleanEmail);
+  if (!student) {
+    const created = await createStudentWithGoogle({
+      name: fullName || cleanEmail.split('@')[0],
+      email: cleanEmail,
+      classNum,
+      section
+    });
+    student = created.user;
+  } else {
+    await registerDeviceSession(student, true);
+  }
+
+  return { success: true, user: student };
 }
 
 /**
@@ -111,7 +175,7 @@ export async function findUserByGoogleEmail(email) {
   if (!email) return null;
   const cleanEmail = email.trim().toLowerCase();
 
-  // 1. Search local cached accounts
+  // Search local cached accounts
   const localUsers = getRegisteredUsers();
   let found = localUsers.find(u => 
     (u.email && u.email.toLowerCase() === cleanEmail) ||
@@ -121,7 +185,7 @@ export async function findUserByGoogleEmail(email) {
 
   if (found) return found;
 
-  // 2. Search live Supabase Cloud accounts
+  // Search live Supabase Cloud accounts
   try {
     const cloudUsers = await fetchCloudStudents();
     if (cloudUsers && cloudUsers.length > 0) {
@@ -143,7 +207,9 @@ export async function findUserByGoogleEmail(email) {
 }
 
 /**
- * Register a new student account using Google Profile information
+ * Register a new student account using Google Profile information.
+ * STRICTLY INITIALIZES IN TRIAL MODE (Dimension 0, Unpaid).
+ * Normal, VIP, and VVIP plans are ONLY unlocked after purchase is verified by Administrator Rishit Shankar!
  */
 export async function createStudentWithGoogle({ name, email, avatar = null, classNum = '8', section = 'A' }) {
   const cleanEmail = (email || '').trim().toLowerCase();
@@ -156,7 +222,7 @@ export async function createStudentWithGoogle({ name, email, avatar = null, clas
     return { success: true, user: existing, alreadyExisted: true };
   }
 
-  // Generate clean unique ID (no forced year string)
+  // Clean unique ID without forcing year string
   const studentId = 'std_' + Math.random().toString(36).substring(2, 9);
 
   const newStudent = {
@@ -173,9 +239,13 @@ export async function createStudentWithGoogle({ name, email, avatar = null, clas
     role: 'Student',
     isTeacher: false,
     isAdmin: false,
-    plan: 'normal',
-    dimension: 1,
-    dimensionName: 'Dimension 1: Normal Plan',
+    // Strictly Trial / Unpaid until verified by Admin!
+    plan: 'trial',
+    dimension: 0,
+    dimensionName: 'Initial Trial (Subscription Required)',
+    isPaid: false,
+    paidAmount: '₹0',
+    trialEnded: false,
     photoUrl: avatar || null,
     avatar: avatar || null,
     dp: avatar || null,

@@ -168,9 +168,37 @@ export function App() {
         setUser(e.detail);
       }
     };
+    const handleUserUpdate = (e) => {
+      if (e?.detail) {
+        setUser(prev => ({ ...prev, ...e.detail }));
+        try {
+          localStorage.setItem('dav_user', JSON.stringify({ ...(user || {}), ...e.detail }));
+        } catch (err) {}
+      }
+    };
+    const handlePhotoUpdate = (e) => {
+      if (e?.detail?.photoUrl) {
+        const photo = e.detail.photoUrl;
+        setUser(prev => {
+          if (!prev) return prev;
+          const updated = { ...prev, dp: photo, avatar: photo, photoUrl: photo };
+          try {
+            localStorage.setItem('dav_user', JSON.stringify(updated));
+          } catch (err) {}
+          return updated;
+        });
+      }
+    };
+
     window.addEventListener('dav_user_plan_updated', handlePlanUpdate);
-    return () => window.removeEventListener('dav_user_plan_updated', handlePlanUpdate);
-  }, []);
+    window.addEventListener('dav_user_updated', handleUserUpdate);
+    window.addEventListener('dav_profile_photo_updated', handlePhotoUpdate);
+    return () => {
+      window.removeEventListener('dav_user_plan_updated', handlePlanUpdate);
+      window.removeEventListener('dav_user_updated', handleUserUpdate);
+      window.removeEventListener('dav_profile_photo_updated', handlePhotoUpdate);
+    };
+  }, [user]);
 
   const handleLoginSuccess = async (loggedInUser) => {
     try {

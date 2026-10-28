@@ -733,9 +733,27 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
         isOpen={Boolean(googleModalMode)}
         initialMode={googleModalMode || 'login'}
         onClose={() => setGoogleModalMode(null)}
-        onLoginSuccess={(user) => {
+        onLoginSuccess={async (gUser) => {
           setGoogleModalMode(null);
-          setLoggedInUser(user);
+          if (!gUser) return;
+
+          // Check One Man, One Device protocol for Google Login
+          const deviceCheck = await checkDeviceSession(gUser.id);
+          if (!deviceCheck.allowed && !deviceCheck.isSameDevice) {
+            setDeviceConflict({
+              resolvedUser: gUser,
+              activeSession: deviceCheck.activeSession,
+              thisDevice: getDeviceMetadata()
+            });
+            return;
+          }
+
+          // Register device session
+          try {
+            await registerDeviceSession(gUser, true);
+          } catch (e) {}
+
+          setLoggedInUser(gUser);
           setIsSuccess(true);
         }}
       />

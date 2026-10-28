@@ -32,13 +32,15 @@ export function Navbar({
   // State to track user's real uploaded photo from Section 9 (Student Profile)
   const [userPhoto, setUserPhoto] = useState(() => {
     try {
+      if (user?.dp) return user.dp;
+      if (user?.avatar) return user.avatar;
+      if (user?.photoUrl) return user.photoUrl;
       const uid = (user?.id || 'rishibhai').toLowerCase();
       const saved = localStorage.getItem(`dav_student_profile_${uid}`);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (parsed.photoUrl) return parsed.photoUrl;
+        if (parsed.photoUrl || parsed.dp || parsed.avatar) return parsed.photoUrl || parsed.dp || parsed.avatar;
       }
-      if (user?.photoUrl) return user.photoUrl;
       if (uid === 'rishibhai') return '/rishit_shankar.jpg';
     } catch (e) {}
     return null;
@@ -51,21 +53,37 @@ export function Navbar({
         setUserPhoto(e.detail.photoUrl);
       }
     };
-    window.addEventListener('dav_profile_photo_updated', handlePhotoUpdate);
-
-    const uid = (user?.id || 'rishibhai').toLowerCase();
-    try {
-      const saved = localStorage.getItem(`dav_student_profile_${uid}`);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.photoUrl) setUserPhoto(parsed.photoUrl);
-      } else if (uid === 'rishibhai') {
-        setUserPhoto('/rishit_shankar.jpg');
+    const handleUserUpdate = (e) => {
+      if (e?.detail?.dp || e?.detail?.avatar || e?.detail?.photoUrl) {
+        setUserPhoto(e.detail.dp || e.detail.avatar || e.detail.photoUrl);
       }
-    } catch (e) {}
+    };
 
-    return () => window.removeEventListener('dav_profile_photo_updated', handlePhotoUpdate);
-  }, [user?.id]);
+    window.addEventListener('dav_profile_photo_updated', handlePhotoUpdate);
+    window.addEventListener('dav_user_updated', handleUserUpdate);
+
+    if (user?.dp || user?.avatar || user?.photoUrl) {
+      setUserPhoto(user.dp || user.avatar || user.photoUrl);
+    } else {
+      const uid = (user?.id || 'rishibhai').toLowerCase();
+      try {
+        const saved = localStorage.getItem(`dav_student_profile_${uid}`);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed.photoUrl || parsed.dp || parsed.avatar) {
+            setUserPhoto(parsed.photoUrl || parsed.dp || parsed.avatar);
+          }
+        } else if (uid === 'rishibhai') {
+          setUserPhoto('/rishit_shankar.jpg');
+        }
+      } catch (e) {}
+    }
+
+    return () => {
+      window.removeEventListener('dav_profile_photo_updated', handlePhotoUpdate);
+      window.removeEventListener('dav_user_updated', handleUserUpdate);
+    };
+  }, [user?.id, user?.dp, user?.avatar, user?.photoUrl]);
 
   // Badge styling according to dimension
   let tierBadgeBg = 'bg-emerald-600 text-white';
