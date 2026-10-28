@@ -82,9 +82,20 @@ export function getDeviceMetadata() {
 }
 
 /**
+ * Determine maximum allowed devices for account tier:
+ * Normal = 1 device | VIP = 2 devices | Double VIP (VVIP) = 3 devices
+ */
+export function getMaxDevicesForUser(user) {
+  if (!user) return 1;
+  if (user.plan === 'vvip' || user.dimension === 3 || user.isDoubleVip) return 3;
+  if (user.plan === 'vip' || user.dimension === 2 || user.isVip) return 2;
+  return 1;
+}
+
+/**
  * Check if account is currently active on another device in Supabase Cloud
  */
-export async function checkDeviceSession(userId) {
+export async function checkDeviceSession(userId, currentUserObj = null) {
   if (!userId || userId === 'guest_student') {
     return { allowed: true, isSameDevice: true, currentActiveSession: null };
   }
@@ -92,6 +103,7 @@ export async function checkDeviceSession(userId) {
   const currentDeviceId = getDeviceId();
   const normalizedUid = String(userId).trim().toLowerCase();
   const client = getSupabaseClient();
+  const maxAllowed = getMaxDevicesForUser(currentUserObj);
 
   // If Supabase not reachable, check local storage
   if (!client) {
@@ -99,7 +111,11 @@ export async function checkDeviceSession(userId) {
       const local = localStorage.getItem(LOCAL_SESSION_KEY);
       if (local) {
         const parsed = JSON.parse(local);
-        if (parsed.userId?.toLowerCase() === normalizedUid && parsed.deviceId !== currentDeviceId) {
+        const activeDevices = Array.isArray(parsed.activeDevices) ? parsed.activeDevices : [parsed.deviceId];
+        if (activeDevices.includes(currentDeviceId)) {
+          return { allowed: true, isSameDevice: true, currentActiveSession: parsed };
+        }
+        if (parsed.userId?.toLowerCase() === normalizedUid && activeDevices.length >= maxAllowed) {
           return {
             allowed: false,
             isSameDevice: false,
@@ -135,8 +151,12 @@ export async function checkDeviceSession(userId) {
       return { allowed: true, isSameDevice: true, currentActiveSession: null };
     }
 
-    // Check if it's the exact same device
-    if (activeSession.deviceId === currentDeviceId) {
+    const activeDevicesList = Array.isArray(activeSession.activeDevices) 
+      ? activeSession.activeDevices 
+      : (activeSession.deviceId ? [activeSession.deviceId] : []);
+
+    // Check if it's already one of the authorized devices
+    if (activeDevicesList.includes(currentDeviceId) || activeSession.deviceId === currentDeviceId) {
       return {
         allowed: true,
         isSameDevice: true,
@@ -149,7 +169,6 @@ export async function checkDeviceSession(userId) {
     const isStale = timeSinceHeartbeat > SESSION_STALE_TIMEOUT_MS;
 
     if (isStale) {
-      // Stale session can be claimed
       return {
         allowed: true,
         isSameDevice: false,
@@ -158,7 +177,19 @@ export async function checkDeviceSession(userId) {
       };
     }
 
-    // Active conflict! Not allowed to be logged in on two devices!
+    // Allow multiple devices if under the user's tier limit (Normal: 1, VIP: 2, Double VIP: 3)
+    const sessionTierLimit = getMaxDevicesForUser(activeSession);
+    const effectiveLimit = Math.max(maxAllowed, sessionTierLimit);
+
+    if (activeDevicesList.length < effectiveLimit) {
+      return {
+        allowed: true,
+        isSameDevice: false,
+        currentActiveSession: activeSession
+      };
+    }
+
+    // Active conflict! Exceeds tier limit
     return {
       allowed: false,
       isSameDevice: false,
@@ -185,6 +216,18 @@ export async function registerDeviceSession(user, forceTakeover = false) {
   const metadata = getDeviceMetadata();
   const client = getSupabaseClient();
 
+  const maxAllowed = getMaxDevicesForUser(user);
+  let existingDevices = [currentDeviceId];
+  try {
+    const local = localStorage.getItem(LOCAL_SESSION_KEY);
+    if (local) {
+      const p = JSON.parse(local);
+      if (p.userId === normalizedUid && Array.isArray(p.activeDevices)) {
+        existingDevices = Array.from(new Set([currentDeviceId, ...p.activeDevices])).slice(0, maxAllowed);
+      }
+    }
+  } catch (e) {}
+
   const sessionData = {
     userId: normalizedUid,
     originalId: user.id,
@@ -195,6 +238,8 @@ export async function registerDeviceSession(user, forceTakeover = false) {
     isDoubleVip: Boolean(user.plan === 'vvip' || user.dimension === 3),
     isVip: Boolean(user.plan === 'vip' || user.dimension === 2 || user.plan === 'vvip' || user.dimension === 3),
     deviceId: currentDeviceId,
+    activeDevices: forceTakeover ? [currentDeviceId] : existingDevices,
+    maxDevicesAllowed: maxAllowed,
     deviceMetadata: metadata,
     loginAt: Date.now(),
     lastActiveAt: Date.now(),

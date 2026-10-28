@@ -1421,24 +1421,13 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                 else if (e.deltaY < -50) handlePrevPage();
               }}
             >
-              {/* PDF Document Loading Spinner for Canvas */}
+              {/* Sleek Sub-Second Top Loading Stream Line (No blocking cards) */}
               {isLoadingPdf && (
-                <div className="my-auto flex flex-col items-center justify-center p-8 text-center bg-stone-900/60 rounded-2xl border border-stone-800 shadow-2xl max-w-sm">
-                  <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-4">
-                    <RefreshCw className="w-7 h-7 text-amber-400 animate-spin" />
-                  </div>
-                  <h3 className="text-stone-100 font-bold text-sm mb-1">
-                    Loading Canvas for {book.title}
-                  </h3>
-                  <p className="text-stone-400 text-xs mb-4">
-                    Initializing Neon Highlighter &amp; Annotation engine...
-                  </p>
-                  <div className="w-full h-2 bg-stone-800 rounded-full overflow-hidden border border-stone-700">
-                    <div 
-                      className="h-full bg-gradient-to-r from-purple-500 to-amber-300 transition-all duration-300 rounded-full"
-                      style={{ width: `${Math.max(15, loadingProgress)}%` }}
-                    />
-                  </div>
+                <div className="absolute top-0 left-0 right-0 h-1 bg-stone-900 z-50 overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-amber-500 via-yellow-300 to-amber-500 animate-pulse transition-all duration-150"
+                    style={{ width: `${Math.max(25, loadingProgress)}%` }}
+                  />
                 </div>
               )}
 

@@ -206,16 +206,7 @@ export function Navbar({
               </button>
             )}
 
-            {/* One Man, One Device Security Indicator */}
-            {user && (
-              <div 
-                className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-bold"
-                title={`One Man, One Device Protocol Active • Bound to ${user?.name || 'this account'}`}
-              >
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>{user?.plan === 'vvip' || user?.dimension === 3 ? '💎 Double VIP: 1 Device Locked' : '🔒 1 Device Bound'}</span>
-              </div>
-            )}
+            {/* Device Security Protocol is handled strictly in background: Normal=1 device, VIP=2 devices, Double VIP=3 devices */}
 
             {/* Profile Pill & Logout */}
             <div className="flex items-center gap-2 pl-2 sm:pl-3 border-l border-slate-200">

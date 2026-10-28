@@ -160,6 +160,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+    <!-- High-Speed Pre-warmed PDF Engine for Sub-Second Book Opening -->
+    <script src="/vendor/pdf.min.js"></script>
+    <script>
+      if (window.pdfjsLib) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = '/vendor/pdf.worker.min.js';
+      }
+    </script>
   </head>
   <body class="bg-slate-50 text-slate-800 antialiased selection:bg-amber-400 selection:text-maroon-900">
     <div id="root"></div>

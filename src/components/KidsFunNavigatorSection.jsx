@@ -61,76 +61,158 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
   };
 
   // =========================================================================
-  // SUB-SECTION 1: GO TO DAV KHABRA (FULL-PAGE, GPS PERMISSION FIRST, 4 MODES)
-  // Destination: 492F+563, Khabra, Muzaffarpur, Bihar 843113
+  // SUB-SECTION 1: GO TO DAV KHABRA (100% REAL HARDWARE GPS + LIVE TRACKING)
+  // Destination: 492F+563, Khabra, Muzaffarpur, Bihar 843113 (26.0730° N, 85.3735° E)
   // =========================================================================
   const [locationPermissionStatus, setLocationPermissionStatus] = useState('prompt'); // 'prompt' | 'granted' | 'denied'
   const [liveGpsCoords, setLiveGpsCoords] = useState(null);
+  const [liveAddress, setLiveAddress] = useState('');
   const [gpsErrorMsg, setGpsErrorMsg] = useState(null);
   const [isGpsLoading, setIsGpsLoading] = useState(false);
-  const [selectedPresetId, setSelectedPresetId] = useState('ls_college');
+  const [isLiveWatching, setIsLiveWatching] = useState(false);
+  const [selectedPresetId, setSelectedPresetId] = useState(''); // Empty by default; presets are 100% optional
+  const [showOptionalLandmarks, setShowOptionalLandmarks] = useState(false);
 
-  // Ask for browser GPS on initial load of section
+  // Interactive Live Speed & Travel Simulators (User can increase/decrease speed & distance)
+  const [speedBoostKm, setSpeedBoostKm] = useState(0); // -15 to +40 km/h
+  const [distanceSimOffsetKm, setDistanceSimOffsetKm] = useState(0); // -10 to +20 km
+  const watchIdRef = useRef(null);
+
+  // Stop GPS watcher on unmount
   useEffect(() => {
-    if (navigator.geolocation) {
-      setIsGpsLoading(true);
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setIsGpsLoading(false);
-          setLocationPermissionStatus('granted');
-          setLiveGpsCoords({
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude
-          });
-        },
-        (err) => {
-          setIsGpsLoading(false);
-          // If denied, user can click to enable
-          setLocationPermissionStatus('denied');
-          setGpsErrorMsg('Live location permission not granted yet. Click "Turn On / Allow Live Location" below or select one of the 5 selective landmarks.');
-        },
-        { enableHighAccuracy: true, timeout: 8000 }
-      );
-    }
+    return () => {
+      if (watchIdRef.current !== null && navigator.geolocation) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+      }
+    };
   }, []);
 
-  const requestLiveLocation = () => {
+  // Real-time reverse geocoding to human-readable street/area
+  const fetchAddressName = (lat, lng) => {
+    try {
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=16`, {
+        headers: { 'Accept': 'application/json' }
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.display_name) {
+            const parts = data.display_name.split(',');
+            const clean = parts.slice(0, 3).join(',').trim();
+            setLiveAddress(clean);
+          }
+        })
+        .catch(() => {});
+    } catch (e) {}
+  };
+
+  // Primary Live Location Fetch & Continuous Tracking
+  const requestLiveLocation = useCallback(() => {
     playFx('pop');
     if (!navigator.geolocation) {
-      setGpsErrorMsg('Geolocation is not supported by your browser.');
+      setGpsErrorMsg('Geolocation is not supported by your device browser.');
       return;
     }
+
     setIsGpsLoading(true);
     setGpsErrorMsg(null);
+
+    // 1. Immediate Single Position
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         setIsGpsLoading(false);
         setLocationPermissionStatus('granted');
-        setLiveGpsCoords({
+        setIsLiveWatching(true);
+        const coords = {
           lat: pos.coords.latitude,
-          lng: pos.coords.longitude
-        });
+          lng: pos.coords.longitude,
+          accuracy: Math.round(pos.coords.accuracy || 10),
+          speedKmh: pos.coords.speed ? Math.round(pos.coords.speed * 3.6) : 0,
+          heading: pos.coords.heading,
+          timestamp: pos.timestamp
+        };
+        setLiveGpsCoords(coords);
+        setSelectedPresetId(''); // Clear preset so live GPS takes over 100%
+        fetchAddressName(coords.lat, coords.lng);
         addXp(50);
         playFx('victory');
       },
       (err) => {
         setIsGpsLoading(false);
         setLocationPermissionStatus('denied');
-        setGpsErrorMsg('Could not detect live GPS. Please allow location access in your browser or choose one of the 5 selective landmarks.');
+        if (err.code === 1) {
+          setGpsErrorMsg('Permission denied by browser. Please tap the lock icon in your browser address bar and choose "Allow Location".');
+        } else if (err.code === 2) {
+          setGpsErrorMsg('GPS signal not found. Please ensure Device Location/GPS is turned ON in your device settings.');
+        } else {
+          setGpsErrorMsg('GPS request timed out. Please try clicking "Turn On / Allow Live Location" again.');
+        }
       },
-      { enableHighAccuracy: true, timeout: 10000 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
-  };
+
+    // 2. Continuous Real-Time Satellite Watcher (Updates as student or bus moves!)
+    if (watchIdRef.current !== null) {
+      navigator.geolocation.clearWatch(watchIdRef.current);
+    }
+    watchIdRef.current = navigator.geolocation.watchPosition(
+      (pos) => {
+        setLocationPermissionStatus('granted');
+        setIsLiveWatching(true);
+        setLiveGpsCoords(prev => ({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          accuracy: Math.round(pos.coords.accuracy || 10),
+          speedKmh: pos.coords.speed ? Math.round(pos.coords.speed * 3.6) : (prev?.speedKmh || 0),
+          heading: pos.coords.heading,
+          timestamp: pos.timestamp
+        }));
+      },
+      (err) => {
+        console.warn('watchPosition notice:', err);
+      },
+      { enableHighAccuracy: true, maximumAge: 2000, timeout: 25000 }
+    );
+  }, [playFx]);
+
+  // Attempt automatic live location silently once on page entry
+  useEffect(() => {
+    if (navigator.geolocation && locationPermissionStatus === 'prompt') {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setLocationPermissionStatus('granted');
+          setIsLiveWatching(true);
+          const coords = {
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+            accuracy: Math.round(pos.coords.accuracy || 10),
+            speedKmh: pos.coords.speed ? Math.round(pos.coords.speed * 3.6) : 0,
+            heading: pos.coords.heading,
+            timestamp: pos.timestamp
+          };
+          setLiveGpsCoords(coords);
+          setSelectedPresetId('');
+          fetchAddressName(coords.lat, coords.lng);
+        },
+        () => {
+          // Silent fallback to prompt
+          setLocationPermissionStatus('prompt');
+        },
+        { enableHighAccuracy: true, timeout: 6000, maximumAge: 30000 }
+      );
+    }
+  }, []);
 
   // Calculate live route distance for all 5 modes (School Bus, Car, Taxi, Bicycle, Kid Walking)
   const routeCalculations = useMemo(() => {
-    let originLat, originLng, originName;
-    let roadKm, busMins, carMins, taxiMins, bikeMins, walkMins;
+    let originLat, originLng, originName, accuracyM, liveSpeedKmh;
+    let baseRoadKm, busMins, carMins, taxiMins, bikeMins, walkMins;
 
     if (locationPermissionStatus === 'granted' && liveGpsCoords) {
       originLat = liveGpsCoords.lat;
       originLng = liveGpsCoords.lng;
-      originName = `My Live GPS (${originLat.toFixed(4)}° N, ${originLng.toFixed(4)}° E)`;
+      accuracyM = liveGpsCoords.accuracy || 10;
+      liveSpeedKmh = Math.round(liveGpsCoords.speedKmh || 0);
+      originName = liveAddress || `Live Device GPS (${originLat.toFixed(4)}° N, ${originLng.toFixed(4)}° E)`;
       
       const straightKm = calculateHaversineDistanceKm(
         originLat, 
@@ -138,47 +220,78 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
         DAV_KHABRA_COORDINATES.lat, 
         DAV_KHABRA_COORDINATES.lng
       );
-      // Realistic road distance with Bihar winding factor ~1.25x
-      roadKm = Math.round(straightKm * 1.25 * 10) / 10;
-      busMins = Math.max(3, Math.round((roadKm / 32) * 60) + 4);
-      carMins = Math.max(2, Math.round((roadKm / 42) * 60));
-      taxiMins = Math.max(2, Math.round((roadKm / 45) * 60));
-      bikeMins = Math.max(4, Math.round((roadKm / 16) * 60));
-      walkMins = Math.max(8, Math.round((roadKm / 4.5) * 60));
-    } else {
+      // Realistic road distance with Bihar winding road network factor (~1.25x)
+      baseRoadKm = Math.round(straightKm * 1.25 * 10) / 10;
+    } else if (selectedPresetId) {
       const preset = PRESET_STARTING_LOCATIONS.find(p => p.id === selectedPresetId) || PRESET_STARTING_LOCATIONS[0];
       originLat = preset.lat;
       originLng = preset.lng;
       originName = preset.name;
-      roadKm = preset.roadKm;
-      busMins = preset.busMins;
-      carMins = preset.carMins;
-      taxiMins = preset.taxiMins;
-      bikeMins = preset.bikeMins;
-      walkMins = preset.walkMins;
+      baseRoadKm = preset.roadKm;
+      accuracyM = 5;
+      liveSpeedKmh = 0;
+    } else {
+      // Default to Muzaffarpur City Center before GPS allowed
+      originLat = 26.1209;
+      originLng = 85.3647;
+      originName = 'Muzaffarpur District (Turn On Live Location for Real GPS)';
+      baseRoadKm = 5.8;
+      accuracyM = null;
+      liveSpeedKmh = 0;
     }
+
+    // Dynamic distance with simulation modifier
+    const effectiveRoadKm = Math.max(0.1, Math.round((baseRoadKm + distanceSimOffsetKm) * 10) / 10);
+
+    // Dynamic speeds with interactive speed booster
+    const busSpeed = Math.max(12, 32 + speedBoostKm);
+    const carSpeed = Math.max(15, 42 + speedBoostKm);
+    const taxiSpeed = Math.max(15, 45 + speedBoostKm);
+    const bikeSpeed = Math.max(8, 16 + Math.round(speedBoostKm * 0.35));
+    const walkSpeed = Math.max(2.5, 4.5);
+
+    busMins = Math.max(1, Math.round((effectiveRoadKm / busSpeed) * 60) + 3);
+    carMins = Math.max(1, Math.round((effectiveRoadKm / carSpeed) * 60));
+    taxiMins = Math.max(1, Math.round((effectiveRoadKm / taxiSpeed) * 60));
+    bikeMins = Math.max(2, Math.round((effectiveRoadKm / bikeSpeed) * 60));
+    walkMins = Math.max(3, Math.round((effectiveRoadKm / walkSpeed) * 60));
 
     return {
       originLat,
       originLng,
       originName,
-      roadKm,
+      accuracyM,
+      liveSpeedKmh,
+      roadKm: effectiveRoadKm,
       busMins,
       carMins,
       taxiMins,
       bikeMins,
-      walkMins
+      walkMins,
+      busSpeed,
+      carSpeed,
+      taxiSpeed,
+      bikeSpeed,
+      walkSpeed
     };
-  }, [locationPermissionStatus, liveGpsCoords, selectedPresetId]);
+  }, [locationPermissionStatus, liveGpsCoords, liveAddress, selectedPresetId, distanceSimOffsetKm, speedBoostKm]);
 
-  // Direct Google Maps Turn-by-Turn GPS Navigation URL
+  // Direct Google Maps Turn-by-Turn GPS Navigation URL (100% Reliable across PC, Mac, Android & iOS)
   const googleMapsDirectionsUrl = useMemo(() => {
-    const dest = encodeURIComponent(DAV_KHABRA_COORDINATES.plusCode);
-    if (locationPermissionStatus === 'granted' && liveGpsCoords) {
+    const dest = `${DAV_KHABRA_COORDINATES.lat},${DAV_KHABRA_COORDINATES.lng}`;
+    if (liveGpsCoords) {
       return `https://www.google.com/maps/dir/?api=1&origin=${liveGpsCoords.lat},${liveGpsCoords.lng}&destination=${dest}&travelmode=driving&dir_action=navigate`;
     }
     return `https://www.google.com/maps/dir/?api=1&origin=${routeCalculations.originLat},${routeCalculations.originLng}&destination=${dest}&travelmode=driving&dir_action=navigate`;
-  }, [locationPermissionStatus, liveGpsCoords, routeCalculations]);
+  }, [liveGpsCoords, routeCalculations]);
+
+  const googleMapsWalkingUrl = useMemo(() => {
+    const dest = `${DAV_KHABRA_COORDINATES.lat},${DAV_KHABRA_COORDINATES.lng}`;
+    if (liveGpsCoords) {
+      return `https://www.google.com/maps/dir/?api=1&origin=${liveGpsCoords.lat},${liveGpsCoords.lng}&destination=${dest}&travelmode=walking&dir_action=navigate`;
+    }
+    return `https://www.google.com/maps/dir/?api=1&origin=${routeCalculations.originLat},${routeCalculations.originLng}&destination=${dest}&travelmode=walking&dir_action=navigate`;
+  }, [liveGpsCoords, routeCalculations]);
 
   // =========================================================================
   // SUB-SECTION 2: TRACK BUS (PRINCIPAL ANIL KUMAR SINGH'S FLEET RADAR)
@@ -996,29 +1109,44 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
                 </div>
 
                 {/* GPS PERMISSION PROMPT / STATUS CARD */}
-                <div className="bg-stone-950/70 rounded-2xl p-5 border-2 border-amber-300 flex flex-wrap items-center justify-between gap-4">
+                <div className="bg-stone-950/80 rounded-2xl p-5 border-2 border-amber-300 flex flex-wrap items-center justify-between gap-4 shadow-xl">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-amber-400 text-stone-950 flex items-center justify-center font-black text-2xl shrink-0">
+                    <div className="w-12 h-12 rounded-2xl bg-amber-400 text-stone-950 flex items-center justify-center font-black text-2xl shrink-0 shadow-md">
                       📍
                     </div>
                     <div>
-                      <div className="text-xs font-black uppercase tracking-wider text-amber-300">
-                        Live Route GPS Status:
-                      </div>
-                      <div className="text-sm sm:text-base font-extrabold text-white mt-0.5">
-                        {locationPermissionStatus === 'granted' && liveGpsCoords ? (
-                          <span className="text-emerald-400 flex items-center gap-1.5">
-                            <CheckCircle2 className="w-4 h-4" />
-                            <span>Live GPS Active ({liveGpsCoords.lat.toFixed(4)}° N, {liveGpsCoords.lng.toFixed(4)}° E)</span>
+                      <div className="text-xs font-black uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                        <span>Real Hardware GPS Satellites:</span>
+                        {isLiveWatching && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[10px] font-bold">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                            <span>Continuous Live Stream Active</span>
                           </span>
+                        )}
+                      </div>
+                      <div className="text-sm sm:text-base font-extrabold text-white mt-1">
+                        {locationPermissionStatus === 'granted' && liveGpsCoords ? (
+                          <div className="space-y-0.5">
+                            <div className="text-emerald-400 font-bold flex items-center gap-1.5 flex-wrap">
+                              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                              <span>{routeCalculations.originName}</span>
+                            </div>
+                            <div className="text-[11px] text-amber-200/90 font-mono">
+                              Exact Coords: {liveGpsCoords.lat.toFixed(5)}° N, {liveGpsCoords.lng.toFixed(5)}° E 
+                              {liveGpsCoords.accuracy && ` (Accurate to ±${liveGpsCoords.accuracy}m)`}
+                              {routeCalculations.liveSpeedKmh > 0 && ` • Moving at ${routeCalculations.liveSpeedKmh} km/h`}
+                            </div>
+                          </div>
                         ) : (
-                          <span className="text-amber-300">
-                            Live location is turned off or waiting for permission.
+                          <span className="text-amber-200">
+                            Live device location ready. Click "Turn On Live Location" to fetch your exact house / bus coordinates.
                           </span>
                         )}
                       </div>
                       {gpsErrorMsg && (
-                        <div className="text-xs text-rose-300 mt-1">{gpsErrorMsg}</div>
+                        <div className="text-xs text-rose-300 mt-1 font-medium bg-rose-950/40 p-2 rounded-lg border border-rose-500/30">
+                          {gpsErrorMsg}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -1028,156 +1156,242 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
                     <button
                       onClick={requestLiveLocation}
                       disabled={isGpsLoading}
-                      className="px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-lg transition active:scale-95 cursor-pointer border-2 border-emerald-300"
+                      className="px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 hover:from-emerald-400 hover:to-green-500 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-lg transition active:scale-95 cursor-pointer border-2 border-emerald-300 animate-pulse"
                     >
                       <Navigation className={`w-4 h-4 ${isGpsLoading ? 'animate-spin' : ''}`} />
-                      <span>{isGpsLoading ? 'Detecting GPS...' : '📍 Turn On / Allow Live Location'}</span>
+                      <span>{isGpsLoading ? 'Locking Satellite GPS...' : '📍 Turn On / Allow Live Location'}</span>
                     </button>
 
-                    {/* Preset Landmarks Dropdown */}
-                    <select
-                      value={selectedPresetId}
-                      onChange={(e) => {
-                        setSelectedPresetId(e.target.value);
-                        // Only clear GPS mode if live coords not available
-                        if (locationPermissionStatus !== 'granted') {
-                          setLocationPermissionStatus('denied');
-                        }
-                        playFx('pop');
-                      }}
-                      className="bg-stone-900 text-white font-bold text-xs py-3 px-3 rounded-xl border border-amber-400 focus:outline-none cursor-pointer"
+                    <button
+                      type="button"
+                      onClick={() => setShowOptionalLandmarks(!showOptionalLandmarks)}
+                      className="px-3.5 py-3 rounded-xl bg-stone-900 hover:bg-stone-800 text-amber-300 font-bold text-xs border border-amber-400/50 flex items-center gap-1.5 transition cursor-pointer"
+                      title="Optional: Test with fixed landmarks instead of live GPS"
                     >
-                      {PRESET_STARTING_LOCATIONS.map(loc => (
-                        <option key={loc.id} value={loc.id}>
-                          {loc.emoji} {loc.name}
-                        </option>
-                      ))}
-                    </select>
+                      <span>🏛️ Landmarks (Optional)</span>
+                    </button>
                   </div>
                 </div>
 
-                {/* CALCULATED LIVE ROUTE DISTANCE SECTION */}
-                {locationPermissionStatus !== 'granted' && !selectedPresetId ? (
-                  <div className="bg-stone-950/80 rounded-2xl p-6 border-2 border-dashed border-amber-400/60 text-center space-y-3">
-                    <div className="text-3xl">🛰️</div>
-                    <div className="text-base font-black text-amber-300">
-                      Live Route Distance Waiting for Location
+                {/* Optional Landmarks Dropdown Drawer */}
+                {showOptionalLandmarks && (
+                  <div className="p-4 bg-stone-900/90 rounded-2xl border border-amber-400/40 space-y-2 animate-fadeIn">
+                    <div className="text-xs font-bold text-amber-300 uppercase tracking-wide flex items-center justify-between">
+                      <span>Optional Manual Testing: Select a Muzaffarpur Landmark</span>
+                      <button 
+                        onClick={() => {
+                          setSelectedPresetId('');
+                          setShowOptionalLandmarks(false);
+                        }}
+                        className="text-stone-400 hover:text-white text-[11px] underline"
+                      >
+                        Reset to Live GPS
+                      </button>
                     </div>
-                    <p className="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto">
-                      Please allow your live location or select your nearby landmark so we can calculate the exact road distance from where you are to <strong>DAV Public School Khabra (492F+563)</strong>.
-                    </p>
-                    <button
-                      onClick={requestLiveLocation}
-                      className="px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs sm:text-sm inline-flex items-center gap-2 cursor-pointer shadow-lg"
-                    >
-                      <Navigation className="w-4 h-4" />
-                      <span>Allow Live Location Now</span>
-                    </button>
-                  </div>
-                ) : (
-                  <div>
-                    <div className="text-xs font-black uppercase tracking-wider text-amber-300 mb-2 flex items-center justify-between">
-                      <span className="flex items-center gap-1.5">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                        <span>Calculated Distance from {routeCalculations.originName} to DAV Khabra (492F+563)</span>
-                      </span>
-                      <span className="text-white font-mono">{routeCalculations.roadKm} KM</span>
-                    </div>
-
-                    {/* 5 CALCULATED MODE TILES (SCHOOL BUS, CAR, TAXI, BICYCLE, KID WALKING) */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
-                      
-                      {/* School Bus Mode */}
-                      <div className="bg-white/10 rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
-                        <div className="flex items-center justify-between text-amber-300 text-xs font-black uppercase">
-                          <span className="flex items-center gap-1.5">
-                            <Bus className="w-4 h-4" />
-                            <span>School Bus</span>
-                          </span>
-                          <span className="text-[10px] bg-amber-400 text-stone-950 px-2 py-0.5 rounded font-black">~32 km/h</span>
-                        </div>
-                        <div className="text-2xl sm:text-3xl font-black text-white mt-2">
-                          {routeCalculations.roadKm} <span className="text-xs text-amber-200">KM</span>
-                        </div>
-                        <div className="text-xs font-bold text-emerald-300 mt-1">
-                          Time: ~{routeCalculations.busMins} mins
-                        </div>
-                      </div>
-
-                      {/* Car Mode */}
-                      <div className="bg-white/10 rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
-                        <div className="flex items-center justify-between text-cyan-300 text-xs font-black uppercase">
-                          <span className="flex items-center gap-1.5">
-                            <Car className="w-4 h-4" />
-                            <span>Car</span>
-                          </span>
-                          <span className="text-[10px] bg-cyan-400 text-stone-950 px-2 py-0.5 rounded font-black">~42 km/h</span>
-                        </div>
-                        <div className="text-2xl sm:text-3xl font-black text-white mt-2">
-                          {routeCalculations.roadKm} <span className="text-xs text-cyan-200">KM</span>
-                        </div>
-                        <div className="text-xs font-bold text-emerald-300 mt-1">
-                          Time: ~{routeCalculations.carMins} mins
-                        </div>
-                      </div>
-
-                      {/* Taxi Mode */}
-                      <div className="bg-white/10 rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
-                        <div className="flex items-center justify-between text-yellow-300 text-xs font-black uppercase">
-                          <span className="flex items-center gap-1.5">
-                            <Car className="w-4 h-4 text-yellow-400" />
-                            <span>Taxi</span>
-                          </span>
-                          <span className="text-[10px] bg-yellow-400 text-stone-950 px-2 py-0.5 rounded font-black">~45 km/h</span>
-                        </div>
-                        <div className="text-2xl sm:text-3xl font-black text-white mt-2">
-                          {routeCalculations.roadKm} <span className="text-xs text-yellow-200">KM</span>
-                        </div>
-                        <div className="text-xs font-bold text-emerald-300 mt-1">
-                          Time: ~{routeCalculations.taxiMins} mins
-                        </div>
-                      </div>
-
-                      {/* Bicycle Mode */}
-                      <div className="bg-white/10 rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
-                        <div className="flex items-center justify-between text-emerald-300 text-xs font-black uppercase">
-                          <span className="flex items-center gap-1.5">
-                            <Bike className="w-4 h-4" />
-                            <span>Bicycle</span>
-                          </span>
-                          <span className="text-[10px] bg-emerald-400 text-stone-950 px-2 py-0.5 rounded font-black">~16 km/h</span>
-                        </div>
-                        <div className="text-2xl sm:text-3xl font-black text-white mt-2">
-                          {routeCalculations.roadKm} <span className="text-xs text-emerald-200">KM</span>
-                        </div>
-                        <div className="text-xs font-bold text-emerald-300 mt-1">
-                          Time: ~{routeCalculations.bikeMins} mins
-                        </div>
-                      </div>
-
-                      {/* Walking Mode */}
-                      <div className="bg-white/10 rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition">
-                        <div className="flex items-center justify-between text-pink-300 text-xs font-black uppercase">
-                          <span className="flex items-center gap-1.5">
-                            <Footprints className="w-4 h-4" />
-                            <span>Kid Walking</span>
-                          </span>
-                          <span className="text-[10px] bg-pink-400 text-stone-950 px-2 py-0.5 rounded font-black">~4.5 km/h</span>
-                        </div>
-                        <div className="text-2xl sm:text-3xl font-black text-white mt-2">
-                          {routeCalculations.roadKm} <span className="text-xs text-pink-200">KM</span>
-                        </div>
-                        <div className="text-xs font-bold text-emerald-300 mt-1">
-                          Time: ~{routeCalculations.walkMins} mins
-                        </div>
-                      </div>
-
+                    <div className="flex flex-wrap gap-2">
+                      {PRESET_STARTING_LOCATIONS.map(loc => (
+                        <button
+                          key={loc.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedPresetId(loc.id);
+                            setLocationPermissionStatus('prompt');
+                            playFx('pop');
+                          }}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition cursor-pointer ${
+                            selectedPresetId === loc.id
+                              ? 'bg-amber-400 text-stone-950 border-white shadow-md'
+                              : 'bg-stone-800 text-stone-300 border-stone-700 hover:border-amber-400'
+                          }`}
+                        >
+                          <span>{loc.emoji}</span>
+                          <span>{loc.name}</span>
+                          <span className="text-[10px] opacity-80 font-mono">({loc.roadKm} km)</span>
+                        </button>
+                      ))}
                     </div>
                   </div>
                 )}
 
+                {/* CALCULATED LIVE ROUTE DISTANCE SECTION */}
+                <div>
+                  <div className="text-xs font-black uppercase tracking-wider text-amber-300 mb-2 flex items-center justify-between flex-wrap gap-2">
+                    <span className="flex items-center gap-1.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      <span>Live Distance from {routeCalculations.originName} ➔ DAV Public School Khabra (492F+563)</span>
+                    </span>
+                    <span className="text-white font-mono text-sm font-black bg-stone-950/80 px-2.5 py-1 rounded-lg border border-amber-400/40">
+                      {routeCalculations.roadKm} KM
+                    </span>
+                  </div>
+
+                  {/* 5 CALCULATED MODE TILES (SCHOOL BUS, CAR, TAXI, BICYCLE, KID WALKING) */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
+                    
+                    {/* School Bus Mode */}
+                    <div className="bg-white/10 rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition shadow-lg">
+                      <div className="flex items-center justify-between text-amber-300 text-xs font-black uppercase">
+                        <span className="flex items-center gap-1.5">
+                          <Bus className="w-4 h-4" />
+                          <span>School Bus</span>
+                        </span>
+                        <span className="text-[10px] bg-amber-400 text-stone-950 px-2 py-0.5 rounded font-black">~{routeCalculations.busSpeed} km/h</span>
+                      </div>
+                      <div className="text-2xl sm:text-3xl font-black text-white mt-2">
+                        {routeCalculations.roadKm} <span className="text-xs text-amber-200">KM</span>
+                      </div>
+                      <div className="text-xs font-bold text-emerald-300 mt-1">
+                        Time: ~{routeCalculations.busMins} mins
+                      </div>
+                    </div>
+
+                    {/* Car Mode */}
+                    <div className="bg-white/10 rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition shadow-lg">
+                      <div className="flex items-center justify-between text-cyan-300 text-xs font-black uppercase">
+                        <span className="flex items-center gap-1.5">
+                          <Car className="w-4 h-4" />
+                          <span>Car</span>
+                        </span>
+                        <span className="text-[10px] bg-cyan-400 text-stone-950 px-2 py-0.5 rounded font-black">~{routeCalculations.carSpeed} km/h</span>
+                      </div>
+                      <div className="text-2xl sm:text-3xl font-black text-white mt-2">
+                        {routeCalculations.roadKm} <span className="text-xs text-cyan-200">KM</span>
+                      </div>
+                      <div className="text-xs font-bold text-emerald-300 mt-1">
+                        Time: ~{routeCalculations.carMins} mins
+                      </div>
+                    </div>
+
+                    {/* Taxi Mode */}
+                    <div className="bg-white/10 rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition shadow-lg">
+                      <div className="flex items-center justify-between text-yellow-300 text-xs font-black uppercase">
+                        <span className="flex items-center gap-1.5">
+                          <Car className="w-4 h-4 text-yellow-400" />
+                          <span>Taxi</span>
+                        </span>
+                        <span className="text-[10px] bg-yellow-400 text-stone-950 px-2 py-0.5 rounded font-black">~{routeCalculations.taxiSpeed} km/h</span>
+                      </div>
+                      <div className="text-2xl sm:text-3xl font-black text-white mt-2">
+                        {routeCalculations.roadKm} <span className="text-xs text-yellow-200">KM</span>
+                      </div>
+                      <div className="text-xs font-bold text-emerald-300 mt-1">
+                        Time: ~{routeCalculations.taxiMins} mins
+                      </div>
+                    </div>
+
+                    {/* Bicycle Mode */}
+                    <div className="bg-white/10 rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition shadow-lg">
+                      <div className="flex items-center justify-between text-emerald-300 text-xs font-black uppercase">
+                        <span className="flex items-center gap-1.5">
+                          <Bike className="w-4 h-4" />
+                          <span>Bicycle</span>
+                        </span>
+                        <span className="text-[10px] bg-emerald-400 text-stone-950 px-2 py-0.5 rounded font-black">~{routeCalculations.bikeSpeed} km/h</span>
+                      </div>
+                      <div className="text-2xl sm:text-3xl font-black text-white mt-2">
+                        {routeCalculations.roadKm} <span className="text-xs text-emerald-200">KM</span>
+                      </div>
+                      <div className="text-xs font-bold text-emerald-300 mt-1">
+                        Time: ~{routeCalculations.bikeMins} mins
+                      </div>
+                    </div>
+
+                    {/* Walking Mode */}
+                    <div className="bg-white/10 rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition shadow-lg">
+                      <div className="flex items-center justify-between text-pink-300 text-xs font-black uppercase">
+                        <span className="flex items-center gap-1.5">
+                          <Footprints className="w-4 h-4" />
+                          <span>Kid Walking</span>
+                        </span>
+                        <span className="text-[10px] bg-pink-400 text-stone-950 px-2 py-0.5 rounded font-black">~{routeCalculations.walkSpeed} km/h</span>
+                      </div>
+                      <div className="text-2xl sm:text-3xl font-black text-white mt-2">
+                        {routeCalculations.roadKm} <span className="text-xs text-pink-200">KM</span>
+                      </div>
+                      <div className="text-xs font-bold text-emerald-300 mt-1">
+                        Time: ~{routeCalculations.walkMins} mins
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                {/* DYNAMIC SPEED & DISTANCE CONTROLS (Increases/decreases time & distance interactively) */}
+                <div className="p-4 bg-stone-950/70 rounded-2xl border border-amber-400/30 flex flex-wrap items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="text-amber-300 font-bold flex items-center gap-1">
+                      <Gauge className="w-4 h-4 text-amber-400" />
+                      <span>Interactive Speed &amp; Movement Simulator:</span>
+                    </span>
+                    <span className="text-stone-300 hidden sm:inline">Test how speed and distance change arrival times dynamically!</span>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {/* Speed Modifiers */}
+                    <div className="flex items-center gap-1 bg-stone-900 px-2 py-1 rounded-xl border border-stone-700">
+                      <span className="text-[11px] text-stone-400 font-bold mr-1">Speed:</span>
+                      <button
+                        type="button"
+                        onClick={() => setSpeedBoostKm(prev => Math.max(-15, prev - 5))}
+                        className="w-6 h-6 rounded bg-stone-800 hover:bg-stone-700 text-amber-300 font-bold flex items-center justify-center cursor-pointer"
+                        title="Decrease Speed (-5 km/h)"
+                      >
+                        -
+                      </button>
+                      <span className="px-1.5 font-mono font-bold text-amber-300 text-[11px]">
+                        {speedBoostKm >= 0 ? `+${speedBoostKm}` : speedBoostKm} km/h
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setSpeedBoostKm(prev => Math.min(40, prev + 5))}
+                        className="w-6 h-6 rounded bg-stone-800 hover:bg-stone-700 text-amber-300 font-bold flex items-center justify-center cursor-pointer"
+                        title="Increase Speed (+5 km/h)"
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    {/* Distance Modifiers */}
+                    <div className="flex items-center gap-1 bg-stone-900 px-2 py-1 rounded-xl border border-stone-700">
+                      <span className="text-[11px] text-stone-400 font-bold mr-1">Distance:</span>
+                      <button
+                        type="button"
+                        onClick={() => setDistanceSimOffsetKm(prev => Math.max(-10, Math.round((prev - 1) * 10) / 10))}
+                        className="px-1.5 py-0.5 rounded bg-stone-800 hover:bg-stone-700 text-emerald-300 font-bold text-[10px] cursor-pointer"
+                        title="Simulate moving 1 KM closer to school"
+                      >
+                        ⏩ -1km
+                      </button>
+                      <span className="px-1 font-mono font-bold text-emerald-300 text-[11px]">
+                        {distanceSimOffsetKm > 0 ? `+${distanceSimOffsetKm}` : distanceSimOffsetKm}km
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setDistanceSimOffsetKm(prev => Math.min(25, Math.round((prev + 1) * 10) / 10))}
+                        className="px-1.5 py-0.5 rounded bg-stone-800 hover:bg-stone-700 text-rose-300 font-bold text-[10px] cursor-pointer"
+                        title="Simulate moving 1 KM further from school"
+                      >
+                        ⏪ +1km
+                      </button>
+                    </div>
+
+                    {(speedBoostKm !== 0 || distanceSimOffsetKm !== 0) && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSpeedBoostKm(0);
+                          setDistanceSimOffsetKm(0);
+                        }}
+                        className="px-2 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 text-[10px] font-bold"
+                      >
+                        Reset
+                      </button>
+                    )}
+                  </div>
+                </div>
+
                 {/* THE GIANT "GO TO DAV KHABRA" ACTION BUTTON (OPENS GOOGLE MAPS NAVIGATION) */}
-                <div className="pt-4 flex flex-col items-center justify-center">
+                <div className="pt-4 flex flex-col items-center justify-center gap-3">
                   <a
                     href={googleMapsDirectionsUrl}
                     target="_blank"
@@ -1196,8 +1410,19 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
                     <Navigation className="w-7 h-7 text-stone-950 animate-bounce" />
                     <span>LAUNCH GOOGLE MAPS GPS NAVIGATION NOW ↗</span>
                   </a>
-                  <div className="text-xs text-amber-200 font-bold mt-2 text-center">
-                    ✓ Opens exact destination: 492F+563, Khabra, Muzaffarpur, Bihar 843113 in Google Maps app!
+
+                  <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-amber-200 font-bold text-center">
+                    <span>✓ Exact GPS Gate Coordinates: 26.0730° N, 85.3735° E (492F+563, Khabra)</span>
+                    <span className="hidden sm:inline">•</span>
+                    <a
+                      href={googleMapsWalkingUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline hover:text-white flex items-center gap-1"
+                    >
+                      <Footprints className="w-3.5 h-3.5" />
+                      <span>Walking Directions</span>
+                    </a>
                   </div>
                 </div>
 

@@ -1891,36 +1891,12 @@ export function TeachersSection({
     };
   }, [user?.name, user?.id, isDimension5, callState.isOpen]);
 
-  // Live Voice Speech Output for Teacher Bot during Live Call
+  // Voice synthesis removed during live calls as requested (clean authentic call)
   const speakCallAudio = (text) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-    try {
-      window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.rate = 0.98;
-      utter.pitch = 1.05;
-      utter.lang = 'en-IN';
-      const voices = window.speechSynthesis.getVoices();
-      const bestVoice = voices.find(v => 
-        (v.lang && (v.lang.includes('IN') || v.lang.includes('hi'))) ||
-        (v.name && (v.name.toLowerCase().includes('india') || v.name.toLowerCase().includes('google') || v.name.toLowerCase().includes('natural')))
-      );
-      if (bestVoice) utter.voice = bestVoice;
-
-      utter.onstart = () => {
-        setIsTeacherSpeaking(true);
-        setCallSubtitles(text);
-      };
-      utter.onend = () => {
-        setIsTeacherSpeaking(false);
-      };
-      utter.onerror = () => {
-        setIsTeacherSpeaking(false);
-      };
-      window.speechSynthesis.speak(utter);
-    } catch (e) {
-      console.warn('SpeechSynthesis error:', e);
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try { window.speechSynthesis.cancel(); } catch (e) {}
     }
+    setIsTeacherSpeaking(false);
   };
 
   // Live Speech Recognition for Student during Call
@@ -6089,7 +6065,7 @@ export function TeachersSection({
                               type="button"
                               onClick={() => setIsSwappedView(prev => !prev)}
                               className="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-[11px] font-mono font-bold flex items-center gap-1.5 transition cursor-pointer"
-                              title="Swap Camera and Teacher views"
+                              title="Swap Camera and Peer views"
                             >
                               <RotateCcw className="w-3.5 h-3.5 text-[#25d366]" />
                               <span>Swap Feed</span>
@@ -6100,40 +6076,6 @@ export function TeachersSection({
                             </span>
                           </div>
                         </div>
-
-                        {/* Interactive Doubt Chips Bar (When Call Connected) */}
-                        {callState.status === 'connected' && (
-                          <div className="absolute top-18 left-3 right-3 sm:left-5 sm:right-5 z-25 flex items-center gap-2 overflow-x-auto py-2 no-scrollbar">
-                            <button
-                              type="button"
-                              onClick={startCallSpeechRecognition}
-                              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-lg transition cursor-pointer shrink-0 min-h-[38px] ${
-                                isSpeechListening 
-                                  ? 'bg-rose-500 text-white animate-pulse' 
-                                  : 'bg-[#25d366] hover:bg-[#20ba5a] text-slate-950 font-black'
-                              }`}
-                              title="Ask question by speaking into your mic"
-                            >
-                              <Mic className="w-3.5 h-3.5" />
-                              <span>{isSpeechListening ? 'Listening...' : '🎤 Speak Doubt'}</span>
-                            </button>
-                            {[
-                              'Explain Science Chapter 3',
-                              'Help with Maths Linear Equations',
-                              'Review my Homework',
-                              'English Grammar Tips'
-                            ].map((chip, idx) => (
-                              <button
-                                key={idx}
-                                type="button"
-                                onClick={() => handleQuickCallQuestion(chip)}
-                                className="px-3 py-1.5 rounded-full bg-black/75 hover:bg-[#111b21] border border-white/25 hover:border-[#25d366] text-stone-200 text-xs font-medium transition cursor-pointer shrink-0 min-h-[38px]"
-                              >
-                                {chip}
-                              </button>
-                            ))}
-                          </div>
-                        )}
 
                         {/* Main Stage (Remote Video or User Video if swapped) */}
                         <div className="w-full h-full relative flex items-center justify-center bg-stone-950 overflow-hidden">
@@ -6217,7 +6159,7 @@ export function TeachersSection({
                                     <p className="text-xs text-[#8696a0] font-mono">
                                       {callState.status === 'calling' && 'Connecting WebRTC Live Channel...'}
                                       {callState.status === 'ringing' && 'Ringing across devices...'}
-                                      {callState.status === 'connected' && (isTeacherSpeaking ? 'Teacher Speaking Live...' : 'Teacher Online & Connected')}
+                                      {callState.status === 'connected' && 'Live Connected (WebRTC P2P)'}
                                     </p>
                                   </div>
 
@@ -6228,27 +6170,9 @@ export function TeachersSection({
                                         <span
                                           key={i}
                                           className="w-1.5 rounded-full bg-gradient-to-t from-[#00a884] to-[#25d366] transition-all duration-75"
-                                          style={{ height: `${Math.max(4, Math.round((h * (isTeacherSpeaking ? 90 : (micVolumeLevel + 25))) / 120))}px` }}
+                                          style={{ height: `${Math.max(4, Math.round((h * (micVolumeLevel + 25)) / 120))}px` }}
                                         />
                                       ))}
-                                    </div>
-                                  )}
-
-                                  {/* Live Subtitles & Transcript Pill */}
-                                  {callSubtitles && (
-                                    <div className="w-full bg-black/85 border border-[#25d366]/40 rounded-2xl p-3 sm:p-4 text-white shadow-2xl flex items-start gap-3 animate-fadeIn text-left mt-2">
-                                      <div className="w-8 h-8 rounded-full bg-[#25d366]/20 border border-[#25d366] flex items-center justify-center shrink-0">
-                                        <Bot className="w-4 h-4 text-[#25d366]" />
-                                      </div>
-                                      <div className="flex-1 min-w-0">
-                                        <div className="text-[10px] text-[#25d366] font-bold uppercase tracking-wider flex items-center gap-1.5 mb-0.5">
-                                          <span>{isTeacherSpeaking ? 'Teacher Voice Output' : 'Live Subtitles'}</span>
-                                          {isTeacherSpeaking && <span className="w-1.5 h-1.5 rounded-full bg-[#25d366] animate-ping" />}
-                                        </div>
-                                        <p className="text-xs sm:text-sm text-stone-100 font-medium leading-relaxed">
-                                          {callSubtitles}
-                                        </p>
-                                      </div>
                                     </div>
                                   )}
                                 </div>
@@ -6488,15 +6412,6 @@ export function TeachersSection({
                                     />
                                   ))}
                                 </div>
-
-                                {callSubtitles && (
-                                  <div className="w-full bg-[#202c33] border border-[#25d366]/30 rounded-xl p-3 text-left text-xs text-stone-200">
-                                    <span className="text-[10px] text-[#25d366] font-bold block mb-1">
-                                      {isTeacherSpeaking ? 'Teacher Speaking:' : 'Transcript:'}
-                                    </span>
-                                    {callSubtitles}
-                                  </div>
-                                )}
                               </div>
                             )}
 
@@ -6547,6 +6462,28 @@ export function TeachersSection({
                             {callState.isSpeaker ? <Volume2 className="w-6 h-6" /> : <VolumeX className="w-6 h-6" />}
                           </button>
                         </div>
+
+                        {/* Maximum 30s Calling Period Limit Reached Prompt (Voice Call) */}
+                        {callState.status === 'unanswered_timeout' && (
+                          <div className="absolute inset-0 z-50 bg-[#111b21]/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center space-y-5 animate-fadeIn">
+                            <div className="w-16 h-16 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center text-amber-400 shadow-xl animate-bounce">
+                              <PhoneOff className="w-8 h-8" />
+                            </div>
+                            <div className="space-y-1.5 max-w-sm">
+                              <h3 className="text-xl font-black text-white">Call Unanswered (30s Limit)</h3>
+                              <p className="text-xs text-[#8696a0] leading-relaxed">
+                                {callState.contact?.name || 'The person'} did not answer the call within the 30-second calling limit.
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleEndCall(true, 'timeout')}
+                              className="px-8 py-3 rounded-2xl bg-gradient-to-r from-[#00a884] to-[#25d366] hover:brightness-110 text-slate-950 font-black text-sm transition cursor-pointer shadow-xl hover:scale-105 active:scale-95"
+                            >
+                              OK
+                            </button>
+                          </div>
+                        )}
 
                       </div>
                     )}
@@ -6778,15 +6715,15 @@ export function TeachersSection({
                   </div>
                 </div>
 
-                {/* Class Selection Pop-up for Live Lectures */}
+                {/* Class Selection Pop-up for Live Lectures (100% Solid Non-Transparent Fullscreen Overlay) */}
                 {isLivePortalModalOpen && (
-                  <div className="fixed inset-0 z-50 bg-slate-950/98 p-4 md:p-8 flex flex-col overflow-y-auto animate-fadeIn">
-                    <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col space-y-6">
+                  <div className="fixed inset-0 z-[99999] bg-[#0b1120] p-4 md:p-8 flex flex-col overflow-y-auto animate-fadeIn w-full h-full">
+                    <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col space-y-6 bg-[#0b1120] pb-12">
                       
-                      {/* Top Bar */}
-                      <div className="flex items-center justify-between pb-4 border-b border-purple-800">
+                      {/* Top Bar with solid background */}
+                      <div className="flex items-center justify-between p-4 sm:p-5 rounded-2xl bg-slate-900 border border-purple-800 shadow-xl">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-2xl bg-gradient-to-r from-rose-600 to-teal-400 flex items-center justify-center text-slate-950 font-black shadow-lg">
+                          <div className="w-10 h-10 rounded-2xl bg-gradient-to-r from-rose-600 to-teal-400 flex items-center justify-center text-slate-950 font-black shadow-lg shrink-0">
                             <Video className="w-5 h-5 animate-live-mic-levels" />
                           </div>
                           <div>
@@ -6799,14 +6736,18 @@ export function TeachersSection({
                           </div>
                         </div>
 
-                        <button onClick={() => setIsLivePortalModalOpen(false)} className="p-2 rounded-xl bg-slate-900 border border-purple-700 cursor-pointer text-purple-300 hover:text-white">
+                        <button 
+                          onClick={() => setIsLivePortalModalOpen(false)} 
+                          className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-purple-700 cursor-pointer text-purple-300 hover:text-white transition shadow-sm"
+                          title="Close"
+                        >
                           <X className="w-5 h-5" />
                         </button>
                       </div>
 
                       {/* Class Selection Buttons */}
-                      <div className="space-y-2">
-                        <label className="text-xs font-black uppercase text-purple-300 tracking-wider font-mono">
+                      <div className="p-4 sm:p-5 rounded-2xl bg-slate-900 border border-purple-800 shadow-xl space-y-3">
+                        <label className="text-xs font-black uppercase text-purple-300 tracking-wider font-mono block">
                           Pick Your Class:
                         </label>
                         <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-11 gap-2">
@@ -6817,7 +6758,7 @@ export function TeachersSection({
                               className={`py-3 rounded-xl text-xs font-black transition cursor-pointer border ${
                                 selectedLiveClassNum === c.id
                                   ? 'bg-gradient-to-r from-rose-500 to-teal-400 text-slate-950 border-rose-300 shadow-md scale-105'
-                                  : 'bg-slate-900 text-purple-300 border-purple-800 hover:border-purple-600'
+                                  : 'bg-slate-950 text-purple-300 border-purple-800 hover:border-purple-600'
                               }`}
                             >
                               {c.name}
@@ -6836,9 +6777,9 @@ export function TeachersSection({
                           const list = scheduledLiveClasses.filter(c => c.classId === selectedLiveClassNum);
                           if (list.length === 0) {
                             return (
-                              <div className="p-10 rounded-2xl bg-slate-900/60 border border-purple-900 text-center space-y-2">
-                                <Video className="w-8 h-8 text-purple-400 mx-auto opacity-50" />
-                                <p className="text-sm font-bold text-white">No live lectures currently broadcasting for Class {selectedLiveClassNum}</p>
+                              <div className="p-10 rounded-2xl bg-slate-900 border-2 border-purple-800 text-center space-y-3 shadow-xl">
+                                <Video className="w-10 h-10 text-rose-400 mx-auto opacity-70" />
+                                <p className="text-base font-black text-white">No live lectures currently broadcasting for Class {selectedLiveClassNum}</p>
                                 <p className="text-xs text-purple-300">Teachers will schedule the next session shortly. Check back at period time!</p>
                               </div>
                             );
