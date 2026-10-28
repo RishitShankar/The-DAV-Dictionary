@@ -4,6 +4,8 @@ import {
 } from 'lucide-react';
 import { BlackDogLogo } from './BlackDogLogo';
 import { askRishiAI } from '../services/geminiService';
+import { DAV_CLASS_8_SYLLABUS_INDEX } from '../data/davTextbookDatabase.js';
+import { getPrecomputedSummary } from '../data/davChapterSummaries.js';
 
 export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, currentUser }) {
   if (!isOpen || !book) return null;
@@ -41,6 +43,20 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   const resolvedPdfUrl = resolvePdfUrl(rawSource);
   const hasRealPdf = Boolean(rawSource);
 
+  // Chapter Index & Syllabus Grounding for Active Book
+  const getSubjectKey = (title = '', subject = '') => {
+    const s = `${title} ${subject}`.toLowerCase();
+    if (s.includes('science') || s.includes('living world')) return 'science';
+    if (s.includes('social') || s.includes('world') || s.includes('sst') || s.includes('history') || s.includes('civics') || s.includes('geography')) return 'sst';
+    if (s.includes('math') || s.includes('ganit') || s.includes('secondary mathematics')) return 'maths';
+    if (s.includes('hindi') || s.includes('gyan') || s.includes('abhyas')) return 'hindi';
+    if (s.includes('english') || s.includes('literature') || s.includes('reader')) return 'english';
+    return null;
+  };
+
+  const subjectKey = getSubjectKey(book?.title, book?.subject);
+  const chapterList = (subjectKey && DAV_CLASS_8_SYLLABUS_INDEX[subjectKey]?.chapters) || [];
+
   // Rishi AI Textbook Companion State
   const [aiMessages, setAiMessages] = useState([
     {
@@ -48,6 +64,48 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
       text: `👋 I am your **Rishi AI Textbook Guide** for **"${book.title}"** (Class ${book.classNum || 8}). Ask me any questions, definitions, or exam problems from this book!`
     }
   ]);
+
+  const handleRequestChapterSummary = async (ch) => {
+    if (aiLoading) return;
+    setAiMessages(prev => [
+      ...prev, 
+      { role: 'user', text: `📝 **Summarize Chapter ${ch.num}: ${ch.title}**` }
+    ]);
+    setAiLoading(true);
+
+    const precomputed = getPrecomputedSummary(subjectKey, ch.num);
+    if (precomputed) {
+      setTimeout(() => {
+        setAiMessages(prev => [...prev, { role: 'assistant', text: precomputed }]);
+        setAiLoading(false);
+      }, 350);
+      return;
+    }
+
+    try {
+      const prompt = `You are Rishi AI, the official DAV Public School academic intelligence companion.
+Generate a comprehensive, curriculum-exact, 10-point revision summary for DAV Class ${book.classNum || 8} ${book.title}, Chapter ${ch.num}: "${ch.title}".
+
+Structure your response with:
+1. 📌 Chapter Overview & Central Theme
+2. 💡 5 Core Academic Concepts & Principles
+3. 📐 Important Definitions, Formulas & Terminology
+4. 🎯 Top 3 Board Exam Questions with Model Answers
+Write with clear markdown formatting for quick student exam revision.`;
+      const response = await askRishiAI(prompt);
+      setAiMessages(prev => [...prev, { role: 'assistant', text: response }]);
+    } catch (err) {
+      setAiMessages(prev => [
+        ...prev,
+        {
+          role: 'assistant',
+          text: `Error generating summary for Chapter ${ch.num}: ${ch.title}. Please try asking again!`
+        }
+      ]);
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   const handleSendAiMessage = async (e) => {
     e?.preventDefault();
@@ -242,32 +300,66 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
               )}
             </div>
 
+            {/* Chapter Summary Selector (All Chapters for this Book) */}
+            {chapterList.length > 0 && (
+              <div className="p-2 border-t border-stone-800 bg-stone-950 flex flex-col gap-1.5">
+                <div className="flex items-center justify-between text-[10px] font-bold">
+                  <span className="text-amber-300 flex items-center gap-1">
+                    <BookOpen className="w-3 h-3 text-amber-400" />
+                    <span>Chapter Summaries ({chapterList.length} Chapters):</span>
+                  </span>
+                  <span className="text-stone-400 font-mono text-[9px]">Click for Summary</span>
+                </div>
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-thin">
+                  {chapterList.map((ch) => (
+                    <button
+                      key={ch.num}
+                      type="button"
+                      onClick={() => handleRequestChapterSummary(ch)}
+                      disabled={aiLoading}
+                      className="px-2.5 py-1 rounded-lg bg-stone-900 hover:bg-amber-500 hover:text-stone-950 text-stone-300 border border-stone-700/80 font-mono text-[10px] font-bold whitespace-nowrap transition cursor-pointer shrink-0 disabled:opacity-40"
+                      title={`Ch ${ch.num}: ${ch.title}`}
+                    >
+                      Ch {ch.num}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Quick Suggestions */}
             <div className="p-2 border-t border-stone-800 bg-stone-950 flex items-center gap-1.5 overflow-x-auto text-[10px]">
               <button
                 type="button"
                 onClick={() => {
-                  setAiQuestion('Summarize the key points and definitions of this chapter.');
+                  if (chapterList.length > 0) {
+                    handleRequestChapterSummary(chapterList[0]);
+                  } else {
+                    setAiQuestion('Summarize the key points and definitions of this chapter.');
+                  }
                 }}
-                className="px-2 py-1 rounded-lg bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-800 whitespace-nowrap cursor-pointer"
+                disabled={aiLoading}
+                className="px-2 py-1 rounded-lg bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-800 whitespace-nowrap cursor-pointer disabled:opacity-40"
               >
-                📝 Chapter Summary
+                📝 Full Book Summary
               </button>
               <button
                 type="button"
                 onClick={() => {
-                  setAiQuestion('What are 3 important 5-mark exam questions from this topic?');
+                  setAiQuestion('What are 3 important 5-mark exam questions from this textbook?');
                 }}
-                className="px-2 py-1 rounded-lg bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-800 whitespace-nowrap cursor-pointer"
+                disabled={aiLoading}
+                className="px-2 py-1 rounded-lg bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-800 whitespace-nowrap cursor-pointer disabled:opacity-40"
               >
                 🎯 5-Mark Questions
               </button>
               <button
                 type="button"
                 onClick={() => {
-                  setAiQuestion('Give me 5 rapid-fire practice MCQs with answers.');
+                  setAiQuestion('Give me 5 rapid-fire practice MCQs with answers from this syllabus.');
                 }}
-                className="px-2 py-1 rounded-lg bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-800 whitespace-nowrap cursor-pointer"
+                disabled={aiLoading}
+                className="px-2 py-1 rounded-lg bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-800 whitespace-nowrap cursor-pointer disabled:opacity-40"
               >
                 ⚡ Practice MCQs
               </button>
