@@ -12,6 +12,7 @@ import { StudentProfileSection } from './components/StudentProfileSection';
 import { RishiAI } from './components/RishiAI';
 import { PdfReaderModal } from './components/PdfReaderModal';
 import { PricingModal } from './components/PricingModal';
+import { CustomPurchaseModal } from './components/CustomPurchaseModal';
 import { AuthModal } from './components/AuthModal';
 import { UploadPdfModal } from './components/UploadPdfModal';
 import { SectionOverview } from './components/SectionOverview';
@@ -159,6 +160,17 @@ export function App() {
       if (unsubscribeGuard) unsubscribeGuard();
     };
   }, [user?.id]);
+
+  // Real-time listener for Administrator verification of student subscription purchases
+  useEffect(() => {
+    const handlePlanUpdate = (e) => {
+      if (e?.detail) {
+        setUser(e.detail);
+      }
+    };
+    window.addEventListener('dav_user_plan_updated', handlePlanUpdate);
+    return () => window.removeEventListener('dav_user_plan_updated', handlePlanUpdate);
+  }, []);
 
   const handleLoginSuccess = async (loggedInUser) => {
     try {
@@ -576,11 +588,13 @@ export function App() {
         onOpenAIWithQuestion={handleOpenAIWithQuestion}
       />
 
-      <PricingModal
+      <CustomPurchaseModal
         isOpen={isPricingOpen}
         onClose={() => setIsPricingOpen(false)}
-        currentPlan={user?.plan || 'normal'}
-        onUpgradePlan={handleUpgradePlan}
+        user={user}
+        onPurchaseSubmitted={() => {
+          setIsPricingOpen(false);
+        }}
       />
 
       <AuthModal

@@ -27,11 +27,20 @@ import {
   ExternalLink,
   MessageCircle,
   Edit3,
-  Heart
+  Heart,
+  CheckCircle2,
+  Clock,
+  AlertCircle
 } from 'lucide-react';
 import { DavInvoiceModal } from './DavInvoiceModal';
 import { WhatsAppLogo } from './SocialLogos';
 import { PRELOADED_DATABASE_USERS, getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
+import { 
+  getPurchases, 
+  verifyAndApprovePurchase, 
+  rejectPurchase, 
+  deletePurchase 
+} from '../services/purchaseService';
 import { 
   fetchCloudStudents, 
   saveCloudStudent, 
@@ -44,10 +53,15 @@ import {
 export function AdminPanelModal({ isOpen, onClose, currentUser, onOpenDbGuide }) {
   if (!isOpen) return null;
 
-  // 2-Tab Navigation State: 'students' | 'donations'
+  // 3-Tab Navigation State: 'students' | 'donations' | 'purchases'
   const [activeTab, setActiveTab] = useState('students');
   const [donationsList, setDonationsList] = useState([]);
   const [donationSearchQuery, setDonationSearchQuery] = useState('');
+
+  // 3rd Subsection States: Verify Purchases (Task Requirement)
+  const [purchasesList, setPurchasesList] = useState([]);
+  const [purchasesFilter, setPurchasesFilter] = useState('all'); // 'all' | 'pending' | 'verified' | 'rejected'
+  const [purchasesSearchQuery, setPurchasesSearchQuery] = useState('');
 
   // 17 Form Input States (Task 3 Specification)
   const [studentName, setStudentName] = useState('');
@@ -87,10 +101,16 @@ export function AdminPanelModal({ isOpen, onClose, currentUser, onOpenDbGuide })
   const [activeInvoice, setActiveInvoice] = useState(null);
   const [successToast, setSuccessToast] = useState('');
 
-  // Load existing registered users & donations (Merging Local & Supabase Cloud)
+  // Load existing registered users, donations & purchases (Merging Local & Supabase Cloud)
   useEffect(() => {
     loadUsers();
     loadDonations();
+    loadPurchases();
+
+    const handlePurchasesEvent = () => loadPurchases();
+    window.addEventListener('dav_purchases_updated', handlePurchasesEvent);
+    window.addEventListener('dav_purchase_submitted', handlePurchasesEvent);
+
     fetchCloudStudents().then(cloudUsers => {
       if (cloudUsers && cloudUsers.length > 0) {
         const local = getRegisteredUsers();
@@ -105,7 +125,41 @@ export function AdminPanelModal({ isOpen, onClose, currentUser, onOpenDbGuide })
         saveRegisteredUsers(merged);
       }
     }).catch(err => console.warn('Supabase fetch error in admin:', err));
+
+    return () => {
+      window.removeEventListener('dav_purchases_updated', handlePurchasesEvent);
+      window.removeEventListener('dav_purchase_submitted', handlePurchasesEvent);
+    };
   }, []);
+
+  const loadPurchases = () => {
+    const list = getPurchases();
+    setPurchasesList(list);
+  };
+
+  const handleAdminVerifyPurchase = async (purchaseId) => {
+    const res = await verifyAndApprovePurchase(purchaseId, currentUser?.name || 'Rishit Shankar (Head Boy & Admin)');
+    if (res.success) {
+      setSuccessToast(`Purchase verified! Student account has been upgraded to ${res.purchase.planName} and trial has ended.`);
+      loadPurchases();
+      loadUsers();
+      setTimeout(() => setSuccessToast(''), 4000);
+    } else {
+      alert(res.error || 'Failed to verify purchase.');
+    }
+  };
+
+  const handleAdminRejectPurchase = (purchaseId) => {
+    rejectPurchase(purchaseId);
+    loadPurchases();
+  };
+
+  const handleAdminDeletePurchase = (purchaseId) => {
+    if (confirm('Delete this purchase record permanently?')) {
+      deletePurchase(purchaseId);
+      loadPurchases();
+    }
+  };
 
   const loadUsers = () => {
     const users = getRegisteredUsers();
@@ -614,6 +668,13 @@ _With heartfelt gratitude from the entire DAV student community!_`;
             </div>
             <div className="w-px h-6 bg-slate-700" />
             <div>
+              <span className="text-[10px] text-amber-400 font-bold uppercase block">Purchases</span>
+              <span className="font-black text-amber-300 text-sm font-mono">
+                {purchasesList.filter(p => p.status === 'pending').length} Pending
+              </span>
+            </div>
+            <div className="w-px h-6 bg-slate-700" />
+            <div>
               <span className="text-[10px] text-emerald-400 font-bold uppercase block">Total Revenue</span>
               <span className="font-black text-emerald-300 text-sm font-mono" title={`Fees: ₹${totalStudentFees} + Donations: ₹${totalDonations}`}>
                 ₹{totalMoneyCollected}
@@ -675,6 +736,29 @@ _With heartfelt gratitude from the entire DAV student community!_`;
             <span className="px-2 py-0.5 rounded-full bg-rose-950 text-[10px] text-rose-300 font-mono border border-rose-800/60">
               {donationsList.length} Donors • ₹{totalDonations}
             </span>
+          </button>
+
+          {/* 3rd Subsection: Verify Purchases (Task Requirement) */}
+          <button
+            type="button"
+            onClick={() => setActiveTab('purchases')}
+            className={`py-3 px-3 sm:px-5 font-black text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2 border-b-2 transition cursor-pointer ${
+              activeTab === 'purchases'
+                ? 'border-emerald-400 text-emerald-300 bg-emerald-400/10'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <span>Verify Purchases</span>
+            {purchasesList.filter(p => p.status === 'pending').length > 0 ? (
+              <span className="px-2 py-0.5 rounded-full bg-amber-500 text-stone-950 text-[10px] font-black animate-pulse">
+                {purchasesList.filter(p => p.status === 'pending').length} Pending
+              </span>
+            ) : (
+              <span className="px-2 py-0.5 rounded-full bg-slate-800 text-[10px] text-slate-300 font-mono">
+                {purchasesList.length}
+              </span>
+            )}
           </button>
         </div>
 
@@ -1347,7 +1431,7 @@ _With heartfelt gratitude from the entire DAV student community!_`;
         </div>
 
       </div>
-      ) : (
+      ) : activeTab === 'donations' ? (
         /* ======================================================================= */
         /* TAB 2: DONOR VAULT & DONATION HISTORY (Task 10 Requirement)             */
         /* ======================================================================= */
@@ -1528,6 +1612,263 @@ _With heartfelt gratitude from the entire DAV student community!_`;
               <span>Voluntary Development Support • Rishit Shankar</span>
             </span>
             <span className="text-slate-500">All Donations Sync with Supabase Cloud Database</span>
+          </div>
+
+        </div>
+      ) : (
+        /* ======================================================================= */
+        /* TAB 3: VERIFY PURCHASES (Admin Verification for Student Subscriptions)  */
+        /* ======================================================================= */
+        <div className="flex-1 flex flex-col min-h-0 bg-slate-900/60 p-4 sm:p-6 overflow-hidden space-y-4">
+          
+          {/* Header & Metrics Summary Row */}
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 shrink-0">
+            <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800">
+              <span className="text-[10px] font-bold uppercase text-amber-400 block">Pending Verification</span>
+              <div className="text-2xl font-black text-amber-300 flex items-center gap-2 mt-0.5">
+                <Clock className="w-5 h-5 text-amber-400 animate-pulse" />
+                <span>{purchasesList.filter(p => p.status === 'pending').length}</span>
+              </div>
+              <p className="text-[10px] text-slate-500 mt-1">Requires Administrator Approval</p>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800">
+              <span className="text-[10px] font-bold uppercase text-emerald-400 block">Verified Subscriptions</span>
+              <div className="text-2xl font-black text-emerald-300 flex items-center gap-2 mt-0.5">
+                <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                <span>{purchasesList.filter(p => p.status === 'verified').length}</span>
+              </div>
+              <p className="text-[10px] text-slate-500 mt-1">Trial Ended &amp; Active</p>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800">
+              <span className="text-[10px] font-bold uppercase text-cyan-400 block">Total Verified Amount</span>
+              <div className="text-2xl font-black text-cyan-300 flex items-center gap-1.5 mt-0.5 font-mono">
+                <span>₹</span>
+                <span>{purchasesList.filter(p => p.status === 'verified').reduce((a, b) => a + (b.amount || 0), 0).toLocaleString('en-IN')}</span>
+              </div>
+              <p className="text-[10px] text-slate-500 mt-1">Custom Student Contributions</p>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800">
+              <span className="text-[10px] font-bold uppercase text-purple-400 block">Total Requests</span>
+              <div className="text-2xl font-black text-purple-300 flex items-center gap-2 mt-0.5">
+                <IndianRupee className="w-5 h-5 text-purple-400" />
+                <span>{purchasesList.length}</span>
+              </div>
+              <p className="text-[10px] text-slate-500 mt-1">All Recorded Submissions</p>
+            </div>
+          </div>
+
+          {/* Search Bar & Status Filter */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+            <div className="relative w-full sm:w-96">
+              <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search student name, ID, or Google email..."
+                value={purchasesSearchQuery}
+                onChange={(e) => setPurchasesSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 text-xs rounded-xl bg-slate-950 border border-slate-800 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+              />
+            </div>
+
+            {/* Filter Pills */}
+            <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+              {[
+                { id: 'all', label: 'All Requests' },
+                { id: 'pending', label: 'Pending Only' },
+                { id: 'verified', label: 'Verified / Active' },
+                { id: 'rejected', label: 'Rejected' }
+              ].map(f => (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => setPurchasesFilter(f.id)}
+                  className={`py-1.5 px-3 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+                    purchasesFilter === f.id
+                      ? 'bg-emerald-500 text-stone-950 font-black shadow-sm'
+                      : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Scrollable Purchase Verification Queue */}
+          <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+            {purchasesList.filter(p => {
+              const matchesStatus = purchasesFilter === 'all' || p.status === purchasesFilter;
+              const q = purchasesSearchQuery.toLowerCase().trim();
+              const matchesSearch = !q ||
+                (p.studentName && p.studentName.toLowerCase().includes(q)) ||
+                (p.studentId && p.studentId.toLowerCase().includes(q)) ||
+                (p.studentEmail && p.studentEmail.toLowerCase().includes(q)) ||
+                (p.planName && p.planName.toLowerCase().includes(q)) ||
+                (p.referenceNote && p.referenceNote.toLowerCase().includes(q));
+              return matchesStatus && matchesSearch;
+            }).length === 0 ? (
+              <div className="py-16 text-center text-slate-500 text-xs">
+                <CheckCircle2 className="w-10 h-10 text-slate-700 mx-auto mb-2" />
+                <p>No purchase requests match your current filter.</p>
+              </div>
+            ) : (
+              purchasesList
+                .filter(p => {
+                  const matchesStatus = purchasesFilter === 'all' || p.status === purchasesFilter;
+                  const q = purchasesSearchQuery.toLowerCase().trim();
+                  const matchesSearch = !q ||
+                    (p.studentName && p.studentName.toLowerCase().includes(q)) ||
+                    (p.studentId && p.studentId.toLowerCase().includes(q)) ||
+                    (p.studentEmail && p.studentEmail.toLowerCase().includes(q)) ||
+                    (p.planName && p.planName.toLowerCase().includes(q)) ||
+                    (p.referenceNote && p.referenceNote.toLowerCase().includes(q));
+                  return matchesStatus && matchesSearch;
+                })
+                .map((purchase) => {
+                  const isPending = purchase.status === 'pending';
+                  const isVerified = purchase.status === 'verified';
+                  const isRejected = purchase.status === 'rejected';
+
+                  return (
+                    <div
+                      key={purchase.id}
+                      className={`p-4 rounded-2xl border transition-all flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 text-xs ${
+                        isPending
+                          ? 'bg-slate-950/90 border-amber-500/40 hover:border-amber-400 shadow-md ring-1 ring-amber-500/20'
+                          : isVerified
+                          ? 'bg-slate-950/70 border-emerald-500/40 hover:border-emerald-400'
+                          : 'bg-slate-950/50 border-slate-800 opacity-60'
+                      }`}
+                    >
+                      {/* Left: Student Profile & Request Details */}
+                      <div className="flex items-start gap-3.5 min-w-0">
+                        <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-600 to-orange-500 text-stone-950 font-black text-sm flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
+                          {purchase.studentPhoto ? (
+                            <img src={purchase.studentPhoto} alt={purchase.studentName} className="w-full h-full object-cover" />
+                          ) : (
+                            <span>{purchase.studentName ? purchase.studentName[0].toUpperCase() : 'S'}</span>
+                          )}
+                        </div>
+
+                        <div className="space-y-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-black text-white text-sm">{purchase.studentName}</span>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-slate-800 text-slate-300 border border-slate-700">
+                              {purchase.studentId}
+                            </span>
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                              purchase.plan === 'vvip'
+                                ? 'bg-purple-500/20 text-purple-300 border border-purple-400/40'
+                                : purchase.plan === 'vip'
+                                ? 'bg-amber-500/20 text-amber-300 border border-amber-400/40'
+                                : 'bg-blue-500/20 text-blue-300 border border-blue-400/40'
+                            }`}>
+                              {purchase.planName}
+                            </span>
+                          </div>
+
+                          <div className="flex flex-wrap items-center gap-2.5 text-[11px] text-slate-400">
+                            <span className="text-slate-300">{purchase.studentEmail}</span>
+                            <span>•</span>
+                            <span>Mode: <strong className="text-slate-200">{purchase.paymentMethod}</strong></span>
+                            <span>•</span>
+                            <span>Submitted: <strong className="text-slate-300">{purchase.formattedDate}</strong></span>
+                          </div>
+
+                          {purchase.referenceNote && (
+                            <div className="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-[11px] text-amber-200/90 font-mono">
+                              Ref: {purchase.referenceNote}
+                            </div>
+                          )}
+
+                          {isVerified && purchase.verifiedBy && (
+                            <div className="text-[10px] text-emerald-400 font-bold flex items-center gap-1">
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              <span>Verified by {purchase.verifiedBy}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Right: Amount Offered & Verification Action */}
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3.5 self-end lg:self-center shrink-0">
+                        {/* Offered Amount Pill */}
+                        <div className="text-right">
+                          <span className="text-[10px] uppercase font-bold text-slate-400 block">Amount Offered</span>
+                          <span className="text-xl sm:text-2xl font-black text-amber-300 font-mono">
+                            ₹{purchase.amount.toLocaleString('en-IN')}
+                          </span>
+                        </div>
+
+                        {/* Status / Action Buttons */}
+                        {isPending ? (
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handleAdminVerifyPurchase(purchase.id)}
+                              className="py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-stone-950 font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 transition cursor-pointer"
+                              title="Verify payment and unlock full subscription for this student"
+                            >
+                              <ShieldCheck className="w-4 h-4 text-stone-950" />
+                              <span>Verify Purchase</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleAdminRejectPurchase(purchase.id)}
+                              className="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-rose-950 text-slate-300 hover:text-rose-400 border border-slate-700 text-xs font-bold transition cursor-pointer"
+                              title="Reject purchase request"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        ) : isVerified ? (
+                          <div className="flex items-center gap-2">
+                            <span className="px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-black text-xs flex items-center gap-1.5">
+                              <Check className="w-4 h-4 stroke-[3]" />
+                              <span>Subscription Active</span>
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleAdminDeletePurchase(purchase.id)}
+                              className="p-2 rounded-xl bg-slate-800 hover:bg-rose-950 text-slate-400 hover:text-rose-400 border border-slate-700 transition cursor-pointer"
+                              title="Delete purchase record"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <span className="px-3 py-1.5 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold text-xs">
+                              Rejected
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleAdminDeletePurchase(purchase.id)}
+                              className="p-2 rounded-xl bg-slate-800 hover:bg-rose-950 text-slate-400 hover:text-rose-400 border border-slate-700 transition cursor-pointer"
+                              title="Delete purchase record"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+            )}
+          </div>
+
+          {/* Bottom Security Note */}
+          <div className="pt-3 mt-2 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between shrink-0">
+            <span className="flex items-center gap-1.5 text-emerald-300 font-semibold">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span>Administrator Rishit Shankar Master Approval Deck</span>
+            </span>
+            <span className="text-slate-500">Live Verification • Instantly Ends Initial Trial</span>
           </div>
 
         </div>

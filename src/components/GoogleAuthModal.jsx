@@ -1,411 +1,486 @@
 import React, { useState } from 'react';
-import { X, Mail, User, Shield, CheckCircle, AlertCircle, ArrowRight, Loader2, Sparkles, BookOpen } from 'lucide-react';
+import { 
+  X, Mail, User, Shield, CheckCircle, AlertCircle, 
+  ArrowRight, Loader2, Sparkles, PlusCircle, Check, 
+  ExternalLink, ChevronRight, IndianRupee 
+} from 'lucide-react';
 import { GoogleIcon } from './GoogleIcon';
 import { 
   loginWithGoogle, 
   createStudentWithGoogle, 
+  findUserByGoogleEmail,
   triggerSupabaseGoogleOAuth 
 } from '../services/googleAuthService';
+import { getRegisteredUsers } from '../data/preloadedUsers';
+import { CustomPurchaseModal } from './CustomPurchaseModal';
 
 export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLoginSuccess }) {
-  const [mode, setMode] = useState(initialMode); // 'login' | 'create'
+  // Navigation Steps: 'picker' (Account Chooser) -> 'consent' (Agree & Continue) -> 'purchase_offer'
+  const [step, setStep] = useState('picker');
+  const [selectedAccount, setSelectedAccount] = useState(null);
+  
+  // Custom account input form
+  const [isAddingNew, setIsAddingNew] = useState(false);
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
   const [classNum, setClassNum] = useState('8');
   const [section, setSection] = useState('D');
   const [avatarUrl, setAvatarUrl] = useState('');
+  
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [createdStudentUser, setCreatedStudentUser] = useState(null);
+  const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleOAuthRedirect = async () => {
-    setLoading(true);
-    setErrorMsg('');
-    const res = await triggerSupabaseGoogleOAuth();
-    if (!res.success) {
-      setLoading(false);
-      setErrorMsg(`Cloud OAuth redirect notice: ${res.error}. You can sign in directly below with your Google email.`);
-    }
-  };
-
-  const handleLoginSubmit = async (e) => {
-    e.preventDefault();
-    if (!email.trim()) {
-      setErrorMsg('Please enter your Google email address.');
-      return;
-    }
-
-    setLoading(true);
-    setErrorMsg('');
-    setSuccessMsg('');
-
+  // Retrieve existing local users to populate realistic mobile Google Account Chooser
+  const localAccounts = (() => {
     try {
-      const res = await loginWithGoogle({ email });
-      setLoading(false);
-      if (res.success && res.user) {
-        setSuccessMsg(`Welcome back, ${res.user.name}! Verified with Google.`);
-        setTimeout(() => {
-          onLoginSuccess(res.user);
-          onClose();
-        }, 600);
-      } else if (res.notFound) {
-        setErrorMsg(res.error || 'Account not found. Click below to Create Account with Google.');
-      } else {
-        setErrorMsg(res.error || 'Login failed. Please try again.');
+      const users = getRegisteredUsers();
+      const accounts = [];
+      const seen = new Set();
+      users.forEach(u => {
+        const mail = (u.email || u.googleEmail || '').toLowerCase();
+        if (mail && mail.includes('@') && !seen.has(mail)) {
+          seen.add(mail);
+          accounts.push({
+            name: u.name || 'DAV Scholar',
+            email: mail,
+            avatar: u.photoUrl || u.avatar || u.dp || null,
+            isExisting: true,
+            userRef: u
+          });
+        }
+      });
+      // Fallback sample accounts if no student accounts saved yet
+      if (accounts.length === 0) {
+        accounts.push({
+          name: 'Rishit Shankar',
+          email: 'rishit.shankar@gmail.com',
+          avatar: '/rishit_shankar.jpg',
+          isExisting: true
+        });
       }
-    } catch (err) {
-      setLoading(false);
-      setErrorMsg('Failed to authenticate with Google. Please try again.');
+      return accounts;
+    } catch (e) {
+      return [];
     }
+  })();
+
+  const handleSelectAccount = (acc) => {
+    setSelectedAccount(acc);
+    setStep('consent');
+    setErrorMsg('');
   };
 
-  const handleCreateSubmit = async (e) => {
+  const handleCustomAccountNext = (e) => {
     e.preventDefault();
-    if (!email.trim()) {
-      setErrorMsg('Please enter your Google email address.');
+    if (!email.trim() || !email.includes('@')) {
+      setErrorMsg('Please enter a valid Gmail / Google Account address.');
       return;
     }
-    if (!fullName.trim()) {
-      setErrorMsg('Please enter your full name as it appears on your Google account.');
-      return;
-    }
+    const cleanName = fullName.trim() || email.split('@')[0];
+    const acc = {
+      name: cleanName,
+      email: email.trim().toLowerCase(),
+      avatar: avatarUrl || null,
+      classNum,
+      section,
+      isExisting: false
+    };
+    setSelectedAccount(acc);
+    setStep('consent');
+    setErrorMsg('');
+  };
 
+  // User Clicks "Agree and continue"
+  const handleAgreeAndContinue = async () => {
+    if (!selectedAccount) return;
     setLoading(true);
     setErrorMsg('');
-    setSuccessMsg('');
 
     try {
+      // 1. Check if user already exists
+      let existing = await findUserByGoogleEmail(selectedAccount.email);
+      if (existing) {
+        // Authenticate existing user
+        setCreatedStudentUser(existing);
+        setSuccessMsg(`Welcome back, ${existing.name}! Logged in via Google.`);
+        setLoading(false);
+        setStep('purchase_offer');
+        return;
+      }
+
+      // 2. Create new student account with Google details (all details filled, starts in initial starter access)
       const res = await createStudentWithGoogle({
-        name: fullName,
-        email: email,
-        avatar: avatarUrl || null,
-        classNum,
-        section
+        name: selectedAccount.name,
+        email: selectedAccount.email,
+        avatar: selectedAccount.avatar,
+        classNum: selectedAccount.classNum || classNum,
+        section: selectedAccount.section || section
       });
 
       setLoading(false);
       if (res.success && res.user) {
-        setSuccessMsg(`Account created successfully! Your Student ID is ${res.user.studentId}.`);
-        setTimeout(() => {
-          onLoginSuccess(res.user);
-          onClose();
-        }, 800);
+        setCreatedStudentUser(res.user);
+        setSuccessMsg(`Google Account created! Official Student ID: ${res.user.studentId}`);
+        // Transition to Course Purchase Offer step
+        setStep('purchase_offer');
       } else {
-        setErrorMsg(res.error || 'Failed to create account with Google.');
+        setErrorMsg(res.error || 'Failed to initialize Google Account.');
       }
     } catch (err) {
       setLoading(false);
-      setErrorMsg('Error creating account. Please try again.');
+      setErrorMsg('Error completing Google Authentication.');
     }
   };
 
+  const handleFinishAndEnter = () => {
+    if (createdStudentUser) {
+      onLoginSuccess(createdStudentUser);
+    }
+    onClose();
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-xs animate-fadeIn select-none">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 text-slate-800">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-xs animate-fadeIn select-none font-sans">
+      <div className="w-full max-w-[430px] bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 text-slate-800 flex flex-col max-h-[92vh]">
         
-        {/* Top Google Card Header */}
-        <div className="p-6 pb-4 border-b border-slate-100 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white shadow-md border border-slate-200 flex items-center justify-center">
-              <GoogleIcon className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-extrabold text-base text-slate-900 tracking-tight flex items-center gap-1.5">
-                <span>Google Authentication</span>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                  DAV Portal
-                </span>
-              </h3>
-              <p className="text-xs text-slate-500">Sign in with your Google Workspace or Gmail account</p>
-            </div>
+        {/* Top Google Card Brand Bar */}
+        <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
+          <div className="flex items-center gap-2.5">
+            <GoogleIcon className="w-5 h-5 shrink-0" />
+            <span className="font-extrabold text-sm sm:text-base text-slate-800 tracking-tight">
+              Sign in with Google
+            </span>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer"
+            className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Mode Selector Tabs */}
-        <div className="px-6 pt-4">
-          <div className="grid grid-cols-2 p-1 rounded-2xl bg-slate-100 text-xs font-bold">
-            <button
-              type="button"
-              onClick={() => {
-                setMode('login');
-                setErrorMsg('');
-                setSuccessMsg('');
-              }}
-              className={`py-2 rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 ${
-                mode === 'login'
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              <GoogleIcon className="w-3.5 h-3.5" />
-              <span>Login with Google</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMode('create');
-                setErrorMsg('');
-                setSuccessMsg('');
-              }}
-              className={`py-2 rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 ${
-                mode === 'create'
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-              <span>Create with Google</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Messages */}
+        {/* Error / Alert */}
         {errorMsg && (
-          <div className="mx-6 mt-4 p-3 rounded-2xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-start gap-2 animate-fadeIn">
+          <div className="mx-5 mt-3 p-3 rounded-2xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-start gap-2 animate-fadeIn shrink-0">
             <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
-            <div className="flex-1 leading-relaxed">
-              {errorMsg}
-              {mode === 'login' && errorMsg.includes('Create Account') && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMode('create');
-                    setErrorMsg('');
-                  }}
-                  className="mt-1 block font-bold text-red-800 underline hover:text-red-950 cursor-pointer"
-                >
-                  Switch to "Create Account with Google" →
-                </button>
-              )}
+            <div className="flex-1">{errorMsg}</div>
+          </div>
+        )}
+
+        {/* =========================================================================
+            SCREEN 1: AUTHENTIC GOOGLE ACCOUNT CHOOSER ("Choose an account")
+            ========================================================================= */}
+        {step === 'picker' && (
+          <div className="p-5 sm:p-6 overflow-y-auto space-y-4">
+            
+            <div className="text-center sm:text-left">
+              <h3 className="font-extrabold text-lg sm:text-xl text-slate-900">
+                Choose an account
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                to continue to <strong className="text-slate-800">DAV Dictionary</strong>
+              </p>
             </div>
-          </div>
-        )}
 
-        {successMsg && (
-          <div className="mx-6 mt-4 p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 flex items-center gap-2 animate-fadeIn">
-            <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span className="font-semibold">{successMsg}</span>
-          </div>
-        )}
+            {!isAddingNew ? (
+              <div className="space-y-2 pt-2">
+                
+                {/* List of Mobile / Device Google Accounts */}
+                {localAccounts.map((acc, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => handleSelectAccount(acc)}
+                    className="p-3 rounded-2xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/40 transition-all cursor-pointer flex items-center justify-between group shadow-xs"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-300 overflow-hidden flex items-center justify-center font-bold text-slate-700 text-sm shrink-0">
+                        {acc.avatar ? (
+                          <img src={acc.avatar} alt={acc.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span>{acc.name ? acc.name[0].toUpperCase() : 'G'}</span>
+                        )}
+                      </div>
+                      <div className="text-left truncate">
+                        <div className="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-blue-700 truncate">
+                          {acc.name}
+                        </div>
+                        <div className="text-[11px] text-slate-500 truncate">
+                          {acc.email}
+                        </div>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-blue-600 shrink-0" />
+                  </div>
+                ))}
 
-        {/* Content Body */}
-        <div className="p-6 pt-4">
-          {mode === 'login' ? (
-            /* ====================================================
-               1. LOGIN WITH GOOGLE VIEW
-               ==================================================== */
-            <form onSubmit={handleLoginSubmit} className="space-y-4">
-              
-              <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-100 flex items-center gap-3">
-                <GoogleIcon className="w-8 h-8 shrink-0" />
-                <div className="text-xs">
-                  <div className="font-bold text-slate-900">One-Click Google Authentication</div>
-                  <div className="text-slate-500 text-[11px]">
-                    Sign in using your linked Google credentials. All textbooks and notes stay synced.
+                {/* + Use another account option */}
+                <div
+                  onClick={() => setIsAddingNew(true)}
+                  className="p-3 rounded-2xl border border-dashed border-slate-300 hover:border-blue-500 hover:bg-slate-50 transition cursor-pointer flex items-center gap-3 text-slate-700 hover:text-blue-700"
+                >
+                  <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                    <PlusCircle className="w-5 h-5" />
+                  </div>
+                  <div className="font-bold text-xs sm:text-sm">
+                    Use another Google account
                   </div>
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  Google Email Address
-                </label>
-                <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+              </div>
+            ) : (
+              /* Custom Google Account Details Form */
+              <form onSubmit={handleCustomAccountNext} className="space-y-3 pt-1">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Google Email Address
+                  </label>
                   <input
                     type="email"
                     required
-                    placeholder="student@gmail.com"
+                    placeholder="yourname@gmail.com"
                     value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      if (errorMsg) setErrorMsg('');
-                    }}
-                    className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                   />
                 </div>
-              </div>
 
-              {/* Login Button with Google Branding */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-              >
-                {loading ? (
-                  <Loader2 className="w-4 h-4 animate-spin text-white" />
-                ) : (
-                  <>
-                    <GoogleIcon className="w-4 h-4 bg-white rounded-full p-0.5" />
-                    <span>Login with Google</span>
-                  </>
-                )}
-              </button>
-
-              <div className="relative my-4">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-slate-200" />
-                </div>
-                <div className="relative flex justify-center text-[10px] uppercase font-bold text-slate-400">
-                  <span className="bg-white px-2">or quick action</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={handleOAuthRedirect}
-                  disabled={loading}
-                  className="py-2.5 px-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-[11px] font-bold text-slate-700 transition flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <Shield className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Google OAuth Popup</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMode('create');
-                    setErrorMsg('');
-                  }}
-                  className="py-2.5 px-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-900 border border-amber-300/40 text-[11px] font-bold transition flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                  <span>New User? Sign Up</span>
-                </button>
-              </div>
-            </form>
-          ) : (
-            /* ====================================================
-               2. CREATE ACCOUNT WITH GOOGLE VIEW
-               ==================================================== */
-            <form onSubmit={handleCreateSubmit} className="space-y-3.5">
-              
-              <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 text-stone-950 font-black flex items-center justify-center shadow-xs">
-                  <Sparkles className="w-5 h-5 text-stone-950" />
-                </div>
-                <div className="text-xs">
-                  <div className="font-black text-amber-950">Instant Google Account Provisioning</div>
-                  <div className="text-amber-800 text-[11px]">
-                    Creates an authentic DAV Student ID (DAV-2026-XXXX) linked to your Google identity.
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Full Name (as in Google)
-                </label>
-                <div className="relative">
-                  <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Student Full Name
+                  </label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Aryan Kumar"
+                    placeholder="Enter full name"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                   />
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Google Email Address
-                </label>
-                <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-                  <input
-                    type="email"
-                    required
-                    placeholder="student@gmail.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
-                  />
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Class</label>
+                    <select
+                      value={classNum}
+                      onChange={(e) => setClassNum(e.target.value)}
+                      className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-white"
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8].map(c => (
+                        <option key={c} value={c}>Class {c}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Section</label>
+                    <select
+                      value={section}
+                      onChange={(e) => setSection(e.target.value)}
+                      className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-white"
+                    >
+                      {['A', 'B', 'C', 'D'].map(s => (
+                        <option key={s} value={s}>Section {s}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Grade / Class</label>
-                  <select
-                    value={classNum}
-                    onChange={(e) => setClassNum(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white font-medium text-slate-800"
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddingNew(false)}
+                    className="flex-1 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer"
                   >
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map(c => (
-                      <option key={c} value={c}>Class {c}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Section</label>
-                  <select
-                    value={section}
-                    onChange={(e) => setSection(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white font-medium text-slate-800"
+                    Back to Accounts
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition cursor-pointer"
                   >
-                    {['A', 'B', 'C', 'D'].map(s => (
-                      <option key={s} value={s}>Section {s}</option>
-                    ))}
-                  </select>
+                    Next →
+                  </button>
+                </div>
+              </form>
+            )}
+
+          </div>
+        )}
+
+        {/* =========================================================================
+            SCREEN 2: GOOGLE PERMISSIONS & "AGREE AND CONTINUE"
+            ========================================================================= */}
+        {step === 'consent' && selectedAccount && (
+          <div className="p-5 sm:p-6 overflow-y-auto space-y-4">
+            
+            {/* Selected Account Capsule */}
+            <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-3 truncate">
+                <div className="w-10 h-10 rounded-full bg-blue-600 text-white font-black text-sm flex items-center justify-center shrink-0 overflow-hidden">
+                  {selectedAccount.avatar ? (
+                    <img src={selectedAccount.avatar} alt={selectedAccount.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span>{selectedAccount.name ? selectedAccount.name[0].toUpperCase() : 'G'}</span>
+                  )}
+                </div>
+                <div className="truncate text-left">
+                  <div className="font-extrabold text-xs sm:text-sm text-slate-900 truncate">
+                    {selectedAccount.name}
+                  </div>
+                  <div className="text-[11px] text-slate-500 truncate">
+                    {selectedAccount.email}
+                  </div>
                 </div>
               </div>
-
-              {/* Submit Button */}
               <button
-                type="submit"
+                type="button"
+                onClick={() => setStep('picker')}
+                className="text-[11px] font-bold text-blue-600 hover:underline shrink-0 ml-2 cursor-pointer"
+              >
+                Change
+              </button>
+            </div>
+
+            {/* Google Permissions Text */}
+            <div className="space-y-3 text-xs text-slate-600">
+              <h4 className="font-extrabold text-slate-900 text-sm">
+                DAV Dictionary wants to access your Google Account
+              </h4>
+              <p className="leading-relaxed">
+                To continue, Google will share your <strong>name</strong>, <strong>email address</strong>, and <strong>profile picture</strong> with DAV Dictionary.
+              </p>
+
+              <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-100 text-[11px] text-blue-900 space-y-1">
+                <div className="font-bold flex items-center gap-1.5">
+                  <Shield className="w-3.5 h-3.5 text-blue-700" />
+                  <span>Secure Scholar Access</span>
+                </div>
+                <p>
+                  All your details (Full Name, Email, Student ID) will be automatically personalized into your DAV Dictionary account.
+                </p>
+              </div>
+
+              <p className="text-[11px] text-slate-400">
+                You can review DAV Dictionary's <span className="underline cursor-pointer">Privacy Policy</span> and <span className="underline cursor-pointer">Terms of Service</span> before proceeding.
+              </p>
+            </div>
+
+            {/* Action Buttons: Agree and Continue */}
+            <div className="pt-3 flex flex-col sm:flex-row gap-2">
+              <button
+                type="button"
+                onClick={() => setStep('picker')}
+                className="py-2.5 px-4 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer order-2 sm:order-1"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
                 disabled={loading}
-                className="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                onClick={handleAgreeAndContinue}
+                className="flex-1 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 order-1 sm:order-2"
               >
                 {loading ? (
-                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                    <span>Signing you in...</span>
+                  </>
                 ) : (
                   <>
-                    <GoogleIcon className="w-4 h-4 bg-white rounded-full p-0.5" />
-                    <span>Create Account with Google</span>
-                    <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                    <span>Agree and continue</span>
+                    <ArrowRight className="w-4 h-4" />
                   </>
                 )}
               </button>
+            </div>
 
-              <div className="pt-1 text-center">
-                <span className="text-xs text-slate-500">Already registered? </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMode('login');
-                    setErrorMsg('');
-                  }}
-                  className="text-xs font-bold text-blue-600 hover:underline cursor-pointer"
-                >
-                  Login with Google
-                </button>
+          </div>
+        )}
+
+        {/* =========================================================================
+            SCREEN 3: ACCOUNT CREATED & COURSE PURCHASE GATEWAY OFFER
+            ========================================================================= */}
+        {step === 'purchase_offer' && createdStudentUser && (
+          <div className="p-5 sm:p-6 overflow-y-auto space-y-4 text-center">
+            
+            <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center shadow-xs">
+              <Check className="w-7 h-7 stroke-[3]" />
+            </div>
+
+            <div>
+              <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                Personalized Scholar Account Ready
+              </span>
+              <h3 className="text-xl font-black text-slate-900 mt-2">
+                Welcome, {createdStudentUser.name}!
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Student ID: <strong className="text-slate-800">{createdStudentUser.studentId}</strong>
+              </p>
+            </div>
+
+            {/* Information Card */}
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 text-left text-xs space-y-2">
+              <div className="font-extrabold text-amber-950 flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-amber-600" />
+                <span>Subscription &amp; Course Purchase Gateway</span>
               </div>
+              <p className="text-amber-900 text-[11px] leading-relaxed">
+                Your account details are fully saved. You can now choose your subscription tier and pay <strong>any custom amount from ₹0 to ₹1,00,000</strong>. Your payment will be verified directly by Administrator Rishit Shankar!
+              </p>
+            </div>
 
-            </form>
-          )}
-        </div>
+            {/* Actions: Open Purchase Gateway or Explore First */}
+            <div className="space-y-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setIsPurchaseModalOpen(true)}
+                className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-400 text-stone-950 font-black text-xs uppercase tracking-wider shadow-lg shadow-orange-500/30 transition cursor-pointer flex items-center justify-center gap-2"
+              >
+                <IndianRupee className="w-4 h-4 text-stone-950" />
+                <span>Choose Subscription (₹0 to ₹1,00,000)</span>
+              </button>
 
-        {/* Footer Note */}
-        <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-          <span className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={handleFinishAndEnter}
+                className="w-full py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs transition cursor-pointer"
+              >
+                Enter Portal with Initial Scholar Access →
+              </button>
+            </div>
+
+          </div>
+        )}
+
+        {/* Footer */}
+        <div className="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 shrink-0">
+          <span className="flex items-center gap-1">
             <Shield className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Encrypted Google OAuth</span>
+            <span>Google Identity Services</span>
           </span>
-          <span>DAV Dictionary • Class 1–8</span>
+          <span>DAV Dictionary Portal</span>
         </div>
 
       </div>
+
+      {/* Embedded Custom Purchase Gateway Modal */}
+      <CustomPurchaseModal
+        isOpen={isPurchaseModalOpen}
+        onClose={() => {
+          setIsPurchaseModalOpen(false);
+          handleFinishAndEnter();
+        }}
+        user={createdStudentUser}
+        onPurchaseSubmitted={() => {
+          setIsPurchaseModalOpen(false);
+          handleFinishAndEnter();
+        }}
+      />
     </div>
   );
 }
