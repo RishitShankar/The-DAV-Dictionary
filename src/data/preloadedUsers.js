@@ -14,7 +14,11 @@ export const MASTER_DEVELOPER_ACCOUNT = {
   paidAmount: 'Founder / Unlimited',
   paymentMode: 'System Authority',
   isAdmin: true,
-  createdAt: 'System Root'
+  createdAt: 'System Root',
+  photoUrl: '/rishit_shankar.jpg',
+  photoURL: '/rishit_shankar.jpg',
+  avatar: '/rishit_shankar.jpg',
+  dp: '/rishit_shankar.jpg'
 };
 
 export const DEFAULT_TEACHER_ACCOUNT = null;

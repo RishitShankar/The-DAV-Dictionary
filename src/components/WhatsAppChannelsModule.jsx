@@ -64,7 +64,7 @@ const INITIAL_DAV_CHANNELS = [
     id: 'dav_class8_bulletin',
     name: 'Class 8 Board Exam Academic Bulletin',
     description: 'High-yield chapter summaries, 5-mark model answers, formula sheets, and DAV Board syllabus guidance curated by Head Boy Rishit Shankar.',
-    dp: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=150',
+    dp: '/rishit_shankar.jpg',
     creatorId: 'rishit_shankar_headboy',
     creatorName: 'Rishit Shankar (Head Boy)',
     creatorDimension: 4,

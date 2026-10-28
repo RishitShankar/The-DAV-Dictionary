@@ -892,6 +892,12 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
                       src="/rishit_shankar.jpg" 
                       alt="Rishit Shankar - Head Boy & Master Developer" 
                       className="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500"
+                      onError={(e) => {
+                        if (!e.target.dataset.triedBackup) {
+                          e.target.dataset.triedBackup = "true";
+                          e.target.src = "/founder_image_forever.jpeg";
+                        }
+                      }}
                     />
                   </div>
                   <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-stone-950 font-black text-[11px] shadow-lg whitespace-nowrap flex items-center gap-1.5">

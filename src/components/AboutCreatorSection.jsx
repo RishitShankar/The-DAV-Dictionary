@@ -317,6 +317,11 @@ export function AboutCreatorSection() {
                     alt="Rishit Shankar - Head Boy & Creator" 
                     className="w-full h-auto max-h-[380px] object-contain rounded-2xl"
                     onError={(e) => {
+                      if (!e.target.dataset.triedBackup) {
+                        e.target.dataset.triedBackup = 'true';
+                        e.target.src = '/founder_image_forever.jpeg';
+                        return;
+                      }
                       e.target.style.display = 'none';
                       e.target.nextSibling.style.display = 'flex';
                     }}
