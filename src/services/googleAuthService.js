@@ -3,12 +3,12 @@ import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers'
 import { registerDeviceSession, checkDeviceSession } from './deviceAuthManager';
 
 /**
- * Attempt real Supabase Google OAuth redirect
+ * Trigger official Supabase Google OAuth redirect to accounts.google.com
  */
 export async function triggerSupabaseGoogleOAuth() {
   const client = getSupabaseClient();
   if (!client) {
-    return { success: false, error: 'Supabase client not initialized' };
+    return { success: false, error: 'Authentication engine not initialized' };
   }
   try {
     const { data, error } = await client.auth.signInWithOAuth({
@@ -27,7 +27,85 @@ export async function triggerSupabaseGoogleOAuth() {
 }
 
 /**
- * Find existing registered student by Google email or ID
+ * Dispatch real 6-digit OTP code to the student's Google / Gmail address
+ */
+export async function sendRealEmailOtp(email) {
+  const cleanEmail = (email || '').trim().toLowerCase();
+  if (!cleanEmail || !cleanEmail.includes('@')) {
+    return { success: false, error: 'Please enter a valid Google email address.' };
+  }
+
+  const client = getSupabaseClient();
+  if (!client) {
+    return { success: false, error: 'Database connection offline.' };
+  }
+
+  try {
+    const { data, error } = await client.auth.signInWithOtp({
+      email: cleanEmail,
+      options: {
+        shouldCreateUser: true
+      }
+    });
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+    return { success: true, data };
+  } catch (err) {
+    return { success: false, error: err.message || 'Failed to send OTP.' };
+  }
+}
+
+/**
+ * Verify real OTP received by student and authenticate / create their account
+ */
+export async function verifyRealEmailOtp({ email, otp, fullName = '', classNum = '8', section = 'A' }) {
+  const cleanEmail = (email || '').trim().toLowerCase();
+  const cleanOtp = (otp || '').trim();
+
+  if (!cleanOtp) {
+    return { success: false, error: 'Please enter the 6-digit OTP code.' };
+  }
+
+  const client = getSupabaseClient();
+  if (!client) {
+    return { success: false, error: 'Authentication service unavailable.' };
+  }
+
+  try {
+    const { data, error } = await client.auth.verifyOtp({
+      email: cleanEmail,
+      token: cleanOtp,
+      type: 'email'
+    });
+
+    if (error) {
+      return { success: false, error: error.message || 'Invalid or expired OTP code. Please check your Gmail.' };
+    }
+
+    // OTP Verified! Now resolve or create the student account
+    let student = await findUserByGoogleEmail(cleanEmail);
+    if (!student) {
+      const created = await createStudentWithGoogle({
+        name: fullName || (cleanEmail.split('@')[0]),
+        email: cleanEmail,
+        classNum,
+        section
+      });
+      student = created.user;
+    } else {
+      await registerDeviceSession(student, true);
+    }
+
+    return { success: true, user: student, session: data.session };
+  } catch (err) {
+    return { success: false, error: err.message || 'Verification failed.' };
+  }
+}
+
+/**
+ * Find existing registered student by Google email
  */
 export async function findUserByGoogleEmail(email) {
   if (!email) return null;
@@ -53,7 +131,6 @@ export async function findUserByGoogleEmail(email) {
         (u.id && u.id.toLowerCase() === cleanEmail)
       );
       if (found) {
-        // Cache locally
         saveRegisteredUsers([found, ...localUsers.filter(u => u.id !== found.id)]);
         return found;
       }
@@ -75,14 +152,12 @@ export async function createStudentWithGoogle({ name, email, avatar = null, clas
   // Check if account already exists with this email
   const existing = await findUserByGoogleEmail(cleanEmail);
   if (existing) {
-    const sessionCheck = await checkDeviceSession(existing.id);
     await registerDeviceSession(existing, true);
     return { success: true, user: existing, alreadyExisted: true };
   }
 
-  // Generate unique Student ID
-  const randomNum = Math.floor(1000 + Math.random() * 9000);
-  const studentId = `DAV-2026-${randomNum}`;
+  // Generate clean unique ID (no forced year string)
+  const studentId = 'std_' + Math.random().toString(36).substring(2, 9);
 
   const newStudent = {
     id: studentId,
@@ -92,7 +167,7 @@ export async function createStudentWithGoogle({ name, email, avatar = null, clas
     googleEmail: cleanEmail,
     password: `Google_${Math.random().toString(36).substring(2, 10)}!`,
     studentId: studentId,
-    admissionNumber: `ADM-${studentId}`,
+    admissionNumber: `ADM-${Math.floor(1000 + Math.random() * 9000)}`,
     classNum: String(classNum || '8'),
     section: section || 'A',
     role: 'Student',
@@ -110,11 +185,9 @@ export async function createStudentWithGoogle({ name, email, avatar = null, clas
   };
 
   try {
-    // Save to local storage
     const local = getRegisteredUsers();
     saveRegisteredUsers([newStudent, ...local.filter(u => u.id !== newStudent.id)]);
 
-    // Save student profile storage
     localStorage.setItem(`dav_student_profile_${newStudent.id.toLowerCase()}`, JSON.stringify({
       fullName: newStudent.name,
       studentId: newStudent.id,
@@ -126,41 +199,12 @@ export async function createStudentWithGoogle({ name, email, avatar = null, clas
       tierPlan: newStudent.dimensionName
     }));
 
-    // Sync to Supabase Cloud Database
     await saveCloudStudent(newStudent).catch(() => {});
-
-    // Register single device session
     await registerDeviceSession(newStudent, true);
 
     return { success: true, user: newStudent, isNewAccount: true };
   } catch (err) {
     console.error('Failed to create student with Google:', err);
     return { success: false, error: err.message || 'Failed to create student' };
-  }
-}
-
-/**
- * Handle direct Login with Google
- */
-export async function loginWithGoogle({ email }) {
-  const cleanEmail = (email || '').trim().toLowerCase();
-  if (!cleanEmail) {
-    return { success: false, error: 'Please provide a valid Google email.' };
-  }
-
-  const existing = await findUserByGoogleEmail(cleanEmail);
-  if (!existing) {
-    return { 
-      success: false, 
-      notFound: true, 
-      error: `No DAV Student account found for "${cleanEmail}". Click "Create Account with Google" to register now.` 
-    };
-  }
-
-  try {
-    await registerDeviceSession(existing, true);
-    return { success: true, user: existing };
-  } catch (err) {
-    return { success: true, user: existing };
   }
 }

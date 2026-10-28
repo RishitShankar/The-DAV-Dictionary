@@ -1,158 +1,131 @@
 import React, { useState } from 'react';
 import { 
   X, Mail, User, Shield, CheckCircle, AlertCircle, 
-  ArrowRight, Loader2, Sparkles, PlusCircle, Check, 
-  ExternalLink, ChevronRight, IndianRupee 
+  ArrowRight, Loader2, Sparkles, KeyRound, RefreshCw, 
+  ExternalLink, IndianRupee, Check 
 } from 'lucide-react';
 import { GoogleIcon } from './GoogleIcon';
 import { 
-  loginWithGoogle, 
-  createStudentWithGoogle, 
-  findUserByGoogleEmail,
+  sendRealEmailOtp, 
+  verifyRealEmailOtp, 
   triggerSupabaseGoogleOAuth 
 } from '../services/googleAuthService';
-import { getRegisteredUsers } from '../data/preloadedUsers';
 import { CustomPurchaseModal } from './CustomPurchaseModal';
 
 export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLoginSuccess }) {
-  // Navigation Steps: 'picker' (Account Chooser) -> 'consent' (Agree & Continue) -> 'purchase_offer'
-  const [step, setStep] = useState('picker');
-  const [selectedAccount, setSelectedAccount] = useState(null);
-  
-  // Custom account input form
-  const [isAddingNew, setIsAddingNew] = useState(false);
+  // Authentication Steps: 'enter_email' -> 'enter_otp' -> 'success_offer'
+  const [step, setStep] = useState('enter_email');
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
+  const [otpCode, setOtpCode] = useState('');
   const [classNum, setClassNum] = useState('8');
   const [section, setSection] = useState('D');
-  const [avatarUrl, setAvatarUrl] = useState('');
-  
+
   const [loading, setLoading] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
-  const [createdStudentUser, setCreatedStudentUser] = useState(null);
+  const [authenticatedUser, setAuthenticatedUser] = useState(null);
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
 
   if (!isOpen) return null;
 
-  // Retrieve existing local users to populate realistic mobile Google Account Chooser
-  const localAccounts = (() => {
-    try {
-      const users = getRegisteredUsers();
-      const accounts = [];
-      const seen = new Set();
-      users.forEach(u => {
-        const mail = (u.email || u.googleEmail || '').toLowerCase();
-        if (mail && mail.includes('@') && !seen.has(mail)) {
-          seen.add(mail);
-          accounts.push({
-            name: u.name || 'DAV Scholar',
-            email: mail,
-            avatar: u.photoUrl || u.avatar || u.dp || null,
-            isExisting: true,
-            userRef: u
-          });
-        }
-      });
-      // Fallback sample accounts if no student accounts saved yet
-      if (accounts.length === 0) {
-        accounts.push({
-          name: 'Rishit Shankar',
-          email: 'rishit.shankar@gmail.com',
-          avatar: '/rishit_shankar.jpg',
-          isExisting: true
-        });
-      }
-      return accounts;
-    } catch (e) {
-      return [];
-    }
-  })();
-
-  const handleSelectAccount = (acc) => {
-    setSelectedAccount(acc);
-    setStep('consent');
+  // Direct Real Google OAuth Trigger (accounts.google.com)
+  const handleRealGoogleOAuth = async () => {
+    setOauthLoading(true);
     setErrorMsg('');
+    try {
+      const res = await triggerSupabaseGoogleOAuth();
+      if (!res.success) {
+        setOauthLoading(false);
+        setErrorMsg('To use direct Google popup, enable Google Provider in your Supabase Auth settings. You can authenticate with 100% Real Google Email OTP below right now!');
+      }
+    } catch (e) {
+      setOauthLoading(false);
+      setErrorMsg('Google OAuth initialization error. Use Real Google OTP below.');
+    }
   };
 
-  const handleCustomAccountNext = (e) => {
+  // Step 1: Send Real 6-Digit OTP to Google / Gmail Address
+  const handleSendRealOtp = async (e) => {
     e.preventDefault();
-    if (!email.trim() || !email.includes('@')) {
-      setErrorMsg('Please enter a valid Gmail / Google Account address.');
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail || !cleanEmail.includes('@')) {
+      setErrorMsg('Please enter a valid Google / Gmail address.');
       return;
     }
-    const cleanName = fullName.trim() || email.split('@')[0];
-    const acc = {
-      name: cleanName,
-      email: email.trim().toLowerCase(),
-      avatar: avatarUrl || null,
-      classNum,
-      section,
-      isExisting: false
-    };
-    setSelectedAccount(acc);
-    setStep('consent');
+
+    setLoading(true);
     setErrorMsg('');
+    setSuccessMsg('');
+
+    try {
+      const res = await sendRealEmailOtp(cleanEmail);
+      setLoading(false);
+
+      if (res.success) {
+        setSuccessMsg(`Real security OTP has been sent to ${cleanEmail}. Please check your Gmail inbox.`);
+        setStep('enter_otp');
+      } else {
+        setErrorMsg(res.error || 'Failed to send OTP code. Please check the email address and try again.');
+      }
+    } catch (err) {
+      setLoading(false);
+      setErrorMsg('Error sending OTP. Please try again.');
+    }
   };
 
-  // User Clicks "Agree and continue"
-  const handleAgreeAndContinue = async () => {
-    if (!selectedAccount) return;
+  // Step 2: Verify Real OTP Code and Log In / Register
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    const cleanOtp = otpCode.trim();
+    if (!cleanOtp) {
+      setErrorMsg('Please enter the 6-digit OTP sent to your email.');
+      return;
+    }
+
     setLoading(true);
     setErrorMsg('');
 
     try {
-      // 1. Check if user already exists
-      let existing = await findUserByGoogleEmail(selectedAccount.email);
-      if (existing) {
-        // Authenticate existing user
-        setCreatedStudentUser(existing);
-        setSuccessMsg(`Welcome back, ${existing.name}! Logged in via Google.`);
-        setLoading(false);
-        setStep('purchase_offer');
-        return;
-      }
-
-      // 2. Create new student account with Google details (all details filled, starts in initial starter access)
-      const res = await createStudentWithGoogle({
-        name: selectedAccount.name,
-        email: selectedAccount.email,
-        avatar: selectedAccount.avatar,
-        classNum: selectedAccount.classNum || classNum,
-        section: selectedAccount.section || section
+      const res = await verifyRealEmailOtp({
+        email,
+        otp: cleanOtp,
+        fullName: fullName.trim() || email.split('@')[0],
+        classNum,
+        section
       });
 
       setLoading(false);
       if (res.success && res.user) {
-        setCreatedStudentUser(res.user);
-        setSuccessMsg(`Google Account created! Official Student ID: ${res.user.studentId}`);
-        // Transition to Course Purchase Offer step
-        setStep('purchase_offer');
+        setAuthenticatedUser(res.user);
+        setSuccessMsg(`Identity verified! Welcome, ${res.user.name}.`);
+        setStep('success_offer');
       } else {
-        setErrorMsg(res.error || 'Failed to initialize Google Account.');
+        setErrorMsg(res.error || 'Invalid OTP code. Please check your Gmail and try again.');
       }
     } catch (err) {
       setLoading(false);
-      setErrorMsg('Error completing Google Authentication.');
+      setErrorMsg('Verification failed. Please try again.');
     }
   };
 
   const handleFinishAndEnter = () => {
-    if (createdStudentUser) {
-      onLoginSuccess(createdStudentUser);
+    if (authenticatedUser) {
+      onLoginSuccess(authenticatedUser);
     }
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-xs animate-fadeIn select-none font-sans">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-xs animate-fadeIn select-none font-sans">
       <div className="w-full max-w-[430px] bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 text-slate-800 flex flex-col max-h-[92vh]">
         
         {/* Top Google Card Brand Bar */}
         <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
           <div className="flex items-center gap-2.5">
             <GoogleIcon className="w-5 h-5 shrink-0" />
-            <span className="font-extrabold text-sm sm:text-base text-slate-800 tracking-tight">
+            <span className="font-black text-sm sm:text-base text-slate-900 tracking-tight">
               Sign in with Google
             </span>
           </div>
@@ -166,245 +139,239 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
 
         {/* Error / Alert */}
         {errorMsg && (
-          <div className="mx-5 mt-3 p-3 rounded-2xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-start gap-2 animate-fadeIn shrink-0">
-            <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
-            <div className="flex-1">{errorMsg}</div>
+          <div className="mx-5 mt-3 p-3 rounded-2xl bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-start gap-2 animate-fadeIn shrink-0">
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+            <div className="flex-1 leading-relaxed">{errorMsg}</div>
+          </div>
+        )}
+
+        {/* Success Alert */}
+        {successMsg && step !== 'success_offer' && (
+          <div className="mx-5 mt-3 p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 flex items-start gap-2 animate-fadeIn shrink-0">
+            <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+            <div className="flex-1 leading-relaxed font-semibold">{successMsg}</div>
           </div>
         )}
 
         {/* =========================================================================
-            SCREEN 1: AUTHENTIC GOOGLE ACCOUNT CHOOSER ("Choose an account")
+            STEP 1: REAL GOOGLE OAUTH & REAL EMAIL OTP ENTRY
             ========================================================================= */}
-        {step === 'picker' && (
+        {step === 'enter_email' && (
           <div className="p-5 sm:p-6 overflow-y-auto space-y-4">
             
             <div className="text-center sm:text-left">
-              <h3 className="font-extrabold text-lg sm:text-xl text-slate-900">
-                Choose an account
+              <h3 className="font-black text-lg sm:text-xl text-slate-900">
+                Google Authentication
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                to continue to <strong className="text-slate-800">DAV Dictionary</strong>
+                Sign in with your verified Google / Gmail account with real OTP
               </p>
             </div>
 
-            {!isAddingNew ? (
-              <div className="space-y-2 pt-2">
-                
-                {/* List of Mobile / Device Google Accounts */}
-                {localAccounts.map((acc, idx) => (
-                  <div
-                    key={idx}
-                    onClick={() => handleSelectAccount(acc)}
-                    className="p-3 rounded-2xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/40 transition-all cursor-pointer flex items-center justify-between group shadow-xs"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-300 overflow-hidden flex items-center justify-center font-bold text-slate-700 text-sm shrink-0">
-                        {acc.avatar ? (
-                          <img src={acc.avatar} alt={acc.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <span>{acc.name ? acc.name[0].toUpperCase() : 'G'}</span>
-                        )}
-                      </div>
-                      <div className="text-left truncate">
-                        <div className="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-blue-700 truncate">
-                          {acc.name}
-                        </div>
-                        <div className="text-[11px] text-slate-500 truncate">
-                          {acc.email}
-                        </div>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-blue-600 shrink-0" />
-                  </div>
-                ))}
+            {/* Direct Google OAuth Button */}
+            <button
+              type="button"
+              disabled={oauthLoading}
+              onClick={handleRealGoogleOAuth}
+              className="w-full py-3 px-4 rounded-2xl border-2 border-slate-200 hover:border-blue-500 bg-white hover:bg-blue-50/30 text-slate-800 font-extrabold text-xs flex items-center justify-center gap-2.5 shadow-xs transition cursor-pointer disabled:opacity-50"
+            >
+              {oauthLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+              ) : (
+                <>
+                  <GoogleIcon className="w-4 h-4 shrink-0" />
+                  <span>Continue with Google Account</span>
+                  <ExternalLink className="w-3.5 h-3.5 text-slate-400 ml-auto" />
+                </>
+              )}
+            </button>
 
-                {/* + Use another account option */}
-                <div
-                  onClick={() => setIsAddingNew(true)}
-                  className="p-3 rounded-2xl border border-dashed border-slate-300 hover:border-blue-500 hover:bg-slate-50 transition cursor-pointer flex items-center gap-3 text-slate-700 hover:text-blue-700"
-                >
-                  <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">
-                    <PlusCircle className="w-5 h-5" />
-                  </div>
-                  <div className="font-bold text-xs sm:text-sm">
-                    Use another Google account
-                  </div>
-                </div>
+            {/* Divider */}
+            <div className="flex items-center gap-2 pt-1">
+              <div className="flex-1 h-px bg-slate-200" />
+              <span className="text-[10px] uppercase font-bold text-slate-400">
+                or sign in with Google OTP
+              </span>
+              <div className="flex-1 h-px bg-slate-200" />
+            </div>
 
-              </div>
-            ) : (
-              /* Custom Google Account Details Form */
-              <form onSubmit={handleCustomAccountNext} className="space-y-3 pt-1">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Google Email Address
-                  </label>
+            {/* Real OTP Form */}
+            <form onSubmit={handleSendRealOtp} className="space-y-3">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Google Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                   <input
                     type="email"
                     required
-                    placeholder="yourname@gmail.com"
+                    placeholder="student@gmail.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (errorMsg) setErrorMsg('');
+                    }}
+                    className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-medium"
                   />
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Student Full Name
-                  </label>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Student Full Name (Optional)
+                </label>
+                <div className="relative">
+                  <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                   <input
                     type="text"
-                    required
-                    placeholder="Enter full name"
+                    placeholder="Enter your name"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-medium"
                   />
                 </div>
-
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">Class</label>
-                    <select
-                      value={classNum}
-                      onChange={(e) => setClassNum(e.target.value)}
-                      className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-white"
-                    >
-                      {[1, 2, 3, 4, 5, 6, 7, 8].map(c => (
-                        <option key={c} value={c}>Class {c}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">Section</label>
-                    <select
-                      value={section}
-                      onChange={(e) => setSection(e.target.value)}
-                      className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-white"
-                    >
-                      {['A', 'B', 'C', 'D'].map(s => (
-                        <option key={s} value={s}>Section {s}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="flex gap-2 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsAddingNew(false)}
-                    className="flex-1 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer"
-                  >
-                    Back to Accounts
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition cursor-pointer"
-                  >
-                    Next →
-                  </button>
-                </div>
-              </form>
-            )}
-
-          </div>
-        )}
-
-        {/* =========================================================================
-            SCREEN 2: GOOGLE PERMISSIONS & "AGREE AND CONTINUE"
-            ========================================================================= */}
-        {step === 'consent' && selectedAccount && (
-          <div className="p-5 sm:p-6 overflow-y-auto space-y-4">
-            
-            {/* Selected Account Capsule */}
-            <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
-              <div className="flex items-center gap-3 truncate">
-                <div className="w-10 h-10 rounded-full bg-blue-600 text-white font-black text-sm flex items-center justify-center shrink-0 overflow-hidden">
-                  {selectedAccount.avatar ? (
-                    <img src={selectedAccount.avatar} alt={selectedAccount.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <span>{selectedAccount.name ? selectedAccount.name[0].toUpperCase() : 'G'}</span>
-                  )}
-                </div>
-                <div className="truncate text-left">
-                  <div className="font-extrabold text-xs sm:text-sm text-slate-900 truncate">
-                    {selectedAccount.name}
-                  </div>
-                  <div className="text-[11px] text-slate-500 truncate">
-                    {selectedAccount.email}
-                  </div>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setStep('picker')}
-                className="text-[11px] font-bold text-blue-600 hover:underline shrink-0 ml-2 cursor-pointer"
-              >
-                Change
-              </button>
-            </div>
-
-            {/* Google Permissions Text */}
-            <div className="space-y-3 text-xs text-slate-600">
-              <h4 className="font-extrabold text-slate-900 text-sm">
-                DAV Dictionary wants to access your Google Account
-              </h4>
-              <p className="leading-relaxed">
-                To continue, Google will share your <strong>name</strong>, <strong>email address</strong>, and <strong>profile picture</strong> with DAV Dictionary.
-              </p>
-
-              <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-100 text-[11px] text-blue-900 space-y-1">
-                <div className="font-bold flex items-center gap-1.5">
-                  <Shield className="w-3.5 h-3.5 text-blue-700" />
-                  <span>Secure Scholar Access</span>
-                </div>
-                <p>
-                  All your details (Full Name, Email, Student ID) will be automatically personalized into your DAV Dictionary account.
-                </p>
               </div>
 
-              <p className="text-[11px] text-slate-400">
-                You can review DAV Dictionary's <span className="underline cursor-pointer">Privacy Policy</span> and <span className="underline cursor-pointer">Terms of Service</span> before proceeding.
-              </p>
-            </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Class</label>
+                  <select
+                    value={classNum}
+                    onChange={(e) => setClassNum(e.target.value)}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white font-medium"
+                  >
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map(c => (
+                      <option key={c} value={c}>Class {c}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Section</label>
+                  <select
+                    value={section}
+                    onChange={(e) => setSection(e.target.value)}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white font-medium"
+                  >
+                    {['A', 'B', 'C', 'D'].map(s => (
+                      <option key={s} value={s}>Section {s}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
 
-            {/* Action Buttons: Agree and Continue */}
-            <div className="pt-3 flex flex-col sm:flex-row gap-2">
               <button
-                type="button"
-                onClick={() => setStep('picker')}
-                className="py-2.5 px-4 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer order-2 sm:order-1"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
+                type="submit"
                 disabled={loading}
-                onClick={handleAgreeAndContinue}
-                className="flex-1 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 order-1 sm:order-2"
+                className="w-full mt-2 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin text-white" />
-                    <span>Signing you in...</span>
+                    <span>Sending Real OTP Code...</span>
                   </>
                 ) : (
                   <>
-                    <span>Agree and continue</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <KeyRound className="w-4 h-4 text-white" />
+                    <span>Send Real OTP to Google Email</span>
+                    <ArrowRight className="w-3.5 h-3.5 ml-1" />
                   </>
                 )}
               </button>
-            </div>
+            </form>
 
           </div>
         )}
 
         {/* =========================================================================
-            SCREEN 3: ACCOUNT CREATED & COURSE PURCHASE GATEWAY OFFER
+            STEP 2: ENTER REAL 6-DIGIT OTP
             ========================================================================= */}
-        {step === 'purchase_offer' && createdStudentUser && (
+        {step === 'enter_otp' && (
+          <div className="p-5 sm:p-6 overflow-y-auto space-y-4">
+            
+            <div className="text-center">
+              <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-2">
+                <KeyRound className="w-6 h-6" />
+              </div>
+              <h3 className="font-black text-lg text-slate-900">
+                Enter Real Security OTP
+              </h3>
+              <p className="text-xs text-slate-500 mt-1">
+                We sent a 6-digit verification code to:
+              </p>
+              <div className="text-xs font-bold text-blue-700 font-mono mt-0.5">
+                {email}
+              </div>
+            </div>
+
+            <form onSubmit={handleVerifyOtp} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1 text-center">
+                  6-Digit OTP Code
+                </label>
+                <input
+                  type="text"
+                  required
+                  maxLength="6"
+                  autoFocus
+                  placeholder="• • • • • •"
+                  value={otpCode}
+                  onChange={(e) => {
+                    setOtpCode(e.target.value.replace(/[^0-9]/g, ''));
+                    if (errorMsg) setErrorMsg('');
+                  }}
+                  className="w-full py-3 text-center text-xl font-mono tracking-widest font-black rounded-xl border-2 border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-500/20 bg-blue-50/20"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading || otpCode.length < 6}
+                className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                    <span>Verifying Code with Google Engine...</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-4 h-4 text-white" />
+                    <span>Verify OTP &amp; Authenticate</span>
+                  </>
+                )}
+              </button>
+
+              <div className="flex items-center justify-between text-xs pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStep('enter_email');
+                    setErrorMsg('');
+                  }}
+                  className="text-slate-500 hover:text-slate-800 font-semibold cursor-pointer"
+                >
+                  ← Change Email
+                </button>
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={handleSendRealOtp}
+                  className="text-blue-600 hover:underline font-bold flex items-center gap-1 cursor-pointer"
+                >
+                  <RefreshCw className="w-3 h-3" />
+                  <span>Resend OTP</span>
+                </button>
+              </div>
+            </form>
+
+          </div>
+        )}
+
+        {/* =========================================================================
+            STEP 3: AUTHENTICATED SUCCESSFULLY & SUBSCRIPTION OPTION
+            ========================================================================= */}
+        {step === 'success_offer' && authenticatedUser && (
           <div className="p-5 sm:p-6 overflow-y-auto space-y-4 text-center">
             
             <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center shadow-xs">
@@ -412,29 +379,29 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
             </div>
 
             <div>
-              <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
-                Personalized Scholar Account Ready
+              <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300">
+                100% Verified Identity
               </span>
               <h3 className="text-xl font-black text-slate-900 mt-2">
-                Welcome, {createdStudentUser.name}!
+                Welcome, {authenticatedUser.name}!
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                Student ID: <strong className="text-slate-800">{createdStudentUser.studentId}</strong>
+                {authenticatedUser.email}
               </p>
             </div>
 
-            {/* Information Card */}
+            {/* Subscription Offer Info */}
             <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 text-left text-xs space-y-2">
-              <div className="font-extrabold text-amber-950 flex items-center gap-1.5">
+              <div className="font-black text-amber-950 flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4 text-amber-600" />
                 <span>Subscription &amp; Course Purchase Gateway</span>
               </div>
               <p className="text-amber-900 text-[11px] leading-relaxed">
-                Your account details are fully saved. You can now choose your subscription tier and pay <strong>any custom amount from ₹0 to ₹1,00,000</strong>. Your payment will be verified directly by Administrator Rishit Shankar!
+                You can now choose your subscription tier and pay <strong>any custom amount between ₹0 and ₹1,00,000</strong>. Your payment will be verified directly by Administrator Rishit Shankar!
               </p>
             </div>
 
-            {/* Actions: Open Purchase Gateway or Explore First */}
+            {/* Action Buttons */}
             <div className="space-y-2 pt-2">
               <button
                 type="button"
@@ -450,7 +417,7 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
                 onClick={handleFinishAndEnter}
                 className="w-full py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs transition cursor-pointer"
               >
-                Enter Portal with Initial Scholar Access →
+                Enter Portal with Verified Account →
               </button>
             </div>
 
@@ -461,9 +428,9 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
         <div className="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 shrink-0">
           <span className="flex items-center gap-1">
             <Shield className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Google Identity Services</span>
+            <span>Secure Google Engine</span>
           </span>
-          <span>DAV Dictionary Portal</span>
+          <span>Official DAV Portal</span>
         </div>
 
       </div>
@@ -475,7 +442,7 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
           setIsPurchaseModalOpen(false);
           handleFinishAndEnter();
         }}
-        user={createdStudentUser}
+        user={authenticatedUser}
         onPurchaseSubmitted={() => {
           setIsPurchaseModalOpen(false);
           handleFinishAndEnter();

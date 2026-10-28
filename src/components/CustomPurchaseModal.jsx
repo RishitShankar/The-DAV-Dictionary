@@ -65,7 +65,7 @@ export function CustomPurchaseModal({ isOpen, onClose, user, onPurchaseSubmitted
 
     const planObj = PLANS.find(p => p.id === selectedPlan) || PLANS[1];
 
-    const studentId = user?.studentId || user?.id || `DAV-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const studentId = user?.studentId || user?.id || `std_${Math.random().toString(36).substring(2, 9)}`;
     const studentName = user?.name || user?.fullName || 'DAV Student';
     const studentEmail = user?.email || user?.googleEmail || 'student@gmail.com';
     const studentPhoto = user?.photoUrl || user?.avatar || user?.dp || null;
@@ -306,7 +306,7 @@ export function CustomPurchaseModal({ isOpen, onClose, user, onPurchaseSubmitted
                   <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-[11px] text-blue-900 flex items-start gap-2">
                     <Shield className="w-4 h-4 text-blue-700 shrink-0 mt-0.5" />
                     <span>
-                      Account: <strong>{user?.name || 'Logged-in Student'}</strong> ({user?.studentId || user?.id || 'DAV-STUDENT'})
+                      Student: <strong>{user?.name || user?.email || 'Logged-in Student'}</strong>
                     </span>
                   </div>
                 </div>
