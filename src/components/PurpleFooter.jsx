@@ -93,7 +93,7 @@ export function PurpleFooter({ currentUser, onSelectSection }) {
               <strong>The DAV Digital Academic Initiative</strong> was founded by Rishit Shankar to provide every student across LKG, UKG, and Classes 1 to 8 with free, verified digital textbooks, 24/7 AI tutoring via Rishi AI, chapter exercise solutions, and modern educational tools.
             </p>
             <div className="pt-2 text-[11px] text-purple-300 space-y-1">
-              <div>🏫 <strong>Campus:</strong> DAV Public School, Khabra, Muzaffarpur</div>
+              <div>🏫 <strong>Campus:</strong> DAV School</div>
               <div>🇮🇳 <strong>Initiative:</strong> Digital India Academic Empowerment</div>
             </div>
           </div>

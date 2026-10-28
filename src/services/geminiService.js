@@ -143,9 +143,9 @@ You are the definitive authority on the official D.A.V. Public School curriculum
 
 3. KNOWLEDGE OF CREATOR & HEAD BOY (RISHIT SHANKAR):
    - Full Name: Rishit Shankar (रीशीत शंकर). Age: 14 years old.
-   - School: D.A.V. Public School, Khabra & Malighat, Muzaffarpur, Bihar (and supporting all DAV institutions across Bihar & India).
+   - School: DAV School (and supporting all DAV institutions across Bihar & India).
    - Class: Class 8, Section D, Roll No. 25 (Session 2026–2027).
-   - Role: Head Boy of D.A.V. Public School Khabra, warmly welcoming students from DAV Khabra, DAV Malighat, and all DAV campuses.
+   - Role: Head Boy of DAV School, warmly welcoming students from DAV School and all DAV campuses.
    - Academic Record: Perfect 80/80 (Century) in Sanskrit Half-Yearly, 96/100 in English, 90/100 in Mathematics, 79/80 in Hindi, 77/80 in Science & Social Science.
    - Creator of: DAV Dictionary (10-Section Campus Platform) and Rishi AI.
    - Technology Stack: HTML, CSS, JavaScript, React 18, Vite, Tailwind CSS, Google Cloud, Firebase Firestore, WebSockets, exploring Java/Kotlin for Android.
@@ -341,7 +341,7 @@ export async function generateChapterQuiz(classNum, subject, chapterNum, chapter
   const cNum = typeof classNum === 'string' ? classNum : `Class ${classNum}`;
   const count = Math.min(50, Math.max(1, Number(questionCount) || 10));
 
-  const prompt = `You are Rishi AI, the official DAV curriculum examination board setter serving DAV Public School Khabra, DAV Public School Malighat, and all DAV institutions.
+  const prompt = `You are Rishi AI, the official DAV curriculum examination board setter serving DAV School and all DAV institutions.
 Generate exactly ${count} high-quality, 100% textbook-accurate multiple choice questions (MCQs) for:
 - Class: ${cNum}
 - Subject: ${subject}
@@ -466,7 +466,7 @@ REAL-TIME SYSTEM CLOCK & TEMPORAL CONTEXT:
 - Current Real-World Date: ${currentSystemDate}
 - Current Year: ${currentSystemYear}
 - Ongoing Academic Session: ${currentSystemYear}–${currentSystemYear + 1}
-- Location: DAV Public School, Khabra, Muzaffarpur, Bihar, India
+- Location: DAV School, Bihar, India
 - Whenever asked what year it is, what date it is, or questions regarding current time, always accurately refer to the current calendar year (${currentSystemYear}).
 
 You have the comprehensive knowledge, versatility, problem-solving ability, and conversational depth of Google Gemini.
@@ -695,7 +695,7 @@ ${textbookMatch.answer}
       text: `👑 **About Head Boy Rishit Shankar (रीशीत शंकर)**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-* **Role:** Head Boy of **D.A.V. Public School, Khabra, Muzaffarpur, Bihar** (Class 8-D, Roll No. 25).
+* **Role:** Head Boy of **DAV School** (Class 8-D, Roll No. 25).
 * **Age:** 14 years old.
 * **Academic Excellence:**
   - 🏆 **Sanskrit Century:** Perfect **80 / 80 (100%)** in Half-Yearly Examinations.
@@ -732,18 +732,18 @@ Welcome to **DAV Dictionary**! I am your personal academic and global intelligen
   }
 
   // 6. Real-World Intelligence & Geopolitics Offline Knowledge Routers
-  if (lowerQ.includes('muzaffarpur') || (lowerQ.includes('bihar') && (lowerQ.includes('khabra') || lowerQ.includes('where is')))) {
+  if (lowerQ.includes('muzaffarpur') || (lowerQ.includes('bihar') && (lowerQ.includes('dav school') || lowerQ.includes('where is')))) {
     return {
       source: 'shankar-geo-core',
       isTextbookGrounded: false,
-      chapterInfo: 'Muzaffarpur, Bihar • Home of DAV Khabra',
+      chapterInfo: 'Muzaffarpur, Bihar • Home of DAV School',
       modelName: getTierBadge(dimension),
       text: `🏙️ **Muzaffarpur (मुज़फ़्फ़रपुर), Bihar**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 * **Geographic Identity:** Muzaffarpur is a premier historic city in North Bihar, situated along the sacred **Burhi Gandak River**.
 * **Global Recognition:** Renowned worldwide as the **"Land of Shahi Lychee"** (शाही लीची), possessing a prestigious GI (Geographical Indication) tag.
-* **Academic & Cultural Significance:** It is a vibrant educational hub of North Bihar, home to B.R. Ambedkar Bihar University (BRABU), Sri Krishna Medical College, and premier institutions like **D.A.V. Public School, Khabra** — where Head Boy Rishit Shankar leads the student council and created DAV Dictionary!
+* **Academic & Cultural Significance:** It is a vibrant educational hub of North Bihar, home to B.R. Ambedkar Bihar University (BRABU), Sri Krishna Medical College, and premier institutions like **DAV School** — where Head Boy Rishit Shankar leads the student council and created DAV Dictionary!
 * **Connectivity:** Strategically connected via East-West Corridor (NH-27) and North-South links, serving as the commercial gateway to Tirhut, Mithila, and Nepal border trade.`
     };
   }

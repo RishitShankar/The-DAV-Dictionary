@@ -502,7 +502,7 @@ export function BookLibrary({
                         {/* Top: DAV School Monogram Crest */}
                         <div className="flex items-center justify-between pl-3 relative z-10">
                           <span className="text-[9px] font-black tracking-widest uppercase text-amber-300/90 font-mono">
-                            DAV Khabra
+                            DAV School
                           </span>
                           <span className="w-5 h-5 rounded-full bg-amber-400/20 border border-amber-400/50 flex items-center justify-center text-[10px] text-amber-300 font-bold">
                             {art.symbol}

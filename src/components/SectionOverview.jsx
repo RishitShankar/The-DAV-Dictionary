@@ -110,7 +110,7 @@ export function SectionOverview({ currentUser, onSelectSection }) {
       borderHover: 'hover:border-amber-500',
       tag: 'Kids Fun • Bus Radar',
       tagColor: 'bg-amber-100 text-amber-950 border-amber-300 font-black',
-      description: 'Exclusive Kids Fun Portal! Teleport to DAV Khabra with auto-start live Google Maps directions, track Principal Anil Kumar Singh\'s school bus fleet with Bus ID & Password, and play the Bus Driver Arcade!'
+      description: 'Exclusive Kids Fun Portal! Teleport to DAV School with auto-start live Google Maps directions, track Principal Anil Kumar Singh\'s school bus fleet with Bus ID & Password, and play the Bus Driver Arcade!'
     },
     {
       id: 8,
@@ -162,7 +162,7 @@ export function SectionOverview({ currentUser, onSelectSection }) {
       borderHover: 'hover:border-yellow-500',
       tag: 'Head Boy Profile',
       tagColor: 'bg-yellow-100 text-yellow-900 border-yellow-300',
-      description: 'Meet Rishit Shankar (Head Boy, Class 8 DAV Khabra, 95% scholar, 80/80 in Sanskrit, DAV Cluster 3 Gold Medalist). Contact directly via WhatsApp (+91 94700 33984), Call (+91 80922 61750), Snapchat (@dav_dictionary), and social profiles.'
+      description: 'Meet Rishit Shankar (Head Boy, Class 8 DAV School, 95% scholar, 80/80 in Sanskrit, DAV Cluster 3 Gold Medalist). Contact directly via WhatsApp (+91 94700 33984), Call (+91 80922 61750), Snapchat (@dav_dictionary), and social profiles.'
     },
     {
       id: 12,
@@ -403,7 +403,7 @@ export function SectionOverview({ currentUser, onSelectSection }) {
                 The Story Behind the 10 Dimensions of DAV Dictionary
               </h3>
               <p className="text-xs text-slate-500">
-                Authored by Rishit Shankar (Head Boy, Class 8 DAV Public School, Khabra)
+                Authored by Rishit Shankar (Head Boy, Class 8 DAV School)
               </p>
             </div>
           </div>

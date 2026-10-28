@@ -45,9 +45,9 @@ export function AboutCreatorSection() {
 
   const summary100Lines = [
   "Full Name: Rishit Shankar (रीशीत शंकर), 14-year-old student leader and technology innovator.",
-  "Current Academic Level: Class 8-D student at D.A.V. Public School, Khabra, Muzaffarpur, Bihar.",
+  "Current Academic Level: Class 8-D student at DAV School.",
   "Official School Identifier: Roll No. 25 in Class 8-D.",
-  "Elected Designation: Head Boy of D.A.V. Public School, Khabra for Academic Session 2026–27.",
+  "Elected Designation: Head Boy of DAV School for Academic Session 2026–27.",
   "Leadership Selection: Unanimously appointed by Principal Anil Kumar and school administration based on moral integrity, academic brilliance, and discipline.",
   "Primary Responsibility: Chief representative and student advocate for all students from LKG up to Class 8.",
   "Morning Assembly Governance: Coordinates morning assembly order, national pledge, DAV anthem, and queue management.",
@@ -98,7 +98,7 @@ export function AboutCreatorSection() {
   "Pressure Management: Thrives in high-stakes competitive environments through calm mental composure.",
   "Time Allocation Mastery: Allocates exact time budgets per section during national-level competitive tests.",
   "Academic Ambition: Prepares for state and national Science and Mathematics Olympiads.",
-  "School Honor: Brought national acclaim and recognition to D.A.V. Public School, Khabra.",
+  "School Honor: Brought national acclaim and recognition to DAV School.",
   "DAV Cluster 3 Gold Medalist: Won the Gold Medal in the official DAV Cluster 3 Chess Championship.",
   "Competitive Experience: Played and logged over 1,000+ competitive chess matches on online and board platforms.",
   "Primary Repertoire (White): 1.e4 King’s Pawn Opening with sharp tactical developments and center control.",
@@ -138,12 +138,12 @@ export function AboutCreatorSection() {
   "Educational Equity: Ensures every student has equal access to high-quality academic tools regardless of resources.",
   "Continuous Enhancement: Rapidly fixes bugs and adds new student-requested features within hours.",
   "Student Empowerment: Designed by a student for students to make learning delightful and stress-free.",
-  "Permanent Legacy: Created as a lasting technological contribution to D.A.V. Public School, Khabra.",
+  "Permanent Legacy: Created as a lasting technological contribution to DAV School.",
   "Core Guiding Principle: Combines rigorous personal discipline, academic brilliance, and service to society.",
   "Veneration of Teachers: Holds profound gratitude and respect for school mentors, teachers, and Principal Anil Kumar.",
   "Integrity and Humility: Stays grounded, helpful to peers, and dedicated to continuous self-improvement.",
   "Long-Term Ambition: Aspires to lead cutting-edge computer science and artificial intelligence advancements for India.",
-  "Commitment to Excellence: Dedicated to representing D.A.V. Public School, Khabra with pride, honor, and brilliance."
+  "Commitment to Excellence: Dedicated to representing DAV School with pride, honor, and brilliance."
 ];
 
   const handleCopyWhatsApp = () => {
@@ -165,7 +165,7 @@ export function AboutCreatorSection() {
   };
 
   const handleCopyBio = () => {
-    const bioText = `Rishit Shankar (रीशीत शंकर) • Age 14 • Student Leader, Head Boy of D.A.V. Public School Khabra (Class 8-D, Roll No. 25). Founder & Creator of The DAV Dictionary (serving DAVians) and Rishi AI. Gold Medalist in DAV Cluster 3. 98 Percentile Gold Medalist in PWNSAT (Physics Wallah National Scholarship Test). Academic Excellence: 95% in Class 8 Half-Yearly (Sanskrit 80/80 Century Scorer, Hindi 79/80, SST 77/80, Science 77/80, Math 74/80, English 69/80) & 93% in First Periodic Test PT-1 (Math 24.5/25, Science 25/25, SST 24/25, Sanskrit 23/25, Hindi 22.5/25, English 20.5/25). Master of 1,000+ competitive chess games. Built 3 full-stack applications. WhatsApp: +91 94700 33984 • Call: +91 80922 61750.`;
+    const bioText = `Rishit Shankar (रीशीत शंकर) • Age 14 • Student Leader, Head Boy of DAV School (Class 8-D, Roll No. 25). Founder & Creator of The DAV Dictionary (serving DAVians) and Rishi AI. Gold Medalist in DAV Cluster 3. 98 Percentile Gold Medalist in PWNSAT (Physics Wallah National Scholarship Test). Academic Excellence: 95% in Class 8 Half-Yearly (Sanskrit 80/80 Century Scorer, Hindi 79/80, SST 77/80, Science 77/80, Math 74/80, English 69/80) & 93% in First Periodic Test PT-1 (Math 24.5/25, Science 25/25, SST 24/25, Sanskrit 23/25, Hindi 22.5/25, English 20.5/25). Master of 1,000+ competitive chess games. Built 3 full-stack applications. WhatsApp: +91 94700 33984 • Call: +91 80922 61750.`;
     navigator.clipboard.writeText(bioText);
     setCopiedBio(true);
     setTimeout(() => setCopiedBio(false), 2000);
@@ -371,7 +371,7 @@ export function AboutCreatorSection() {
                 </div>
 
                 <p className="text-sm sm:text-base font-bold text-amber-200/95 mb-3">
-                  Head Boy of D.A.V. Public School, Khabra, Muzaffarpur, Bihar • Founder of The DAV Dictionary
+                  Head Boy of DAV School • Founder of The DAV Dictionary
                 </p>
 
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl mx-auto lg:mx-0 mb-6">
@@ -562,7 +562,7 @@ export function AboutCreatorSection() {
                     Identity &amp; Leadership
                   </h3>
                   <p className="text-xs sm:text-sm font-bold text-amber-800">
-                    The Authentic Story of How I Became Head Boy of D.A.V. Public School, Khabra
+                    The Authentic Story of How I Became Head Boy of DAV School
                   </p>
                 </div>
               </div>
@@ -573,7 +573,7 @@ export function AboutCreatorSection() {
                   <span>The Journey to Becoming Head Boy</span>
                 </h4>
                 <p className="text-sm text-stone-700 leading-relaxed mb-4">
-                  Becoming the **Head Boy of D.A.V. Public School, Khabra** was not an overnight occurrence, but the result of relentless discipline, academic sincerity, and steadfast dedication to school values. From early classes through Class 8-D, Rishit proved himself through unwavering respect for teachers, helping fellow students understand difficult concepts, and actively assisting school coordinators during morning assemblies, functions, and inter-class events.
+                  Becoming the **Head Boy of DAV School** was not an overnight occurrence, but the result of relentless discipline, academic sincerity, and steadfast dedication to school values. From early classes through Class 8-D, Rishit proved himself through unwavering respect for teachers, helping fellow students understand difficult concepts, and actively assisting school coordinators during morning assemblies, functions, and inter-class events.
                 </p>
                 <p className="text-sm text-stone-700 leading-relaxed mb-4">
                   When the student council selection commenced for the academic session 2026–27, the school administration and Principal Anil Kumar evaluated student candidates on character, academic performance (95% Half-Yearly aggregate), leadership composure, and trustworthiness. Rishit stood out as a role model who bridged academic rigor with technology and moral responsibility.
@@ -1004,7 +1004,7 @@ export function AboutCreatorSection() {
               <div className="p-5 rounded-2xl bg-amber-50/80 border border-amber-300">
                 <h5 className="font-black text-stone-900 text-sm mb-1.5">The Creative Vision Behind The DAV Dictionary</h5>
                 <p className="text-xs text-stone-600 leading-relaxed">
-                  "I wanted every student in DAV Khabra and every DAV school across Bihar and India to open our site and feel inspired. A website should not be a static textbook; it should have heartbeat, celebration, interactive 3D colors, and intelligent companions to help you grow every single day."
+                  "I wanted every student in DAV School and every DAV school across Bihar and India to open our site and feel inspired. A website should not be a static textbook; it should have heartbeat, celebration, interactive 3D colors, and intelligent companions to help you grow every single day."
                 </p>
               </div>
 
@@ -1070,7 +1070,7 @@ export function AboutCreatorSection() {
                     Gold Medalist in the official DAV Cluster 3 Chess Championship. Demonstrated tactical superiority and positional patience against top student competitors across the zone.
                   </p>
                   <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs font-bold text-amber-900">
-                    Combines competitive sportsmanship with student leadership across DAV Khabra.
+                    Combines competitive sportsmanship with student leadership across DAV School.
                   </div>
                 </div>
 
@@ -1133,7 +1133,7 @@ export function AboutCreatorSection() {
               </div>
 
               <p className="text-xs sm:text-sm text-stone-700 leading-relaxed mb-6 bg-amber-50/80 p-4 rounded-2xl border border-amber-200">
-                This comprehensive 100-line record chronologically details Rishit Shankar's school leadership as Head Boy of DAV Khabra, top examination scores (95% Half-Yearly, 80/80 Sanskrit, 93% PT-1), national Gold Medal in PWNSAT (98th percentile), DAV Cluster 3 Chess championship, full-stack software development of The DAV Dictionary serving DAVians, and life principles.
+                This comprehensive 100-line record chronologically details Rishit Shankar's school leadership as Head Boy of DAV School, top examination scores (95% Half-Yearly, 80/80 Sanskrit, 93% PT-1), national Gold Medal in PWNSAT (98th percentile), DAV Cluster 3 Chess championship, full-stack software development of The DAV Dictionary serving DAVians, and life principles.
               </p>
 
               {/* 100-Line Scrollable List with Number Badges */}
@@ -1219,7 +1219,7 @@ export function AboutCreatorSection() {
                   Rishit Shankar
                 </h3>
                 <p className="text-xs sm:text-sm font-semibold text-amber-200/95 max-w-xl">
-                  Student Leader, Head Boy of DAV Public School Khabra, Founder of The DAV Dictionary serving DAVians, Gold Medalist in DAV Cluster 3, 98 Percentile PWNSAT Gold Medalist, and 95% Class 8 Half-Yearly.
+                  Student Leader, Head Boy of DAV School, Founder of The DAV Dictionary serving DAVians, Gold Medalist in DAV Cluster 3, 98 Percentile PWNSAT Gold Medalist, and 95% Class 8 Half-Yearly.
                 </p>
               </div>
             </div>

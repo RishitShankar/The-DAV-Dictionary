@@ -171,13 +171,13 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
       category: 'utilities',
       name: 'Campus Smart Utilities & Radar',
       shortName: 'Campus Utilities',
-      tagline: 'DAV Khabra Navigation, Weather, Bus, Scientific Tools',
+      tagline: 'DAV School Navigation, Weather, Bus, Scientific Tools',
       icon: Compass,
       color: 'from-emerald-600 to-teal-700',
       glowClass: 'hover:border-emerald-400/60 shadow-emerald-500/10',
       badge: 'Smart Tools',
-      desc: 'Live interactive tools: Turn-by-turn Google Maps navigation to DAV Khabra, Live Bus Fleet Radar, Real-Time Muzaffarpur Weather, Scientific Calculator, Calendar, Compass, and World/School Clock.',
-      features: ['Turn-by-Turn GPS to DAV Khabra', 'Live Bus Radar Fleet', 'Working Scientific Calculator', 'Live Weather, Compass & Clock'],
+      desc: 'Live interactive tools: Turn-by-turn Google Maps navigation to DAV School, Live Bus Fleet Radar, Real-Time Muzaffarpur Weather, Scientific Calculator, Calendar, Compass, and World/School Clock.',
+      features: ['Turn-by-Turn GPS to DAV School', 'Live Bus Radar Fleet', 'Working Scientific Calculator', 'Live Weather, Compass & Clock'],
       demoReady: 'Calculator, Weather & Clock 100% Free'
     },
     {
@@ -301,7 +301,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
     },
     {
       q: "Who is the developer of DAV Dictionary?",
-      a: "The platform was conceived, designed, and developed by Rishit Shankar (Head Boy, Class 8 DAV Khabra, Roll 25). He scored 95% in his Class 8 Half-Yearly exams (with 80/80 in Sanskrit and 79/80 in Hindi), 93% in PT-1, and is a DAV Cluster 3 Gold Medalist. He engineered this platform as a student-led initiative to empower every DAVian."
+      a: "The platform was conceived, designed, and developed by Rishit Shankar (Head Boy, Class 8 DAV School, Roll 25). He scored 95% in his Class 8 Half-Yearly exams (with 80/80 in Sanskrit and 79/80 in Hindi), 93% in PT-1, and is a DAV Cluster 3 Gold Medalist. He engineered this platform as a student-led initiative to empower every DAVian."
     }
   ];
 
@@ -416,7 +416,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
           {/* Live Campus Pill Badge */}
           <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-stone-900/90 border border-amber-400/50 text-amber-300 text-xs font-extrabold mb-6 shadow-xl shadow-amber-500/10 hover:border-amber-300 transition transform hover:scale-105">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-            <span>DAV Public School Khabra • Next-Gen Digital Learning Platform</span>
+            <span>DAV School • Next-Gen Digital Learning Platform</span>
             <span className="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[10px] font-black uppercase">
               11 Dimensions Active
             </span>
@@ -914,7 +914,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
                   </div>
                   <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-stone-950 font-black text-[11px] shadow-lg whitespace-nowrap flex items-center gap-1.5">
                     <Crown className="w-3.5 h-3.5" />
-                    <span>Head Boy • DAV Khabra</span>
+                    <span>Head Boy • DAV School</span>
                   </div>
                 </div>
 
@@ -938,7 +938,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
                 </h2>
 
                 <p className="text-stone-300 text-xs sm:text-sm leading-relaxed">
-                  As Head Boy at DAV Khabra, I observed students frequently struggling with heavy bags, forgotten books, or lack of instant explanations while studying at home. I engineered <strong>DAV Dictionary</strong> into an all-in-one digital companion—expanding from a digital library into 11 comprehensive dimensions uniting Rishi AI, homework tracking, CBT exams, bus radar, and deep focus technology.
+                  As Head Boy at DAV School, I observed students frequently struggling with heavy bags, forgotten books, or lack of instant explanations while studying at home. I engineered <strong>DAV Dictionary</strong> into an all-in-one digital companion—expanding from a digital library into 11 comprehensive dimensions uniting Rishi AI, homework tracking, CBT exams, bus radar, and deep focus technology.
                 </p>
 
                 {/* Developer Highlights */}
@@ -1152,7 +1152,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
 
           <div className="text-center md:text-right">
             <p className="text-stone-300">
-              Conceived &amp; Developed by <strong>Rishit Shankar</strong> (Head Boy, DAV Khabra)
+              Conceived &amp; Developed by <strong>Rishit Shankar</strong> (Head Boy, DAV School)
             </p>
             <p className="text-[10px] text-stone-400 mt-0.5">
               DAV Public School Digital Library &amp; Academic AI Engine • All Rights Reserved.

@@ -581,7 +581,7 @@ export function DonationSection({ currentUser, onRequireLogin }) {
                   For classmates, friends, and parents handing cash directly to Rishit Shankar in school:
                 </p>
                 <div className="bg-white p-3 rounded-xl border border-amber-200 text-[11px] space-y-1">
-                  <div>📍 <strong>Location:</strong> DAV Public School, Khabra, Muzaffarpur</div>
+                  <div>📍 <strong>Location:</strong> DAV School</div>
                   <div>👤 <strong>Recipient:</strong> Rishit Shankar (Head Boy, Class 8-D)</div>
                   <div>💵 <strong>Handover Amount:</strong> ₹{newDonationNum} in Cash</div>
                 </div>

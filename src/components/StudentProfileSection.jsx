@@ -27,7 +27,7 @@ export function StudentProfileSection({ user, onLogout }) {
         admissionNumber: 'ADM-8921-DAV',
         motherName: 'Mrs. S. Devi',
         fatherName: 'Mr. A. Shankar',
-        residentialAddress: 'Khabra, Muzaffarpur, Bihar',
+        residentialAddress: 'Muzaffarpur, Bihar',
         city: 'Muzaffarpur',
         phoneNumber: '8092261750',
         email: 'headboyrishitshankar@gmail.com',

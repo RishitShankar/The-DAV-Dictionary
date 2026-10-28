@@ -8,7 +8,7 @@ import {
 
 import { fetchCloudStudents } from '../services/supabaseClient';
 
-// Pre-seeded Official Roster for DAV Public School Khabra (Real accounts only, zero mock/demo accounts)
+// Pre-seeded Official Roster for DAV School (Real accounts only, zero mock/demo accounts)
 const BASE_STUDENTS_ROSTER = [
   {
     id: 'rishibhai',
