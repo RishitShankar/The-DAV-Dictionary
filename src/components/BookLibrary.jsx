@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { DAV_SUBJECTS } from '../data/mockData';
+import { GoogleDriveIcon } from './GoogleDriveIcon';
 import { 
   BookOpen, Calculator, Languages, HeartHandshake, Globe, Sparkles, 
   Compass, Cpu, FileText, Download, Eye, Upload, ChevronRight, Lock, 
@@ -259,6 +260,11 @@ export function BookLibrary({
 
             {/* Quick feature pill row */}
             <div className="flex flex-wrap items-center gap-3 mt-4 text-[11px] font-bold text-amber-200/90">
+              <span className="flex items-center gap-1.5 bg-blue-900/70 px-3.5 py-1.5 rounded-xl border border-blue-400/50 text-blue-200 text-[11px] font-bold shadow-md animate-pulse">
+                <GoogleDriveIcon className="w-3.5 h-3.5" />
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping mr-0.5" />
+                <span>Connected to Google Drive PDF Viewer</span>
+              </span>
               <span className="flex items-center gap-1.5 bg-black/40 px-3 py-1 rounded-xl border border-white/10">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                 <span>100% Real Textbooks</span>
@@ -351,7 +357,8 @@ export function BookLibrary({
                       classNum: selectedClass,
                       pdfUrl: up.data,
                       fileData: up.data,
-                      summary: `Custom uploaded textbook material for Class ${selectedClass}.`
+                      summary: `Custom uploaded textbook material for Class ${selectedClass}.`,
+                      initialMode: 'gdrive'
                     })}
                     className="px-3 py-1.5 rounded-xl bg-red-800 hover:bg-red-900 text-white text-[11px] font-black flex items-center gap-1 transition cursor-pointer shadow-xs"
                   >
@@ -447,14 +454,15 @@ export function BookLibrary({
               subject: cleanSubjectName,
               classNum: selectedClass,
               pdfUrl: currentBook?.pdfUrl,
-              summary: `Official DAV Board textbook for ${currentBook?.title || sub.name}.`
+              summary: `Official DAV Board textbook for ${currentBook?.title || sub.name}.`,
+              initialMode: 'gdrive'
             });
           };
 
           return (
             <div
               key={sub.id}
-              className={`bg-white rounded-3xl border-2 ${art.neonBorder || 'border-amber-500/60'} ${art.neonGlow || 'hover:shadow-2xl'} overflow-hidden shadow-md transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between group relative card-real-3d animate-anti-gravity`}
+              className={`bg-white rounded-3xl border-2 ${art.neonBorder || 'border-amber-500/60'} ${art.neonGlow || 'hover:shadow-2xl'} overflow-hidden shadow-md transition-all duration-300 transform hover:-translate-y-2.5 hover:scale-[1.015] flex flex-col justify-between group relative card-real-3d animate-anti-gravity`}
             >
               {/* Top Accent Stripe */}
               <div className={`h-1.5 w-full bg-gradient-to-r ${sub.color}`} />
@@ -524,8 +532,9 @@ export function BookLibrary({
 
                         {/* Bottom: Interactive Hover Indicator Pill */}
                         <div className="pl-3 relative z-10">
-                          <div className="w-full py-1 rounded-lg bg-black/60 border border-amber-400/40 text-[9px] font-black uppercase text-amber-300 text-center tracking-wider shadow-inner group-hover/book:bg-amber-400 group-hover/book:text-stone-950 transition-colors">
-                            Click to Read 📖
+                          <div className="w-full py-1.5 rounded-lg bg-blue-950/90 border border-blue-400/60 text-[9px] font-black uppercase text-blue-200 text-center tracking-wider shadow-inner group-hover/book:bg-blue-600 group-hover/book:text-white transition-all flex items-center justify-center gap-1.5">
+                            <GoogleDriveIcon className="w-3 h-3" />
+                            <span>Read on Google Drive</span>
                           </div>
                         </div>
 
@@ -605,18 +614,18 @@ export function BookLibrary({
               </div>
 
               {/* =================================================================== */}
-              {/* ACTION BUTTON: BIG, BOLD "OPEN PDF BOOK" ONLY (Brain icon removed)  */}
+              {/* ACTION BUTTON: OPEN IN GOOGLE DRIVE VIEWER                          */}
               {/* =================================================================== */}
               <div className="p-5 pt-0">
                 <button
                   type="button"
                   onClick={openThisBook}
-                  className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-red-800 via-red-900 to-amber-900 hover:from-red-700 hover:to-amber-800 text-white font-black text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-lg shadow-red-950/20 hover:shadow-red-900/40 hover:scale-[1.01] active:scale-[0.99] transition-all transform cursor-pointer border border-amber-400/40 group/btn"
-                  title={`Open and read ${currentBook?.title || sub.name}`}
+                  className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-900 hover:from-blue-600 hover:to-indigo-800 text-white font-black text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-lg shadow-blue-950/20 hover:shadow-blue-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all transform cursor-pointer border border-blue-400/50 group/btn"
+                  title={`Open and read ${currentBook?.title || sub.name} in Google Drive PDF Viewer`}
                 >
-                  <Eye className="w-4 h-4 sm:w-5 sm:h-5 text-amber-300 group-hover/btn:scale-110 transition-transform" />
-                  <span>Open PDF Book</span>
-                  <ArrowRight className="w-4 h-4 text-amber-300 group-hover/btn:translate-x-1.5 transition-transform" />
+                  <GoogleDriveIcon className="w-4 h-4 sm:w-5 sm:h-5 group-hover/btn:scale-110 transition-transform" />
+                  <span>Open in Google Drive Viewer</span>
+                  <ArrowRight className="w-4 h-4 text-blue-300 group-hover/btn:translate-x-1.5 transition-transform" />
                 </button>
               </div>
 

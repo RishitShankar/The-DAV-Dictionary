@@ -141,8 +141,8 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   const [aiQuestion, setAiQuestion] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
 
-  // Viewer Mode: 'annotator' (In-Modal High-Performance PDF Engine with zero file size limits) | 'stream' | 'gdrive'
-  const [viewerMode, setViewerMode] = useState(book.initialMode === 'gdrive' ? 'gdrive' : book.initialMode === 'stream' ? 'stream' : 'annotator');
+  // Viewer Mode: 'gdrive' (Default: Free Google Drive PDF Viewer) | 'stream' | 'annotator'
+  const [viewerMode, setViewerMode] = useState(book.initialMode === 'annotator' ? 'annotator' : book.initialMode === 'stream' ? 'stream' : 'gdrive');
 
   // Custom Google Drive Link support
   const storageKeyGDrive = `dav_gdrive_custom_${book.title}`;
@@ -241,11 +241,11 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
   const gdriveEmbedUrl = driveFileId
     ? `https://drive.google.com/file/d/${driveFileId}/preview`
-    : resolvedPdfUrl;
+    : `https://docs.google.com/viewer?url=${encodeURIComponent(getAbsolutePdfUrl(effectivePdfSource))}&embedded=true`;
 
   const gdriveDirectUrl = driveFileId
     ? `https://drive.google.com/file/d/${driveFileId}/view`
-    : resolvedPdfUrl;
+    : `https://docs.google.com/viewer?url=${encodeURIComponent(getAbsolutePdfUrl(effectivePdfSource))}`;
 
   // Helper to load PDF.js from local /vendor/ or CDN fallback
   const loadPdfJs = async () => {
@@ -341,12 +341,12 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   useEffect(() => {
     if (book) {
       setCurrentPage(Math.max(1, book.page || 1));
-      if (book.initialMode === 'gdrive') {
-        setViewerMode('gdrive');
+      if (book.initialMode === 'annotator') {
+        setViewerMode('annotator');
       } else if (book.initialMode === 'stream') {
         setViewerMode('stream');
       } else {
-        setViewerMode('annotator');
+        setViewerMode('gdrive');
       }
     }
   }, [book]);
@@ -840,15 +840,16 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
               </span>
             </div>
             <p className="text-[10px] text-orange-200/80 truncate">
-              {viewerMode === 'stream' ? (
+              {viewerMode === 'gdrive' ? (
+                <span className="text-blue-300 font-semibold flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-blue-400 animate-ping" />
+                  <span className="text-white font-bold">🟢 Connected to Google Drive PDF Viewer</span>
+                  <span className="text-blue-200 hidden sm:inline">• Official Google Cloud Document Viewer</span>
+                </span>
+              ) : viewerMode === 'stream' ? (
                 <span className="text-emerald-400 font-semibold flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Native Browser PDF Stream • Zero Size Restrictions
-                </span>
-              ) : viewerMode === 'gdrive' ? (
-                <span className="text-blue-300 font-semibold flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
-                  Google Drive Live PDF Editor
+                  Native Browser PDF Stream
                 </span>
               ) : (
                 <span>
@@ -975,8 +976,22 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
         {/* Right Action Bar */}
         <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Mode Switcher: HD Reader (Default) | Neon Draw | Native Embed | Google Drive */}
+          {/* Mode Switcher: Google Drive (Default) | Canvas Reader | Neon Draw */}
           <div className="flex items-center bg-stone-950 p-1 rounded-xl border border-stone-700 text-xs">
+            <button
+              type="button"
+              onClick={() => setViewerMode('gdrive')}
+              className={`px-2.5 sm:px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition cursor-pointer ${
+                viewerMode === 'gdrive'
+                  ? 'bg-blue-600 text-white font-black shadow-md shadow-blue-500/30'
+                  : 'text-stone-300 hover:text-white hover:bg-stone-800'
+              }`}
+              title="Official Google Drive PDF Viewer"
+            >
+              <GoogleDriveIcon className="w-3.5 h-3.5" />
+              <span>Google Drive</span>
+            </button>
+
             <button
               type="button"
               onClick={() => {
@@ -988,10 +1003,10 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                   ? 'bg-amber-500 text-stone-950 font-black shadow-md'
                   : 'text-stone-300 hover:text-white hover:bg-stone-800'
               }`}
-              title="Built-in High-Speed HD Reader (Zero File Size Limits, High Definition)"
+              title="Built-in Canvas Reader"
             >
               <BookOpen className="w-3.5 h-3.5" />
-              <span>HD Reader</span>
+              <span>Canvas Reader</span>
             </button>
 
             <button
@@ -1010,36 +1025,6 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
               <PenTool className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Neon Draw</span>
             </button>
-
-            <button
-              type="button"
-              onClick={() => setViewerMode('stream')}
-              className={`px-2.5 sm:px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition cursor-pointer ${
-                viewerMode === 'stream'
-                  ? 'bg-blue-600 text-white font-black shadow-md shadow-blue-500/30'
-                  : 'text-stone-300 hover:text-white hover:bg-stone-800'
-              }`}
-              title="Native Browser Stream & Direct PDF Embed"
-            >
-              <Layers className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">Native Embed</span>
-            </button>
-
-            {driveFileId && (
-              <button
-                type="button"
-                onClick={() => setViewerMode('gdrive')}
-                className={`px-2.5 sm:px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition cursor-pointer ${
-                  viewerMode === 'gdrive'
-                    ? 'bg-blue-600 text-white font-black shadow-md shadow-blue-500/30'
-                    : 'text-stone-300 hover:text-white hover:bg-stone-800'
-                }`}
-                title="Open Google Drive Cloud PDF Editor"
-              >
-                <GoogleDriveIcon className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Google Drive</span>
-              </button>
-            )}
           </div>
 
           {/* AI Guide Toggle */}
@@ -1385,20 +1370,36 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
           {/* 2. GOOGLE DRIVE LIVE EDITOR MODE */}
           {viewerMode === 'gdrive' && (
             <div className="w-full h-full flex flex-col bg-stone-900 rounded-xl overflow-hidden border border-stone-800">
-              <div className="p-2 bg-stone-900 border-b border-stone-800 flex items-center justify-between text-xs">
-                <span className="text-stone-300 flex items-center gap-1.5 font-bold">
+              <div className="p-2.5 bg-stone-900 border-b border-stone-800 flex items-center justify-between text-xs flex-wrap gap-2">
+                <span className="text-stone-200 flex items-center gap-2 font-bold">
                   <GoogleDriveIcon className="w-4 h-4" />
-                  Google Cloud Live Document Viewer &amp; Annotator
+                  <span>Connected to Google Drive PDF Viewer</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/40">
+                    Google Drive Cloud Engine
+                  </span>
                 </span>
-                <a
-                  href={gdriveDirectUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold flex items-center gap-1 transition"
-                >
-                  <span>Open Fullscreen in Google Drive</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
+                <div className="flex items-center gap-2">
+                  <a
+                    href={gdriveDirectUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold flex items-center gap-1.5 transition shadow-sm cursor-pointer"
+                  >
+                    <span>Open Fullscreen in Google Drive</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setViewerMode('annotator');
+                      setAnnotationTool('highlighter');
+                    }}
+                    className="px-2.5 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-300 border border-amber-500/30 text-[11px] font-bold flex items-center gap-1 transition cursor-pointer"
+                  >
+                    <PenTool className="w-3.5 h-3.5" />
+                    <span>Neon Draw Mode</span>
+                  </button>
+                </div>
               </div>
               <iframe
                 key={`gdrive-${effectivePdfSource}`}
