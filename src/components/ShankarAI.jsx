@@ -122,8 +122,19 @@ export function RishiAI({ isOpen, onClose, initialPrompt = '', user, isSectionVi
   const [selectedSubject, setSelectedSubject] = useState('hin8_gs');
   const [selectedChapter, setSelectedChapter] = useState('1');
 
-  // Interactive Quiz View
+  // Interactive Quiz View & Dynamic Question Count
   const [showQuiz, setShowQuiz] = useState(false);
+  const [showTestConfigModal, setShowTestConfigModal] = useState(false);
+  const [selectedQuestionCount, setSelectedQuestionCount] = useState(10);
+
+  // Maximum questions based on student plan:
+  // Normal Plan (Dimension 1 / Trial / 0): max 10
+  // VIP Plan (Dimension 2): max 25
+  // VVIP Plan (Dimension 3) / Master Dev (Dimension 4): max 50
+  const maxQuestions = (user?.dimension === 4 || user?.isAdmin || user?.id === 'rishibhai' || user?.studentId === 'rishibhai') ? 50
+    : (user?.plan === 'vvip' || user?.dimension === 3) ? 50
+    : (user?.plan === 'vip' || user?.dimension === 2) ? 25
+    : 10;
 
   // Messages & Conversation State
   const [messages, setMessages] = useState([
@@ -366,7 +377,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
   // Quick Action Handler for Academics Study Buttons
   const handleAcademicsAction = (actionKey) => {
     if (actionKey === 'quiz') {
-      setShowQuiz(true);
+      setShowTestConfigModal(true);
       return;
     }
 
@@ -432,7 +443,9 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
               <button
                 onClick={() => {
                   setActiveMode('academics');
+                  setWizardStep('select_class');
                   setShowQuiz(false);
+                  setShowTestConfigModal(false);
                 }}
                 className={`px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1.5 transition cursor-pointer ${
                   activeMode === 'academics'
@@ -675,17 +688,167 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
         {/* ========================================================================= */}
         {/* MAIN DISPLAY: INTERACTIVE QUIZ OR CHAT MESSAGES                           */}
         {/* ========================================================================= */}
+        {/* ========================================================================= */}
+        {/* INTERACTIVE TEST LAUNCHER / QUESTION RANGE MODAL                         */}
+        {/* ========================================================================= */}
+        {showTestConfigModal && (
+          <div className="absolute inset-0 z-40 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
+            <div className="w-full max-w-lg bg-stone-900 border-2 border-amber-500/60 rounded-3xl p-6 sm:p-7 text-white shadow-2xl relative overflow-hidden animate-scaleUp">
+              {/* Decorative Glow */}
+              <div className="absolute -top-16 -right-16 w-36 h-36 bg-amber-500/20 rounded-full blur-2xl pointer-events-none" />
+              
+              {/* Close Button */}
+              <button
+                onClick={() => setShowTestConfigModal(false)}
+                className="absolute top-4 right-4 p-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white transition cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-stone-950 shadow-md">
+                  <Award className="w-6 h-6" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-950/80 px-2.5 py-0.5 rounded-full border border-amber-500/40">
+                    DAV Examination Simulator
+                  </span>
+                  <h3 className="text-lg sm:text-xl font-black text-white">
+                    Setup Interactive Chapter Test
+                  </h3>
+                </div>
+              </div>
+
+              {/* Chapter Badge */}
+              <div className="mb-5 p-3 rounded-xl bg-stone-950 border border-orange-500/30 flex items-center justify-between text-xs">
+                <div className="truncate">
+                  <div className="font-bold text-amber-300 truncate">
+                    Class {selectedClass} • {currentSubjectObj?.name}
+                  </div>
+                  <div className="text-[11px] text-stone-300 truncate">
+                    Ch {selectedChapter}: {currentChapterObj?.title}
+                  </div>
+                </div>
+                <span className="shrink-0 text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 px-2 py-1 rounded border border-amber-500/30">
+                  100% Syllabus Match
+                </span>
+              </div>
+
+              {/* Question Range Selection */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-bold text-stone-200">
+                    Select Question Range:
+                  </label>
+                  <span className="text-base font-black text-amber-400 font-mono">
+                    {selectedQuestionCount} Questions
+                  </span>
+                </div>
+
+                {/* Range Slider */}
+                <input
+                  type="range"
+                  min="1"
+                  max={maxQuestions}
+                  value={selectedQuestionCount}
+                  onChange={(e) => setSelectedQuestionCount(Number(e.target.value))}
+                  className="w-full h-2 bg-stone-950 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                />
+                
+                <div className="flex justify-between text-[10px] text-stone-400 font-mono mt-1">
+                  <span>1 Question (Quick Practice)</span>
+                  <span>Max: {maxQuestions} Questions</span>
+                </div>
+
+                {/* Quick Presets */}
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {[5, 10, 15, 25, 50].map((preset) => {
+                    const isAvailable = preset <= maxQuestions;
+                    const isSelected = selectedQuestionCount === preset;
+                    return (
+                      <button
+                        key={preset}
+                        type="button"
+                        disabled={!isAvailable}
+                        onClick={() => setSelectedQuestionCount(preset)}
+                        className={`px-3 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer ${
+                          isSelected
+                            ? 'bg-amber-500 text-stone-950 shadow-md font-black'
+                            : isAvailable
+                            ? 'bg-stone-800 text-stone-300 hover:bg-stone-700 hover:text-white border border-stone-700'
+                            : 'bg-stone-950/60 text-stone-600 border border-stone-800/40 cursor-not-allowed'
+                        }`}
+                      >
+                        <span>{preset} Qs</span>
+                        {!isAvailable && (
+                          <span className="text-[9px] uppercase tracking-tight text-amber-500/70">
+                            {preset > 25 ? '👑 VVIP' : '💎 VIP'}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Plan Tier Limit Notice */}
+              <div className="mb-6 p-3 rounded-xl bg-stone-950/90 border border-stone-800 text-xs">
+                {maxQuestions === 10 && (
+                  <div className="flex items-center justify-between text-stone-300">
+                    <span>Normal Plan limit: <strong>1 to 10 Questions</strong></span>
+                    <span className="text-amber-400 font-bold text-[11px]">VIP unlocks 25 • VVIP 50</span>
+                  </div>
+                )}
+                {maxQuestions === 25 && (
+                  <div className="flex items-center justify-between text-amber-300">
+                    <span>💎 VIP Plan Active: <strong>1 to 25 Questions</strong></span>
+                    <span className="text-amber-400 font-bold text-[11px]">VVIP unlocks 50</span>
+                  </div>
+                )}
+                {maxQuestions >= 50 && (
+                  <div className="flex items-center justify-between text-amber-400 font-bold">
+                    <span>👑 Master VVIP Plan Active: Full 1 to 50 Questions Unlocked!</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowTestConfigModal(false)}
+                  className="flex-1 py-3 rounded-xl border border-stone-700 hover:bg-stone-800 text-stone-300 font-bold text-xs transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowTestConfigModal(false);
+                    setShowQuiz(true);
+                  }}
+                  className="flex-[2] py-3 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-stone-950 font-black text-xs sm:text-sm shadow-lg flex items-center justify-center gap-2 cursor-pointer transition transform active:scale-95"
+                >
+                  <Sparkles className="w-4 h-4 text-stone-950" />
+                  <span>Start Test ({selectedQuestionCount} Questions)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {showQuiz ? (
           <InteractiveQuiz
             classNum={selectedClass}
             subjectId={currentSubjectObj?.name || selectedSubject}
             chapterNum={selectedChapter}
             chapterTitle={currentChapterObj?.title}
+            questionCount={selectedQuestionCount}
             onClose={() => setShowQuiz(false)}
             onAskAI={(prompt) => handleSend(prompt)}
           />
         ) : (
-          <div className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4 bg-white">
+          <div className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4 bg-gradient-to-b from-[#f8fafc] via-[#fcfbf9] to-[#f8fafc] relative">
             {messages.map((msg, index) => {
               const isUser = msg.role === 'user';
               return (
@@ -778,7 +941,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
 
             {activeMode === 'academics' && (
               <button
-                onClick={() => setShowQuiz(true)}
+                onClick={() => setShowTestConfigModal(true)}
                 className="text-xs text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 cursor-pointer"
               >
                 <CheckSquare className="w-3.5 h-3.5" />
@@ -1147,7 +1310,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
                       className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-stone-950 font-black text-xs sm:text-sm flex items-center gap-2 shadow-lg transition cursor-pointer"
                     >
                       <Paperclip className="w-4 h-4" />
-                      <span>Lock Book & Enter AI Workspace</span>
+                      <span>📖 Book for AI Workspace</span>
                     </button>
                   </div>
                 </div>
@@ -1162,14 +1325,30 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
 
     if (isSectionView) {
       return (
-        <div className="w-full py-6 px-3 sm:px-6 bg-slate-950 flex flex-col items-center justify-center min-h-[calc(100vh-120px)] animate-fadeIn">
+        <div className="w-full py-8 px-3 sm:px-6 bg-gradient-to-br from-[#060a17] via-[#0b1226] to-[#120a1f] flex flex-col items-center justify-center min-h-[calc(100vh-120px)] animate-fadeIn relative overflow-hidden">
+          {/* Architectural Dot Grid & Ambient Cyber Mesh */}
+          <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
+          
+          {/* Glowing Atmospheric Orbs */}
+          <div className="absolute -top-24 -left-24 w-96 h-96 bg-gradient-to-br from-amber-500/15 to-orange-600/10 rounded-full blur-3xl pointer-events-none animate-pulse" />
+          <div className="absolute top-1/2 -right-32 w-[480px] h-[480px] bg-gradient-to-tr from-rose-700/15 via-red-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-20 left-1/3 w-[520px] h-[520px] bg-gradient-to-t from-indigo-900/15 via-blue-900/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+          
+          {/* Subtle Institutional Watermark Accent */}
+          <div className="absolute top-4 right-6 text-[10px] font-mono tracking-widest text-amber-500/30 uppercase pointer-events-none hidden sm:block">
+            DAV DICTIONARY REFERENCE CAMPUS • RISHI AI
+          </div>
           {shellContent}
         </div>
       );
     }
 
     return (
-      <div className={`fixed inset-0 z-50 flex items-center justify-center ${isFullscreen ? 'p-0 w-screen h-screen' : 'p-3 sm:p-6'} bg-slate-950/85  overflow-hidden font-sans animate-fadeIn`}>
+      <div className={`fixed inset-0 z-50 flex items-center justify-center ${isFullscreen ? 'p-0 w-screen h-screen' : 'p-3 sm:p-6'} bg-slate-950/90 backdrop-blur-xl overflow-hidden font-sans animate-fadeIn`}>
+        {/* Glowing Atmospheric Lights behind Modal */}
+        <div className="absolute -top-32 -left-32 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-rose-600/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(#ffffff08_1px,transparent_1px)] [background-size:28px_28px] pointer-events-none" />
         {shellContent}
       </div>
     );
