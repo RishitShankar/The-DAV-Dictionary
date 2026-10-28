@@ -6,6 +6,8 @@ import {
 import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
 import { saveCloudStudent } from '../services/supabaseClient';
 import { checkDeviceSession, registerDeviceSession } from '../services/deviceAuthManager';
+import { GoogleIcon } from './GoogleIcon';
+import { GoogleAuthModal } from './GoogleAuthModal';
 
 export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGuide, onGoToSection }) {
   const [isRegister, setIsRegister] = useState(false);
@@ -17,6 +19,7 @@ export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGu
   const [role, setRole] = useState('Student');
   const [teacherSubject, setTeacherSubject] = useState('Science & Biology');
   const [teacherDp, setTeacherDp] = useState('');
+  const [googleAuthMode, setGoogleAuthMode] = useState(null);
 
   if (!isOpen) return null;
 
@@ -239,6 +242,37 @@ export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGu
               </button>
             </div>
 
+            {/* Google Authentication 2 Options */}
+            <div className="mb-4 space-y-2">
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setGoogleAuthMode('login')}
+                  className="py-2.5 px-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
+                >
+                  <GoogleIcon className="w-4 h-4 shrink-0" />
+                  <span className="truncate">Login with Google</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setGoogleAuthMode('create')}
+                  className="py-2.5 px-3 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 hover:border-blue-300 text-blue-950 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
+                >
+                  <GoogleIcon className="w-4 h-4 shrink-0" />
+                  <span className="truncate">Create with Google</span>
+                </button>
+              </div>
+
+              <div className="relative my-2.5">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-200" />
+                </div>
+                <div className="relative flex justify-center text-[10px] uppercase font-bold text-slate-400">
+                  <span className="bg-white px-2">or with Student ID</span>
+                </div>
+              </div>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               
               {isRegister && (
@@ -413,6 +447,18 @@ export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGu
         )}
 
       </div>
+
+      {/* Google Authentication Modal */}
+      <GoogleAuthModal
+        isOpen={Boolean(googleAuthMode)}
+        initialMode={googleAuthMode || 'login'}
+        onClose={() => setGoogleAuthMode(null)}
+        onLoginSuccess={(userData) => {
+          setGoogleAuthMode(null);
+          onLogin(userData);
+          onClose();
+        }}
+      />
     </div>
   );
 }

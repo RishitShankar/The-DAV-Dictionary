@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { WhatsAppLogo, InstagramLogo, LinkedInLogo, SnapchatLogo, YouTubeLogo, XTwitterLogo } from './SocialLogos';
 import { RangoliCursorEffect } from './RangoliCursorEffect';
+import { GoogleIcon } from './GoogleIcon';
 
 export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
   const [activeGradeFilter, setActiveGradeFilter] = useState('8');
@@ -469,6 +470,17 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
           <p className="mt-3 text-xs text-stone-400 font-medium">
             ✨ No account required for Demo Preview • Test all 11 dimensions in 1 click
           </p>
+
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+            <button
+              onClick={onGoToLogin}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/20 text-stone-200 text-xs font-bold transition cursor-pointer"
+            >
+              <GoogleIcon className="w-3.5 h-3.5" />
+              <span>Google Login &amp; Sign-Up Available</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            </button>
+          </div>
 
           {/* =========================================================================
               INTERACTIVE LIVE HERO DIMENSION SIMULATOR

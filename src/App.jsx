@@ -32,6 +32,8 @@ import {
 import { BlackDogLogo } from './components/BlackDogLogo';
 import { registerDeviceSession, releaseDeviceSession, startDeviceGuard, getDeviceMetadata } from './services/deviceAuthManager';
 import { ShieldAlert } from 'lucide-react';
+import { getSupabaseClient } from './services/supabaseClient';
+import { findUserByGoogleEmail, createStudentWithGoogle } from './services/googleAuthService';
 
 export function App() {
   const [activeSection, setActiveSection] = useState(1);
@@ -175,6 +177,29 @@ export function App() {
       setActiveSection(5);
     }
   };
+
+  // Automatic Google OAuth redirect detection & account resolver
+  useEffect(() => {
+    const client = getSupabaseClient();
+    if (!client) return;
+
+    client.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user?.email && !user) {
+        const email = session.user.email;
+        const name = session.user.user_metadata?.full_name || session.user.user_metadata?.name || email.split('@')[0];
+        const avatar = session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture || null;
+        
+        let matched = await findUserByGoogleEmail(email);
+        if (!matched) {
+          const res = await createStudentWithGoogle({ name, email, avatar });
+          matched = res.user;
+        }
+        if (matched) {
+          handleLoginSuccess(matched);
+        }
+      }
+    }).catch(() => {});
+  }, []);
 
   const handleSelectSection = (secId) => {
     // Section 12 is strictly for Dimension 4 only (hidden from dimensions 1, 2, 3, 5)

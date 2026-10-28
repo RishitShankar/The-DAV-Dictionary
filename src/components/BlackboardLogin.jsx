@@ -3,6 +3,8 @@ import { Shield, Sparkles, Check, Key, UserCheck, Eye, EyeOff, Lock, Crown, Awar
 import { PRELOADED_DATABASE_USERS, getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
 import { fetchCloudStudents } from '../services/supabaseClient';
 import { checkDeviceSession, registerDeviceSession, getDeviceMetadata } from '../services/deviceAuthManager';
+import { GoogleIcon } from './GoogleIcon';
+import { GoogleAuthModal } from './GoogleAuthModal';
 
 export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
   const [userId, setUserId] = useState('');
@@ -15,6 +17,7 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [deviceConflict, setDeviceConflict] = useState(null);
   const [isSwitchingDevice, setIsSwitchingDevice] = useState(false);
+  const [googleModalMode, setGoogleModalMode] = useState(null); // 'login' | 'create' | null
 
   // Sync with Supabase Cloud on mount
   useEffect(() => {
@@ -367,13 +370,41 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
                 )}
 
                 {/* Bottom section (below Password): Login Button */}
-                <div className="pt-0.5 sm:pt-1 flex justify-center">
+                <div className="pt-0.5 sm:pt-1 flex flex-col items-center gap-1.5 sm:gap-2">
                   <button
                     type="submit"
                     className="chalk-btn w-full sm:w-2/3 rounded-lg py-1 sm:py-2 px-4 font-bold text-xs sm:text-base md:text-lg tracking-widest uppercase cursor-pointer"
                   >
                     Login
                   </button>
+
+                  {/* Google 2-Option Direct Bar on Blackboard */}
+                  <div className="w-full flex items-center gap-1.5 pt-0.5">
+                    <div className="flex-1 h-px bg-white/20" />
+                    <span className="text-[9px] sm:text-[10px] text-yellow-200/80 uppercase tracking-wider font-bold">
+                      or Google Auth
+                    </span>
+                    <div className="flex-1 h-px bg-white/20" />
+                  </div>
+
+                  <div className="w-full grid grid-cols-2 gap-1.5 sm:gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setGoogleModalMode('login')}
+                      className="w-full py-1 sm:py-1.5 px-2 rounded-lg bg-white/95 hover:bg-white text-stone-900 font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 shadow-sm transition cursor-pointer"
+                    >
+                      <GoogleIcon className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">Login with Google</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setGoogleModalMode('create')}
+                      className="w-full py-1 sm:py-1.5 px-2 rounded-lg bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-300 hover:to-orange-300 text-stone-950 font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 shadow-sm transition cursor-pointer"
+                    >
+                      <GoogleIcon className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">Create with Google</span>
+                    </button>
+                  </div>
                 </div>
               </form>
             ) : (
@@ -415,6 +446,44 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
               </div>
             )}
           </section>
+        </div>
+
+        {/* Google Authentication Feature Strip */}
+        <div className="mt-3 p-3 sm:p-3.5 rounded-xl bg-gradient-to-r from-stone-900 via-stone-850 to-stone-900 border border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center shadow-md shrink-0">
+              <GoogleIcon className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="text-xs font-black text-white flex items-center gap-2">
+                <span>Google Account Integration</span>
+                <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 font-bold uppercase">
+                  Verified Feature
+                </span>
+              </div>
+              <div className="text-[11px] text-stone-400">
+                Choose between Login with Google or Create Account with Google
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={() => setGoogleModalMode('login')}
+              className="flex-1 sm:flex-none py-2 px-3.5 rounded-lg bg-white hover:bg-slate-100 text-stone-900 font-black text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-sm"
+            >
+              <GoogleIcon className="w-3.5 h-3.5 shrink-0" />
+              <span>Login with Google</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setGoogleModalMode('create')}
+              className="flex-1 sm:flex-none py-2 px-3.5 rounded-lg bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-300 hover:to-orange-300 text-stone-950 font-black text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-md"
+            >
+              <GoogleIcon className="w-3.5 h-3.5 shrink-0" />
+              <span>Create Account with Google</span>
+            </button>
+          </div>
         </div>
 
         {/* Free Preview Bar */}
@@ -658,6 +727,18 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
           </div>
         </div>
       )}
+
+      {/* Google Authentication Modal */}
+      <GoogleAuthModal
+        isOpen={Boolean(googleModalMode)}
+        initialMode={googleModalMode || 'login'}
+        onClose={() => setGoogleModalMode(null)}
+        onLoginSuccess={(user) => {
+          setGoogleModalMode(null);
+          setLoggedInUser(user);
+          setIsSuccess(true);
+        }}
+      />
 
     </div>
   );
