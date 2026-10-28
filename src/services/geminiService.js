@@ -143,9 +143,9 @@ You are the definitive authority on the official D.A.V. Public School curriculum
 
 3. KNOWLEDGE OF CREATOR & HEAD BOY (RISHIT SHANKAR):
    - Full Name: Rishit Shankar (रीशीत शंकर). Age: 14 years old.
-   - School: D.A.V. Public School, Khabra, Muzaffarpur, Bihar.
+   - School: D.A.V. Public School, Khabra & Malighat, Muzaffarpur, Bihar (and supporting all DAV institutions across Bihar & India).
    - Class: Class 8, Section D, Roll No. 25 (Session 2026–2027).
-   - Role: Head Boy of D.A.V. Public School Khabra.
+   - Role: Head Boy of D.A.V. Public School Khabra, warmly welcoming students from DAV Khabra, DAV Malighat, and all DAV campuses.
    - Academic Record: Perfect 80/80 (Century) in Sanskrit Half-Yearly, 96/100 in English, 90/100 in Mathematics, 79/80 in Hindi, 77/80 in Science & Social Science.
    - Creator of: DAV Dictionary (10-Section Campus Platform) and Rishi AI.
    - Technology Stack: HTML, CSS, JavaScript, React 18, Vite, Tailwind CSS, Google Cloud, Firebase Firestore, WebSockets, exploring Java/Kotlin for Android.
@@ -333,13 +333,16 @@ ${q.answer}
 }
 
 /**
- * Dynamically generate a 10-Question Interactive Chapter Test using live Rishi AI
+ * Dynamically generate an Interactive Chapter Test using live Rishi AI
+ * Supports custom question count from 1 to 50 based on student dimension
  */
-export async function generateChapterQuiz(classNum, subject, chapterNum, chapterTitle) {
+export async function generateChapterQuiz(classNum, subject, chapterNum, chapterTitle, questionCount = 10) {
   const apiKey = getSavedApiKey();
   const cNum = typeof classNum === 'string' ? classNum : `Class ${classNum}`;
-  const prompt = `You are Rishi AI, the official DAV curriculum examination board setter.
-Generate exactly 10 high-quality, 100% textbook-accurate multiple choice questions (MCQs) for:
+  const count = Math.min(50, Math.max(1, Number(questionCount) || 10));
+
+  const prompt = `You are Rishi AI, the official DAV curriculum examination board setter serving DAV Public School Khabra, DAV Public School Malighat, and all DAV institutions.
+Generate exactly ${count} high-quality, 100% textbook-accurate multiple choice questions (MCQs) for:
 - Class: ${cNum}
 - Subject: ${subject}
 - Chapter ${chapterNum}: "${chapterTitle}"
@@ -350,7 +353,7 @@ The questions must test:
 - In-depth comprehension and middle-of-chapter concepts
 - Official DAV examination style questions
 
-Return ONLY a valid JSON array of exactly 10 objects with this exact structure:
+Return ONLY a valid JSON array of exactly ${count} objects with this exact structure:
 [
   {
     "id": 1,
@@ -369,13 +372,14 @@ Return ONLY a valid JSON array of exactly 10 objects with this exact structure:
 Do NOT include any markdown fences or extra prose. Return ONLY the raw JSON array.`;
 
   try {
-    const res = await queryLiveGemini(apiKey, 'You are Rishi AI examination generator. Output strictly valid JSON.', prompt, 'gemini-3.5-flash-lite', 3500);
+    const maxTokens = count > 30 ? 8000 : count > 15 ? 5500 : 3500;
+    const res = await queryLiveGemini(apiKey, 'You are Rishi AI examination generator. Output strictly valid JSON.', prompt, 'gemini-3.5-flash-lite', maxTokens);
     if (res.success && res.text) {
       let cleaned = res.text.trim();
       if (cleaned.startsWith('```json')) cleaned = cleaned.replace(/^```json\s*/, '').replace(/\s*```$/, '');
       else if (cleaned.startsWith('```')) cleaned = cleaned.replace(/^```\s*/, '').replace(/\s*```$/, '');
       const parsed = JSON.parse(cleaned);
-      if (Array.isArray(parsed) && parsed.length >= 5) {
+      if (Array.isArray(parsed) && parsed.length >= 1) {
         return {
           title: `DAV ${cNum} ${subject} • Ch ${chapterNum}: ${chapterTitle}`,
           subject: subject,

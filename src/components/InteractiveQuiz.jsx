@@ -11,11 +11,20 @@ export function InteractiveQuiz({
   subjectId = 'sst', 
   chapterNum = 16, 
   chapterTitle = 'Our Constitution',
+  questionCount = 10,
   onClose,
   onAskAI
 }) {
   const [loadingQuiz, setLoadingQuiz] = useState(true);
-  const [quizData, setQuizData] = useState(() => getQuizForChapter(classNum, subjectId, chapterNum));
+  const [quizData, setQuizData] = useState(() => {
+    const base = getQuizForChapter(classNum, subjectId, chapterNum);
+    if (!base) return null;
+    let questions = [...(base.questions || [])];
+    if (questions.length > questionCount) {
+      questions = questions.slice(0, questionCount);
+    }
+    return { ...base, questions };
+  });
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({}); // { [qIndex]: optionIndex }
   const [isCompleted, setIsCompleted] = useState(false);
@@ -25,12 +34,20 @@ export function InteractiveQuiz({
     async function loadDynamicQuiz() {
       setLoadingQuiz(true);
       try {
-        const generated = await generateChapterQuiz(classNum, subjectId, chapterNum, chapterTitle);
+        const generated = await generateChapterQuiz(classNum, subjectId, chapterNum, chapterTitle, questionCount);
         if (active) {
           if (generated && generated.questions && generated.questions.length > 0) {
             setQuizData(generated);
           } else {
-            setQuizData(getQuizForChapter(classNum, subjectId, chapterNum));
+            const fallback = getQuizForChapter(classNum, subjectId, chapterNum);
+            let finalQuestions = fallback?.questions || [];
+            if (finalQuestions.length > questionCount) {
+              finalQuestions = finalQuestions.slice(0, questionCount);
+            }
+            setQuizData({
+              ...(fallback || {}),
+              questions: finalQuestions
+            });
           }
           setCurrentIndex(0);
           setSelectedAnswers({});
@@ -38,7 +55,15 @@ export function InteractiveQuiz({
         }
       } catch (err) {
         if (active) {
-          setQuizData(getQuizForChapter(classNum, subjectId, chapterNum));
+          const fallback = getQuizForChapter(classNum, subjectId, chapterNum);
+          let finalQuestions = fallback?.questions || [];
+          if (finalQuestions.length > questionCount) {
+            finalQuestions = finalQuestions.slice(0, questionCount);
+          }
+          setQuizData({
+            ...(fallback || {}),
+            questions: finalQuestions
+          });
         }
       } finally {
         if (active) {
@@ -48,7 +73,7 @@ export function InteractiveQuiz({
     }
     loadDynamicQuiz();
     return () => { active = false; };
-  }, [classNum, subjectId, chapterNum, chapterTitle]);
+  }, [classNum, subjectId, chapterNum, chapterTitle, questionCount]);
 
   const questions = quizData?.questions || [];
   const currentQ = questions[currentIndex] || questions[0];
@@ -106,10 +131,10 @@ export function InteractiveQuiz({
           Rishi AI Active Test Synthesizer
         </div>
         <h3 className="text-xl sm:text-2xl font-black text-white mb-2">
-          Generating 10-Question Examination Test...
+          Generating {questionCount}-Question Examination Test...
         </h3>
         <p className="text-xs sm:text-sm text-stone-300 max-w-md leading-relaxed">
-          Reading <strong>Class {classNum} {subjectId} • Chapter {chapterNum}: {chapterTitle}</strong> to formulate 10 authentic, syllabus-accurate DAV examination MCQs with official explanations.
+          Reading <strong>Class {classNum} {subjectId} • Chapter {chapterNum}: {chapterTitle}</strong> to formulate {questionCount} authentic, syllabus-accurate DAV examination MCQs with official explanations.
         </p>
         <button
           onClick={onClose}

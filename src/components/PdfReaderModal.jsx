@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   X, Download, BookOpen, Send, RefreshCw, ExternalLink 
 } from 'lucide-react';
 import { BlackDogLogo } from './BlackDogLogo';
 import { askRishiAI } from '../services/geminiService';
-import { DAV_CLASS_8_SYLLABUS_INDEX } from '../data/davTextbookDatabase.js';
+import { getChaptersForClassSubject } from '../data/curriculumData';
 import { getPrecomputedSummary } from '../data/davChapterSummaries.js';
 
 export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, currentUser }) {
@@ -43,19 +43,27 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   const resolvedPdfUrl = resolvePdfUrl(rawSource);
   const hasRealPdf = Boolean(rawSource);
 
-  // Chapter Index & Syllabus Grounding for Active Book
+  // Universal Chapter Index & Syllabus Grounding for Active Book across ANY Class (1-8, UKG, LKG)
   const getSubjectKey = (title = '', subject = '') => {
     const s = `${title} ${subject}`.toLowerCase();
     if (s.includes('science') || s.includes('living world')) return 'science';
     if (s.includes('social') || s.includes('world') || s.includes('sst') || s.includes('history') || s.includes('civics') || s.includes('geography')) return 'sst';
-    if (s.includes('math') || s.includes('ganit') || s.includes('secondary mathematics')) return 'maths';
-    if (s.includes('hindi') || s.includes('gyan') || s.includes('abhyas')) return 'hindi';
+    if (s.includes('math') || s.includes('ganit') || s.includes('secondary mathematics') || s.includes('primary mathematics')) return 'maths';
+    if (s.includes('hindi') || s.includes('gyan') || s.includes('abhyas') || s.includes('bhasha')) return 'hindi';
     if (s.includes('english') || s.includes('literature') || s.includes('reader')) return 'english';
     return null;
   };
 
   const subjectKey = getSubjectKey(book?.title, book?.subject);
-  const chapterList = (subjectKey && DAV_CLASS_8_SYLLABUS_INDEX[subjectKey]?.chapters) || [];
+  
+  // Dynamically load chapters for this exact class and subject
+  const chapterList = useMemo(() => {
+    if (!book) return [];
+    const cls = book.classNum || 8;
+    const subj = book.title || book.subject || '';
+    const list = getChaptersForClassSubject(cls, subj);
+    return Array.isArray(list) ? list : [];
+  }, [book?.classNum, book?.title, book?.subject]);
 
   // Rishi AI Textbook Companion State
   const [aiMessages, setAiMessages] = useState([
@@ -67,39 +75,46 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
   const handleRequestChapterSummary = async (ch) => {
     if (aiLoading) return;
+    const chNum = ch?.num || ch?.number || 1;
+    const chTitle = ch?.title || `Chapter ${chNum}`;
+
     setAiMessages(prev => [
       ...prev, 
-      { role: 'user', text: `📝 **Summarize Chapter ${ch.num}: ${ch.title}**` }
+      { role: 'user', text: `📝 **Summarize Chapter ${chNum}: ${chTitle}**` }
     ]);
     setAiLoading(true);
 
-    const precomputed = getPrecomputedSummary(subjectKey, ch.num);
+    const precomputed = getPrecomputedSummary(subjectKey, chNum);
     if (precomputed) {
       setTimeout(() => {
         setAiMessages(prev => [...prev, { role: 'assistant', text: precomputed }]);
         setAiLoading(false);
-      }, 350);
+      }, 300);
       return;
     }
 
     try {
-      const prompt = `You are Rishi AI, the official DAV Public School academic intelligence companion.
-Generate a comprehensive, curriculum-exact, 10-point revision summary for DAV Class ${book.classNum || 8} ${book.title}, Chapter ${ch.num}: "${ch.title}".
+      const prompt = `Summarize Chapter ${chNum}: "${chTitle}" with key concepts, definitions, and 3 board exam questions.`;
+      const response = await askRishiAI(prompt, {
+        classNum: book.classNum || 8,
+        subject: book.title || book.subject || 'English Literature',
+        chapter: chNum,
+        chapterTitle: chTitle,
+        actionType: 'summary'
+      });
 
-Structure your response with:
-1. 📌 Chapter Overview & Central Theme
-2. 💡 5 Core Academic Concepts & Principles
-3. 📐 Important Definitions, Formulas & Terminology
-4. 🎯 Top 3 Board Exam Questions with Model Answers
-Write with clear markdown formatting for quick student exam revision.`;
-      const response = await askRishiAI(prompt);
-      setAiMessages(prev => [...prev, { role: 'assistant', text: response }]);
+      // Defensive: Ensure we always store a clean string, never a raw object (prevents React Error #31)
+      const cleanText = (response && typeof response === 'object' && response.text)
+        ? response.text
+        : (typeof response === 'string' ? response : JSON.stringify(response));
+
+      setAiMessages(prev => [...prev, { role: 'assistant', text: cleanText }]);
     } catch (err) {
       setAiMessages(prev => [
         ...prev,
         {
           role: 'assistant',
-          text: `Error generating summary for Chapter ${ch.num}: ${ch.title}. Please try asking again!`
+          text: `Error generating summary for Chapter ${chNum}: ${chTitle}. Please try asking again!`
         }
       ]);
     } finally {
@@ -117,9 +132,34 @@ Write with clear markdown formatting for quick student exam revision.`;
     setAiLoading(true);
 
     try {
-      const prompt = `You are Rishi AI, the school learning assistant for DAV Public School students. The student is reading the textbook "${book.title}" (Class ${book.classNum || 8}, Subject: ${book.subject || 'General'}). Question: "${q}". Provide a helpful, concise, curriculum-accurate answer based on the official DAV Board syllabus.`;
-      const response = await askRishiAI(prompt);
-      setAiMessages(prev => [...prev, { role: 'assistant', text: response }]);
+      // Check if user is asking to summarize a specific chapter (e.g. "summarize chapter 10")
+      const chMatch = q.match(/(?:summarize|summary\s+of|explain|tell\s+me\s+about)\s+chapter\s*(\d{1,2})/i) ||
+                      q.match(/^chapter\s*(\d{1,2})/i);
+      
+      let matchedCh = null;
+      if (chMatch) {
+        const targetNum = parseInt(chMatch[1], 10);
+        matchedCh = chapterList.find(c => (c.num || c.number) === targetNum);
+      }
+
+      const prompt = matchedCh 
+        ? `Summarize Chapter ${matchedCh.num || matchedCh.number}: "${matchedCh.title}" with key concepts, definitions, and 3 board exam questions.`
+        : `Student is studying DAV Class ${book.classNum || 8} "${book.title}". Student Query: "${q}". Provide a curriculum-accurate answer based on official DAV syllabus.`;
+
+      const response = await askRishiAI(prompt, {
+        classNum: book.classNum || 8,
+        subject: book.title || book.subject || 'General',
+        chapter: matchedCh ? (matchedCh.num || matchedCh.number) : undefined,
+        chapterTitle: matchedCh ? matchedCh.title : undefined,
+        actionType: matchedCh ? 'summary' : undefined
+      });
+
+      // Defensive: Ensure we always store a clean string, never a raw object (prevents React Error #31)
+      const cleanText = (response && typeof response === 'object' && response.text)
+        ? response.text
+        : (typeof response === 'string' ? response : JSON.stringify(response));
+
+      setAiMessages(prev => [...prev, { role: 'assistant', text: cleanText }]);
     } catch (err) {
       setAiMessages(prev => [
         ...prev,
@@ -286,8 +326,8 @@ Write with clear markdown formatting for quick student exam revision.`;
                       : 'bg-stone-800/90 text-stone-200 mr-4 rounded-tl-sm border border-stone-700/60 leading-relaxed'
                   }`}
                 >
-                  <div className="whitespace-pre-wrap font-sans">
-                    {msg.text}
+                  <div className="whitespace-pre-wrap font-sans leading-relaxed">
+                    {typeof msg.text === 'object' ? (msg.text?.text || JSON.stringify(msg.text)) : String(msg.text || '')}
                   </div>
                 </div>
               ))}
@@ -311,18 +351,21 @@ Write with clear markdown formatting for quick student exam revision.`;
                   <span className="text-stone-400 font-mono text-[9px]">Click for Summary</span>
                 </div>
                 <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-thin">
-                  {chapterList.map((ch) => (
-                    <button
-                      key={ch.num}
-                      type="button"
-                      onClick={() => handleRequestChapterSummary(ch)}
-                      disabled={aiLoading}
-                      className="px-2.5 py-1 rounded-lg bg-stone-900 hover:bg-amber-500 hover:text-stone-950 text-stone-300 border border-stone-700/80 font-mono text-[10px] font-bold whitespace-nowrap transition cursor-pointer shrink-0 disabled:opacity-40"
-                      title={`Ch ${ch.num}: ${ch.title}`}
-                    >
-                      Ch {ch.num}
-                    </button>
-                  ))}
+                  {chapterList.map((ch, idx) => {
+                    const cNum = ch.num || ch.number || (idx + 1);
+                    return (
+                      <button
+                        key={cNum}
+                        type="button"
+                        onClick={() => handleRequestChapterSummary(ch)}
+                        disabled={aiLoading}
+                        className="px-2.5 py-1 rounded-lg bg-stone-900 hover:bg-amber-500 hover:text-stone-950 text-stone-300 border border-stone-700/80 font-mono text-[10px] font-bold whitespace-nowrap transition cursor-pointer shrink-0 disabled:opacity-40"
+                        title={`Ch ${cNum}: ${ch.title}`}
+                      >
+                        Ch {cNum}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
