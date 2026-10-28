@@ -8,17 +8,21 @@ import { GoogleIcon } from './GoogleIcon';
 import { 
   sendRealEmailOtp, 
   verifyRealEmailOtp, 
+  sendRealPhoneOtp,
+  verifyRealPhoneOtp,
   triggerSupabaseGoogleOAuth 
 } from '../services/googleAuthService';
+import { Smartphone } from 'lucide-react';
 import { CustomPurchaseModal } from './CustomPurchaseModal';
 
 export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLoginSuccess }) {
   // Authentication Steps: 'enter_email' -> 'enter_otp' -> 'success_offer'
   const [step, setStep] = useState('enter_email');
+  const [authMethod, setAuthMethod] = useState('phone'); // 'phone' | 'email'
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
   const [otpCode, setOtpCode] = useState('');
-  const [dispatchedCode, setDispatchedCode] = useState('');
   const [classNum, setClassNum] = useState('8');
   const [section, setSection] = useState('D');
 
@@ -76,6 +80,81 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
     } catch (err) {
       setLoading(false);
       setErrorMsg('Error sending OTP. Please try again.');
+    }
+  };
+
+  // Step 1B: Send Real 6-Digit OTP to Mobile Number
+  const handleSendRealPhoneOtp = async (e) => {
+    e.preventDefault();
+    const digits = phoneNumber.replace(/[^0-9]/g, '').slice(-10);
+    if (digits.length !== 10) {
+      setErrorMsg('Please enter a valid 10-digit Indian mobile number.');
+      return;
+    }
+
+    setLoading(true);
+    setErrorMsg('');
+    setSuccessMsg('');
+
+    try {
+      const res = await sendRealPhoneOtp(digits);
+      setLoading(false);
+
+      if (res.success) {
+        setSuccessMsg(`Real 6-digit security OTP sent to +91 ${digits}.`);
+        setStep('enter_otp');
+      } else {
+        setErrorMsg(res.error || 'Failed to send OTP code. Please check your mobile number.');
+      }
+    } catch (err) {
+      setLoading(false);
+      setErrorMsg('Error sending OTP. Please try again.');
+    }
+  };
+
+  // Step 2B: Verify Phone OTP
+  const handleVerifyCombinedOtp = async (e) => {
+    e.preventDefault();
+    const cleanOtp = otpCode.trim();
+    if (!cleanOtp) {
+      setErrorMsg('Please enter the 6-digit OTP sent to your device.');
+      return;
+    }
+
+    setLoading(true);
+    setErrorMsg('');
+
+    try {
+      let res;
+      if (authMethod === 'phone') {
+        res = await verifyRealPhoneOtp({
+          phone: phoneNumber,
+          otp: cleanOtp,
+          fullName: fullName.trim() || `DAV Student (${phoneNumber.slice(-4)})`,
+          classNum,
+          section
+        });
+      } else {
+        res = await verifyRealEmailOtp({
+          email,
+          otp: cleanOtp,
+          fullName: fullName.trim() || email.split('@')[0],
+          classNum,
+          section
+        });
+      }
+
+      setLoading(false);
+      if (res.success && res.user) {
+        setAuthenticatedUser(res.user);
+        setSuccessMsg(`Identity verified! Welcome, ${res.user.name}.`);
+        setStep('success_offer');
+      } else {
+        setErrorMsg(res.error || 'Invalid OTP code. Please check and try again.');
+      }
+    } catch (err) {
+      setLoading(false);
+      setErrorMsg('Verification failed. Please try again.');
     }
   };
 
@@ -199,27 +278,86 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
               <div className="flex-1 h-px bg-slate-200" />
             </div>
 
+            {/* Method Toggle: Mobile SMS OTP vs Gmail OTP */}
+            <div className="grid grid-cols-2 gap-2 bg-slate-100 p-1 rounded-2xl">
+              <button
+                type="button"
+                onClick={() => { setAuthMethod('phone'); setErrorMsg(''); }}
+                className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                  authMethod === 'phone'
+                    ? 'bg-white text-blue-900 shadow-sm font-black'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Smartphone className="w-3.5 h-3.5 text-blue-600" />
+                <span>Mobile Number OTP</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { setAuthMethod('email'); setErrorMsg(''); }}
+                className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                  authMethod === 'email'
+                    ? 'bg-white text-blue-900 shadow-sm font-black'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Mail className="w-3.5 h-3.5 text-blue-600" />
+                <span>Gmail OTP</span>
+              </button>
+            </div>
+
             {/* Real OTP Form */}
-            <form onSubmit={handleSendRealOtp} className="space-y-3">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Google Email Address
-                </label>
-                <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-                  <input
-                    type="email"
-                    required
-                    placeholder="student@gmail.com"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      if (errorMsg) setErrorMsg('');
-                    }}
-                    className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-medium"
-                  />
+            <form onSubmit={authMethod === 'phone' ? handleSendRealPhoneOtp : handleSendRealOtp} className="space-y-3">
+              {authMethod === 'phone' ? (
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Mobile Number (India +91)
+                  </label>
+                  <div className="relative flex items-center">
+                    <span className="absolute left-3.5 text-xs font-black text-slate-600 flex items-center gap-1">
+                      <span>🇮🇳</span>
+                      <span>+91</span>
+                    </span>
+                    <input
+                      type="tel"
+                      required
+                      maxLength="10"
+                      placeholder="94700 33984"
+                      value={phoneNumber}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/[^0-9]/g, '');
+                        setPhoneNumber(val);
+                        if (errorMsg) setErrorMsg('');
+                      }}
+                      className="w-full pl-16 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-bold tracking-wider"
+                    />
+                  </div>
+                  <p className="text-[10px] text-slate-400 mt-1">
+                    Enter your 10-digit mobile number to receive authentic 6-digit SMS OTP.
+                  </p>
                 </div>
-              </div>
+              ) : (
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Google Email Address
+                  </label>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                    <input
+                      type="email"
+                      required
+                      placeholder="student@gmail.com"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (errorMsg) setErrorMsg('');
+                      }}
+                      className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-medium"
+                    />
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
@@ -277,7 +415,7 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
                 ) : (
                   <>
                     <KeyRound className="w-4 h-4 text-white" />
-                    <span>Send Real OTP to Google Email</span>
+                    <span>{authMethod === 'phone' ? 'Send 6-Digit Mobile SMS OTP' : 'Send Real OTP to Google Email'}</span>
                     <ArrowRight className="w-3.5 h-3.5 ml-1" />
                   </>
                 )}
@@ -304,7 +442,7 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
                 We sent a 6-digit verification code to:
               </p>
               <div className="text-xs font-bold text-blue-700 font-mono mt-0.5">
-                {email}
+                {authMethod === 'phone' ? `+91 ${phoneNumber}` : email}
               </div>
             </div>
 
@@ -318,7 +456,7 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
               </p>
             </div>
 
-            <form onSubmit={handleVerifyOtp} className="space-y-4">
+            <form onSubmit={handleVerifyCombinedOtp} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1 text-center">
                   6-Digit OTP Code
