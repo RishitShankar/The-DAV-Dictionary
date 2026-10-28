@@ -2,6 +2,15 @@ export const config = {
   runtime: 'edge',
 };
 
+const BLOCKED_HEADERS = new Set([
+  'content-disposition',
+  'content-type',
+  'x-frame-options',
+  'content-security-policy',
+  'x-content-security-policy',
+  'x-webkit-csp'
+]);
+
 export default async function handler(req) {
   const url = new URL(req.url);
   const targetUrl = url.searchParams.get('url');
@@ -22,7 +31,7 @@ export default async function handler(req) {
     const responseHeaders = new Headers();
     upstreamRes.headers.forEach((value, key) => {
       const lower = key.toLowerCase();
-      if (lower !== 'content-disposition' && lower !== 'content-type') {
+      if (!BLOCKED_HEADERS.has(lower)) {
         responseHeaders.set(key, value);
       }
     });

@@ -275,20 +275,22 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
       </header>
 
       {/* Main Workspace Split: Stream & Scroll Viewer + Optional AI Sidebar */}
-      <div className="flex-1 flex overflow-hidden bg-stone-950 relative">
+      <div className="flex-1 h-full w-full flex overflow-hidden bg-stone-950 relative">
         
         {/* Stream & Scroll Container (Continuous Vertical Scroll) */}
-        <div className="flex-1 h-full bg-stone-900 overflow-hidden flex flex-col relative">
+        <div className="flex-1 h-full w-full bg-stone-900 overflow-hidden flex flex-col relative">
           <object
             data={resolvedPdfUrl}
             type="application/pdf"
-            className="w-full flex-1 border-none bg-stone-900 block"
+            className="w-full h-full min-h-full flex-1 border-none bg-stone-900 block"
+            style={{ width: '100%', height: '100%', minHeight: '100%' }}
           >
             <iframe
               key={`stream-${resolvedPdfUrl}`}
               src={`${resolvedPdfUrl}#toolbar=1`}
               title={`${book.title} - Textbook Continuous Stream`}
-              className="w-full flex-1 border-none bg-stone-900 block"
+              className="w-full h-full min-h-full flex-1 border-none bg-stone-900 block"
+              style={{ width: '100%', height: '100%', minHeight: '100%' }}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             >
               <div className="p-8 text-center text-white flex flex-col items-center justify-center h-full">

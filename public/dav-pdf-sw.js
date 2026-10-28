@@ -1,6 +1,6 @@
 // DAV Dictionary - PDF In-Browser Continuous Stream Service Worker
 // Forces GitHub Media CDN binary streams to application/pdf & inline disposition
-// so browsers view them directly inside the modal with smooth vertical scrolling without downloading.
+// and strips x-frame-options so browsers view them directly inside the modal with smooth vertical scrolling.
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -17,6 +17,15 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(handlePdfStream(event.request));
   }
 });
+
+const BLOCKED_HEADERS = new Set([
+  'content-disposition',
+  'content-type',
+  'x-frame-options',
+  'content-security-policy',
+  'x-content-security-policy',
+  'x-webkit-csp'
+]);
 
 async function handlePdfStream(request) {
   try {
@@ -41,7 +50,7 @@ async function handlePdfStream(request) {
     const responseHeaders = new Headers();
     upstreamRes.headers.forEach((val, key) => {
       const lower = key.toLowerCase();
-      if (lower !== 'content-disposition' && lower !== 'content-type') {
+      if (!BLOCKED_HEADERS.has(lower)) {
         responseHeaders.set(key, val);
       }
     });
@@ -57,7 +66,6 @@ async function handlePdfStream(request) {
       headers: responseHeaders
     });
   } catch (err) {
-    // If service worker fetch fails, fall through to network
     return fetch(request);
   }
 }
