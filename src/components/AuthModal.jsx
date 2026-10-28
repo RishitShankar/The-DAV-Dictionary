@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
 import { saveCloudStudent } from '../services/supabaseClient';
+import { checkDeviceSession, registerDeviceSession } from '../services/deviceAuthManager';
 
 export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGuide, onGoToSection }) {
   const [isRegister, setIsRegister] = useState(false);
@@ -54,7 +55,7 @@ export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGu
     setPassword(res);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const idToUse = generatedId || (isRegister ? generateStudentId() : 'DAV-2026-5542');
     const isTeacher = role === 'Teacher' || role.toLowerCase().includes('teacher');
@@ -97,6 +98,10 @@ export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGu
         window.dispatchEvent(new CustomEvent('dav_faculty_updated'));
       } catch (err) {}
     }
+
+    try {
+      await registerDeviceSession(userData, true);
+    } catch (err) {}
 
     onLogin(userData);
     onClose();

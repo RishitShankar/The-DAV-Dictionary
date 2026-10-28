@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Sparkles, Check, Key, UserCheck, Eye, EyeOff, Lock, Crown, Award, ExternalLink, Loader2 } from 'lucide-react';
+import { Shield, Sparkles, Check, Key, UserCheck, Eye, EyeOff, Lock, Crown, Award, ExternalLink, Loader2, ShieldAlert, ShieldCheck, Smartphone, Monitor, AlertTriangle, LogOut, X } from 'lucide-react';
 import { PRELOADED_DATABASE_USERS, getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
 import { fetchCloudStudents } from '../services/supabaseClient';
+import { checkDeviceSession, registerDeviceSession, getDeviceMetadata } from '../services/deviceAuthManager';
 
 export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
   const [userId, setUserId] = useState('');
@@ -12,6 +13,8 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
   const [isSuccess, setIsSuccess] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [deviceConflict, setDeviceConflict] = useState(null);
+  const [isSwitchingDevice, setIsSwitchingDevice] = useState(false);
 
   // Sync with Supabase Cloud on mount
   useEffect(() => {
@@ -29,6 +32,22 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
       }
     }).catch(() => {});
   }, []);
+
+  const handleForceSwitchDevice = async () => {
+    if (!deviceConflict?.resolvedUser) return;
+    setIsSwitchingDevice(true);
+    try {
+      await registerDeviceSession(deviceConflict.resolvedUser, true);
+      const user = deviceConflict.resolvedUser;
+      setDeviceConflict(null);
+      setLoggedInUser(user);
+      setIsSuccess(true);
+    } catch (e) {
+      setFeedback('Failed to transfer session to this device. Please try again.');
+    } finally {
+      setIsSwitchingDevice(false);
+    }
+  };
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -64,6 +83,19 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
         isAdmin: true,
         email: 'rishit.shankar@davschool.edu.in'
       };
+
+      const deviceCheck = await checkDeviceSession(adminUser.id);
+      if (!deviceCheck.allowed && !deviceCheck.isSameDevice) {
+        setIsAuthenticating(false);
+        setDeviceConflict({
+          resolvedUser: adminUser,
+          conflictDevice: deviceCheck.conflictDevice,
+          lastActiveMinutesAgo: deviceCheck.lastActiveMinutesAgo
+        });
+        return;
+      }
+
+      await registerDeviceSession(adminUser);
       setFeedback('');
       setLoggedInUser(adminUser);
       setIsSuccess(true);
@@ -136,6 +168,20 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
         isAdmin: isDevAdmin,
         dimension: isTeacher ? 5 : isDevAdmin ? 4 : (matched.dimension || 1)
       };
+
+      // Check One Man, One Account, One Device session
+      const deviceCheck = await checkDeviceSession(resolvedUser.id);
+      if (!deviceCheck.allowed && !deviceCheck.isSameDevice) {
+        setIsAuthenticating(false);
+        setDeviceConflict({
+          resolvedUser,
+          conflictDevice: deviceCheck.conflictDevice,
+          lastActiveMinutesAgo: deviceCheck.lastActiveMinutesAgo
+        });
+        return;
+      }
+
+      await registerDeviceSession(resolvedUser);
       setFeedback('');
       setLoggedInUser(resolvedUser);
       setIsSuccess(true);
@@ -487,7 +533,131 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
           </div>
         </div>
 
+        {/* One Man, One Device Security Protocol Active Banner */}
+        <div className="mt-2.5 p-3 rounded-xl bg-gradient-to-r from-emerald-950/60 via-stone-900/80 to-emerald-950/60 border border-emerald-500/30 text-stone-300 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span className="font-bold text-white text-[11px] sm:text-xs">
+              One Man, One Account, One Device Security Protocol Active
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-[11px] text-stone-400">
+            <span className="text-emerald-400 font-bold">1 Account = 1 Device</span>
+            <span>•</span>
+            <span>Enforced for Double VIP & All Scholars</span>
+          </div>
+        </div>
+
       </main>
+
+      {/* ========================================================================= */}
+      {/* ONE MAN, ONE DEVICE CONFLICT SECURITY MODAL                               */}
+      {/* ========================================================================= */}
+      {deviceConflict && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-md animate-fadeIn">
+          <div className="w-full max-w-lg bg-stone-950 border-2 border-rose-500/80 rounded-3xl shadow-2xl p-6 sm:p-7 text-white space-y-5 relative">
+            <button
+              onClick={() => setDeviceConflict(null)}
+              className="absolute top-4 right-4 w-9 h-9 rounded-xl bg-stone-900 hover:bg-stone-800 text-stone-400 hover:text-white flex items-center justify-center border border-stone-800 transition cursor-pointer"
+              title="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Header */}
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center border border-rose-500/40 shrink-0">
+                <ShieldAlert className="w-6 h-6" />
+              </div>
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-rose-400 px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/30">
+                  One Man, One Device Security Lock
+                </span>
+                <h3 className="text-lg font-black text-white mt-1">
+                  Account Active on Another Device
+                </h3>
+              </div>
+            </div>
+
+            {/* Notice Banner */}
+            <div className="p-4 rounded-2xl bg-rose-950/40 border border-rose-500/30 text-xs text-rose-200 leading-relaxed">
+              <p className="font-bold text-white mb-1">
+                Policy: One Man, One Account, One Device Only.
+              </p>
+              <p className="text-stone-300 text-[11px]">
+                DAV Public School security strictly prohibits concurrent logins on two devices. 
+                {deviceConflict.resolvedUser?.plan === 'vvip' || deviceConflict.resolvedUser?.dimension === 3
+                  ? ' This strict single-device rule applies equally to Double VIP (VVIP) accounts.'
+                  : ' Only one phone, laptop, or tablet can be logged into an account at any time.'}
+              </p>
+            </div>
+
+            {/* Comparison Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div className="p-3.5 rounded-2xl bg-stone-900 border border-stone-800">
+                <div className="text-[10px] font-bold text-stone-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-rose-500" />
+                  <span>Currently Active Device</span>
+                </div>
+                <div className="font-bold text-white text-sm line-clamp-1">
+                  {deviceConflict.conflictDevice?.deviceName || 'Another Phone / PC'}
+                </div>
+                <div className="text-[10px] text-stone-400 mt-0.5">
+                  Active: ~{deviceConflict.lastActiveMinutesAgo || 1} min ago
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-stone-900 border border-stone-800">
+                <div className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <span>This Device</span>
+                </div>
+                <div className="font-bold text-white text-sm line-clamp-1">
+                  {getDeviceMetadata().deviceName}
+                </div>
+                <div className="text-[10px] text-emerald-400 mt-0.5 font-bold">
+                  Attempting Login Now
+                </div>
+              </div>
+            </div>
+
+            {/* Instructions */}
+            <div className="text-[11px] text-stone-400 bg-stone-900/60 p-3 rounded-xl border border-stone-800/80">
+              To use this account here, you can log out from your previous device first, or transfer access below (which will immediately log out the other device).
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row items-center gap-2.5 pt-2">
+              <button
+                type="button"
+                disabled={isSwitchingDevice}
+                onClick={handleForceSwitchDevice}
+                className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black text-xs flex items-center justify-center gap-2 shadow-lg shadow-rose-950/40 transition cursor-pointer"
+              >
+                {isSwitchingDevice ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Switching Device...</span>
+                  </>
+                ) : (
+                  <>
+                    <LogOut className="w-4 h-4" />
+                    <span>Log Out Other Device & Activate Here</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setDeviceConflict(null)}
+                className="w-full sm:w-auto py-3 px-4 rounded-xl bg-stone-900 hover:bg-stone-800 border border-stone-700 text-stone-300 hover:text-white font-bold text-xs transition cursor-pointer"
+              >
+                Cancel & Keep Previous Device
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

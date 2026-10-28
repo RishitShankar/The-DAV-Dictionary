@@ -30,6 +30,8 @@ import {
   MessageSquareMore, Video, CheckSquare, UserCheck 
 } from 'lucide-react';
 import { BlackDogLogo } from './components/BlackDogLogo';
+import { registerDeviceSession, releaseDeviceSession, startDeviceGuard, getDeviceMetadata } from './services/deviceAuthManager';
+import { ShieldAlert } from 'lucide-react';
 
 export function App() {
   const [activeSection, setActiveSection] = useState(1);
@@ -122,6 +124,7 @@ export function App() {
   const [readerBook, setReaderBook] = useState(null);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [lockedFeatureModal, setLockedFeatureModal] = useState(null);
+  const [remoteLogoutNotice, setRemoteLogoutNotice] = useState(null);
 
   useEffect(() => {
     if (user && user.plan !== 'guest') {
@@ -135,7 +138,30 @@ export function App() {
     localStorage.setItem('dav_uploaded_pdfs', JSON.stringify(uploadedPdfs));
   }, [uploadedPdfs]);
 
-  const handleLoginSuccess = (loggedInUser) => {
+  // Real-time Single Device Session Guard: Listen for remote logout or login on another device
+  useEffect(() => {
+    if (!user || !user.id || user.id === 'guest_student') return;
+
+    // Refresh device session on mount
+    registerDeviceSession(user).catch(() => {});
+
+    const unsubscribeGuard = startDeviceGuard(user, (event) => {
+      // User was logged out because another device logged in or remote logout occurred
+      setUser(null);
+      setViewMode('home');
+      localStorage.removeItem('dav_user');
+      setRemoteLogoutNotice(event);
+    });
+
+    return () => {
+      if (unsubscribeGuard) unsubscribeGuard();
+    };
+  }, [user?.id]);
+
+  const handleLoginSuccess = async (loggedInUser) => {
+    try {
+      await registerDeviceSession(loggedInUser);
+    } catch (e) {}
     setUser(loggedInUser);
     setViewMode('app');
     const userIsTeacher = Boolean(
@@ -165,7 +191,12 @@ export function App() {
     setIsSidebarOpen(false);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    if (user?.id) {
+      try {
+        await releaseDeviceSession(user.id);
+      } catch (e) {}
+    }
     setUser(null);
     setViewMode('home');
     localStorage.removeItem('dav_user');
@@ -468,7 +499,7 @@ export function App() {
               </div>
             </div>
           ) : (
-            <StudentProfileSection user={user} />
+            <StudentProfileSection user={user} onLogout={handleLogout} />
           )
         ) : activeSection === 10 ? (
           <DonationSection 
@@ -727,6 +758,50 @@ export function App() {
             </>
           )}
         </nav>
+      )}
+
+      {/* ========================================================================= */}
+      {/* REMOTE LOGOUT / SESSION TRANSFERRED NOTIFICATION MODAL                    */}
+      {/* ========================================================================= */}
+      {remoteLogoutNotice && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-md animate-fadeIn">
+          <div className="w-full max-w-md bg-stone-950 border-2 border-rose-500/80 rounded-3xl shadow-2xl p-6 sm:p-7 text-white space-y-5 text-center">
+            <div className="w-16 h-16 rounded-3xl bg-rose-500/20 text-rose-400 flex items-center justify-center border border-rose-500/40 mx-auto">
+              <ShieldAlert className="w-8 h-8" />
+            </div>
+
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-widest text-rose-400 px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/30">
+                One Man, One Device Security Protocol
+              </span>
+              <h3 className="text-xl font-black text-white mt-2">
+                Session Terminated on This Device
+              </h3>
+            </div>
+
+            <p className="text-xs text-stone-300 leading-relaxed">
+              {remoteLogoutNotice.message || 'Your account was logged in from another device. In accordance with DAV Public School’s One Man, One Device policy, only one active session is permitted at a time.'}
+            </p>
+
+            {remoteLogoutNotice.conflictDevice && (
+              <div className="p-3 rounded-2xl bg-stone-900 border border-stone-800 text-xs text-left">
+                <span className="text-stone-400 text-[10px] uppercase font-bold block">New Active Device:</span>
+                <span className="font-bold text-amber-300">{remoteLogoutNotice.conflictDevice.deviceName || 'Another Device'}</span>
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => {
+                setRemoteLogoutNotice(null);
+                setViewMode('login');
+              }}
+              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black text-xs transition cursor-pointer shadow-lg shadow-rose-950/40"
+            >
+              Return to Blackboard Login
+            </button>
+          </div>
+        </div>
       )}
 
     </div>

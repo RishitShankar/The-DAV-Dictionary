@@ -6,10 +6,11 @@ import {
 } from 'lucide-react';
 import { updateCloudPassword } from '../services/supabaseClient';
 import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
+import { getDeviceMetadata } from '../services/deviceAuthManager';
 
 const PROFILE_STORAGE_KEY = 'dav_student_personal_profile';
 
-export function StudentProfileSection({ user }) {
+export function StudentProfileSection({ user, onLogout }) {
   const currentUserId = user?.id || 'guest';
   const isMasterRishit = currentUserId.toLowerCase() === 'rishibhai';
   const storageKey = `dav_student_profile_${currentUserId.toLowerCase()}`;
@@ -401,6 +402,49 @@ export function StudentProfileSection({ user }) {
                   <span className="font-bold text-amber-300">{profile.favoriteTeacher}</span>
                 </div>
               </div>
+            </div>
+
+            {/* One Man, One Device Security Card */}
+            <div className="p-4 rounded-2xl bg-stone-900 border border-emerald-500/40 text-xs text-stone-300 space-y-3">
+              <div className="font-bold text-emerald-400 flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <Shield className="w-4 h-4 text-emerald-400" />
+                  <span>Device Security & Binding:</span>
+                </div>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              </div>
+
+              <div className="p-3 rounded-xl bg-stone-950 border border-stone-800 space-y-1.5">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-stone-400">Current Device:</span>
+                  <span className="font-bold text-white truncate ml-2">{getDeviceMetadata().deviceName}</span>
+                </div>
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-stone-400">Security Rule:</span>
+                  <span className="font-bold text-emerald-300">1 Man, 1 Device, 1 Account</span>
+                </div>
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-stone-400">Double VIP Protocol:</span>
+                  <span className="font-bold text-amber-300">
+                    {user?.plan === 'vvip' || user?.dimension === 3 ? 'Double VIP Bound (1 Device Only)' : 'Strictly Enforced'}
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-[11px] text-stone-400 leading-relaxed">
+                Not a single account is allowed to be logged into two devices simultaneously. If you log out from this device, your account is released and another person is allowed to log in on this device.
+              </p>
+
+              {onLogout && (
+                <button
+                  type="button"
+                  onClick={onLogout}
+                  className="w-full py-2 px-3 rounded-xl bg-stone-800 hover:bg-rose-950/60 border border-stone-700 hover:border-rose-500/60 text-stone-300 hover:text-rose-200 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+                >
+                  <Lock className="w-3.5 h-3.5" />
+                  <span>Log Out to Release This Device</span>
+                </button>
+              )}
             </div>
 
           </div>
