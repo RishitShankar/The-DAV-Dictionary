@@ -19,7 +19,6 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
   const [otpCode, setOtpCode] = useState('');
-  const [dispatchedCode, setDispatchedCode] = useState('');
   const [classNum, setClassNum] = useState('8');
   const [section, setSection] = useState('D');
 
@@ -66,9 +65,7 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
       setLoading(false);
 
       if (res.success) {
-        if (res.dispatchedOtp) {
-          setDispatchedCode(res.dispatchedOtp);
-        }
+
         setSuccessMsg(`Real 6-digit security OTP sent to ${cleanEmail}. Check your Gmail inbox or verify below.`);
         setStep('enter_otp');
       } else {
@@ -357,25 +354,7 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
               </p>
             </div>
 
-            {dispatchedCode && (
-              <div className="p-3 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-between gap-2">
-                <div className="text-left">
-                  <div className="text-[10px] font-bold text-amber-800 uppercase tracking-wide">
-                    Direct Gmail Security OTP
-                  </div>
-                  <div className="font-mono text-base font-black text-amber-950 tracking-widest">
-                    {dispatchedCode}
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => { setOtpCode(dispatchedCode); if (errorMsg) setErrorMsg(''); }}
-                  className="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-xs transition cursor-pointer"
-                >
-                  Quick Fill
-                </button>
-              </div>
-            )}
+            
 
             <form onSubmit={handleVerifyCombinedOtp} className="space-y-4">
               <div>

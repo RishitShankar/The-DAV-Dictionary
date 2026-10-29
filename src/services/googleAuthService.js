@@ -72,43 +72,37 @@ export async function sendRealEmailOtp(email) {
     return { success: false, error: 'Please enter a valid Google email address.' };
   }
 
-  // Generate authentic 6-digit security code
-  const generatedOtp = String(Math.floor(100000 + Math.random() * 900000));
-  
-  // Store active OTP with 10-minute expiry
-  try {
-    sessionStorage.setItem(`dav_active_otp_${cleanEmail}`, JSON.stringify({
-      otp: generatedOtp,
-      expiresAt: Date.now() + 10 * 60 * 1000
-    }));
-  } catch (e) {}
-
   const client = getSupabaseClient();
-  let supabaseSent = false;
-  let supabaseNotice = '';
-
-  if (client) {
-    try {
-      const { error } = await client.auth.signInWithOtp({
-        email: cleanEmail,
-        options: {
-          shouldCreateUser: true
-        }
-      });
-      if (!error) {
-        supabaseSent = true;
-      } else if (error.message?.includes('rate limit')) {
-        supabaseNotice = 'Supabase SMTP rate limit reached. Using instant secure OTP verification.';
-      }
-    } catch (e) {}
+  if (!client) {
+    return { success: false, error: 'Authentication engine not connected.' };
   }
 
-  return {
-    success: true,
-    dispatchedOtp: generatedOtp,
-    supabaseSent,
-    supabaseNotice
-  };
+  try {
+    const { data, error } = await client.auth.signInWithOtp({
+      email: cleanEmail,
+      options: {
+        shouldCreateUser: true
+      }
+    });
+
+    if (error) {
+      console.error('Supabase signInWithOtp error:', error);
+      return { 
+        success: false, 
+        error: error.message || 'Failed to dispatch OTP email. Please ensure your email is correct.' 
+      };
+    }
+
+    return {
+      success: true,
+      email: cleanEmail
+    };
+  } catch (err) {
+    return {
+      success: false,
+      error: err.message || 'Error communicating with email authentication server.'
+    };
+  }
 }
 
 /**
