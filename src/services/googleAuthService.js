@@ -124,32 +124,32 @@ export async function verifyRealEmailOtp({ email, otp, fullName = '', classNum =
     return { success: false, error: 'Please enter the 6-digit OTP code.' };
   }
 
-  // 1. Verify against active session OTP
+  // 1. Primary check: Verify authentic OTP token via Supabase Custom SMTP
   let isValid = false;
-  try {
-    const raw = sessionStorage.getItem(`dav_active_otp_${cleanEmail}`);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (parsed.otp === cleanOtp && Date.now() < parsed.expiresAt) {
-        isValid = true;
-        sessionStorage.removeItem(`dav_active_otp_${cleanEmail}`);
-      }
-    }
-  } catch (e) {}
+  const client = getSupabaseClient();
+  if (client) {
+    try {
+      const { error } = await client.auth.verifyOtp({
+        email: cleanEmail,
+        token: cleanOtp,
+        type: 'email'
+      });
+      if (!error) isValid = true;
+    } catch (e) {}
+  }
 
-  // 2. Also try Supabase verifyOtp fallback
+  // 2. Fallback check: Session OTP
   if (!isValid) {
-    const client = getSupabaseClient();
-    if (client) {
-      try {
-        const { error } = await client.auth.verifyOtp({
-          email: cleanEmail,
-          token: cleanOtp,
-          type: 'email'
-        });
-        if (!error) isValid = true;
-      } catch (e) {}
-    }
+    try {
+      const raw = sessionStorage.getItem(`dav_active_otp_${cleanEmail}`);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.otp === cleanOtp && Date.now() < parsed.expiresAt) {
+          isValid = true;
+          sessionStorage.removeItem(`dav_active_otp_${cleanEmail}`);
+        }
+      }
+    } catch (e) {}
   }
 
   if (!isValid) {
