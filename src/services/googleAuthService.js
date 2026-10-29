@@ -1,6 +1,14 @@
 import { getSupabaseClient, fetchCloudStudents, saveCloudStudent } from './supabaseClient';
 import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
 import { registerDeviceSession, checkDeviceSession } from './deviceAuthManager';
+import { 
+  sendFirebasePhoneOtp, 
+  verifyFirebasePhoneOtp, 
+  checkSmsAvailability, 
+  getDailySmsQuotaState 
+} from './firebaseAuthService';
+
+export { checkSmsAvailability, getDailySmsQuotaState };
 
 /**
  * Check and trigger official Supabase Google OAuth safely without raw JSON 400 crash
@@ -165,6 +173,9 @@ export async function verifyRealEmailOtp({ email, otp, fullName = '', classNum =
     await registerDeviceSession(student, true);
   }
 
+  try {
+    localStorage.setItem('dav_user', JSON.stringify(student));
+  } catch (e) {}
   return { success: true, user: student };
 }
 
@@ -322,34 +333,29 @@ export async function sendRealPhoneOtp(phone) {
   }
   const formattedPhone = `+91${digits}`;
 
-  // Generate authentic 6-digit cryptographic security code
-  const generatedOtp = String(Math.floor(100000 + Math.random() * 900000));
+  // 1. Enforce strict daily quotas: 1 OTP per person per day & 10 total/day
+  const quotaCheck = checkSmsAvailability(digits);
+  if (!quotaCheck.allowed) {
+    return {
+      success: false,
+      limitReached: quotaCheck.reason === 'global_limit_reached',
+      error: quotaCheck.message,
+      remaining: quotaCheck.remaining
+    };
+  }
 
-  try {
-    sessionStorage.setItem(`dav_active_phone_otp_${digits}`, JSON.stringify({
-      otp: generatedOtp,
-      expiresAt: Date.now() + 10 * 60 * 1000
-    }));
-  } catch (e) {}
-
-  // Attempt Supabase Phone Auth OTP if SMS provider is connected
-  const client = getSupabaseClient();
-  let supabaseSent = false;
-  if (client) {
-    try {
-      const { error } = await client.auth.signInWithOtp({
-        phone: formattedPhone
-      });
-      if (!error) supabaseSent = true;
-    } catch (e) {}
+  // 2. Dispatch real SMS via Firebase Phone Auth
+  const fbRes = await sendFirebasePhoneOtp(digits);
+  if (!fbRes.success) {
+    return fbRes;
   }
 
   return {
     success: true,
     phone: formattedPhone,
     digits,
-    dispatchedOtp: generatedOtp,
-    supabaseSent
+    firebaseSent: true,
+    remainingToday: fbRes.remainingToday
   };
 }
 
@@ -366,6 +372,14 @@ export async function verifyRealPhoneOtp({ phone, otp, fullName = '', classNum =
   }
 
   let isValid = false;
+  let verifyErrorMsg = '';
+
+  const fbRes = await verifyFirebasePhoneOtp(cleanOtp);
+  if (fbRes.success) {
+    isValid = true;
+  } else {
+    verifyErrorMsg = fbRes.error;
+  }
   try {
     const raw = sessionStorage.getItem(`dav_active_phone_otp_${digits}`);
     if (raw) {
@@ -394,7 +408,7 @@ export async function verifyRealPhoneOtp({ phone, otp, fullName = '', classNum =
   if (!isValid) {
     return { 
       success: false, 
-      error: 'Invalid or expired OTP code. Please enter the 6-digit code sent to your mobile.' 
+      error: verifyErrorMsg || 'Invalid or expired OTP code. Please enter the 6-digit code sent to your mobile.' 
     };
   }
 

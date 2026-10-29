@@ -230,6 +230,9 @@ export function App() {
     try {
       await registerDeviceSession(loggedInUser);
     } catch (e) {}
+    try {
+      localStorage.setItem('dav_user', JSON.stringify(loggedInUser));
+    } catch (e) {}
     setUser(loggedInUser);
     setViewMode('app');
     const userIsTeacher = Boolean(

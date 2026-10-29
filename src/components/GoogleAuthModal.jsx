@@ -10,7 +10,9 @@ import {
   verifyRealEmailOtp, 
   sendRealPhoneOtp,
   verifyRealPhoneOtp,
-  triggerSupabaseGoogleOAuth 
+  triggerSupabaseGoogleOAuth,
+  getDailySmsQuotaState,
+  checkSmsAvailability
 } from '../services/googleAuthService';
 import { Smartphone } from 'lucide-react';
 import { CustomPurchaseModal } from './CustomPurchaseModal';
@@ -33,6 +35,8 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
   const [successMsg, setSuccessMsg] = useState('');
   const [authenticatedUser, setAuthenticatedUser] = useState(null);
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
+  const quotaState = getDailySmsQuotaState();
+  const remainingToday = Math.max(0, 10 - quotaState.count);
 
   if (!isOpen) return null;
 
@@ -335,9 +339,16 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
                       className="w-full pl-16 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-bold tracking-wider"
                     />
                   </div>
-                  <p className="text-[10px] text-slate-400 mt-1">
-                    Enter your 10-digit mobile number to receive authentic 6-digit SMS OTP.
-                  </p>
+                  <div className="flex items-center justify-between text-[10px] mt-1.5 flex-wrap gap-1">
+                    <span className="text-slate-500">Enter 10-digit number for authentic SMS OTP</span>
+                    <span className="font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                      {remainingToday > 0 ? `${remainingToday}/10 SMS left today` : 'Quota reached today'}
+                    </span>
+                  </div>
+                  <div className="text-[10px] text-slate-400 font-medium">
+                    Strictly 1 SMS OTP allowed per student per day.
+                  </div>
+                  <div id="firebase-recaptcha-container"></div>
                 </div>
               ) : (
                 <div>
@@ -525,12 +536,12 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
                   }}
                   className="text-slate-500 hover:text-slate-800 font-semibold cursor-pointer"
                 >
-                  ← Change Email
+                  {authMethod === 'phone' ? '← Change Phone Number' : '← Change Email'}
                 </button>
                 <button
                   type="button"
                   disabled={loading}
-                  onClick={handleSendRealOtp}
+                  onClick={authMethod === 'phone' ? handleSendRealPhoneOtp : handleSendRealOtp}
                   className="text-blue-600 hover:underline font-bold flex items-center gap-1 cursor-pointer"
                 >
                   <RefreshCw className="w-3 h-3" />

@@ -86,9 +86,8 @@ export function getDeviceMetadata() {
  * Normal = 1 device | VIP = 2 devices | Double VIP (VVIP) = 3 devices
  */
 export function getMaxDevicesForUser(user) {
-  if (!user) return 1;
-  if (user.plan === 'vvip' || user.dimension === 3 || user.isDoubleVip) return 3;
-  if (user.plan === 'vip' || user.dimension === 2 || user.isVip) return 2;
+  // Strict "One Man, One Account, One Device" rule:
+  // Every user, including VIP and Double VIP, is strictly locked to 1 device.
   return 1;
 }
 
