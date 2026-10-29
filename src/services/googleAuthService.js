@@ -83,7 +83,15 @@ export async function sendRealEmailOtp(email) {
     if (apiRes.ok) {
       const data = await apiRes.json();
       if (data.success) {
-        return { success: true, email: cleanEmail };
+        try {
+          sessionStorage.setItem('dav_active_otp_session', JSON.stringify({
+            email: cleanEmail,
+            token: data.token,
+            expiresAt: data.expiresAt
+          }));
+        } catch (e) {}
+
+        return { success: true, email: cleanEmail, token: data.token, expiresAt: data.expiresAt };
       }
     }
   } catch (apiErr) {
@@ -123,17 +131,41 @@ export async function verifyRealEmailOtp({ email, otp, fullName = '', classNum =
     return { success: false, error: 'Please enter the 6-digit OTP code.' };
   }
 
-  // 1. Primary check: Verify code via /api/verify-otp
+  // Retrieve stateless HMAC token session
+  let sessionToken = '';
+  let sessionExpiresAt = 0;
+  try {
+    const raw = sessionStorage.getItem('dav_active_otp_session');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.email === cleanEmail) {
+        sessionToken = parsed.token;
+        sessionExpiresAt = parsed.expiresAt;
+      }
+    }
+  } catch (e) {}
+
   let isValid = false;
+  let verifyErrorMsg = '';
+
+  // 1. Primary check: Verify code via stateless /api/verify-otp
   try {
     const apiRes = await fetch('/api/verify-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: cleanEmail, otp: cleanOtp })
+      body: JSON.stringify({ 
+        email: cleanEmail, 
+        otp: cleanOtp, 
+        token: sessionToken, 
+        expiresAt: sessionExpiresAt 
+      })
     });
-    if (apiRes.ok) {
-      const data = await apiRes.json();
-      if (data.success) isValid = true;
+    const data = await apiRes.json();
+    if (apiRes.ok && data.success) {
+      isValid = true;
+      try { sessionStorage.removeItem('dav_active_otp_session'); } catch (e) {}
+    } else if (data.error) {
+      verifyErrorMsg = data.error;
     }
   } catch (e) {}
 
@@ -153,26 +185,13 @@ export async function verifyRealEmailOtp({ email, otp, fullName = '', classNum =
   }
 
   if (!isValid) {
-    try {
-      const raw = sessionStorage.getItem(`dav_active_otp_${cleanEmail}`);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed.otp === cleanOtp && Date.now() < parsed.expiresAt) {
-          isValid = true;
-          sessionStorage.removeItem(`dav_active_otp_${cleanEmail}`);
-        }
-      }
-    } catch (e) {}
-  }
-
-  if (!isValid) {
     return { 
       success: false, 
-      error: 'Invalid or expired OTP code. Please enter the exact 6-digit code sent to your email.' 
+      error: verifyErrorMsg || 'Invalid or expired OTP code. Please enter the exact 6-digit code sent to your email.' 
     };
   }
 
-  // 3. OTP Verified! Resolve or create student account in TRIAL (Unpaid) state
+  // 3. OTP Verified! Resolve or create student account in Dimension 1 (Free)
   let student = await findUserByGoogleEmail(cleanEmail);
   if (!student) {
     const created = await createStudentWithGoogle({

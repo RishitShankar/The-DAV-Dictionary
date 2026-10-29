@@ -3,8 +3,11 @@ import react from '@vitejs/plugin-react'
 import https from 'https'
 import http from 'http'
 import path from 'path'
+import crypto from 'crypto'
 import { fileURLToPath } from 'url'
 import { sendGmailTls, activeOtpStore } from './api/send-otp.js'
+
+const AUTH_SECRET = 'DAV_PORTAL_SECURE_AUTH_KEY_2026_HEADBOY_RISHIT';
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -86,17 +89,26 @@ function devOtpPlugin() {
               }
 
               const generatedOtp = String(Math.floor(100000 + Math.random() * 900000));
+              const expiresAt = Date.now() + 10 * 60 * 1000;
+              const signature = crypto
+                .createHmac('sha256', AUTH_SECRET)
+                .update(`${cleanEmail}:${generatedOtp}:${expiresAt}`)
+                .digest('hex');
+
               await sendGmailTls({ toEmail: cleanEmail, otpCode: generatedOtp });
 
               activeOtpStore.set(cleanEmail, {
                 code: generatedOtp,
-                expiresAt: Date.now() + 10 * 60 * 1000
+                expiresAt
               });
 
               res.statusCode = 200;
               res.setHeader('Content-Type', 'application/json');
               res.end(JSON.stringify({ 
                 success: true, 
+                email: cleanEmail,
+                expiresAt,
+                token: signature,
                 message: `Real 6-digit security OTP sent to ${cleanEmail}. Check your Gmail inbox.` 
               }));
             } catch (err) {
@@ -118,15 +130,40 @@ function devOtpPlugin() {
               const body = JSON.parse(rawBody || '{}');
               const cleanEmail = String(body.email || '').trim().toLowerCase();
               const cleanOtp = String(body.otp || '').trim();
+              const expiresAt = Number(body.expiresAt || 0);
+              const token = String(body.token || '').trim();
 
-              const entry = activeOtpStore.get(cleanEmail);
-              if (!entry || Date.now() > entry.expiresAt || entry.code !== cleanOtp) {
-                res.statusCode = 400;
-                res.setHeader('Content-Type', 'application/json');
-                return res.end(JSON.stringify({ success: false, error: 'Invalid or expired OTP code. Please check your Gmail.' }));
+              let isValid = false;
+
+              // Check HMAC token if present
+              if (token && expiresAt && Date.now() <= expiresAt) {
+                const expected = crypto
+                  .createHmac('sha256', AUTH_SECRET)
+                  .update(`${cleanEmail}:${cleanOtp}:${expiresAt}`)
+                  .digest('hex');
+                if (expected === token) {
+                  isValid = true;
+                }
               }
 
-              activeOtpStore.delete(cleanEmail);
+              // Fallback to in-memory store
+              if (!isValid) {
+                const entry = activeOtpStore.get(cleanEmail);
+                if (entry && Date.now() <= entry.expiresAt && entry.code === cleanOtp) {
+                  isValid = true;
+                  activeOtpStore.delete(cleanEmail);
+                }
+              }
+
+              if (!isValid) {
+                res.statusCode = 400;
+                res.setHeader('Content-Type', 'application/json');
+                return res.end(JSON.stringify({ 
+                  success: false, 
+                  error: 'Invalid or expired OTP code. Please check your Gmail.' 
+                }));
+              }
+
               res.statusCode = 200;
               res.setHeader('Content-Type', 'application/json');
               res.end(JSON.stringify({ success: true, verified: true }));
