@@ -1799,10 +1799,70 @@
       "title": "Class 7 Sanskrit - सुरभि (STD 7) - Ch 7: बुद्धिः एव उत्तमा (10-Page Master Notes)",
       "pdfUrl": "/notes/Class%207/sans7/Chapter-7.pdf",
       "timestamp": "2026-10-29T13:51:54.787Z"
+    },
+    "Class_7_sans7_Ch_8": {
+      "noteId": "note_c7_sans7_ch8",
+      "title": "Class 7 Sanskrit - सुरभि (STD 7) - Ch 8: अविवेकः परमापदां पदम् (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/sans7/Chapter-8.pdf",
+      "timestamp": "2026-10-29T13:52:37.544Z"
+    },
+    "Class_7_sans7_Ch_9": {
+      "noteId": "note_c7_sans7_ch9",
+      "title": "Class 7 Sanskrit - सुरभि (STD 7) - Ch 9: बुद्धिमान् गोपालकः (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/sans7/Chapter-9.pdf",
+      "timestamp": "2026-10-29T13:53:19.326Z"
+    },
+    "Class_7_sans7_Ch_10": {
+      "noteId": "note_c7_sans7_ch10",
+      "title": "Class 7 Sanskrit - सुरभि (STD 7) - Ch 10: मधुरवचनानि (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/sans7/Chapter-10.pdf",
+      "timestamp": "2026-10-29T13:53:59.465Z"
+    },
+    "Class_7_comp7_Ch_1": {
+      "noteId": "note_c7_comp7_ch1",
+      "title": "Class 7 Hands On in Computer / ICT (STD 7) - Ch 1: The Evolution of Computers (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/comp7/Chapter-1.pdf",
+      "timestamp": "2026-10-29T13:54:55.496Z"
+    },
+    "Class_7_comp7_Ch_2": {
+      "noteId": "note_c7_comp7_ch2",
+      "title": "Class 7 Hands On in Computer / ICT (STD 7) - Ch 2: Scratch-I (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/comp7/Chapter-2.pdf",
+      "timestamp": "2026-10-29T13:55:30.001Z"
+    },
+    "Class_7_comp7_Ch_3": {
+      "noteId": "note_c7_comp7_ch3",
+      "title": "Class 7 Hands On in Computer / ICT (STD 7) - Ch 3: Scratch-II (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/comp7/Chapter-3.pdf",
+      "timestamp": "2026-10-29T13:56:13.337Z"
+    },
+    "Class_7_comp7_Ch_4": {
+      "noteId": "note_c7_comp7_ch4",
+      "title": "Class 7 Hands On in Computer / ICT (STD 7) - Ch 4: Introduction to GIMP (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/comp7/Chapter-4.pdf",
+      "timestamp": "2026-10-29T13:56:52.860Z"
+    },
+    "Class_7_comp7_Ch_5": {
+      "noteId": "note_c7_comp7_ch5",
+      "title": "Class 7 Hands On in Computer / ICT (STD 7) - Ch 5: GIMP Tools (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/comp7/Chapter-5.pdf",
+      "timestamp": "2026-10-29T13:57:44.065Z"
+    },
+    "Class_7_comp7_Ch_6": {
+      "noteId": "note_c7_comp7_ch6",
+      "title": "Class 7 Hands On in Computer / ICT (STD 7) - Ch 6: Advanced GIMP (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/comp7/Chapter-6.pdf",
+      "timestamp": "2026-10-29T13:58:28.136Z"
+    },
+    "Class_7_comp7_Ch_7": {
+      "noteId": "note_c7_comp7_ch7",
+      "title": "Class 7 Hands On in Computer / ICT (STD 7) - Ch 7: Basics of Internet (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/comp7/Chapter-7.pdf",
+      "timestamp": "2026-10-29T13:59:06.182Z"
     }
   },
   "stats": {
-    "totalCompleted": 300,
+    "totalCompleted": 310,
     "startTime": "2026-10-29T03:02:26.924Z"
   }
 }
