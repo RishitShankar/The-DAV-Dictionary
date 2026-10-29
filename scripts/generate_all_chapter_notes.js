@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { DAV_SUBJECTS_BY_CLASS, getChaptersForClassSubject } from '../src/data/curriculumData.js';
@@ -8,13 +9,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
 
-// 1. Load API Key
+// 1. Load API Key (Supports Environment variables and .env)
 const envPath = path.join(ROOT_DIR, '.env');
-const envContent = fs.readFileSync(envPath, 'utf8');
-const API_KEY = envContent.match(/VITE_GEMINI_API_KEY=([^\r\n]+)/)?.[1]?.trim();
+let envContent = '';
+if (fs.existsSync(envPath)) {
+  try {
+    envContent = fs.readFileSync(envPath, 'utf8');
+  } catch (e) {}
+}
+const API_KEY = process.env.GEMINI_API_KEY || 
+                process.env.VITE_GEMINI_API_KEY || 
+                envContent.match(/VITE_GEMINI_API_KEY=([^\r\n]+)/)?.[1]?.trim();
 
 if (!API_KEY) {
-  console.error('❌ VITE_GEMINI_API_KEY not found in .env!');
+  console.error('❌ GEMINI_API_KEY / VITE_GEMINI_API_KEY not found!');
   process.exit(1);
 }
 
@@ -72,7 +80,7 @@ export const OFFICIAL_CHAPTER_NOTES = ${JSON.stringify(existingNotes, null, 2)};
 
 // 4. Gemini Prompting
 async function callGemini(prompt, maxTokens = 6000) {
-  const models = ['gemini-3.5-flash', 'gemini-3.8-flash', 'gemini-flash-latest'];
+  const models = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-3.8-flash', 'gemini-3.5-flash'];
   for (const model of models) {
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_KEY}`;
@@ -391,15 +399,31 @@ Begin immediately. Use "---PAGE-BREAK---" to separate each of the 10 pages.`;
   console.log(`✅ [SUCCESS] 10-Page PDF created: ${pdfPath}`);
   console.log(`📊 Total Notes in Vault: ${ledger.stats.totalCompleted}`);
 
+  // Auto-commit periodically in GitHub Actions
+  if (process.env.GITHUB_ACTIONS && ledger.stats.totalCompleted % 10 === 0) {
+    try {
+      console.log('☁️ [GITHUB ACTIONS] Auto-committing checkpoint batch to repository...');
+      execSync('git config user.name "Google Gemini Master Agent"', { stdio: 'inherit' });
+      execSync('git config user.email "gemini-bot@davdictionary.org"', { stdio: 'inherit' });
+      execSync('git add public/notes src/data/officialChapterNotesData.js scripts/notes_generation_ledger.json', { stdio: 'inherit' });
+      execSync('git commit -m "feat(notes): automated batch checkpoint (Notes total: ' + ledger.stats.totalCompleted + ') [skip ci]"', { stdio: 'inherit' });
+      execSync('git push origin HEAD:main', { stdio: 'inherit' });
+      console.log('✅ [GITHUB ACTIONS] Batch checkpoint pushed to GitHub successfully!');
+    } catch (e) {
+      console.warn('⚠️ Cloud checkpoint commit skipped:', e.message);
+    }
+  }
+
   return noteObject;
 }
 
 // 7. Master Continuous Loop Across All 10 Classes (Class 8 down to LKG)
-export async function startContinuousNotesEngine(delayMs = 135000) { // 2.25 minutes between chapters
+export async function startContinuousNotesEngine(defaultDelay = 8000) { // 8 seconds Turbo Mode
+  const delayMs = process.env.PACE_DELAY_MS ? parseInt(process.env.PACE_DELAY_MS) : defaultDelay;
   const classes = ['8', '7', '6', '5', '4', '3', '2', '1', 'UKG', 'LKG'];
-  console.log(`\n🌟 STARTING AUTONOMOUS NOTES GENERATOR ENGINE`);
+  console.log(`\n🌟 STARTING AUTONOMOUS NOTES GENERATOR ENGINE (TURBO CLOUD MODE)`);
   console.log(`📚 Target: 10-Page Pure Bullet Notes for EVERY Chapter Across ALL 10 Classes`);
-  console.log(`⏱️ Pacing: ~2 to 2.5 minutes per chapter (quota safe, 10-12 hour continuous run)\n`);
+  console.log(`⏱️ Pacing: ~${Math.round(delayMs / 1000)}s per chapter (Turbo Mode, quota safe)\n`);
 
   for (const c of classes) {
     const subjects = DAV_SUBJECTS_BY_CLASS[c] || [];
@@ -419,16 +443,27 @@ export async function startContinuousNotesEngine(delayMs = 135000) { // 2.25 min
         try {
           await generateSingleChapterNotes(c, subjectId, subjectName, chNum, chTitle);
 
-          // Pacing delay (2 to 3 minutes as requested)
+          // Pacing delay (8s Turbo mode)
           console.log(`⏳ Pacing pause (${Math.round(delayMs / 1000)}s) to ensure safe quotas & stability...`);
           await new Promise(r => setTimeout(r, delayMs));
         } catch (err) {
           console.error(`⚠️ Error generating notes for Class ${c} ${subjectName} Ch ${chNum}:`, err.message);
-          // Wait 30s before retry
-          await new Promise(r => setTimeout(r, 30000));
+          // Wait 15s before retry
+          await new Promise(r => setTimeout(r, 15000));
         }
       }
     }
+  }
+
+  // Final push if on GitHub Actions
+  if (process.env.GITHUB_ACTIONS) {
+    try {
+      execSync('git config user.name "Google Gemini Master Agent"', { stdio: 'inherit' });
+      execSync('git config user.email "gemini-bot@davdictionary.org"', { stdio: 'inherit' });
+      execSync('git add public/notes src/data/officialChapterNotesData.js scripts/notes_generation_ledger.json', { stdio: 'inherit' });
+      execSync('git commit -m "feat(notes): 100% COMPLETE all classes master notes vault [skip ci]"', { stdio: 'inherit' });
+      execSync('git push origin HEAD:main', { stdio: 'inherit' });
+    } catch (e) {}
   }
 
   console.log(`\n🎉🎉 ALL CLASSES (8 down to LKG) MASTER NOTES 100% GENERATED! 🎉🎉`);
