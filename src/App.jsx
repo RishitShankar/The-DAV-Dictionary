@@ -452,7 +452,7 @@ export function App() {
 
 
       {/* Main Content Area */}
-      <main className={`flex-1 ${deviceDimension === 'mobile' ? 'pb-24' : ''}`}>
+      <main className={`flex-1 ${deviceDimension === 'mobile' ? 'pb-24' : ''} ${activeSection === 4 ? 'overflow-hidden' : ''}`}>
         <SectionErrorBoundary
           key={`section-boundary-${activeSection}`}
           sectionName={`Section ${activeSection}`}

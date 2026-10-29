@@ -168,6 +168,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(true);
   const chatEndRef = useRef(null);
+  const chatMessagesContainerRef = useRef(null);
 
   // Available subjects for currently selected class
   const availableSubjects = DAV_SUBJECTS_BY_CLASS[selectedClass] || DAV_SUBJECTS_BY_CLASS['8'];
@@ -211,8 +212,21 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
   }, [initialPrompt, isOpen]);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatMessagesContainerRef.current) {
+      chatMessagesContainerRef.current.scrollTo({
+        top: chatMessagesContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    } else {
+      chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [messages, loading]);
+
+  useEffect(() => {
+    if (isSectionView) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [isSectionView]);
 
   const handleSaveKey = () => {
     saveApiKey(apiKey);
@@ -408,7 +422,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
 
   const shellContent = (
     <div 
-      className={`w-full ${isSectionView ? 'max-w-6xl h-[86vh] rounded-3xl' : isFullscreen ? 'h-screen rounded-none' : 'max-w-6xl h-[94vh] rounded-3xl'} bg-slate-950 flex flex-col overflow-hidden border-2 border-orange-500/50 shadow-2xl transition-all duration-200 relative`}
+      className={`w-full ${isSectionView ? 'max-w-6xl h-full max-h-full rounded-2xl sm:rounded-3xl' : isFullscreen ? 'h-screen rounded-none' : 'max-w-6xl h-[94vh] rounded-3xl'} bg-slate-950 flex flex-col overflow-hidden border-2 border-orange-500/50 shadow-2xl transition-all duration-200 relative`}
     >
       
       {/* ========================================================================= */}
@@ -848,7 +862,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
             onAskAI={(prompt) => handleSend(prompt)}
           />
         ) : (
-          <div className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4 bg-gradient-to-b from-[#f8fafc] via-[#fcfbf9] to-[#f8fafc] relative">
+          <div ref={chatMessagesContainerRef} className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4 bg-gradient-to-b from-[#f8fafc] via-[#fcfbf9] to-[#f8fafc] relative">
             {messages.map((msg, index) => {
               const isUser = msg.role === 'user';
               return (
@@ -1325,7 +1339,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
 
     if (isSectionView) {
       return (
-        <div className="w-full py-8 px-3 sm:px-6 bg-gradient-to-br from-[#060a17] via-[#0b1226] to-[#120a1f] flex flex-col items-center justify-center min-h-[calc(100vh-120px)] animate-fadeIn relative overflow-hidden">
+        <div className="w-full py-2 sm:py-3 px-2 sm:px-4 bg-gradient-to-br from-[#060a17] via-[#0b1226] to-[#120a1f] flex flex-col items-center justify-center h-[calc(100vh-112px)] max-h-[calc(100dvh-112px)] min-h-[560px] animate-fadeIn relative overflow-hidden">
           {/* Architectural Dot Grid & Ambient Cyber Mesh */}
           <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
           
@@ -1344,7 +1358,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
     }
 
     return (
-      <div className={`fixed inset-0 z-50 flex items-center justify-center ${isFullscreen ? 'p-0 w-screen h-screen' : 'p-3 sm:p-6'} bg-slate-950/90 backdrop-blur-xl overflow-hidden font-sans animate-fadeIn`}>
+      <div className={`fixed inset-0 z-[80] flex items-center justify-center ${isFullscreen ? 'p-0 w-screen h-screen' : 'p-3 sm:p-6'} bg-slate-950/90 backdrop-blur-xl overflow-hidden font-sans animate-fadeIn`}>
         {/* Glowing Atmospheric Lights behind Modal */}
         <div className="absolute -top-32 -left-32 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-rose-600/15 rounded-full blur-3xl pointer-events-none" />

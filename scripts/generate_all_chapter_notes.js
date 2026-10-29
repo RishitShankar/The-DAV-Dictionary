@@ -102,6 +102,13 @@ async function callGemini(prompt, maxTokens = 6000) {
   throw new Error('All Gemini models failed to generate content');
 }
 
+// Helper to sanitize text for PDF-lib StandardFonts (Helvetica requires WinAnsi/ASCII)
+function safeAscii(str, fallback = '') {
+  if (!str) return fallback;
+  const cleaned = String(str).replace(/[^\x20-\x7E]/g, ' ').replace(/\s+/g, ' ').trim();
+  return cleaned || fallback;
+}
+
 // 5. Generate 10-Page PDF via pdf-lib
 async function create10PagePdf(classNum, subjectName, chNum, chTitle, pagesContent, outputPath) {
   const doc = await PDFDocument.create();
@@ -110,6 +117,9 @@ async function create10PagePdf(classNum, subjectName, chNum, chTitle, pagesConte
 
   const PAGE_WIDTH = 595.28;
   const PAGE_HEIGHT = 841.89;
+
+  const safeSubject = safeAscii(subjectName.toUpperCase(), 'STUDY NOTES');
+  const safeTitle = safeAscii(chTitle, `Chapter ${chNum}`);
 
   for (let pageIdx = 0; pageIdx < 10; pageIdx++) {
     const page = doc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
@@ -125,7 +135,7 @@ async function create10PagePdf(classNum, subjectName, chNum, chTitle, pagesConte
     });
 
     // 2. Top Bar Text
-    page.drawText(`DAV PUBLIC SCHOOL DIGITAL CAMPUS • CLASS ${classNum} ${subjectName.toUpperCase()}`, {
+    page.drawText(`DAV PUBLIC SCHOOL DIGITAL CAMPUS - CLASS ${classNum} ${safeSubject}`, {
       x: 30,
       y: PAGE_HEIGHT - 22,
       size: 9,
@@ -142,7 +152,7 @@ async function create10PagePdf(classNum, subjectName, chNum, chTitle, pagesConte
     });
 
     // 3. Chapter Title Header on Page
-    page.drawText(`Chapter ${chNum}: ${chTitle}`, {
+    page.drawText(`Chapter ${chNum}: ${safeTitle}`.slice(0, 60), {
       x: 30,
       y: PAGE_HEIGHT - 58,
       size: 13,
@@ -254,7 +264,7 @@ async function create10PagePdf(classNum, subjectName, chNum, chTitle, pagesConte
       color: rgb(0.85, 0.85, 0.85)
     });
 
-    page.drawText('THE DAV DICTIONARY • OFFICIAL MASTER STUDY NOTES • STRICT CURRICULUM GROUNDING', {
+    page.drawText('THE DAV DICTIONARY - OFFICIAL MASTER STUDY NOTES - STRICT CURRICULUM GROUNDING', {
       x: 30,
       y: 28,
       size: 7,
