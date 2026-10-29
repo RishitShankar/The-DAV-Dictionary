@@ -1,0 +1,339 @@
+/* =========================================================================
+   DAV DICTIONARY — MASTER VFX & GRAPHICAL ANIMATIONS ENGINE (60 FPS GPU)
+   Architected for Head Boy Rishit Shankar
+   ========================================================================= */
+
+/* 1. Volumetric God Rays (VFX #1) */
+@keyframes godRaysDrift {
+  0% {
+    transform: rotate(-12deg) translateY(-2%) scaleX(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: rotate(-8deg) translateY(2%) scaleX(1.15);
+    opacity: 0.65;
+  }
+  100% {
+    transform: rotate(-12deg) translateY(-2%) scaleX(1);
+    opacity: 0.35;
+  }
+}
+
+.vfx-god-rays {
+  position: absolute;
+  top: -60%;
+  left: -20%;
+  width: 140%;
+  height: 200%;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    75deg,
+    rgba(251, 191, 36, 0.12) 0px,
+    rgba(251, 191, 36, 0.12) 40px,
+    transparent 60px,
+    transparent 140px,
+    rgba(245, 158, 11, 0.08) 160px,
+    rgba(245, 158, 11, 0.08) 220px,
+    transparent 240px,
+    transparent 320px
+  );
+  animation: godRaysDrift 14s ease-in-out infinite;
+  transform-origin: top center;
+  mix-blend-mode: screen;
+  z-index: 1;
+}
+
+/* 2. Perimeter Neon Laser Border Sweep (VFX #6) */
+@keyframes neonLaserSweep {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.vfx-neon-laser-border {
+  position: relative;
+  background-clip: padding-box;
+}
+
+.vfx-neon-laser-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(
+    90deg,
+    #f59e0b,
+    #ef4444,
+    #ec4899,
+    #8b5cf6,
+    #3b82f6,
+    #10b981,
+    #f59e0b
+  );
+  background-size: 300% 300%;
+  animation: neonLaserSweep 4s linear infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* 3. Holographic Iridescent Foil Sheen (VFX #7) */
+@keyframes holoFoilShift {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+.vfx-holo-foil {
+  position: relative;
+  overflow: hidden;
+}
+
+.vfx-holo-foil::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 215, 0, 0.18) 25%,
+    rgba(236, 72, 153, 0.22) 50%,
+    rgba(59, 130, 246, 0.22) 75%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 250% 250%;
+  animation: holoFoilShift 6s ease-in-out infinite;
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+  z-index: 2;
+}
+
+/* 4. Vedic Flame Pulse & Embers (Animation #1) */
+@keyframes vedicFlameBreath {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+    filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.8)) drop-shadow(0 0 16px rgba(239, 68, 68, 0.5));
+  }
+  50% {
+    transform: scale(1.08) translateY(-2px);
+    filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.95)) drop-shadow(0 0 24px rgba(245, 158, 11, 0.7));
+  }
+}
+
+.vfx-vedic-flame {
+  display: inline-block;
+  animation: vedicFlameBreath 2.4s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+/* 5. Sanskrit Calligraphy Shimmer (Animation #11) */
+@keyframes sanskritShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.vfx-sanskrit-shimmer {
+  background: linear-gradient(
+    90deg,
+    #fbbf24 0%,
+    #fef08a 35%,
+    #ffffff 50%,
+    #fef08a 65%,
+    #fbbf24 100%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: sanskritShimmer 4s linear infinite;
+}
+
+/* 6. Liquid Spring Active Tab Indicator (Animation #4) */
+.vfx-liquid-indicator {
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.6), 0 0 24px rgba(245, 158, 11, 0.3);
+}
+
+/* 7. Gold Leaf Stamp Impact (Animation #30 & VFX #12) */
+@keyframes stampSlam {
+  0% {
+    transform: scale(2.8) rotate(-20deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(0.92) rotate(4deg);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(1.05) rotate(-2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.vfx-stamp-impact {
+  animation: stampSlam 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  box-shadow: 0 0 20px rgba(217, 119, 6, 0.4);
+}
+
+/* 8. Supernova Shockwave Burst (VFX #11) */
+@keyframes supernovaExpand {
+  0% {
+    transform: scale(0.2);
+    opacity: 1;
+    border-width: 8px;
+  }
+  70% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(3.5);
+    opacity: 0;
+    border-width: 1px;
+  }
+}
+
+.vfx-shockwave-ring {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 120px;
+  height: 120px;
+  border-radius: 9999px;
+  border-style: solid;
+  border-color: rgba(251, 191, 36, 0.9);
+  pointer-events: none;
+  animation: supernovaExpand 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+/* 9. Interactive Fluid Click Ripple (VFX #9) */
+@keyframes clickRippleEffect {
+  0% {
+    transform: scale(0);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.vfx-click-ripple {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.6) 0%, rgba(245, 158, 11, 0.2) 60%, transparent 100%);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  animation: clickRippleEffect 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  z-index: 9999;
+}
+
+/* 10. Cyber Matrix Digital Rain Stream (VFX #15) */
+.vfx-matrix-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: screen;
+}
+
+/* 11. Rishi AI Iris Breathing Ring (Animation #34) */
+@keyframes irisPulseRing {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4), inset 0 0 8px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 0 22px rgba(147, 51, 234, 0.7), inset 0 0 16px rgba(236, 72, 153, 0.5);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4), inset 0 0 8px rgba(59, 130, 246, 0.3);
+  }
+}
+
+.vfx-iris-ring {
+  animation: irisPulseRing 3.2s ease-in-out infinite;
+}
+
+/* 12. Floating Levitating Card (Animation #14) */
+@keyframes levitateFloating {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0.5deg);
+  }
+}
+
+.vfx-levitate {
+  animation: levitateFloating 4s ease-in-out infinite;
+}
+
+/* 13. Dynamic 3D Perspective Tilt Container */
+.vfx-3d-perspective {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* 14. Anamorphic Cinematic Lens Streak (VFX #17) */
+@keyframes lensStreakPass {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.8;
+  }
+  70% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(150%) skewX(-25deg);
+    opacity: 0;
+  }
+}
+
+.vfx-lens-streak {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(56, 189, 248, 0.15) 30%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(56, 189, 248, 0.15) 70%,
+    transparent 100%
+  );
+  pointer-events: none;
+  animation: lensStreakPass 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  mix-blend-mode: screen;
+}

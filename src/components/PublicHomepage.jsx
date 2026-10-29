@@ -13,7 +13,7 @@ import { WhatsAppLogo, InstagramLogo, LinkedInLogo, SnapchatLogo, YouTubeLogo, X
 import { RangoliCursorEffect } from './RangoliCursorEffect';
 import { GoogleIcon } from './GoogleIcon';
 
-export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
+export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinematic }) {
   const [activeGradeFilter, setActiveGradeFilter] = useState('8');
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
   const [activeDimensionFilter, setActiveDimensionFilter] = useState('all');
@@ -337,7 +337,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
                 </span>
               </div>
               <p className="text-[11px] text-amber-300/80 font-medium hidden xs:block">
-                DAV Public School Digital Campus &amp; Rishi AI Super-App
+                DAV School Digital Campus &amp; Rishi AI Super-App
               </p>
             </div>
           </div>
@@ -357,6 +357,19 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview }) {
           {/* Action CTAs */}
           <div className="flex items-center gap-2.5 sm:gap-3">
             
+            {/* 15s Cinematic Experience Button */}
+            {onOpenCinematic && (
+              <button
+                onClick={onOpenCinematic}
+                className="px-3 sm:px-3.5 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:from-purple-500 hover:to-amber-400 text-white border border-amber-300/40 hover:border-amber-300 transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-purple-900/30 active:scale-95"
+                title="Experience 15-Second Cinematic Film"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-spin" style={{ animationDuration: '4s' }} />
+                <span className="hidden sm:inline">15s Cinema</span>
+                <span className="sm:hidden">15s</span>
+              </button>
+            )}
+
             {/* Have a Demo Preview Button (Header Shortcut) */}
             <button
               onClick={() => onEnterDemoPreview(1)}

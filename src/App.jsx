@@ -13,6 +13,8 @@ import { RishiAI } from './components/RishiAI';
 import { PdfReaderModal } from './components/PdfReaderModal';
 import { PricingModal } from './components/PricingModal';
 import { CustomPurchaseModal } from './components/CustomPurchaseModal';
+import { Cinematic15sExperience } from './components/Cinematic15sExperience';
+import { VfxGlobalSuite } from './components/VfxGlobalSuite';
 import { AuthModal } from './components/AuthModal';
 import { UploadPdfModal } from './components/UploadPdfModal';
 import { SectionOverview } from './components/SectionOverview';
@@ -39,6 +41,7 @@ import { safeSetUser, safeSetItem } from './utils/safeStorage';
 
 export function App() {
   const [activeSection, setActiveSection] = useState(1);
+  const [isCinematicOpen, setIsCinematicOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   // 5th Dimension: Mobile Auto-Detection & Viewport Switcher
@@ -375,7 +378,8 @@ export function App() {
     }
     return (
       <PublicHomepage 
-        onGoToLogin={() => setViewMode('login')} 
+        onGoToLogin={() => setViewMode('login')}
+          onOpenCinematic={() => setIsCinematicOpen(true)} 
         onEnterDemoPreview={handleEnterDemoPreview}
       />
     );
@@ -474,6 +478,7 @@ export function App() {
               }}
               onOpenPricing={() => setIsPricingOpen(true)}
               onOpenUpload={() => setIsUploadOpen(true)}
+              onOpenCinematic={() => setIsCinematicOpen(true)}
             />
             <BookLibrary
               currentUser={user}
@@ -612,6 +617,22 @@ export function App() {
         book={readerBook}
         currentUser={user}
         onOpenAIWithQuestion={handleOpenAIWithQuestion}
+      />
+
+      {/* Global VFX Engine (Click Ripples, Constellation Net, Confetti Cannon) */}
+      <VfxGlobalSuite />
+
+      {/* 15-Second Cinematic Experience (2 High-Impact Films: Vedic Awakening & 6D Hyperdrive) */}
+      <Cinematic15sExperience
+        isOpen={isCinematicOpen}
+        onClose={() => setIsCinematicOpen(false)}
+        onFinish={() => {
+          setIsCinematicOpen(false);
+          // If in public homepage, enter demo preview
+          if (viewMode === 'home') {
+            handleEnterDemoPreview(1);
+          }
+        }}
       />
 
       <CustomPurchaseModal

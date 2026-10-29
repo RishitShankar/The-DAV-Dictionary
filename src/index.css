@@ -1,4 +1,6 @@
 
+@import './styles/vfx.css';
+
 /* =========================================================================
    BLUR REMOVAL OVERRIDE & CRYSTAL CLEAR RENDERING
    User directive: "remove the blur effect. You should not blur everything."

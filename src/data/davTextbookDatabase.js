@@ -486,6 +486,193 @@ export const DAV_TEXTBOOK_DATABASE = {
             }
           ]
         }
+        ,
+        {
+          id: 14,
+          number: 14,
+          title: 'The Nationalist Movement (1870 to 1947)',
+          part: 'Unit II: History',
+          summary: `The Indian Nationalist Movement (1870–1947) chronicles the epic struggle of the Indian people to throw off British colonial rule. It traces the transition from early constitutional agitation by the Moderates (1885–1905) to militant nationalism led by Lal-Bal-Pal (1905–1918), culminating in the nationwide Gandhian mass movements (Non-Cooperation Movement 1920, Civil Disobedience Movement 1930, and Quit India Movement 1942), revolutionary heroism, the Indian National Army (INA) under Netaji Subhas Chandra Bose, and ultimate Indian Independence on 15 August 1947.`,
+          topics: [
+            {
+              heading: 'Factors Leading to the Growth of Indian Nationalism',
+              content: `1. Economic Exploitation: British policy of converting India into a source of raw materials and a market for British finished goods impoverished peasants and ruined Indian handicrafts.
+2. Political and Administrative Unification: Introduction of uniform laws, railways, posts, and telegraph unified Indians physically and intellectually.
+3. Western Education & Press: Exposure to democratic concepts of liberty, equality, and self-determination; vernacular newspapers (Kesari, Amrita Bazar Patrika) mobilized national public opinion.
+4. Repressive Policies of Lord Lytton: Vernacular Press Act (1878), Arms Act (1878), and the Ilbert Bill controversy (1883) exposed deep-seated racial discrimination.`
+            },
+            {
+              heading: 'Establishment of INC & The Moderate Phase (1885–1905)',
+              content: `1. Formation: Founded in December 1885 at Gokuldas Tejpal Sanskrit College, Bombay, by Allan Octavian Hume (A.O. Hume) with 72 delegates. Womesh Chandra Bonnerjee was the first President.
+2. Moderates (Early Nationalists): Prominent leaders included Dadabhai Naoroji (Grand Old Man of India / Drain of Wealth Theory), Gopal Krishna Gokhale, Pherozeshah Mehta, and Surendranath Banerjee.
+3. Methods: Used the "3Ps" — Petition, Prayer, and Protest; passed resolutions, sent delegations to Britain, and had faith in British sense of justice.
+4. Achievements: Created national political consciousness, exposed British economic exploitation, and demanded civil liberties and legislative expansion.`
+            },
+            {
+              heading: 'The Radical Phase & Partition of Bengal (1905–1918)',
+              content: `1. Radical Leaders (Extremists): Led by "Lal-Bal-Pal" — Lala Lajpat Rai (Punjab), Bal Gangadhar Tilak (Maharashtra), and Bipin Chandra Pal (Bengal), along with Aurobindo Ghosh.
+2. Slogan: Tilak proclaimed, "Swaraj is my birthright and I shall have it!"
+3. Partition of Bengal (1905): Lord Curzon divided Bengal on communal lines (Hindu-majority West Bengal vs. Muslim-majority East Bengal) under the guise of administrative efficiency.
+4. Swadeshi & Boycott Movements: Indians boycotted foreign cloth and goods, burnt imported textiles in public bonfires, opened national schools, and used indigenous goods.`
+            },
+            {
+              heading: 'Gandhian Era & Mass Struggles (1919–1947)',
+              content: `1. Return of Gandhi (1915): After successful experiments with Satyagraha in South Africa, Gandhi led Champaran Satyagraha (1917), Kheda (1918), and Ahmedabad Mill Strike (1918).
+2. Rowlatt Act & Jallianwala Bagh (1919): Anarchical and Revolutionary Crimes Act allowed imprisonment without trial. On 13 April 1919 (Baisakhi), General Dyer ordered firing on unarmed peaceful gathering at Jallianwala Bagh, Amritsar. Rabindranath Tagore renounced his Knighthood.
+3. Non-Cooperation Movement (1920–1922): Surrender of titles, boycott of schools, courts, and foreign goods. Suspended after violence at Chauri Chaura (Gorakhpur, UP) on 5 February 1922.
+4. Civil Disobedience Movement & Dandi March (1930): On 12 March 1930, Gandhi marched 240 miles from Sabarmati Ashram to Dandi with 78 followers, breaking the Salt Law on 6 April 1930.
+5. Quit India Movement (1942): Passed at Gowalia Tank Maidan, Bombay, on 8 August 1942 with the mantra "Do or Die" (Karo ya Maro). Mass protests erupted across India despite immediate arrest of top leaders.
+6. Azad Hind Fauj (INA): Netaji Subhas Chandra Bose organized INA in Singapore with the slogans "Delhi Chalo" and "Give me blood, and I will give you freedom!"
+7. Indian Independence Act (1947): Mountbatten Plan partitioned British India into India and Pakistan. India achieved sovereign independence on 15 August 1947.`
+            }
+          ],
+          questions: [
+            // Part A: MCQs (Tick the Correct Option)
+            {
+              section: 'A',
+              qNum: 1,
+              question: 'Who was the founder of the Indian National Congress (1885)?',
+              answer: 'Allan Octavian Hume (A.O. Hume).'
+            },
+            {
+              section: 'A',
+              qNum: 2,
+              question: 'Who gave the famous slogan: "Swaraj is my birthright and I shall have it"?',
+              answer: 'Bal Gangadhar Tilak.'
+            },
+            {
+              section: 'A',
+              qNum: 3,
+              question: 'In which year was the Partition of Bengal ordered by Lord Curzon?',
+              answer: '1905.'
+            },
+            {
+              section: 'A',
+              qNum: 4,
+              question: 'The brutal Jallianwala Bagh Massacre took place on:',
+              answer: '13 April 1919 (on the festival day of Baisakhi).'
+            },
+            {
+              section: 'A',
+              qNum: 5,
+              question: 'Mahatma Gandhi withdrew the Non-Cooperation Movement in 1922 due to the:',
+              answer: 'Chauri Chaura incident, where a police station was set on fire resulting in the deaths of 22 policemen.'
+            },
+
+            // Part B: Fill in the Blanks
+            {
+              section: 'B',
+              qNum: 1,
+              question: 'The first President of the Indian National Congress was ____________.',
+              answer: 'Womesh Chandra Bonnerjee (W.C. Bonnerjee).'
+            },
+            {
+              section: 'B',
+              qNum: 2,
+              question: 'Dadabhai Naoroji propounded the famous ____________ theory exposing British economic drain.',
+              answer: 'Drain of Wealth.'
+            },
+            {
+              section: 'B',
+              qNum: 3,
+              question: 'Gandhiji started the historic Dandi March on 12 March 1930 from ____________ Ashram to break the salt law.',
+              answer: 'Sabarmati.'
+            },
+            {
+              section: 'B',
+              qNum: 4,
+              question: 'The resolution for "Purna Swaraj" (Complete Independence) was adopted at the ____________ session of the Congress in 1929.',
+              answer: 'Lahore.'
+            },
+            {
+              section: 'B',
+              qNum: 5,
+              question: 'Netaji Subhas Chandra Bose gave the rallying war cry "____________" to the Indian National Army.',
+              answer: 'Delhi Chalo.'
+            },
+
+            // Part C: Match the Following
+            {
+              section: 'C',
+              qNum: 1,
+              question: 'Match the patriotic personalities with their contributions:\n1. Dadabhai Naoroji\n2. Bal Gangadhar Tilak\n3. General Dyer\n4. Rabindranath Tagore\n5. Mahatma Gandhi',
+              answer: '1. Dadabhai Naoroji → Grand Old Man of India (Drain of Wealth)\n2. Bal Gangadhar Tilak → Kesari & Maratha Newspapers (Swaraj advocate)\n3. General Dyer → Jallianwala Bagh Firing\n4. Rabindranath Tagore → Renounced Knighthood\n5. Mahatma Gandhi → Satyagraha and Non-Violence'
+            },
+
+            // Part D: Short Answer Questions (3 Marks each)
+            {
+              section: 'D',
+              qNum: 1,
+              question: 'Why did the early nationalists have faith in the British sense of justice?',
+              answer: 'The early nationalists (Moderates) were Western-educated intellectuals who believed that the British were essentially just, fair-minded, and favored democratic rule. They believed that British rule had brought modern ideas of democracy and liberty, and that once the British were convinced of India’s genuine grievances through petitions, prayers, and constitutional memoranda, they would grant necessary political and economic reforms.'
+            },
+            {
+              section: 'D',
+              qNum: 2,
+              question: 'What was the significance of the Jallianwala Bagh Massacre in the freedom struggle?',
+              answer: 'The Jallianwala Bagh Massacre (13 April 1919) was a decisive turning point in India’s struggle for independence:\n1. Shattered Faith: It permanently shattered Indian faith in the British sense of justice and exposed the brutal reality of colonial rule.\n2. National Awakening: It transformed loyal subjects into dedicated freedom fighters, inspiring Mahatma Gandhi to launch the nationwide Non-Cooperation Movement.\n3. Renunciation of Honors: National icons like Rabindranath Tagore renounced their British Knighthood in intense protest.'
+            },
+            {
+              section: 'D',
+              qNum: 3,
+              question: 'Mention the main programs of the Non-Cooperation Movement (1920).',
+              answer: 'The Non-Cooperation Movement included both negative and positive programs:\n1. Boycott: Boycott of government schools, colleges, British law courts, legislative councils, and foreign cloth.\n2. Surrender of Titles: Renunciation of British titles, honorary posts, and medals.\n3. Swadeshi Promotion: Promotion of Khadi (hand-spun cotton), establishment of national schools (Kashi Vidyapeeth, Jamia Millia), and setting up of private arbitration panchayats.'
+            },
+            {
+              section: 'D',
+              qNum: 4,
+              question: 'Why was the Simon Commission boycotted by all Indian political parties in 1928?',
+              answer: 'The Simon Commission (Indian Statutory Commission), sent by the British government in 1927 to review the working of the Government of India Act 1919, was boycotted because all seven of its members were white Englishmen with not a single Indian representative. Indians considered this "All-White Commission" a severe insult to their self-respect and right to determine their own constitutional destiny, welcoming it with black flags and the slogan "Simon Go Back".'
+            },
+            {
+              section: 'D',
+              qNum: 5,
+              question: 'Write a short note on the Dandi March (Salt Satyagraha).',
+              answer: 'The Dandi March was an iconic non-violent campaign led by Mahatma Gandhi against the British salt monopoly:\n1. Journey: On 12 March 1930, Gandhi set out from Sabarmati Ashram with 78 trusted volunteers, walking 240 miles to the coastal village of Dandi (Gujarat).\n2. Law Breaking: On 6 April 1930, Gandhi picked up a handful of natural salt, breaking the British salt law without paying taxes.\n3. Impact: Marked the commencement of the nationwide Civil Disobedience Movement, prompting millions to manufacture illicit salt, boycott foreign goods, and picket liquor shops.'
+            },
+
+            // Part E: Long Answer Questions (5 Marks each)
+            {
+              section: 'E',
+              qNum: 1,
+              question: 'Describe the main factors that led to the rise of Indian Nationalism in the late 19th century.',
+              answer: 'Indian nationalism arose due to a combination of political, economic, intellectual, and social factors:\n1. Economic Exploitation: British colonial policies drained India\'s wealth, caused devastating famines, ruined traditional handloom weavers, and levied heavy land taxes on peasants.\n2. Administrative and Transport Unification: The British unified India under a single administrative and judicial system. Railways, postal networks, and the telegraph connected distant regions, enabling leaders to organize on a national scale.\n3. Western Education & English Language: English served as a common medium of communication among educated Indians from different linguistic provinces, exposing them to ideas of democracy, equality, and French and American revolutionary ideals.\n4. Role of the Press and Vernacular Literature: Newspapers like Kesari, The Hindu, and Amrita Bazar Patrika, along with patriotic songs (Bankim Chandra\'s Vande Mataram), aroused fiery patriotic consciousness.\n5. Repressive Policies of Lord Lytton: Measures such as the Vernacular Press Act (1878), Arms Act (1878), and the withdrawal of the Ilbert Bill (1883) exposed blatant racial arrogance and unified Indians against British despotism.'
+            },
+            {
+              section: 'E',
+              qNum: 2,
+              question: 'Differentiate between the ideology and methods of the Moderates and the Radicals (Extremists).',
+              answer: 'The Indian National Congress witnessed two distinct ideological phases:\n\n1. **Moderates (1885–1905):**\n• Leaders: Dadabhai Naoroji, Gopal Krishna Gokhale, Pherozeshah Mehta, W.C. Bonnerjee.\n• Faith in British: Believed the British were inherently just and fair; wanted constitutional reforms within the framework of the British Empire.\n• Methods (3Ps): Petition, Prayer, and Protest; submitted memorandums, held annual meetings, and sent delegations to London.\n• Demands: More Indian representation in legislative councils, reduction of military expenditure, and simultaneous civil service examinations in India.\n\n2. **Radicals / Extremists (1905–1918):**\n• Leaders: "Lal-Bal-Pal" (Lala Lajpat Rai, Bal Gangadhar Tilak, Bipin Chandra Pal) and Aurobindo Ghosh.\n• Self-Reliance: Rejected faith in British benevolence; demanded complete Swaraj (Self-Rule) as a fundamental birthright.\n• Methods: Active resistance, Swadeshi (indigenous goods), Boycott of foreign commodities, and National Education.\n• Mass Appeal: Celebrated national festivals (Ganpati and Shivaji festivals) to mobilize the broader masses beyond the elite.'
+            },
+            {
+              section: 'E',
+              qNum: 3,
+              question: 'Trace the origin, course, and significance of the Civil Disobedience Movement (1930–1934).',
+              answer: 'The Civil Disobedience Movement was one of the greatest mass upheavals in Indian history:\n1. Origin: After the British government rejected Gandhi\'s Eleven Demands and the Congress declared "Purna Swaraj" at the 1929 Lahore session, Gandhi launched the movement with the historic Dandi Salt March on 12 March 1930.\n2. Course & Spread: Following the salt law violation on 6 April 1930, the movement spread nationwide. Khan Abdul Ghaffar Khan (Frontier Gandhi) and his "Khudai Khidmatgars" led the struggle in NWFP. Women picketed liquor and foreign cloth shops in thousands. Forest laws were defied in Central India, and peasants refused to pay chaukidari taxes in Bihar and Bengal.\n3. British Repression: Over 60,000 freedom fighters, including Gandhi and Nehru, were imprisoned. Police resorted to brutal lathi-charges and firing.\n4. Gandhi-Irwin Pact (1931): Led to temporary suspension and Gandhi\'s participation in the Second Round Table Conference in London.\n5. Significance: Proved that the British could no longer rule India without the consent of its people, brought women into the political mainstream, and shattered the myth of British invincibility.'
+            },
+            {
+              section: 'E',
+              qNum: 4,
+              question: 'Examine the role of Netaji Subhas Chandra Bose and the Indian National Army (INA) in winning Indian Freedom.',
+              answer: 'Netaji Subhas Chandra Bose made an unparalleled contribution to Indian independence through armed revolutionary struggle:\n1. Formation of INA: After escaping British house arrest in Calcutta in 1941, Netaji reached Germany and later Singapore (1943). He took over leadership of the Indian National Army (Azad Hind Fauj) originally conceived by Mohan Singh and Rash Behari Bose.\n2. Provisional Government of Free India: Netaji proclaimed the Arzi Hukumat-e-Azad Hind in Singapore with its own currency, bank, and civil administration, recognized by nine sovereign nations.\n3. Military Campaign: INA battalions fought heroically alongside Japanese forces on the Burma-Assam frontier, hoisting the Indian tricolor in Kohima and Manipur.\n4. Inspiring Slogans: Netaji gave Indians electric battle cries: "Jai Hind", "Delhi Chalo", and "Tum Mujhe Khoon Do, Main Tumhe Azadi Doonga!"\n5. Lasting Impact: The post-war Red Fort trials of INA officers (Prem Sehgal, Gurbaksh Dhillon, Shah Nawaz Khan) triggered massive nationwide revolts and the Royal Indian Navy (RIN) Mutiny of 1946, convincing the British military leadership that they could no longer rely on Indian soldiers to preserve the Empire.'
+            },
+            {
+              section: 'E',
+              qNum: 5,
+              question: 'Explain the circumstances leading to the Quit India Movement (1942) and evaluate its significance.',
+              answer: 'The Quit India Movement of August 1942 was the final mass offensive against British colonial rule:\n1. Circumstances:\n• Failure of Cripps Mission (March 1942): Sir Stafford Cripps offered dominion status only after the war with divisive provincial options, which Congress rejected as a "post-dated cheque on a crashing bank."\n• Threat of Japanese Invasion: During World War II, Japanese forces reached Burma, making British presence in India an imminent danger.\n• Wartime Inflation & Hardship: Severe shortages of food, spiraling prices, and ruthless colonial grain requisitions generated intense public anger.\n2. Launch & The Mantra: Passed on 8 August 1942 at Gowalia Tank, Bombay. Gandhi gave the clarion call: "Do or Die (Karo ya Maro) — We shall either free India or die in the attempt."\n3. Spontaneous Upsurge: British immediately arrested Gandhi, Nehru, and all top leaders before dawn on 9 August. In response, a leaderless mass revolt erupted. Students, workers, and peasants dismantled railway tracks, cut telegraph lines, burned government buildings, and established parallel governments (Prati Sarkar) in Ballia (UP), Midnapore (Bengal), and Satara (Maharashtra).\n4. Significance: Despite brutal state terror (over 1,000 shot dead and 100,000 imprisoned), the movement demonstrated that Indian patience had run out, making it crystal clear to the British government that their days in India were strictly numbered.'
+            },
+
+            // HOTS (Higher Order Thinking Skills)
+            {
+              section: 'HOTS',
+              qNum: 1,
+              question: 'Mahatma Gandhi chose common salt as the supreme symbol of the Civil Disobedience Movement. Analyze why salt was such a brilliant choice to mobilize the Indian masses.',
+              answer: 'Gandhiji\'s choice of salt was an act of political and psychological genius:\n1. Universal Necessity: Salt was consumed by every human being irrespective of caste, religion, creed, or economic status. Taxing salt affected the poorest peasant directly.\n2. Visible Symbol of Colonial Injustice: Salt was a natural gift of the sea and soil, yet the British government claimed a total monopoly, taxed it exorbitantly, and forbade Indians from collecting it freely.\n3. Easy Emotional Connection: Choosing salt allowed ordinary men, women, and children across India\'s extensive coastline to break a colonial law with zero financial barrier and complete moral justification, instantly transforming a simple everyday commodity into a revolutionary weapon of national liberation.'
+            }
+          ]
+        }
+
       ]
     },
 
@@ -1574,6 +1761,27 @@ export function lookupTextbookDatabase(query, classNum = 8) {
   }
 
   // 6. CHECK CLASS 8 SYLLABUS INDEX FOR DIRECT CHAPTER NAME QUERIES
+  // 6A. CHECK FOR FULL BACK-OF-CHAPTER Q&A REQUESTS
+  const isAskingChapterQA = text.includes('back-of-chapter') || text.includes('अभ्यास') || text.includes('model answers') || text.includes('question answers') || text.includes('questions and complete model answers');
+  if (targetChapterNum) {
+    const sKey = targetSubjectKey || (text.includes('nationalist') || text.includes('movement') ? 'sst' : null);
+    if (sKey) {
+      const classDb = DAV_TEXTBOOK_DATABASE[resolvedClass] || DAV_TEXTBOOK_DATABASE[8];
+      const subjObj = classDb?.[sKey];
+      const fullChap = subjObj?.chapters?.find(c => c.number === targetChapterNum || c.id === targetChapterNum);
+      if (fullChap && fullChap.questions && fullChap.questions.length > 0 && isAskingChapterQA) {
+        return {
+          type: 'chapter-qa-collection',
+          subjectName: subjObj.name || `DAV Class ${resolvedClass} ${sKey.toUpperCase()}`,
+          chapterNumber: fullChap.number || targetChapterNum,
+          chapterTitle: fullChap.title,
+          summary: fullChap.summary,
+          questions: fullChap.questions
+        };
+      }
+    }
+  }
+
   const isAskingName = text.includes('name') || text.includes('title') || text.includes('kya hai') || text.includes('what is');
   if (resolvedClass === 8 && targetSubjectKey && targetChapterNum && isAskingName) {
     const syllabusSubj = DAV_CLASS_8_SYLLABUS_INDEX[targetSubjectKey];

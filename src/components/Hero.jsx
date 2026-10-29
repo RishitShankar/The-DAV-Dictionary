@@ -2,18 +2,21 @@ import React from 'react';
 import { BookOpen, Brain, Sparkles, UploadCloud, ShieldCheck, ArrowRight, Zap, Star } from 'lucide-react';
 import { BlackDogLogo } from './BlackDogLogo';
 
-export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, selectedClass }) {
+export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, selectedClass, onOpenCinematic }) {
   return (
     <div className="relative overflow-hidden bg-gradient-to-b from-red-950 via-slate-900 to-slate-950 text-white py-16 px-4 sm:px-6 lg:px-8 border-b border-red-900/30">
+      {/* Volumetric God Rays (VFX #1) */}
+      <div className="vfx-god-rays" />
+
       {/* Decorative background glows */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-red-600/20 rounded-full pointer-events-none animate-float-orb" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-500/15 rounded-full pointer-events-none animate-float-orb" style={{ animationDelay: '-4s' }} />
 
       <div className="max-w-6xl mx-auto relative z-10 text-center">
         
-        {/* Official Logo Banner */}
+        {/* Official Logo Banner with Vedic Flame Glow */}
         <div className="flex justify-center mb-6">
-          <div className="p-2 sm:p-3 rounded-3xl bg-white/10 border border-amber-400/40 shadow-2xl inline-flex items-center gap-4 pr-6 animate-float-slow hover:border-amber-400 transition-colors card-super-interactive border-halo-gold ultra-shimmer">
+          <div className="p-2 sm:p-3 rounded-3xl bg-white/10 border border-amber-400/40 shadow-2xl inline-flex items-center gap-4 pr-6 animate-float-slow hover:border-amber-400 transition-colors card-super-interactive border-halo-gold ultra-shimmer vfx-vedic-flame">
             <img 
               src="/logo.png" 
               alt="DAV Dictionary" 
@@ -25,6 +28,13 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
               <div className="text-[11px] text-amber-200/80 font-mono">Founded by Head Boy Rishit Shankar</div>
             </div>
           </div>
+        </div>
+
+        {/* Vedic Calligraphy Shimmer Banner */}
+        <div className="mb-4">
+          <span className="text-sm sm:text-base font-extrabold vfx-sanskrit-shimmer tracking-widest drop-shadow-lg">
+            ॐ तमसो मा ज्योतिर्गमय • Lead Me From Darkness Unto Light
+          </span>
         </div>
 
         {/* Modern Pill Badge */}
@@ -40,7 +50,7 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
 
         {/* Subtitle */}
         <p className="mt-5 text-base sm:text-lg text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed">
-          Crafted with pride by Head Boy Rishit Shankar. The official digital reference and textbook archive for DAV Public School students. Complete Class 1–8 curriculum, chapter notes, and Rishi AI.
+          Crafted with pride by Head Boy Rishit Shankar. The official digital reference and textbook archive for DAV School students. Complete Class 1–8 curriculum, chapter notes, and Rishi AI.
         </p>
 
         {/* Action Buttons */}
@@ -65,6 +75,17 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
             <span>Chat with Rishi AI</span>
             <span className="bg-stone-950 text-amber-300 text-xs px-2 py-0.5 rounded-full font-black border border-amber-400/40">ONLINE</span>
           </button>
+
+          {onOpenCinematic && (
+            <button
+              onClick={onOpenCinematic}
+              className="px-5 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:from-purple-500 hover:to-amber-400 text-white font-black text-sm sm:text-base flex items-center gap-2 shadow-xl shadow-purple-900/40 border border-amber-300/60 cursor-pointer btn-interactive transform hover:-translate-y-0.5"
+            >
+              <Sparkles className="w-5 h-5 text-amber-300 animate-spin" style={{ animationDuration: '4s' }} />
+              <span>✨ 15s Cinematic Films</span>
+              <span className="bg-amber-400 text-stone-950 text-[10px] px-2 py-0.5 rounded-full font-black uppercase">VFX</span>
+            </button>
+          )}
         </div>
 
         {/* Feature Highlights Row */}
@@ -82,8 +103,8 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
             <div className="text-xs text-slate-400 mt-1">DAV Custom Intelligence Engine</div>
           </div>
           <div className="p-3 rounded-lg bg-white/5 border border-white/10">
-            <div className="text-xl sm:text-2xl font-black text-blue-400">5 Dimensions</div>
-            <div className="text-xs text-slate-400 mt-1">Normal, VIP, Double VIP, Developer &amp; Teacher</div>
+            <div className="text-xl sm:text-2xl font-black text-blue-400">6 Dimensions</div>
+            <div className="text-xs text-slate-400 mt-1">Free, Normal, VIP, VVIP, Developer & Teacher</div>
           </div>
         </div>
 

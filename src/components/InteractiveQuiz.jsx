@@ -95,6 +95,9 @@ export function InteractiveQuiz({
       setCurrentIndex(prev => prev + 1);
     } else {
       setIsCompleted(true);
+      try {
+        window.dispatchEvent(new CustomEvent('dav_trigger_confetti', { detail: { count: 140 } }));
+      } catch (e) {}
     }
   };
 

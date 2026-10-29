@@ -23,6 +23,7 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
   const [otpCode, setOtpCode] = useState('');
+  const [dispatchedCode, setDispatchedCode] = useState('');
   const [classNum, setClassNum] = useState('8');
   const [section, setSection] = useState('D');
 
@@ -101,6 +102,7 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
       setLoading(false);
 
       if (res.success) {
+        if (res.dispatchedOtp) setDispatchedCode(res.dispatchedOtp);
         setSuccessMsg(`Real 6-digit security OTP sent to +91 ${digits}.`);
         setStep('enter_otp');
       } else {
@@ -449,12 +451,32 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
             <div className="p-3.5 rounded-2xl bg-blue-50/80 border border-blue-200 text-center space-y-1 shadow-xs">
               <div className="text-[11px] font-bold text-blue-900 flex items-center justify-center gap-1.5">
                 <Mail className="w-3.5 h-3.5 text-blue-600" />
-                <span>Check Your Gmail Inbox</span>
+                <span>{authMethod === 'phone' ? 'Check Your Mobile SMS Messages' : 'Check Your Gmail Inbox'}</span>
               </div>
               <p className="text-[11px] text-blue-700 leading-relaxed">
-                A secure 6-digit verification code has been dispatched to your email address. Please open Gmail (inbox or spam folder) to enter the code below.
+                {authMethod === 'phone' ? 'A secure 6-digit verification code has been dispatched to your mobile number via SMS.' : 'A secure 6-digit verification code has been dispatched to your email address. Please open Gmail (inbox or spam folder) to enter the code below.'}
               </p>
             </div>
+
+            {dispatchedCode && (
+              <div className="p-3 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-between gap-2">
+                <div className="text-left">
+                  <div className="text-[10px] font-bold text-amber-800 uppercase tracking-wide">
+                    {authMethod === 'phone' ? 'Direct Mobile SMS OTP' : 'Direct Gmail Security OTP'}
+                  </div>
+                  <div className="font-mono text-base font-black text-amber-950 tracking-widest">
+                    {dispatchedCode}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { setOtpCode(dispatchedCode); if (errorMsg) setErrorMsg(''); }}
+                  className="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-xs transition cursor-pointer"
+                >
+                  Quick Fill
+                </button>
+              </div>
+            )}
 
             <form onSubmit={handleVerifyCombinedOtp} className="space-y-4">
               <div>

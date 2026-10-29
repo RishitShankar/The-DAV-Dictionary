@@ -176,6 +176,9 @@ export function CustomPurchaseModal({ isOpen, onClose, user, onPurchaseSubmitted
     }
 
     setSubmittedData(res.purchase);
+    try {
+      window.dispatchEvent(new CustomEvent('dav_trigger_confetti', { detail: { count: 150 } }));
+    } catch (e) {}
     setCurrentPage(4); // Success Page
     if (onPurchaseSubmitted) onPurchaseSubmitted(res.purchase);
   };

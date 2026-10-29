@@ -538,6 +538,16 @@ ${textbookMatch.answer}]
 
 Student's Query: ${trimmedQ}
 Please provide an authoritative, textbook-accurate answer based on the official DAV reference above.`;
+      } else if (textbookMatch.type === 'chapter-qa-collection') {
+        userPromptWithContext = `[OFFICIAL DAV TEXTBOOK GROUNDED REFERENCE:
+Subject: ${textbookMatch.subjectName}
+Chapter ${textbookMatch.chapterNumber}: "${textbookMatch.chapterTitle}"
+Summary: ${textbookMatch.summary || ''}
+Official Questions & Answers:
+${JSON.stringify(textbookMatch.questions, null, 2)}]
+
+Student's Query: ${trimmedQ}
+Please provide the complete, authoritative, and structured official back-of-chapter model answers (Parts A, B, C, D, E अभ्यास and HOTS) following the DAV textbook guidance above.`;
       } else if (textbookMatch.type === 'chapter-topic-match') {
         userPromptWithContext = `[OFFICIAL DAV TEXTBOOK GROUNDED REFERENCE:
 Subject: ${textbookMatch.subjectName}
