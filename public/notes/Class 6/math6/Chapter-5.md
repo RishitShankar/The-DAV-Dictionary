@@ -1,0 +1,153 @@
+• **Introduction to Percentage**: Percentage is a mathematical concept derived from the Latin phrase *“per centum”*, meaning "by the hundred" or "out of one hundred."
+• **Symbol of Percentage**: The percentage sign ($\%$) is universally used to represent parts per hundred in mathematical calculations and everyday applications.
+• **Fractional Equivalent**: Every percentage can be expressed as a fraction with a fixed denominator of 100, such that $x\% = \frac{x}{100}$.
+• **Decimal Equivalent**: Every percentage can also be converted into a decimal number by dividing the given numerical value by 100, moving the decimal point two places to the left.
+• **Core Concept**: The fundamental basis of percentages is comparison, allowing different quantities to be compared on a common, standardized scale of 100.
+• **Converting Fractions to Percentages**: To convert any given fraction $\frac{a}{b}$ into a percentage, multiply the fraction by $100\%$ and simplify the resulting expression.
+• **Converting Decimals to Percentages**: To convert a decimal number into a percentage, multiply the decimal by $100$ and append the percentage symbol ($\%$).
+• **Converting Percentages to Fractions**: To convert a percentage into a fraction, remove the $\%$ sign, write the number as the numerator, and place it over a denominator of 100, then reduce to lowest terms.
+• **Converting Percentages to Decimals**: To convert a percentage into a decimal, drop the $\%$ sign and divide the number by 100 by shifting the decimal point two places to the left.
+• **Whole and Part Relationship**: In percentage problems, the "whole" or total quantity is always considered to be $100\%$, while the "part" is a specific portion of that total.
+• **Basic Percentage Formula**: The core relation linking a percentage, its part, and the total is expressed as $\text{Percentage} = \frac{\text{Part}}{\text{Total}} \times 100$.
+• **Calculating a Percentage of a Quantity**: To find $x\%$ of a given quantity $Q$, compute the mathematical expression $\frac{x}{100} \times Q$.
+• **Unit Consistency**: When calculating percentages involving physical quantities like length, weight, or time, both quantities must be expressed in the same unit of measurement.
+• **Comparison Tool**: Percentages eliminate the ambiguity of comparing fractions with different denominators by standardizing the base to 100.
+• **Visual Representation**: Percentages are frequently visualized using 10x10 grids where each small square represents $1\%$ of the total area of 100 squares.
+---PAGE-BREAK---
+• **Introduction to Applications**: Percentages are not just abstract mathematical values; they have extensive practical applications in commerce, daily life, science, and statistics.
+• **Commercial Mathematics**: In business and financial transactions, percentages are the foundational language used for profit, loss, discount, taxes, and simple interest.
+• **Cost Price (CP)**: Cost Price is defined as the total amount of money paid by a vendor or merchant to purchase an article or item, including any additional overhead expenses.
+• **Selling Price (SP)**: Selling Price is the final monetary value at which an article or item is sold to a customer by the merchant or vendor.
+• **Profit Condition**: A profit or gain occurs in a business transaction when the Selling Price (SP) of an article is strictly greater than its Cost Price (CP).
+• **Loss Condition**: A loss occurs in a business transaction when the Cost Price (CP) of an article is strictly greater than its Selling Price (SP).
+• **No Profit, No Loss**: A neutral financial state occurs when the Selling Price (SP) of an article is exactly equal to its Cost Price (CP).
+• **Profit Amount Formula**: The absolute monetary profit earned is calculated using the algebraic relation: $\text{Profit} = \text{Selling Price} - \text{Cost Price}$ ($\text{SP} > \text{CP}$).
+• **Loss Amount Formula**: The absolute monetary loss incurred is calculated using the algebraic relation: $\text{Loss} = \text{Cost Price} - \text{Selling Price}$ ($\text{CP} > \text{SP}$).
+• **Basis of Percentage Profit/Loss**: Both profit percentage and loss percentage are always calculated with respect to the Cost Price (CP) unless explicitly stated otherwise.
+• **Profit Percentage Formula**: The formula to compute the percentage of profit earned on an item is: $\text{Profit } \% = \left(\frac{\text{Profit}}{\text{Cost Price}}\right) \times 100$.
+• **Loss Percentage Formula**: The formula to compute the percentage of loss incurred on an item is: $\text{Loss } \% = \left(\frac{\text{Loss}}{\text{Cost Price}}\right) \times 100$.
+• **Calculating SP from CP and Profit %**: When the Cost Price and profit percentage are known, the Selling Price is found using: $\text{SP} = \text{CP} \times \left(1 + \frac{\text{Profit } \%}{100}\right)$.
+• **Calculating SP from CP and Loss %**: When the Cost Price and loss percentage are known, the Selling Price is found using: $\text{SP} = \text{CP} \times \left(1 - \frac{\text{Loss } \%}{100}\right)$.
+• **Calculating CP from SP and Profit %**: When the Selling Price and profit percentage are known, the Cost Price is found using: $\text{CP} = \text{SP} \div \left(1 + \frac{\text{Profit } \%}{100}\right)$.
+---PAGE-BREAK---
+• **Calculating CP from SP and Loss %**: When the Selling Price and loss percentage are known, the Cost Price is calculated using the formula: $\text{CP} = \text{SP} \div \left(1 - \frac{\text{Loss } \%}{100}\right)$.
+• **Overhead Expenses**: Any additional expenses incurred on transportation, labor, repair, or maintenance after purchasing an article are added directly to the initial Cost Price to form the Net Cost Price.
+• **Net Cost Price Concept**: In problems involving overheads, all profit and loss calculations must be performed using this adjusted Net Cost Price rather than the raw purchase price.
+• **Introduction to Simple Interest**: Simple Interest is the method of calculating the extra money paid by a borrower to a lender for using their money over a specific period.
+• **Principal (P)**: Principal is defined as the initial sum of money borrowed, lent, or invested at the beginning of a financial transaction or loan period.
+• **Interest (I)**: Interest is the extra monetary compensation paid by the borrower to the lender, over and above the principal, for the privilege of using the funds.
+• **Time Period (T)**: Time is the duration for which the principal amount is borrowed, lent, or invested, usually measured in years, months, or days.
+• **Rate of Interest (R)**: Rate of Interest is the percentage of the principal charged as interest per unit of time, standardly expressed as a percentage per annum ($\% \text{ p.a.}$ per year).
+• **Amount (A)**: Amount is the total accumulated sum returned by the borrower to the lender at the end of the time period, representing the sum of Principal and Interest ($\text{Amount} = \text{Principal} + \text{Interest}$).
+• **Simple Interest Formula**: The mathematical formula to calculate Simple Interest is: $\text{Simple Interest (SI)} = \frac{P \times R \times T}{100}$, where $P$ is Principal, $R$ is Rate, and $T$ is Time in years.
+• **Time Conversion Rule**: If the time period given in a problem is in months, it must be converted into years by dividing by 12 ($\text{T} = \frac{\text{Months}}{12}$).
+• **Days Conversion Rule**: If the time period is given in days, it must be converted into years by dividing by 365 ($\text{T} = \frac{\text{Days}}{365}$).
+• **Formula for Principal**: When Interest, Rate, and Time are known, the Principal can be derived using the formula: $P = \frac{\text{SI} \times 100}{R \times T}$.
+• **Formula for Rate**: When Simple Interest, Principal, and Time are known, the Rate of Interest is calculated using: $R = \frac{\text{SI} \times 100}{P \times T}$.
+• **Formula for Time**: When Simple Interest, Principal, and Rate are known, the Time period is calculated using: $T = \frac{\text{SI} \times 100}{P \times R}$.
+---PAGE-BREAK---
+• **Derived Amount Formula**: Since $\text{Amount} = P + \text{SI}$, substituting the Simple Interest formula yields $\text{Amount} = P + \frac{P \times R \times T}{100}$, or factored as $\text{Amount} = P \times \left(1 + \frac{R \times T}{100}\right)$.
+• **Finding Principal from Amount**: When the total Amount, Rate, and Time are known, the original Principal can be found using the rearrangement: $P = \frac{\text{Amount} \times 100}{100 + (R \times T)}$.
+• **Introduction to Discounts**: Discount is a temporary price reduction offered by merchants on the marked price of an article to attract customers or clear stock.
+• **Marked Price (MP)**: Marked Price, also known as the list price, is the price printed, tagged, or labeled on an article by the manufacturer or seller.
+• **Discount Formula (Amount)**: The monetary discount given to a customer is calculated as: $\text{Discount} = \text{Marked Price} - \text{Selling Price}$.
+• **Discount Percentage**: Discount is typically expressed as a percentage of the Marked Price, calculated via the formula: $\text{Discount } \% = \left(\frac{\text{Discount}}{\text{Marked Price}}\right) \times 100$.
+• **Selling Price from Marked Price and Discount %**: When Marked Price and discount percentage are known, the Selling Price is computed as: $\text{SP} = \text{MP} \times \left(1 - \frac{\text{Discount } \%}{100}\right)$.
+• **Marked Price from SP and Discount %**: When the final Selling Price and discount percentage are known, the original Marked Price is derived using: $\text{MP} = \text{SP} \div \left(1 - \frac{\text{Discount } \%}{100}\right)$.
+• **Introduction to Taxes**: Taxes are mandatory financial charges imposed by governmental authorities on goods, services, income, or commercial transactions to fund public infrastructure.
+• **Sales Tax / GST Concept**: Sales tax or Goods and Services Tax (GST) is an indirect tax levied on the sale of goods and services, added on top of the selling price.
+• **Calculating Total Cost with Tax**: The final amount paid by a consumer for a taxable item is calculated by adding the tax percentage to the Selling Price: $\text{Total Bill} = \text{SP} + \left(\frac{\text{Tax } \%}{100} \times \text{SP}\right)$.
+• **Tax Percentage Formula**: The rate of tax levied can be verified if the tax amount and base price are known: $\text{Tax } \% = \left(\frac{\text{Tax Amount}}{\text{Base Price}}\right) \times 100$.
+• **Introduction to Ratios and Percentages**: Ratios compare quantities of the same kind, and any ratio $\frac{a}{b}$ can be seamlessly converted into a percentage by expressing it as $\frac{a}{b} \times 100\%$.
+• **Percentage Increase**: A percentage increase measures how much a quantity has grown relative to its original value, calculated as: $\text{Percentage Increase} = \left(\frac{\text{Increase Value}}{\text{Original Value}}\right) \times 100$.
+• **Percentage Decrease**: A percentage decrease measures how much a quantity has shrunk relative to its original value, calculated as: $\text{Percentage Decrease} = \left(\frac{\text{Decrease Value}}{\text{Original Value}}\right) \times 100$.
+• **Population Growth Applications**: Population growth over time is modeled using percentage increases applied successively to the initial population base.
+---PAGE-BREAK---
+• **Step-by-Step Conversion Methodology**: Converting any percentage involves stripping the symbol, dividing by 100, and simplifying the resulting arithmetic fraction to its irreducible form.
+• **Visualizing Parts of a Whole**: In word problems, identifying the base quantity (the denominator of 100) is the critical first step before calculating any percentage value.
+• **Fraction-Decimal-Percentage Interconversion**: Mastery of converting between fractions, decimals, and percentages is essential because problem statements mix these three formats interchangeably.
+• **Simplifying Percentage Calculations**: Calculations can be streamlined by converting friendly percentages into standard fractions (e.g., $25\% = \frac{1}{4}$, $50\% = \frac{1}{2}$, $10\% = \frac{1}{10}$).
+• **Successive Percentages**: When a quantity undergoes successive percentage changes, each change must be calculated sequentially on the new updated value, not all at once on the original.
+• **Word Problem Translation**: Solving percentage word problems requires translating ordinary language into algebraic equations where "of" denotes multiplication and "is" denotes equality.
+• **Profit and Loss Sign Convention**: In commercial problems, if the calculated profit is negative, it automatically indicates a loss, reinforcing the mathematical symmetry of the two concepts.
+• **CP, SP, and Profit/Loss Interlinking**: Every standard profit-loss problem contains three primary variables ($\text{CP}$, $\text{SP}$, and $\text{Profit/Loss}$); knowing any two allows the third to be determined uniquely.
+• **Avoiding Common Unit Errors**: A frequent student error in percentage applications is mixing units (e.g., comparing rupees with paise or grams with kilograms), which must be prevented by prior unit conversion.
+• **Simple Interest Time Clarity**: In simple interest calculations, the time variable $T$ must always represent years; if given in days or months, conversion is a mandatory preliminary step.
+• **Differentiating MP, CP, and SP**: It is vital to remember that profit and loss are calculated strictly on Cost Price ($\text{CP}$), whereas discounts are calculated strictly on Marked Price ($\text{MP}$).
+• **Role of Marked Price in Discounts**: Marked Price serves as the anchor for all discount calculations, analogous to how Cost Price serves as the anchor for all profit and loss calculations.
+• **Tax Addition Mechanics**: Unlike discounts which reduce the final price, taxes (like GST or Sales Tax) increase the final price and are always calculated on the discounted or selling price.
+• **Real-World Budgeting**: Percentages empower students to understand personal finance, calculate savings rates, analyze bank interest statements, and evaluate shopping discounts critically.
+• **Mathematical Rigor in Word Problems**: DAV curriculum mandates writing clear statement lines for every step in percentage word problems to demonstrate logical progression from given data to the final answer.
+---PAGE-BREAK---
+• **Advanced Percentage of a Quantity**: Finding percentages of mixed numbers or fractions requires converting them to improper fractions before applying the standard multiplication algorithm.
+• **Inverse Percentage Problems**: Finding the original quantity when a certain percentage of it is known requires setting up an algebraic equation with an unknown variable $x$.
+• **Equation Formulation**: If $x\%$ of a number $N$ is $Y$, the algebraic equation is $\frac{x}{100} \times N = Y$, which solves to $N = \frac{Y \times 100}{x}$.
+• **Comparative Percentages**: Comparing two different quantities using percentages requires establishing a common base, ensuring the denominator represents the reference (base) quantity.
+• **Percentage Point vs Percentage**: In advanced financial and statistical contexts, a "percentage point" is the arithmetic difference between two percentages, distinct from a percentage change.
+• **Profit on Selling Price**: Occasionally, competitive exam problems ask for profit calculated as a percentage of the Selling Price rather than the Cost Price; this must be read and computed carefully.
+• **Conversion formula (Profit on SP)**: If profit is given as a percentage of Selling Price, $\text{Profit } \% (\text{on SP}) = \left(\frac{\text{Profit}}{\text{Selling Price}}\right) \times 100$.
+• **Loss on Selling Price**: Similarly, loss can sometimes be expressed as a percentage of the Selling Price using the formula $\text{Loss } \% (\text{on SP}) = \left(\frac{\text{Loss}}{\text{Selling Price}}\right) \times 100$.
+• **Fixed vs Variable Overhead Costs**: In business mathematics, overhead costs include fixed expenses (rent, salaries) and variable expenses (materials, shipping), all of which augment the Cost Price.
+• **Net Profit Calculation**: True net profit in commerce is obtained after subtracting all operational expenses, taxes, and overheads from the gross profit earned on sales.
+• **Simple Interest vs Compound Interest (Concept)**: While Class 6 focuses exclusively on Simple Interest (where interest remains constant every year), Compound Interest calculates interest on accumulated amounts.
+• **Principal Constancy in SI**: A defining feature of Simple Interest is that the Principal amount remains constant throughout the entire lending period, unlike compound interest where principal grows.
+• **Linear Growth of Simple Interest**: Because the Principal, Rate, and time increments are constant, Simple Interest grows in a strictly linear fashion over successive years.
+• **Annual Interest Calculation**: The interest accrued in one single year under Simple Interest is given by the formula $\text{SI for 1 year} = \frac{P \times R}{100}$.
+• **Multi-Year Interest Calculation**: The total interest for $T$ years under Simple Interest is simply the 1-year interest multiplied by the number of years $T$.
+---PAGE-BREAK---
+• **Discount Series Concept**: When a merchant offers successive discounts (e.g., $10\%$ followed by another $5\%$), the second discount is applied to the reduced price, not the original Marked Price.
+• **Net Equivalent Discount**: Two successive discounts of $a\%$ and $b\%$ do not simply add up to $(a+b)\%$; they must be calculated sequentially to find the true net selling price.
+• **Tax Calculation on Discounted Price**: When both a discount and a tax apply to an article, the discount is always applied first to find the discounted SP, and then the tax is added to that SP.
+• **Practical Shopping Arithmetic**: Combining discount and tax computations reflects real-world retail point-of-sale systems encountered in daily consumer transactions.
+• **Ratio to Percentage Conversion in Mixtures**: In chemical or culinary mixtures, ratios of ingredients (like milk and water) are converted into percentages to state concentration levels clearly.
+• **Score Percentage in Examinations**: Student academic performance is quantified by converting marks obtained into a percentage using $\text{Percentage} = \left(\frac{\text{Marks Obtained}}{\text{Total Maximum Marks}}\right) \times 100$.
+• **Passing Marks Thresholds**: Evaluating whether a student has passed an examination involves comparing their obtained percentage against a pre-fixed passing percentage threshold.
+• **Appreciation and Depreciation**: Physical assets (like machinery or cars) experience depreciation (percentage decrease in value over time), while land or gold often experiences appreciation (percentage increase).
+• **Depreciation Formula**: The value of an asset after $V_0$ undergoes annual depreciation at rate $r\%$ for 1 year is calculated as $\text{Value} = V_0 \times \left(1 - \frac{r}{100}\right)$.
+• **Appreciation Formula**: The value of an asset experiencing growth at rate $r\%$ for 1 year is calculated as $\text{Value} = V_0 \times \left(1 + \frac{r}{100}\right)$.
+• **Electoral Mathematics**: Voting statistics use percentages extensively to report voter turnout, candidate vote shares, and margins of victory in democratic elections.
+• **Winning Margin Calculation**: The margin of victory in an election or contest is often expressed as the percentage difference between the winner's vote share and the runner-up's vote share.
+• **Data Interpretation (DI)**: Percentage tables, bar charts, and pie charts in statistics rely entirely on percentage calculations to represent categorical data proportions visually.
+• **Pie Chart Central Angles**: In a pie chart, each category's percentage of the total is converted into a sector angle by multiplying the percentage by $3.6^\circ$ ($100\% = 360^\circ$).
+• **Checking Answers through Estimation**: Good mathematical practice involves estimating percentage answers beforehand (e.g., $10\%$ of 450 is 45) to catch calculation errors in final solutions.
+---PAGE-BREAK---
+• **Algebraic Verification of Percentages**: Percentage equations can always be verified by reversing the operations (e.g., if $20\%$ of $x$ is 50, then $50 \div 0.20 = 250$).
+• **Fractional Percentages**: Percentages can contain fractions or decimals themselves, such as $12\frac{1}{2}\%$ (or $12.5\%$), which converts to the fraction $\frac{1}{8}$.
+• **Common Benchmark Percentages**: Memorizing standard fraction-percentage equivalents ($\frac{1}{2}=50\%$, $\frac{1}{3}=33.33\%$, $\frac{1}{4}=25\%$, $\frac{1}{5}=20\%$) accelerates problem-solving speed.
+• **Percentages Greater Than 100%**: A percentage can exceed $100\%$ when a quantity grows to be larger than its original reference baseline (e.g., a $150\%$ increase means the final value is $2.5$ times the original).
+• **Percentages Less Than 1%: Very small proportions, such as interest rates on high-volume microloans or chemical concentrations, are expressed as fractional percentages like $0.5\%$ or $0.05\%$.
+• **Unitary Method in Percentages**: Many percentage problems can be solved using the unitary method by first finding the value of $1\%$ and then scaling up to find $100\%$ or any required target percentage.
+• **Proportion Method for Percentages**: Setting up proportions in the format $\frac{\text{Part}}{\text{Whole}} = \frac{\text{Percentage}}{100}$ provides a robust alternative method for solving complex missing-variable problems.
+• **Avoiding Common Percentage Pitfalls**: A classic student misconception is adding percentages directly when quantities change; changes must be computed on absolute values, not raw percentage sums.
+• **Loss Calculation Pitfall**: Another critical error is calculating profit or loss percentage on the Selling Price instead of the Cost Price, violating standard commercial definitions.
+• **Interest Time Unit Mismatch**: Failing to convert months or days into fractional years before plugging values into the Simple Interest formula is the primary cause of calculation errors in interest problems.
+• **Marked vs Cost Price Confusion**: Confusing Marked Price with Cost Price leads to disastrous errors where discounts are applied to cost prices or profits are calculated on tagged prices.
+• **Tax Application Order**: Applying tax before subtracting a discount results in incorrect billing; discounts must always precede tax additions in commercial invoice calculations.
+• **Clarity in DAV Presentation Standards**: DAV academic guidelines require clear labeling of all given parameters ($P, R, T, \text{CP}, \text{SP}, \text{MP}$) at the beginning of every numerical solution.
+• **Step-by-Step Mathematical Formatting**: Intermediate steps in complex multi-stage percentage problems must be written on separate lines with proper equality alignment.
+• **Final Statement Requirement**: Every word problem in the DAV Secondary Mathematics curriculum must conclude with a clear, descriptive verbal statement answering the specific question asked.
+---PAGE-BREAK---
+• **Comprehensive Chapter Synthesis**: Chapter 5, "Percentage and Its Applications," unifies arithmetic, fractions, decimals, and commercial math into a single powerful problem-solving framework.
+• **Foundation of Commercial Literacy**: The commercial applications learned in this chapter—profit, loss, simple interest, discount, and tax—form the bedrock of financial literacy for middle school students.
+• **Interdisciplinary Relevance**: Percentages bridge mathematics with social sciences (economics, population studies), natural sciences (chemistry concentrations), and daily life management.
+• **Mastery of Conversion Fluency**: Smooth, error-free conversion between fractions, decimals, and percentages is the essential skill required to navigate all advanced sub-topics of the chapter.
+• **Robustness of Profit-Loss Relations**: The interlinked formulas connecting Cost Price, Selling Price, Profit, and Loss allow students to solve for any unknown commercial variable systematically.
+• **Clarity of Simple Interest Dynamics**: Simple Interest calculations demystify how banks and financial institutions charge for loans and reward savers over fixed time horizons.
+• **Retail Mathematics Proficiency**: Understanding Marked Price, discounts, and taxes equips students to analyze real-world commercial receipts, sale tags, and consumer invoices accurately.
+• **Critical Thinking in Word Problems**: Multi-step word problems cultivate analytical thinking by challenging students to extract relevant data, plan a solution pathway, and execute calculations methodically.
+• **Preparation for Higher Mathematics**: The foundational algebraic thinking developed through solving percentage equations prepares students for linear equations, ratios, proportions, and advanced algebra in higher classes.
+• **Error Prevention and Verification**: Emphasizing unit consistency, correct base identification (CP vs MP), and time conversions instills rigorous mathematical habits in learners.
+• **Structured DAV Examination Readiness**: Adhering to the systematic problem-solving formats emphasized in these study notes ensures complete alignment with DAV Public School Board examination standards.
+• **Self-Assessment Capability**: Students equipped with these comprehensive concepts can independently verify their homework and test answers using estimation and reverse calculation techniques.
+• **Real-World Problem Solving**: The practical focus of the chapter empowers students to calculate discounts during festival sales, compute taxes on purchases, and understand bank deposits.
+• **Mathematical Confidence**: Mastering percentages builds long-term mathematical confidence, transforming abstract arithmetic operations into practical tools for everyday life.
+• **Final Conclusion of Notes**: These exhaustive study notes serve as an authoritative, complete, and structured academic guide for mastering Chapter 5: "Percentage and Its Applications" in Class 6 Secondary Mathematics.
+---PAGE-BREAK---
+• **Glossary of Key Terms - Percentage**: A proportion or ratio expressed as a fraction of 100, denoted by the symbol $\%$.
+• **Glossary of Key Terms - Cost Price (CP)**: The total acquisition price paid for an item, inclusive of any overhead expenses incurred prior to sale.
+• **Glossary of Key Terms - Selling Price (SP)**: The final transaction price at which an item is transferred from a vendor to a buyer.
+• **Glossary of Key Terms - Profit**: The financial gain realized when an item's Selling Price exceeds its Cost Price ($\text{SP} > \text{CP}$).
+• **Glossary of Key Terms - Loss**: The financial deficit incurred when an item's Cost Price exceeds its Selling Price ($\text{CP} > \text{SP}$).
+• **Glossary of Key Terms - Simple Interest (SI)**: The linear interest calculated solely on the original principal amount over a given time duration.
+• **Glossary of Key Terms - Principal (P)**: The foundational monetary sum borrowed, lent, or invested at the inception of a financial agreement.
+• **Glossary of Key Terms - Rate of Interest
