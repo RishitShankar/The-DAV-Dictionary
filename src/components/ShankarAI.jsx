@@ -1,3 +1,4 @@
+import { VfxNeuralBrainMatrix } from './vfx/VfxNeuralBrainMatrix';
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Send, Sparkles, Key, User as UserIcon, RefreshCw, 
@@ -420,7 +421,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
 
   const shellContent = (
     <div 
-      className={`w-full ${isSectionView ? 'max-w-6xl h-full max-h-full min-h-0 rounded-2xl sm:rounded-3xl' : isFullscreen ? 'h-screen rounded-none' : 'max-w-6xl h-[94vh] rounded-3xl'} bg-slate-950 flex flex-col min-h-0 overflow-hidden border-2 border-orange-500/50 shadow-2xl transition-all duration-200 relative`}
+      className={`w-full ${isSectionView ? 'max-w-6xl h-full max-h-full min-h-0 rounded-2xl sm:rounded-3xl' : isFullscreen ? 'h-screen rounded-none' : 'max-w-6xl h-[94vh] rounded-3xl'} bg-slate-950 flex flex-col min-h-0 overflow-hidden border-2 border-orange-500/50 shadow-2xl transition-all duration-200 relative z-10`}
     >
       
       {/* ========================================================================= */}
@@ -569,7 +570,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
         {/* SUB-HEADER: ACADEMICS ACTIONS OR NON-ACADEMIC PROMPTS                    */}
         {/* ========================================================================= */}
         {activeMode === 'academics' ? (
-          <div className="bg-stone-900/90 border-b border-orange-500/30 p-2 sm:p-2.5 text-xs text-white space-y-2 shrink-0">
+          <div className="bg-stone-900 border-b border-orange-500/30 p-2 sm:p-2.5 text-xs text-white space-y-2 shrink-0 z-10 relative">
             {/* Locked Book Banner & Quick Selector Pill */}
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center gap-2">
@@ -860,7 +861,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
             onAskAI={(prompt) => handleSend(prompt)}
           />
         ) : (
-          <div ref={chatMessagesContainerRef} className="flex-1 min-h-0 p-3 sm:p-5 overflow-y-auto space-y-3 bg-gradient-to-b from-[#f8fafc] via-[#fcfbf9] to-[#f8fafc] relative overscroll-contain">
+          <div ref={chatMessagesContainerRef} className="flex-1 min-h-0 p-3 sm:p-5 overflow-y-auto space-y-3 bg-[#f8fafc] relative z-10 overscroll-contain">
             {messages.map((msg, index) => {
               const isUser = msg.role === 'user';
               return (
@@ -928,7 +929,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
         {/* ========================================================================= */}
         {/* INPUT BAR WITH LOCKED PDF STATUS PILL                                     */}
         {/* ========================================================================= */}
-        <div className="p-3 sm:p-4 bg-stone-950 border-t border-orange-500/40 shrink-0">
+        <div className="p-3 sm:p-4 bg-stone-950 border-t border-orange-500/40 shrink-0 relative z-10">
           
           {/* Active Context Attachment Indicator */}
           <div className="max-w-5xl mx-auto mb-2 flex items-center justify-between text-[11px] text-stone-300 px-1">
@@ -1338,6 +1339,8 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
     if (isSectionView) {
       return (
         <div className="w-full h-full p-2 sm:p-3 bg-gradient-to-br from-[#060a17] via-[#0b1226] to-[#120a1f] flex flex-col items-center justify-center overflow-hidden relative">
+          {/* Bioluminescent Quantum AI Brain & Neural Synapse Canvas in outer background */}
+          <VfxNeuralBrainMatrix />
           {/* Architectural Dot Grid & Ambient Cyber Mesh */}
           <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
           
@@ -1357,6 +1360,8 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
 
     return (
       <div className={`fixed inset-0 z-[80] flex items-center justify-center ${isFullscreen ? 'p-0 w-screen h-screen' : 'p-3 sm:p-6'} bg-slate-950/90 backdrop-blur-xl overflow-hidden font-sans animate-fadeIn`}>
+        {/* Bioluminescent Quantum AI Brain & Neural Synapse Canvas in outer background */}
+        <VfxNeuralBrainMatrix />
         {/* Glowing Atmospheric Lights behind Modal */}
         <div className="absolute -top-32 -left-32 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-rose-600/15 rounded-full blur-3xl pointer-events-none" />
