@@ -1,7 +1,6 @@
 import tls from 'tls';
 
 // In-memory OTP storage with 10-minute TTL
-// Stored as Map<cleanEmail, { code: string, expiresAt: number }>
 export const activeOtpStore = globalThis.__dav_otpStore || (globalThis.__dav_otpStore = new Map());
 
 export function sendGmailTls({ toEmail, otpCode }) {
@@ -37,11 +36,30 @@ export function sendGmailTls({ toEmail, otpCode }) {
         socket.write('DATA\r\n');
       } else if (step === 6 && msg.includes('354')) {
         step = 7;
-        const body = [
-          'From: "DAV Smart Portal" <' + from + '>',
-          'To: ' + toEmail,
-          'Subject: Your DAV Smart Portal 6-Digit Security OTP',
-          'MIME-Version: 1.0',
+        const dateStr = new Date().toUTCString();
+        const msgId = `<${Date.now()}.${Math.random().toString(36).slice(2)}@davdictionary.school>`;
+        const boundary = '----=_Part_' + Date.now();
+
+        const headersAndBody = [
+          `From: "DAV Smart Portal" <${from}>`,
+          `To: <${toEmail}>`,
+          `Reply-To: <${from}>`,
+          `Date: ${dateStr}`,
+          `Message-ID: ${msgId}`,
+          `Subject: Your DAV Smart Portal Security Code: ${otpCode}`,
+          `MIME-Version: 1.0`,
+          `Content-Type: multipart/alternative; boundary="${boundary}"`,
+          '',
+          `--${boundary}`,
+          'Content-Type: text/plain; charset=UTF-8',
+          '',
+          `Namaste DAV Student!`,
+          ``,
+          `Your 6-digit security OTP code is: ${otpCode}`,
+          ``,
+          `Enter this code on the portal to sign in. Valid for 10 minutes.`,
+          '',
+          `--${boundary}`,
           'Content-Type: text/html; charset=UTF-8',
           '',
           `<!DOCTYPE html>
@@ -53,7 +71,7 @@ export function sendGmailTls({ toEmail, otpCode }) {
       <p style="font-size: 12px; color: #64748b; margin-top: 4px;">Official Digital Reference Campus • Classes 1–8</p>
     </div>
     <p style="font-size: 14px; line-height: 1.6;">Namaste DAV Student,</p>
-    <p style="font-size: 14px; line-height: 1.6;">You requested a real security OTP code to sign into your DAV Portal account. Here is your code:</p>
+    <p style="font-size: 14px; line-height: 1.6;">Here is your authentic 6-digit security verification code to sign into DAV Portal:</p>
     <div style="text-align: center; margin: 24px 0;">
       <span style="display: inline-block; font-size: 34px; font-weight: 900; letter-spacing: 8px; color: #1e40af; background: #eff6ff; padding: 14px 28px; border-radius: 14px; border: 2px dashed #93c5fd; font-family: monospace;">
         ${otpCode}
@@ -68,14 +86,16 @@ export function sendGmailTls({ toEmail, otpCode }) {
   </div>
 </body>
 </html>`,
+          `--${boundary}--`,
           '.'
         ].join('\r\n') + '\r\n';
-        socket.write(body);
+
+        socket.write(headersAndBody);
       } else if (step === 7) {
         finished = true;
         socket.end();
         if (msg.includes('250')) {
-          resolve({ success: true });
+          resolve({ success: true, response: msg.trim() });
         } else {
           reject(new Error(msg.trim()));
         }
@@ -96,7 +116,6 @@ export function sendGmailTls({ toEmail, otpCode }) {
 }
 
 export default async function handler(req, res) {
-  // Support both standard Node.js (res.json) and Web fetch Request
   if (req.method !== 'POST') {
     if (res && res.status) return res.status(405).json({ error: 'Method Not Allowed' });
     return new Response(JSON.stringify({ error: 'Method Not Allowed' }), { status: 405 });
