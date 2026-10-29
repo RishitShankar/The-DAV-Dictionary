@@ -1,0 +1,4 @@
+• **Chapter Introduction**: Welcome to the DAV Dictionary academic study notes for Class 6 Hindi - अभ्यास सागर, Chapter 10, titled "पोंगल".
+• **Core Theme of Chapter 10**: This chapter introduces students to the vibrant South Indian harvest festival of Pongal, highlighting its cultural significance, traditions, and linguistic elements.
+• **Primary Objective**: The chapter focuses on reading comprehension, cultural awareness, and specific Hindi grammar rules, particularly suffixes (प्रत्यय) and sentence structures.
+• **Significance of Harvest Festivals**: The chapter begins by establishing that India is an agrarian country where various harvest festivals
