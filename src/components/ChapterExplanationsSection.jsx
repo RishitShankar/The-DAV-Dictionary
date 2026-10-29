@@ -27,6 +27,7 @@ import {
   DAV_PYQ_ARCHIVE, 
   DAV_SAMPLE_PAPERS 
 } from '../data/videoLecturesData.js';
+import { OFFICIAL_CHAPTER_NOTES } from '../data/officialChapterNotesData.js';
 
 export function ChapterExplanationsSection({ user, onOpenAIWithQuestion, onOpenPdfReader, onRequireLogin }) {
   // Sub-Section Tabs (1: Video Lectures, 2: Notes, 3: PYQs, 4: Sample Papers)
@@ -44,14 +45,21 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion, onOpenP
   const [copiedLink, setCopiedLink] = useState(false);
 
   // =========================================================================
-  // SUB-SECTION 2: NOTES & HANDOUTS STATE (Zero demo data, authentic upload)
+  // SUB-SECTION 2: NOTES & HANDOUTS STATE (Preloaded Official 10-Page Master Notes + User Uploads)
   // =========================================================================
   const [uploadedNotes, setUploadedNotes] = useState(() => {
+    const official = Array.isArray(OFFICIAL_CHAPTER_NOTES) ? OFFICIAL_CHAPTER_NOTES : [];
     try {
       const saved = localStorage.getItem('dav_official_chapter_notes_v2');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const map = new Map();
+        official.forEach(n => map.set(n.id, n));
+        parsed.forEach(n => map.set(n.id, n));
+        return Array.from(map.values());
+      }
     } catch (e) {}
-    return [];
+    return official;
   });
   const [isUploadingNote, setIsUploadingNote] = useState(false);
   const [noteTitle, setNoteTitle] = useState('');
