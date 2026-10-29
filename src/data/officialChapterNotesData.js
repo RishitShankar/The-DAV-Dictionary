@@ -8094,5 +8094,47 @@ export const OFFICIAL_CHAPTER_NOTES = [
     "fileSize": "10 Pages PDF",
     "uploadedAt": "Oct 29, 2026",
     "uploadedBy": "Google Gemini Master Agent"
+  },
+  {
+    "id": "note_c5_sci5_ch11",
+    "classNum": "5",
+    "subjectId": "sci5",
+    "subjectName": "My Living World (Science Class 5)",
+    "chapterNum": 11,
+    "chapterTitle": "Our Solar System",
+    "title": "Class 5 My Living World (Science Class 5) - Ch 11: Our Solar System (10-Page Master Notes)",
+    "pdfUrl": "/notes/Class%205/sci5/Chapter-11.pdf",
+    "fileName": "sci5-ch11-10page-notes.pdf",
+    "fileSize": "10 Pages PDF",
+    "uploadedAt": "Oct 29, 2026",
+    "uploadedBy": "Google Gemini Master Agent"
+  },
+  {
+    "id": "note_c5_sci5_ch12",
+    "classNum": "5",
+    "subjectId": "sci5",
+    "subjectName": "My Living World (Science Class 5)",
+    "chapterNum": 12,
+    "chapterTitle": "Observing the Sky",
+    "title": "Class 5 My Living World (Science Class 5) - Ch 12: Observing the Sky (10-Page Master Notes)",
+    "pdfUrl": "/notes/Class%205/sci5/Chapter-12.pdf",
+    "fileName": "sci5-ch12-10page-notes.pdf",
+    "fileSize": "10 Pages PDF",
+    "uploadedAt": "Oct 29, 2026",
+    "uploadedBy": "Google Gemini Master Agent"
+  },
+  {
+    "id": "note_c5_sst5_ch1",
+    "classNum": "5",
+    "subjectId": "sst5",
+    "subjectName": "We and Our World (Social Studies STD 5)",
+    "chapterNum": 1,
+    "chapterTitle": "Importance of Family",
+    "title": "Class 5 We and Our World (Social Studies STD 5) - Ch 1: Importance of Family (10-Page Master Notes)",
+    "pdfUrl": "/notes/Class%205/sst5/Chapter-1.pdf",
+    "fileName": "sst5-ch1-10page-notes.pdf",
+    "fileSize": "10 Pages PDF",
+    "uploadedAt": "Oct 29, 2026",
+    "uploadedBy": "Google Gemini Master Agent"
   }
 ];
