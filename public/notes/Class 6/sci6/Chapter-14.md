@@ -1,0 +1,2 @@
+• **Introduction to Clothing Materials:** Human beings wear clothes made of different materials to protect themselves from extreme weather conditions, insects, and physical injuries.
+• **Historical Perspective
