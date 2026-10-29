@@ -1,3 +1,4 @@
+import { VfxLecturesAudioWave } from './vfx/VfxLecturesAudioWave';
 import React, { useState, useMemo } from 'react';
 import { 
   X, ArrowLeft,
@@ -591,7 +592,9 @@ Please write each question clearly and show all steps, formulas, and reasoning s
   }, [uploadedNotes, selectedClass, currentSubjectObj, selectedNotesChapterFilter]);
 
   return (
-    <div className="min-h-screen bg-stone-900 text-stone-100 font-sans pb-24 selection:bg-amber-500 selection:text-stone-950">
+    <div className="min-h-screen bg-stone-900 text-stone-100 font-sans pb-24 selection:bg-amber-500 selection:text-stone-950 relative overflow-hidden">
+      {/* Dynamic Audio Frequency Spectrum & Sonic Laser Matrix */}
+      <VfxLecturesAudioWave />
       
       {/* SECTION HEADER: VIBRANT, KID-FRIENDLY & CHEERFUL */}
       <div className="relative overflow-hidden bg-gradient-to-b from-stone-950 via-stone-900 to-stone-900 border-b border-stone-800 pt-8 pb-10">

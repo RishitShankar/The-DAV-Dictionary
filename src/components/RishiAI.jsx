@@ -1,3 +1,4 @@
+import { VfxNeuralBrainMatrix } from './vfx/VfxNeuralBrainMatrix';
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Send, Sparkles, Key, User as UserIcon, RefreshCw, 
@@ -410,6 +411,8 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
     <div 
       className={`w-full ${isSectionView ? 'max-w-6xl h-[86vh] rounded-3xl' : isFullscreen ? 'h-screen rounded-none' : 'max-w-6xl h-[94vh] rounded-3xl'} bg-slate-950 flex flex-col overflow-hidden border-2 border-orange-500/50 shadow-2xl transition-all duration-200 relative`}
     >
+      {/* Bioluminescent Quantum AI Brain & Neural Synapse Canvas */}
+      <VfxNeuralBrainMatrix />
       
       {/* ========================================================================= */}
       {/* TOP LEVEL NAVIGATION BAR                                                  */}

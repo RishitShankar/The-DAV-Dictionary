@@ -1,3 +1,4 @@
+import { VfxCampusRadarSonar } from './vfx/VfxCampusRadarSonar';
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { 
   Bus, MapPin, Navigation, Compass, Gamepad2, Volume2, VolumeX, 
@@ -943,6 +944,8 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-stone-950 via-slate-900 to-indigo-950 text-slate-100 pb-28 selection:bg-amber-400 selection:text-stone-950 font-sans relative overflow-hidden">
+      {/* Campus GPS Radar Sonar & Telemetry Navigation Grid */}
+      <VfxCampusRadarSonar />
       {/* Playful Floating Glow Orbs */}
       <div className="absolute top-10 left-10 w-96 h-96 bg-amber-500/10 rounded-full pointer-events-none animate-float-orb" />
       <div className="absolute top-1/2 right-10 w-96 h-96 bg-pink-500/10 rounded-full pointer-events-none animate-float-orb" style={{ animationDelay: '-4s' }} />
