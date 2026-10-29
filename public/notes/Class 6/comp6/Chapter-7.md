@@ -1,0 +1,177 @@
+• **Internet Foundation:** The internet is globally recognized as a massive, decentralized network of interconnected computers and electronic devices spanning across the entire world.
+• **Global Connectivity:** DAV Class 6 curriculum defines the internet as a vast information highway that enables millions of individual networks to communicate and share data seamlessly.
+• **World Wide Web (WWW):** Often confused with the internet itself, the WWW is actually a vast collection of multimedia web pages and documents linked together via hyperlinks, accessible through web browsers.
+• **Web Browser Definition:** A web browser is a specialised software application installed on a computer or mobile device used to locate, retrieve, and display content on the World Wide Web.
+• **Common Web Browsers:** Prominent and widely used web browser examples include Google Chrome, Mozilla Firefox, Microsoft Edge, Apple Safari, and Opera.
+• **Web Page:** A single digital document containing text, images, animations, and videos, usually written in HTML (HyperText Markup Language) and viewed inside a web browser.
+• **Website:** A collection of related web pages belonging to a specific individual, company, educational institution, or government organisation, hosted on a web server.
+• **Home Page:** The primary introductory or landing page of any website, serving as the main index or table of contents from where users can navigate to other pages.
+• **Hyperlink:** An interactive link (text, button, or image) on a web page that, when clicked, instantly transports the user to another web page or a different section of the same page.
+• **Uniform Resource Locator (URL):** The specific, unique text address used by a web browser to locate and access a particular resource or website on the internet.
+• **Anatomy of a URL:** A standard URL consists of protocol components (like `https://`), a domain name (like `www.davboard.net.in`), and often a specific file path or directory.
+• **IP Address (Internet Protocol Address):** A unique numerical label assigned to every single device connected to a computer network that uses the Internet Protocol for communication.
+• **Domain Name System (DNS):** The internet's phonebook system that automatically translates human-readable domain names (like `google.com`) into computer-readable IP addresses.
+• **Internet Service Provider (ISP):** A commercial company or organisation (such as Airtel, Jio, BSNL) that provides individuals and businesses with access to the internet.
+• **Modem and Router:** Essential hardware devices where a modem modulates/demodulates signals from an ISP, and a router distributes that internet connection to multiple devices via Wi-Fi or cables.
+
+---PAGE-BREAK---
+
+• **Introduction to Internet Services:** Internet services refer to the various utilities, communication channels, and resource-sharing capabilities made possible by being connected to the global network.
+• **Information Retrieval:** One of the primary uses of the internet is accessing an infinite ocean of educational, scientific, cultural, and entertainment information on demand.
+• **Communication Utility:** The internet revolutionized human interaction by enabling instant, borderless communication via email, instant messaging, video conferencing, and VoIP calls.
+• **E-Commerce and Shopping:** Electronic commerce allows users to buy and sell goods, pay bills, and manage bank accounts entirely online through secure web portals.
+• **Online Education and E-Learning:** The internet supports virtual classrooms, digital textbooks, video lectures, and interactive learning platforms utilized extensively in modern DAV schools.
+• **Cloud Computing:** A service model where data storage, processing power, and software applications are hosted on remote servers managed by third-party vendors and accessed via the internet.
+• **Entertainment and Media Streaming:** Users can stream movies, listen to music, play multiplayer online games, and read digital magazines without downloading physical files.
+• **Social Networking:** Platforms designed to build social relations among people who share interests, activities, backgrounds, or real-life connections.
+• **File Transfer Service (FTP):** A specialized network protocol used for transferring computer files between a client and a server over a computer network.
+• **Remote Desktop Services:** Technology that allows a user to connect to and control a computer in a completely different location over the internet.
+• **Online Banking (Net Banking):** A digital service enabling customers of a financial institution to conduct financial transactions remotely through the bank's secure website or app.
+• **E-Governance:** The application of information and communication technologies by government agencies to provide public services to citizens in an efficient and transparent manner.
+• **Job Portals:** Internet platforms that connect job seekers with employers looking to fill vacant positions across various industries.
+• **Online Reservation Systems:** Services that allow users to book railway tickets, airline seats, hotel rooms, and movie tickets directly from their home computers or phones.
+• **Collaborative Platforms:** Web-based tools like Google Docs that allow multiple users to work simultaneously on the same document, spreadsheet, or presentation in real-time.
+
+---PAGE-BREAK---
+
+• **Email Concept:** Email stands for Electronic Mail, which is the digital transmission of messages, letters, documents, and multimedia files over the internet between computers.
+• **Historical Significance:** Email is one of the oldest and most reliable forms of internet communication, having predated the World Wide Web itself.
+• **Advantages over Traditional Mail:** Email is virtually instantaneous, environmentally friendly, requires no physical stamps, can be sent to multiple recipients simultaneously, and can be accessed anywhere.
+• **Email Service Providers (ESPs):** Companies that provide email accounts and hosting services; popular examples include Google (Gmail), Microsoft (Outlook), and Yahoo! Mail.
+• **Email Address Structure:** Every email address is unique and universally structured into two primary parts separated by the "@" (at) symbol: `username@domainname`.
+• **Username Component:** The unique identifier chosen by the user (or assigned by the organization) that precedes the "@" symbol in an email address (e.g., `student.name`).
+• **Domain Name Component:** The part of the email address following the "@" symbol that specifies the mail server hosting the account (e.g., `gmail.com` or `dav.org.in`).
+• **Case Sensitivity in Emails:** Email usernames are generally not case-sensitive, meaning `Student.Name@gmail.com` is identical to `student.name@gmail.com`.
+• **Inbox Folder:** The primary default directory in an email client where all incoming, newly received messages are automatically stored.
+• **Sent Mail Folder:** A dedicated directory that keeps a secure chronological copy of every single outgoing email message successfully transmitted by the user.
+• **Drafts Folder:** An automated temporary storage folder where email messages that are currently being composed but not yet sent are saved.
+• **Trash/Bin Folder:** A temporary holding directory where deleted email messages are stored before being permanently erased from the email server.
+• **Spam/Junk Folder:** An automated filter directory where unsolicited, bulk commercial emails, phishing attempts, and suspicious messages are isolated.
+• **Composing an Email:** The act of writing a new message, which involves specifying the recipient's address, adding a subject line, and entering the message body text.
+• **Subject Line:** A mandatory or highly recommended concise summary line that tells the recipient what the email is about before they even open it.
+
+---PAGE-BREAK---
+
+• **Message Body:** The main content area of an email where the sender types the detailed letter, message, or information they wish to convey.
+• **Sign-off / Email Signature:** A personalized block of text automatically appended at the bottom of an email containing the sender's name, designation, and contact details.
+• **CC (Carbon Copy):** An email field used to send a copy of the message to secondary recipients for their information, making all recipient addresses visible to everyone.
+• **BCC (Blind Carbon Copy):** An email field similar to CC, except that the email addresses of recipients placed in the BCC field remain completely hidden from all other recipients.
+• **Attachments Feature:** A core email utility that allows users to upload and send digital files (such as photographs, documents, PDFs, and spreadsheets) along with their message.
+• **Attachment Size Limit:** Most email service providers enforce a strict upper limit on the size of attachments (typically 25 MB) for a single outgoing message.
+• **Cloud Link Alternative:** For files exceeding standard attachment size limits, users can upload files to cloud storage (like Google Drive) and share the secure download link via email.
+• **Reply Function:** An email action button that allows the recipient to immediately respond back to the original sender without manually re-typing their email address.
+• **Reply All Function:** An email action button that sends a response to the original sender *and* every single person who was included in the original To and CC fields.
+• **Forward Function:** An email utility that allows a received message to be transmitted onwards to an entirely new recipient who was not part of the original thread.
+• **Email Contacts / Address Book:** A digital directory integrated into email services to save frequently used email addresses, names, and phone numbers for quick access.
+• **Spam Protection:** Advanced automated algorithms utilized by email providers to scan incoming mail and filter out malicious, scam, or irrelevant bulk marketing messages.
+• **Phishing Awareness:** Users must be educated through DAV computer classes never to click suspicious links or enter passwords inside emails sent by unknown sources.
+• **Email Netiquette:** The code of acceptable behaviors and polite communication rules while interacting with others through electronic mail.
+• **Professional Email Etiquette:** Includes using formal greetings, maintaining clear language, avoiding all-caps text (which signifies shouting), and double-checking attachments before sending.
+
+---PAGE-BREAK---
+
+• **Search Engine Definition:** A specialized web-based software tool designed to search for information across the World Wide Web systematically and rapidly.
+• **How Search Engines Work:** Search engines use automated software programs called crawlers or spiders to explore web pages, index their content, and store it in massive databases.
+• **Prominent Search Engines:** The most popular global search engines include Google Search, Microsoft Bing, Yahoo! Search, DuckDuckGo, and Baidu.
+• **Google Search Dominance:** Google is currently the world's most widely used search engine, known for its ultra-fast response times and highly accurate ranking algorithms.
+• **Search Query:** The specific word, phrase, or question typed by a user into the search engine's input box to find relevant web pages.
+• **Keywords:** The most important, content-rich descriptive words within a search query that a search engine matches against its massive indexed database.
+• **Search Results Page (SERP):** The web page displayed by a search engine in response to a user's keyword query, containing a list of matching web links, snippets, and ads.
+• **Natural / Organic Results:** Web page listings that appear on a search engine results page strictly because of their high relevance and quality, not because of paid advertising.
+• **Sponsored Results (Ads):** Commercial web listings that appear at the very top or side of a search results page, paid for by businesses to promote their products or services.
+• **Search Operators (Boolean Operators):** Advanced symbols or words (like `AND`, `OR`, `NOT`, quotation marks `""`) used in search queries to refine and narrow down search results.
+• **Exact Phrase Searching:** Placing quotation marks around a phrase (e.g., `"Dayanand Anglo-Vedic"`) forces the search engine to look for that exact sequence of words.
+• **Excluding Words:** Using a minus sign directly before a search term (e.g., `jaguar -car`) instructs the search engine to exclude pages containing that specific secondary term.
+• **Image Search Feature:** A specific search mode that allows users to find photographs, illustrations, clipart, and graphics based on text descriptions or visual uploads.
+• **Video Search Feature:** A tool that filters search results specifically to locate video clips, tutorials, and films hosted on platforms like YouTube or web servers.
+• **SafeSearch Filtering:** A helpful security feature built into search engines that helps block explicit, adult, or inappropriate images and content from appearing in search results.
+
+---PAGE-BREAK---
+
+• **Web Security Basics:** Protecting personal information, computer systems, and user accounts from digital threats while browsing the internet or using email.
+• **Malware Definition:** Short for malicious software, it encompasses viruses, worms, trojan horses, spyware, and ransomware designed to damage or gain unauthorized access to computer systems.
+• **Computer Virus:** A self-replicating program written intentionally to attach itself to clean files, corrupting data and disrupting normal computer operations.
+• **Antivirus Software:** Essential defensive software (such as Quick Heal, Norton, Windows Defender) installed on computers to detect, quarantine, and eliminate malware threats.
+• **Password Security:** The practice of creating strong, unpredictable combinations of letters, numbers, and symbols to protect online accounts from unauthorized access.
+• **Strong Password Characteristics:** A secure password should be at least 8 to 12 characters long, containing uppercase letters, lowercase letters, numbers, and special characters.
+• **Password Management Rules:** Students are taught never to share their passwords with anyone (except parents), never write them on sticky notes, and change them periodically.
+• **Two-Factor Authentication (2FA):** An extra layer of security requiring users to provide two distinct forms of identification before gaining access to an online account.
+• **HTTPS Protocol:** HyperText Transfer Protocol Secure; indicates that the communication between your browser and the website is encrypted and safe from eavesdroppers.
+• **Padlock Icon:** The small padlock symbol visible in the browser's address bar indicating that an active web page is using a secure HTTPS connection.
+• **Cyberbullying:** The use of digital communication tools (email, chat, social media) to bully, harass, humiliate, or threaten a person or fellow student.
+• **Reporting Cyberbullying:** DAV curriculum stresses that students facing or witnessing cyberbullying must immediately report the incident to parents, teachers, or school authorities.
+• **Digital Footprint:** The trail of data left behind by users on the internet, including visited websites, sent emails, uploaded photos, and submitted form data.
+• **Managing Digital Footprints:** Students must understand that everything posted online is permanent and public, requiring careful consideration before publishing personal details.
+• **Safe Downloading Practices:** Never downloading files, cracked software, or games from untrusted, shady websites to prevent accidental malware infection.
+
+---PAGE-BREAK---
+
+• **History and Evolution:** Understanding how the internet evolved from ARPANET (Advanced Research Projects Agency Network) created by the US Department of Defense in the 1960s.
+• **ARPANET Significance:** The foundational packet-switching network that laid the technical groundwork for modern internet protocols and global computer networking.
+• **Tim Berners-Lee:** The brilliant British scientist credited with inventing the World Wide Web in 1989 while working at CERN, revolutionizing information sharing.
+• **HTML Creation:** Tim Berners-Lee also developed HyperText Markup Language, the standard formatting language used to create structured pages on the World Wide Web.
+• **First Web Browser:** The WorldWideWeb browser (later renamed Nexus) created in 1990 was the very first browser used to view web pages on the newly born WWW.
+• **Mosaic Browser:** Released in 1993, Mosaic was the first graphical web browser that popularized the World Wide Web by allowing images to be displayed inline with text.
+• **Evolution of Search Engines:** Early search tools like Archie, Veronica, and AltaVista paved the way for sophisticated modern search algorithms like Google.
+• **Email Invention:** Ray Tomlinson is credited with inventing network email in 1971 by introducing the use of the "@" symbol to route messages between different hosts on ARPANET.
+• **Broadband Revolution:** The transition from slow dial-up internet connections using telephone lines to high-speed broadband, cable, and fiber-optic networks.
+• **Wi-Fi Technology:** Wireless Fidelity technology allowing electronic devices to connect to a local area network and the internet via radio waves without physical cables.
+• **Mobile Internet:** The rapid advancement of cellular networks from 2G and 3G to modern 4G LTE and 5G networks, bringing high-speed internet to smartphones.
+• **Cloud Storage Revolution:** Moving away from physical storage media like floppy disks and CDs toward cloud-based file storage and online synchronization.
+• **Internet of Things (IoT):** The expanding network of physical objects embedded with sensors and software that connect and exchange data with other devices over the internet.
+• **Artificial Intelligence in Search:** Modern search engines leveraging AI and machine learning to understand natural language queries and provide conversational answers.
+• **Future Trends:** Emerging internet technologies including quantum networking, satellite-based global internet coverage, and immersive virtual reality web environments.
+
+---PAGE-BREAK---
+
+• **Netiquette Principles:** Guidelines for courteous, respectful, and responsible behavior when communicating or interacting with others in online digital spaces.
+• **Empathy Online:** Remembering that there is a real human being with feelings behind every screen name, email address, and profile picture.
+• **Respecting Privacy:** Never forwarding private emails, sharing someone's personal photographs, or revealing private contact information without their explicit permission.
+• **Avoiding Cyber-Slang Overuse:** While informal language is common in chat, maintaining proper grammar and polite tone is essential in educational and professional emails.
+• **Copyright and Intellectual Property:** Respecting the creative work of others found on the internet by not plagiarizing text, images, or software without proper attribution.
+• **Fair Use Guidelines:** Understanding that educational research allows limited quoting of online sources provided proper citation and reference are given.
+• **Plagiarism Definition:** The act of taking someone else's work, ideas, or words from the internet and passing them off as one's own original creation.
+• **Credible Sources:** Learning to evaluate online information critically by cross-checking facts across multiple reliable educational websites rather than trusting a single source.
+• **Fake News Awareness:** Recognizing that not everything published on the internet is true, requiring students to develop critical thinking skills against misinformation.
+• **Pop-up Ads and Scams:** Warning students never to click on deceptive pop-up windows claiming they have won a prize or that their computer is infected.
+• **Screen Time Management:** Maintaining a healthy balance between online academic/recreational activities and offline physical exercises, outdoor games, and family time.
+• **Ergonomics while Browsing:** Maintaining correct posture, keeping screen distance, and taking regular eye breaks to prevent digital eye strain during computer lab sessions.
+• **Proper Computer Lab Conduct:** Following DAV school rules in the computer laboratory, including walking quietly, keeping keyboards clean, and handling mice gently.
+• **Logout Habit:** Always remembering to sign out of email accounts and web portals when using shared computers in school labs or public libraries.
+• **Responsible Digital Citizenship:** Becoming an ethical, safe, and productive member of the digital community by upholding positive moral values online.
+
+---PAGE-BREAK---
+
+• **Practical Email Management:** Mastering the step-by-step process of creating a new draft, attaching a homework document, and sending it to a teacher.
+• **Step-by-Step Email Composition:** Launching the web browser, logging into Gmail/Outlook, clicking the 'Compose' or '+' button, and opening the message window.
+• **Entering Recipient Details:** Typing the exact teacher's email address into the 'To' field without any accidental spaces or typos that would cause delivery failure.
+• **Drafting Subject and Salutation:** Writing a clear subject line like "Class 6 Computer Homework - [Student Name]" followed by a respectful salutation like "Respected Sir/Ma'am,".
+• **Attaching Homework Files:** Clicking the paperclip icon, browsing the computer's folder structure (e.g., Documents), selecting the specific project file, and clicking 'Open'.
+• **Verification Before Sending:** Reviewing the attached file name, verifying the recipient address, and reading through the message body to ensure zero errors.
+• **Hitting Send:** Clicking the prominent 'Send' button and watching for the confirmation notification banner stating "Message sent successfully".
+• **Checking Sent Items:** Navigating to the 'Sent' folder to verify that a permanent copy of the homework email is successfully archived on the server.
+• **Managing Incoming Replies:** Checking the 'Inbox' periodically for feedback or grading comments sent back by the teacher regarding the submitted assignment.
+• **Organizing with Labels/Folders:** Creating custom folders or labels within the email client to categorize emails by subjects (Computer, Mathematics, Science).
+• **Practical Search Engine Navigation:** Launching Google Search, formulating an effective keyword query for a DAV school project, and pressing Enter.
+• **Analyzing Search Snippets:** Reading the title, URL, and brief descriptive snippet of each search result to determine which website holds the most accurate information.
+• **Refining Search Queries:** Learning how to change keywords when initial search results are too broad or irrelevant to the project topic.
+• **Downloading Images Safely:** Right-clicking a relevant educational image found on a web page, selecting 'Save image as...', and saving it into a dedicated folder.
+• **Bookmark Management:** Using the browser's bookmarking feature (Ctrl + D) to save favorite educational websites so they can be accessed instantly in the future.
+
+---PAGE-BREAK---
+
+• **Comprehensive Chapter Review:** Summarizing the journey from basic internet concepts and web browsing to advanced email communication and effective search strategies.
+• **Core Takeaway on Internet:** The internet is a powerful global network connecting billions of devices, acting as an endless repository of educational and scientific knowledge.
+• **Web Browser Mastery:** Browsers are essential software gateways that interpret HTML code to display multimedia web pages retrieved via URLs and IP addresses.
+• **Email Proficiency:** Email remains a cornerstone of digital communication, requiring mastery of composing, addressing, attaching files, and practicing professional netiquette.
+• **Search Engine Expertise:** Search engines utilize complex indexing algorithms and keywords to help students navigate through billions of web pages in milliseconds.
+• **Safety First Priority:** Online safety, antivirus protection, password strength, HTTPS verification, and cyberbullying awareness are vital components of responsible computer use.
+• **Digital Citizenship Values:** Upholding honesty, avoiding plagiarism, respecting copyrights, and maintaining ethical behavior in all online interactions.
+• **DAV Academic Standards:** Meeting the rigorous curriculum guidelines of the DAV Board to ensure Class 6 students are thoroughly prepared for higher-level ICT studies.
+• **Continuous Learning:** Recognizing that information technology is a rapidly evolving field that demands continuous curiosity, adaptability, and critical thinking.
+• **Problem-Solving Skills:** Developing the technical aptitude to troubleshoot minor connection issues, manage digital files, and locate verified facts independently.
+• **Collaborative Projects:** Appreciating how internet tools enable teamwork, shared document editing, and seamless communication across geographical boundaries.
+• **Balance in Technology Use:** Cultivating disciplined habits that balance screen-based learning with physical activities and interpersonal communication in the real world.
+• **Preparation for Future Classes:** Building a rock-solid foundation in internet services, email mechanics, and web searching for Class 7 and beyond.
+• **Final Technological Readiness:** Empowering young DAV scholars to leverage the internet safely, creatively, and productively as confident digital citizens of tomorrow.
+• **End of Chapter Study Notes:** Concluding the exhaustive 10-page comprehensive study guide for Class 6 Hands On in Computer Chapter 7.
