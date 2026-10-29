@@ -5,6 +5,10 @@
       "destination": "/api/"
     },
     {
+      "source": "/googleff6c9cb3b62a066c.html",
+      "destination": "/googleff6c9cb3b62a066c.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

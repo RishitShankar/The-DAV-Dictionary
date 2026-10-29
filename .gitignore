@@ -47,4 +47,6 @@ bad calculator ui mobile.jpeg
 new dav dictionary logo.jpg
 scripts/*
 !scripts/generate_all_chapter_notes.js
+!scripts/generate_grounded_chapter_notes.js
 !scripts/notes_generation_ledger.json
+!scripts/grounded_notes_ledger.json
