@@ -1,0 +1,1 @@
+• **Introduction to Chapter 18**: The chapter "Democracy and Equality" from DAV Class 7 "We and Our World"
