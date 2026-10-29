@@ -1,4 +1,6 @@
-import { activeOtpStore } from './send-otp.js';
+import crypto from 'crypto';
+
+const AUTH_SECRET = 'DAV_PORTAL_SECURE_AUTH_KEY_2026_HEADBOY_RISHIT';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -15,6 +17,8 @@ export default async function handler(req, res) {
 
   const cleanEmail = String(body.email || '').trim().toLowerCase();
   const cleanOtp = String(body.otp || '').trim();
+  const expiresAt = Number(body.expiresAt || 0);
+  const token = String(body.token || '').trim();
 
   if (!cleanEmail || !cleanOtp) {
     const err = { success: false, error: 'Email and 6-digit OTP code are required.' };
@@ -22,18 +26,16 @@ export default async function handler(req, res) {
     return new Response(JSON.stringify(err), { status: 400 });
   }
 
-  const entry = activeOtpStore.get(cleanEmail);
-  if (!entry) {
+  if (!token || !expiresAt) {
     const err = { 
       success: false, 
-      error: 'No active OTP verification found. Please request a new code.' 
+      error: 'Session token missing or invalid. Please request a new OTP code.' 
     };
     if (res && res.status) return res.status(400).json(err);
     return new Response(JSON.stringify(err), { status: 400 });
   }
 
-  if (Date.now() > entry.expiresAt) {
-    activeOtpStore.delete(cleanEmail);
+  if (Date.now() > expiresAt) {
     const err = { 
       success: false, 
       error: 'This OTP code has expired. Please request a new code.' 
@@ -42,7 +44,13 @@ export default async function handler(req, res) {
     return new Response(JSON.stringify(err), { status: 400 });
   }
 
-  if (entry.code !== cleanOtp) {
+  // Calculate expected HMAC signature
+  const expectedSignature = crypto
+    .createHmac('sha256', AUTH_SECRET)
+    .update(`${cleanEmail}:${cleanOtp}:${expiresAt}`)
+    .digest('hex');
+
+  if (expectedSignature !== token) {
     const err = { 
       success: false, 
       error: 'Invalid OTP code. Please check your Gmail and enter the exact 6-digit code.' 
@@ -51,9 +59,7 @@ export default async function handler(req, res) {
     return new Response(JSON.stringify(err), { status: 400 });
   }
 
-  // OTP is valid! Consume it so it cannot be re-used
-  activeOtpStore.delete(cleanEmail);
-
+  // Signature matches! Verification successful!
   const ok = { success: true, verified: true, email: cleanEmail };
   if (res && res.status) return res.status(200).json(ok);
   return new Response(JSON.stringify(ok), {

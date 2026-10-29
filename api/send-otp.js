@@ -1,7 +1,7 @@
 import tls from 'tls';
+import crypto from 'crypto';
 
-// In-memory OTP storage with 10-minute TTL
-export const activeOtpStore = globalThis.__dav_otpStore || (globalThis.__dav_otpStore = new Map());
+const AUTH_SECRET = 'DAV_PORTAL_SECURE_AUTH_KEY_2026_HEADBOY_RISHIT';
 
 export function sendGmailTls({ toEmail, otpCode }) {
   return new Promise((resolve, reject) => {
@@ -137,19 +137,23 @@ export default async function handler(req, res) {
 
   // Generate real cryptographic 6-digit OTP
   const generatedOtp = String(Math.floor(100000 + Math.random() * 900000));
+  const expiresAt = Date.now() + 10 * 60 * 1000;
+
+  // Create stateless HMAC signature for serverless resilience
+  const signature = crypto
+    .createHmac('sha256', AUTH_SECRET)
+    .update(`${cleanEmail}:${generatedOtp}:${expiresAt}`)
+    .digest('hex');
 
   try {
     // Deliver real email via Gmail SMTP
     await sendGmailTls({ toEmail: cleanEmail, otpCode: generatedOtp });
 
-    // Store in active cache with 10-minute expiration
-    activeOtpStore.set(cleanEmail, {
-      code: generatedOtp,
-      expiresAt: Date.now() + 10 * 60 * 1000
-    });
-
     const responseData = {
       success: true,
+      email: cleanEmail,
+      expiresAt,
+      token: signature,
       message: `Real 6-digit security OTP sent to ${cleanEmail}. Check your Gmail inbox.`
     };
 
