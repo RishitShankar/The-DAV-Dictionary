@@ -6086,15 +6086,15 @@ export function getChaptersForClassSubject(classId, subjectId) {
     if (DAV_CHAPTERS_MAP[`${normClass}_lkg_math`]) return DAV_CHAPTERS_MAP[`${normClass}_lkg_math`];
   }
 
-  // 5. Science
-  if (rawSubj.includes('sci')) {
-    const k = `${normClass}_sci${normClass}`;
+  // 5. Social Science / SST / EVS (Must be checked BEFORE Science because "Social Science" contains "sci")
+  if (rawSubj.includes('sst') || rawSubj.includes('soc')) {
+    const k = `${normClass}_sst${normClass}`;
     if (DAV_CHAPTERS_MAP[k]) return DAV_CHAPTERS_MAP[k];
   }
 
-  // 6. Social Science / SST / EVS
-  if (rawSubj.includes('sst') || rawSubj.includes('soc')) {
-    const k = `${normClass}_sst${normClass}`;
+  // 6. Science
+  if (rawSubj.includes('sci')) {
+    const k = `${normClass}_sci${normClass}`;
     if (DAV_CHAPTERS_MAP[k]) return DAV_CHAPTERS_MAP[k];
   }
 

@@ -3,7 +3,7 @@ import {
   BookOpen, Brain, Award, FileText, User, 
   HelpCircle, Bell, Compass, ArrowRight, Sparkles, 
   Layers, School, Heart, CheckCircle2, Star, Zap, Flame,
-  BookmarkCheck, MessageCircle, ShieldCheck, Video, Bus, Navigation, MapPin, Trophy
+  BookmarkCheck, MessageCircle, ShieldCheck, Video, Bus, Navigation, MapPin, Trophy, Play
 } from 'lucide-react';
 
 export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseModal }) {
@@ -310,6 +310,80 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
             </div>
           )}
 
+        </div>
+
+        {/* =========================================================================
+            NETFLIX-STYLE TOP 5 SECTIONS MASTER DIRECTORY (FAST JUMP)
+        ========================================================================= */}
+        <div className="rounded-3xl bg-gradient-to-br from-[#141414] via-[#0d0e12] to-[#141414] p-6 sm:p-8 text-white border-2 border-stone-800 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-1/4 w-72 h-72 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-1/4 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-6">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="px-2.5 py-0.5 rounded text-[11px] font-black uppercase tracking-widest bg-red-600 text-white shadow-sm flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                  <span>NETFLIX STYLE • TOP 5 SECTIONS</span>
+                </span>
+                <span className="text-xs font-bold text-stone-400 px-2.5 py-0.5 rounded bg-stone-900 border border-stone-800">
+                  Trending on DAV Dictionary Today
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                Top 5 Quick-Launch Portals
+              </h2>
+            </div>
+            <span className="text-xs font-mono text-amber-300 bg-stone-900/90 px-3 py-1.5 rounded-xl border border-stone-800">
+              ⚡ Instant 1-Click Jump
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 relative z-10">
+            {[
+              { id: 2, title: 'Digital Textbooks', rank: 1, badge: '70+ Books', icon: BookOpen, color: 'from-red-600 to-rose-700', desc: 'Classes 1 to 8 + UKG/LKG e-books with neon highlighter.' },
+              { id: 3, title: 'Question Answers', rank: 2, badge: 'Solutions', icon: HelpCircle, color: 'from-blue-600 to-indigo-700', desc: 'Solved chapter exercises and model answers.' },
+              { id: 4, title: 'Rishi AI Companion', rank: 3, badge: '24/7 AI Tutor', icon: Brain, color: 'from-orange-500 to-amber-600', desc: 'Academic doubts & interactive voice questions.' },
+              { id: 5, title: 'Faculty Desk', rank: 4, badge: 'Live Chat', icon: Award, color: 'from-teal-600 to-emerald-700', desc: 'Head Chat Web & direct teacher communication.' },
+              { id: 7, title: 'Kids Navigator', rank: 5, badge: 'Tools Suite', icon: Compass, color: 'from-purple-600 to-pink-600', desc: 'Live Weather, Calculator, Compass & Clock.' }
+            ].map(item => (
+              <div
+                key={item.id}
+                onClick={() => onSelectSection(item.id)}
+                className="group relative rounded-2xl bg-stone-900/90 border border-stone-800 hover:border-red-500/70 p-4 transition-all duration-300 flex flex-col justify-between cursor-pointer transform hover:-translate-y-1.5 hover:shadow-xl hover:shadow-red-600/15 overflow-hidden"
+              >
+                <div className="h-1 w-full bg-gradient-to-r from-red-600 via-amber-500 to-rose-600 absolute top-0 left-0" />
+                <span className="absolute top-2 right-2 text-5xl font-black font-mono leading-none tracking-tighter text-stone-800/70 group-hover:text-red-500/20 transition-colors pointer-events-none">
+                  #{item.rank}
+                </span>
+                
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${item.color} text-white flex items-center justify-center font-black shadow-md group-hover:scale-110 transition-transform`}>
+                      <item.icon className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-[9px] font-black uppercase text-amber-300 bg-stone-800 px-2 py-0.5 rounded border border-stone-700">
+                      {item.badge}
+                    </span>
+                  </div>
+                  <h3 className="text-xs font-black text-white group-hover:text-red-400 transition-colors">
+                    {item.title}
+                  </h3>
+                  <p className="text-[11px] text-stone-400 mt-1 line-clamp-2 leading-relaxed">
+                    {item.desc}
+                  </p>
+                </div>
+
+                <div className="mt-3 pt-2.5 border-t border-stone-800/80 flex items-center justify-between relative z-10 text-[10px] font-bold text-white group-hover:text-amber-300">
+                  <span className="flex items-center gap-1">
+                    <Play className="w-2.5 h-2.5 fill-current" />
+                    Launch
+                  </span>
+                  <span className="text-stone-500">Sec {item.id}</span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* 11 Sections Interactive Kids-Friendly Cards Grid */}

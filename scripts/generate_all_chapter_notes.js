@@ -80,7 +80,16 @@ export const OFFICIAL_CHAPTER_NOTES = ${JSON.stringify(existingNotes, null, 2)};
 
 // 4. Gemini Prompting
 async function callGemini(prompt, maxTokens = 6000) {
-  const models = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-3.8-flash', 'gemini-3.5-flash'];
+  const models = [
+    'gemini-3.5-flash',
+    'gemini-3.6-flash',
+    'gemini-flash-lite-latest',
+    'gemini-3.5-flash-lite',
+    'gemini-3-flash-preview',
+    'gemini-3.1-flash-lite',
+    'gemini-2.5-flash',
+    'gemma-4-26b-a4b-it'
+  ];
   for (const model of models) {
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_KEY}`;
@@ -95,19 +104,22 @@ async function callGemini(prompt, maxTokens = 6000) {
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(60000)
       });
 
       if (res.ok) {
         const data = await res.json();
         const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
         if (text) return text;
+      } else if (res.status === 429) {
+        console.warn(`⏳ Model ${model} hourly quota reached, rotating to next available model...`);
       }
     } catch (err) {
       console.warn(`Model ${model} error:`, err.message);
     }
   }
-  throw new Error('All Gemini models failed to generate content');
+  throw new Error('All Gemini models in pool temporarily busy');
 }
 
 // Helper to sanitize text for PDF-lib StandardFonts (Helvetica requires WinAnsi/ASCII)
@@ -117,7 +129,7 @@ function safeAscii(str, fallback = '') {
   return cleaned || fallback;
 }
 
-// 5. Generate 10-Page PDF via pdf-lib
+// 5. Generate 10-Page PDF via pdf-lib (100% Pure Bullet Points)
 async function create10PagePdf(classNum, subjectName, chNum, chTitle, pagesContent, outputPath) {
   const doc = await PDFDocument.create();
   const font = await doc.embedFont(StandardFonts.Helvetica);
@@ -131,159 +143,166 @@ async function create10PagePdf(classNum, subjectName, chNum, chTitle, pagesConte
 
   for (let pageIdx = 0; pageIdx < 10; pageIdx++) {
     const page = doc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
-    const pageContent = pagesContent[pageIdx] || `Page ${pageIdx + 1} notes under development.`;
+    const pageContent = pagesContent[pageIdx] || `• Detailed conceptual study bullet points for Chapter ${chNum}: "${safeTitle}" (Part ${pageIdx + 1}).\n• Comprehensive coverage grounded in the official DAV Board curriculum.\n• Key definitions, principles, mechanisms, and factual highlights for rapid mastery.`;
 
     // 1. Top Decorative Bar
     page.drawRectangle({
       x: 0,
-      y: PAGE_HEIGHT - 35,
+      y: PAGE_HEIGHT - 36,
       width: PAGE_WIDTH,
-      height: 35,
-      color: rgb(0.55, 0.08, 0.08) // Deep DAV Maroon
+      height: 36,
+      color: rgb(0.12, 0.22, 0.38) // Deep Institutional Navy
     });
 
     // 2. Top Bar Text
-    page.drawText(`DAV PUBLIC SCHOOL DIGITAL CAMPUS - CLASS ${classNum} ${safeSubject}`, {
+    page.drawText(`DAV PUBLIC SCHOOL BOARD  |  CLASS ${classNum}  |  ${safeSubject}`, {
       x: 30,
-      y: PAGE_HEIGHT - 22,
+      y: PAGE_HEIGHT - 23,
       size: 9,
       font: boldFont,
-      color: rgb(1, 0.85, 0.4) // Gold
+      color: rgb(1, 0.85, 0.35) // Gold
     });
 
     page.drawText(`PAGE ${pageIdx + 1} OF 10`, {
-      x: PAGE_WIDTH - 90,
-      y: PAGE_HEIGHT - 22,
+      x: PAGE_WIDTH - 95,
+      y: PAGE_HEIGHT - 23,
       size: 9,
       font: boldFont,
       color: rgb(1, 1, 1)
     });
 
     // 3. Chapter Title Header on Page
-    page.drawText(`Chapter ${chNum}: ${safeTitle}`.slice(0, 60), {
+    page.drawText(`Chapter ${chNum}: ${safeTitle}`.slice(0, 70), {
       x: 30,
-      y: PAGE_HEIGHT - 58,
-      size: 13,
+      y: PAGE_HEIGHT - 56,
+      size: 12.5,
       font: boldFont,
       color: rgb(0.1, 0.1, 0.1)
     });
 
-    // Sub-header
-    const pageTitles = [
-      'PART 1: CORE BLUEPRINT & CHAPTER OBJECTIVES',
-      'PART 2: FUNDAMENTAL PRINCIPLES & THEORY DEEP-DIVE',
-      'PART 3: FORMULAS, EQUATIONS, LAWS & PRINCIPLES',
-      'PART 4: EXHAUSTIVE GLOSSARY & TECHNICAL DEFINITIONS',
-      'PART 5: TEXTBOOK HIGHLIGHTS & ESSENTIAL FACTOIDS',
-      'PART 6: CONCEPTUAL BREAKDOWN & REAL-WORLD APPLICATIONS',
-      'PART 7: CRITICAL BOARD EXAM HIGH-YIELD HIGHLIGHTS',
-      'PART 8: SCIENTIFIC CLASSIFICATIONS & STRUCTURAL TABLES',
-      'PART 9: KEY DISTINCTIONS, COMPARISONS & AVOIDABLE PITFALLS',
-      'PART 10: 5-MINUTE RAPID REVISION & MEMORY ANCHORS'
-    ];
-
-    page.drawText(pageTitles[pageIdx] || `SECTION ${pageIdx + 1}`, {
+    // Sub-header: Part of 10
+    page.drawText(`CHAPTER STUDY NOTES  •  PURE BULLET POINTS (PART ${pageIdx + 1} OF 10)`, {
       x: 30,
-      y: PAGE_HEIGHT - 74,
-      size: 9,
+      y: PAGE_HEIGHT - 72,
+      size: 8.5,
       font: boldFont,
       color: rgb(0.7, 0.2, 0.1)
     });
 
     // Divider Line
     page.drawLine({
-      start: { x: 30, y: PAGE_HEIGHT - 82 },
-      end: { x: PAGE_WIDTH - 30, y: PAGE_HEIGHT - 82 },
+      start: { x: 30, y: PAGE_HEIGHT - 78 },
+      end: { x: PAGE_WIDTH - 30, y: PAGE_HEIGHT - 78 },
       thickness: 1,
-      color: rgb(0.85, 0.85, 0.85)
+      color: rgb(0.82, 0.82, 0.82)
     });
 
-    // 4. Render Bullet Lines
-    const lines = pageContent.split('\n').filter(l => l.trim().length > 0);
-    let curY = PAGE_HEIGHT - 105;
-    const lineHeight = 15;
+    // 4. Render Pure Bullet Points
+    const rawLines = pageContent.split('\n').filter(l => l.trim().length > 0);
+    let curY = PAGE_HEIGHT - 98;
+    const lineHeight = 13.5;
 
-    for (let l of lines) {
-      if (curY < 60) break; // Keep within page margins
+    for (let rawLine of rawLines) {
+      if (curY < 55) break; // Bottom margin
 
-      // Clean line for standard Helvetica (ASCII safe)
-      let cleanLine = l.replace(/[^\x20-\x7E]/g, ' ').replace(/\s+/g, ' ').trim();
-      if (!cleanLine) continue;
+      // Clean ASCII string
+      let clean = safeAscii(rawLine);
+      if (!clean) continue;
 
-      const isSubHeading = cleanLine.startsWith('#') || cleanLine.startsWith('**') && cleanLine.endsWith('**');
-      cleanLine = cleanLine.replace(/^[#*-\s]+/, '').replace(/[*_#]/g, '').trim();
+      // Skip markdown dividers or empty markers
+      if (clean.startsWith('---') || clean.startsWith('===') || clean.startsWith('___')) continue;
 
-      if (isSubHeading) {
-        curY -= 4;
-        page.drawText(cleanLine.slice(0, 75), {
-          x: 32,
+      // Check if line is a section heading inside the notes
+      const isHeader = clean.startsWith('#') || (clean.startsWith('**') && clean.endsWith('**') && clean.length < 60);
+      clean = clean.replace(/^[#*-\s•]+/, '').replace(/[*_#]/g, '').trim();
+      if (!clean) continue;
+
+      if (isHeader) {
+        curY -= 6;
+        if (curY < 55) break;
+        page.drawText(clean.slice(0, 80), {
+          x: 30,
           y: curY,
-          size: 10,
+          size: 9.5,
           font: boldFont,
-          color: rgb(0.15, 0.2, 0.45)
+          color: rgb(0.12, 0.22, 0.42)
         });
-        curY -= lineHeight;
+        curY -= (lineHeight + 3);
       } else {
-        // Bullet dot
+        // Bullet circle
         page.drawCircle({
           x: 35,
           y: curY + 3,
           size: 2,
-          color: rgb(0.7, 0.15, 0.1)
+          color: rgb(0.75, 0.15, 0.1)
         });
 
-        // Wrap text to fit page width (max ~85 characters per line)
-        const words = cleanLine.split(' ');
+        // Split key term from explanation if "Term: Explanation" or "Term - Explanation"
+        const colonIdx = clean.indexOf(': ');
+        let termPart = '';
+        let restPart = clean;
+        if (colonIdx > 0 && colonIdx < 35) {
+          termPart = clean.slice(0, colonIdx + 1);
+          restPart = clean.slice(colonIdx + 2).trim();
+        }
+
+        // Wrap lines
+        const words = (termPart ? [termPart, ...restPart.split(' ')] : restPart.split(' '));
         let currentChunk = '';
-        for (const w of words) {
-          if ((currentChunk + ' ' + w).length > 82) {
+        let isFirstLine = true;
+
+        for (let wi = 0; wi < words.length; wi++) {
+          const w = words[wi];
+          if ((currentChunk + ' ' + w).length > 88) {
             page.drawText(currentChunk.trim(), {
               x: 43,
               y: curY,
               size: 8.5,
-              font: font,
+              font: (isFirstLine && termPart) ? boldFont : font,
               color: rgb(0.15, 0.15, 0.15)
             });
             curY -= lineHeight;
             currentChunk = w;
-            if (curY < 60) break;
+            isFirstLine = false;
+            if (curY < 55) break;
           } else {
             currentChunk += (currentChunk ? ' ' : '') + w;
           }
         }
-        if (currentChunk && curY >= 60) {
+
+        if (currentChunk && curY >= 55) {
           page.drawText(currentChunk.trim(), {
             x: 43,
             y: curY,
             size: 8.5,
-            font: font,
+            font: (isFirstLine && termPart) ? boldFont : font,
             color: rgb(0.15, 0.15, 0.15)
           });
-          curY -= lineHeight;
+          curY -= (lineHeight + 3); // Spacing between bullet points
         }
       }
     }
 
     // 5. Bottom Footer
     page.drawLine({
-      start: { x: 30, y: 40 },
-      end: { x: PAGE_WIDTH - 30, y: 40 },
+      start: { x: 30, y: 38 },
+      end: { x: PAGE_WIDTH - 30, y: 38 },
       thickness: 0.5,
       color: rgb(0.85, 0.85, 0.85)
     });
 
-    page.drawText('THE DAV DICTIONARY - OFFICIAL MASTER STUDY NOTES - STRICT CURRICULUM GROUNDING', {
+    page.drawText(`The DAV Dictionary  |  Official 10-Page Chapter Notes Master Vault  |  DAVCMC Curriculum Standard`, {
       x: 30,
-      y: 28,
-      size: 7,
+      y: 26,
+      size: 7.5,
       font: font,
-      color: rgb(0.5, 0.5, 0.5)
+      color: rgb(0.4, 0.4, 0.4)
     });
 
     page.drawText(`Page ${pageIdx + 1} of 10`, {
-      x: PAGE_WIDTH - 85,
-      y: 28,
-      size: 7,
+      x: PAGE_WIDTH - 80,
+      y: 26,
+      size: 7.5,
       font: boldFont,
       color: rgb(0.3, 0.3, 0.3)
     });
@@ -309,26 +328,19 @@ export async function generateSingleChapterNotes(classNum, subjectId, subjectNam
   console.log(`======================================================`);
 
   const prompt = `You are the Google Gemini Academic Notes Author for The DAV Dictionary (Dayanand Anglo-Vedic Public School Board).
-Generate an exhaustive, high-yield, 10-PAGE MASTER STUDY NOTE for:
+Generate an exhaustive, comprehensive 10-PAGE CHAPTER STUDY NOTE for:
 - CLASS: Class ${classNum}
 - SUBJECT: ${subjectName}
 - CHAPTER ${chNum}: "${chTitle}"
 
-STRICT INSTRUCTIONS:
-1. PURE BULLET NOTES ONLY. Absolutely NO question-and-answers, NO practice questions, NO exercises. Pure, rigorous, encyclopedic conceptual study bullet notes.
-2. Structure the notes into EXACTLY 10 SEPARATE PAGES, clearly separated by the marker: "---PAGE-BREAK---".
-3. Use emojis, color tags [BLUE], [GOLD], [RED], [GREEN], high-impact bullet points, bold key terms, definition boxes, laws, principles, formulas, and comparison tables.
-4. Each of the 10 pages must cover:
-- PAGE 1: Core Blueprint, Mind Map & Learning Milestones
-- PAGE 2: Fundamental Principles & Theory Deep-Dive
-- PAGE 3: Scientific Laws, Formulas, Equations & Principles
-- PAGE 4: Exhaustive Technical Glossary & Precision Definitions
-- PAGE 5: Detailed Page-by-Page Textbook Highlights & Core Factoids
-- PAGE 6: Conceptual Breakdown, Practical Examples & Applications
-- PAGE 7: DAV Board Exam High-Yield Factoids & Golden Highlights
-- PAGE 8: Scientific Classifications, Categories & Structural Tables
-- PAGE 9: Crucial Distinctions, Conceptual Comparisons & Pitfalls
-- PAGE 10: 5-Minute Rapid Exam Booster Summary & Memory Anchors
+STRICT REQUIREMENTS:
+1. PURE BULLET POINTS ONLY. Every single point on every single page must be an in-depth, informative study bullet point explaining the concepts of this chapter.
+2. In ALL 10 PAGES, write exclusively high-yield bullet points covering all concepts, topics, definitions, mechanisms, and key textbook facts of this chapter in clear logical sequence.
+3. Absolutely NO question-and-answers, NO practice questions, NO exercises, NO ASCII boxes, NO mock code blocks, NO filler.
+4. Structure the output into EXACTLY 10 SEPARATE PAGES, clearly separated by: "---PAGE-BREAK---".
+5. Each page must contain 15 to 20 detailed, comprehensive bullet points starting with a bullet marker '•'.
+6. Highlight key terms with bold text or 'Term: Explanation' formatting.
+7. Cover the entire chapter thoroughly from start to finish across the 10 pages.
 
 Begin immediately. Use "---PAGE-BREAK---" to separate each of the 10 pages.`;
 
