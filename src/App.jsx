@@ -14,6 +14,8 @@ import { PdfReaderModal } from './components/PdfReaderModal';
 import { PricingModal } from './components/PricingModal';
 import { CustomPurchaseModal } from './components/CustomPurchaseModal';
 import { CinematicFlameVfx } from './components/vfx/CinematicFlameVfx';
+import { VfxSolarSystemGalaxy } from './components/vfx/VfxSolarSystemGalaxy';
+import { VfxCycloneVortex } from './components/vfx/VfxCycloneVortex';
 import { VfxGlobalSuite } from './components/VfxGlobalSuite';
 import { AuthModal } from './components/AuthModal';
 import { UploadPdfModal } from './components/UploadPdfModal';
@@ -41,6 +43,7 @@ import { safeSetUser, safeSetItem } from './utils/safeStorage';
 
 export function App() {
   const [activeSection, setActiveSection] = useState(1);
+  const [isCycloneOpen, setIsCycloneOpen] = useState(false);
   const [flameVfx, setFlameVfx] = useState({
     isOpen: false,
     title: '',
@@ -281,6 +284,10 @@ export function App() {
         'DAV School Master Curriculum & Digital Library'
       );
     }
+    if (secId === 11 && activeSection !== 11) {
+      setIsCycloneOpen(true);
+      return;
+    }
     setActiveSection(secId);
     setIsSidebarOpen(false);
   };
@@ -506,25 +513,29 @@ export function App() {
         ) : activeSection === 1 ? (
           <SectionOverview currentUser={user} onSelectSection={handleSelectSection} onOpenPurchaseModal={() => setIsPricingOpen(true)} />
         ) : activeSection === 2 ? (
-          <>
-            <Hero
-              onOpenAI={() => {
-                setAiPrompt('');
-                setIsAIOpen(true);
-              }}
-              onOpenPricing={() => setIsPricingOpen(true)}
-              onOpenUpload={() => setIsUploadOpen(true)}
-              onOpenCinematic={() => setIsCinematicOpen(true)}
-            />
-            <BookLibrary
-              currentUser={user}
-              onOpenPdfReader={handleOpenPdfReader}
-              onOpenUploadModal={() => setIsUploadOpen(true)}
-              onOpenAIWithQuestion={handleOpenAIWithQuestion}
-              uploadedPdfs={uploadedPdfs}
-              onDeletePdf={handleDeletePdf}
-            />
-          </>
+          <div className="relative min-h-screen bg-[#030712] text-white">
+            {/* Section 2 Cosmic Solar System Canvas (The Sun, 9 Planets, Rocket, Spaceship, Starfield) */}
+            <VfxSolarSystemGalaxy />
+            <div className="relative z-10">
+              <Hero
+                onOpenAI={() => {
+                  setAiPrompt('');
+                  setIsAIOpen(true);
+                }}
+                onOpenPricing={() => setIsPricingOpen(true)}
+                onOpenUpload={() => setIsUploadOpen(true)}
+                onOpenCinematic={() => setIsCinematicOpen(true)}
+              />
+              <BookLibrary
+                currentUser={user}
+                onOpenPdfReader={handleOpenPdfReader}
+                onOpenUploadModal={() => setIsUploadOpen(true)}
+                onOpenAIWithQuestion={handleOpenAIWithQuestion}
+                uploadedPdfs={uploadedPdfs}
+                onDeletePdf={handleDeletePdf}
+              />
+            </div>
+          </div>
         ) : activeSection === 3 ? (
           <QuestionsAnswersSection 
             currentUser={user} 
@@ -657,6 +668,15 @@ export function App() {
 
       {/* Global VFX Engine (Click Ripples, Constellation Net, Confetti Cannon) */}
       <VfxGlobalSuite />
+
+      {/* 3-Second Cyclone Vortex VFX for About Creator Profile */}
+      <VfxCycloneVortex
+        isOpen={isCycloneOpen}
+        onComplete={() => {
+          setIsCycloneOpen(false);
+          setActiveSection(11);
+        }}
+      />
 
       {/* 5-Second Cinematic Flame VFX (Section 2 Open, PDF Reader Loading, Custom Upload Save) */}
       <CinematicFlameVfx

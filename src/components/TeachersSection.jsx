@@ -15,6 +15,7 @@ import {
   Camera, UploadCloud, Edit3, Music, Film, FileCheck, Printer, PenTool
 } from 'lucide-react';
 import { RishiAILogo } from './RishiAILogo';
+import { VfxSmokeEffect } from './vfx/VfxSmokeEffect';
 import { WhatsAppChannelsModule } from './WhatsAppChannelsModule';
 import { getAllTeachers } from '../data/davTeachers50';
 import { getRegisteredUsers, MASTER_DEVELOPER_ACCOUNT } from '../data/preloadedUsers';
@@ -645,6 +646,7 @@ export function TeachersSection({
 
   // Current Active Page among the 6 Graphical Animated Pages
   const [activePage, setActivePage] = useState(initialSubSection || 'homework');
+  const [showSmokeVfx, setShowSmokeVfx] = useState(false);
 
   // Interactive Full Screen Mode
   const [isFullScreenInteractive, setIsFullScreenInteractive] = useState(false);
@@ -5071,7 +5073,10 @@ export function TeachersSection({
 
                         {/* User Avatar */}
                         <div 
-                          onClick={() => setWhatsAppDockView('contacts')}
+                          onClick={() => {
+                            setShowSmokeVfx(true);
+                            setWhatsAppDockView('contacts');
+                          }}
                           className="relative cursor-pointer" 
                           title={customProfileForm.name || user?.name || 'My Profile'}
                         >
@@ -9841,6 +9846,8 @@ export function TeachersSection({
           </div>
         )}
 
+        {/* Ethereal Smoke VFX when Profile Below Settings is Clicked in Page 2 */}
+        <VfxSmokeEffect isOpen={showSmokeVfx} onClose={() => setShowSmokeVfx(false)} />
       </main>
 
     </div>

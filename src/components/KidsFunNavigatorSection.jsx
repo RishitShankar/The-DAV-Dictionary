@@ -1,4 +1,8 @@
 import { VfxCampusRadarSonar } from './vfx/VfxCampusRadarSonar';
+import { VfxWeatherAtmosphere } from './vfx/VfxWeatherAtmosphere';
+import { VfxMathMatrixBackground } from './vfx/VfxMathMatrixBackground';
+import { VfxCompassGlobeBackground } from './vfx/VfxCompassGlobeBackground';
+import { VfxClockRunningBackground } from './vfx/VfxClockRunningBackground';
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { 
   Bus, MapPin, Navigation, Compass, Gamepad2, Volume2, VolumeX, 
@@ -1675,7 +1679,13 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
         {activeSubSection === 'weather' && (
           <div className="w-full space-y-6">
 
-            <div className="w-full bg-gradient-to-br from-sky-600 via-blue-700 to-indigo-900 rounded-3xl p-6 sm:p-10 text-white shadow-2xl border-4 border-sky-300">
+            <div className="relative overflow-hidden w-full bg-gradient-to-br from-sky-600 via-blue-700 to-indigo-900 rounded-3xl p-6 sm:p-10 text-white shadow-2xl border-4 border-sky-300">
+              {/* Adaptive Weather Atmosphere VFX (Rain, Sunny, Snow, Windy) with 12s timer & Turn Off option */}
+              <VfxWeatherAtmosphere 
+                weatherCode={weatherData?.current_weather?.weathercode}
+                windSpeed={weatherData?.current_weather?.windspeed}
+                cityName={weatherCityName}
+              />
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-cyan-200 text-xs font-black uppercase tracking-wider mb-2">
@@ -1795,7 +1805,9 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
         {activeSubSection === 'calculator' && (
           <div className="w-full space-y-6">
 
-            <div className="w-full bg-gradient-to-br from-emerald-600 via-teal-700 to-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-2xl border-4 border-emerald-300">
+            <div className="relative overflow-hidden w-full bg-gradient-to-br from-emerald-600 via-teal-700 to-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-2xl border-4 border-emerald-300">
+              {/* Constant Non-Stop Floating Math Matrix Background (pi, 0-9, radius, etc.) */}
+              <VfxMathMatrixBackground />
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-emerald-200 text-xs font-black uppercase tracking-wider mb-2">
@@ -2233,7 +2245,9 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
         {activeSubSection === 'compass' && (
           <div className="w-full space-y-6">
 
-            <div className="w-full bg-gradient-to-br from-orange-600 via-amber-700 to-stone-900 rounded-3xl p-6 sm:p-10 text-white shadow-2xl border-4 border-amber-400">
+            <div className="relative overflow-hidden w-full bg-gradient-to-br from-orange-600 via-amber-700 to-stone-900 rounded-3xl p-6 sm:p-10 text-white shadow-2xl border-4 border-amber-400">
+              {/* 3D Rotating Earth Globe Background */}
+              <VfxCompassGlobeBackground heading={compassHeading} />
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-yellow-300 text-xs font-black uppercase tracking-wider mb-2">
@@ -2352,7 +2366,9 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
         {activeSubSection === 'clock' && (
           <div className="w-full space-y-6">
 
-            <div className="w-full bg-gradient-to-br from-indigo-700 via-purple-800 to-stone-900 rounded-3xl p-6 sm:p-10 text-white shadow-2xl border-4 border-indigo-400">
+            <div className="relative overflow-hidden w-full bg-gradient-to-br from-indigo-700 via-purple-800 to-stone-900 rounded-3xl p-6 sm:p-10 text-white shadow-2xl border-4 border-indigo-400">
+              {/* Running Analog Clock & Mechanical Gearwork Background */}
+              <VfxClockRunningBackground />
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-indigo-200 text-xs font-black uppercase tracking-wider mb-2">

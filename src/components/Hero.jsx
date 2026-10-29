@@ -4,7 +4,7 @@ import { BlackDogLogo } from './BlackDogLogo';
 
 export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, selectedClass, onOpenCinematic }) {
   return (
-    <div className="relative overflow-hidden bg-gradient-to-b from-red-950 via-slate-900 to-slate-950 text-white py-16 px-4 sm:px-6 lg:px-8 border-b border-red-900/30">
+    <div className="relative overflow-hidden bg-gradient-to-b from-red-950/70 via-slate-900/60 to-slate-950/80 backdrop-blur-[2px] text-white py-16 px-4 sm:px-6 lg:px-8 border-b border-red-900/30">
       {/* Volumetric God Rays (VFX #1) */}
       <div className="vfx-god-rays" />
 
@@ -47,6 +47,12 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white max-w-4xl mx-auto leading-tight animate-solar-flare animate-3d-float">
           Welcome to <span className="text-3d-mega animate-holo-rim px-3 py-1 rounded-2xl bg-stone-900/90 border-2 border-amber-400">DAV Dictionary</span>
         </h1>
+
+        {/* Solar System & Cosmic Engine Indicator */}
+        <div className="mt-4 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-amber-400/40 text-amber-300 text-xs font-semibold backdrop-blur-md shadow-lg">
+          <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+          <span>🌌 Cosmic Background: Sun, 9 Planets, Rocket &amp; Interactive Star Constellations</span>
+        </div>
 
         {/* Subtitle */}
         <p className="mt-5 text-base sm:text-lg text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed">
