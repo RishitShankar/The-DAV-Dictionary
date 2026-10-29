@@ -172,6 +172,20 @@ export const OFFICIAL_CHAPTER_NOTES = [
     "uploadedBy": "Google Gemini Master Agent"
   },
   {
+    "id": "note_c8_hin8_gs_ch13",
+    "classNum": "8",
+    "subjectId": "hin8_gs",
+    "subjectName": "Hindi - ज्ञान सागर (Literature)",
+    "chapterNum": 13,
+    "chapterTitle": "सूर और तुलसी के पद",
+    "title": "Class 8 Hindi - ज्ञान सागर (Literature) - Ch 13: सूर और तुलसी के पद (10-Page Master Notes)",
+    "pdfUrl": "/notes/Class%208/hin8_gs/Chapter-13.pdf",
+    "fileName": "hin8_gs-ch13-10page-notes.pdf",
+    "fileSize": "10 Pages PDF",
+    "uploadedAt": "Oct 29, 2026",
+    "uploadedBy": "Google Gemini Master Agent"
+  },
+  {
     "id": "note_c8_hindi_gyan_ch1",
     "classNum": "8",
     "subjectId": "hindi_gyan",

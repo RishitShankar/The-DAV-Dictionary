@@ -11,7 +11,7 @@ import {
   ExternalLink, RefreshCw, Bot, Smartphone, RotateCcw,
   ArrowRight, Play, CheckSquare, Radio, Maximize2, Minimize2,
   PhoneOff, Hand, MessageSquareMore, CheckCircle, ArrowLeft, ArrowDownLeft, ArrowUpRight, PhoneMissed,
-  ChevronLeft, Compass, Palette, Trash2, Trophy, Share, Phone, MoreVertical, Settings,
+  ChevronLeft, Compass, Palette, Trash2, Trophy, Share, Phone, MoreVertical, Settings, Ban,
   Camera, UploadCloud, Edit3, Music, Film, FileCheck, Printer, PenTool
 } from 'lucide-react';
 import { RishiAILogo } from './RishiAILogo';
@@ -599,6 +599,15 @@ function compressImage(file, maxWidth = 300, maxHeight = 300, quality = 0.8) {
     reader.readAsDataURL(file);
   });
 }
+
+
+export const RINGTONE_OPTIONS = [
+  { id: 'dav_gurukul_chime', name: 'DAV Gurukul Chime (Default)', desc: 'Harmonious Vedic brass chimes in ascending pentatonic melody', category: 'Institutional', badge: 'Recommended' },
+  { id: 'whatsapp_pulse', name: 'Classic WhatsApp Pulse', desc: 'Authentic dual-frequency alternating acoustic pulses (440Hz / 480Hz)', category: 'Classic', badge: 'Popular' },
+  { id: 'vedic_resonance', name: 'Vedic Resonance', desc: 'Warm meditative sitar harmonics with gentle acoustic reverberation', category: 'Sanskrit', badge: 'Sacred' },
+  { id: 'cyber_radar', name: 'Digital Cyber Radar', desc: 'Modern electronic telemetry blips with high-clarity presence', category: 'Futuristic', badge: 'Hi-Tech' },
+  { id: 'brass_bell', name: 'Temple Brass Bell', desc: 'Deep resonant temple bell strike with rich natural acoustic sustain', category: 'Acoustic', badge: 'Acoustic' }
+];
 
 export function TeachersSection({ 
   user, 
@@ -1289,6 +1298,96 @@ export function TeachersSection({
     dp: user?.dp || user?.avatar || user?.photoUrl || ''
   });
 
+
+  const [selectedRingtone, setSelectedRingtone] = useState(() => {
+    try {
+      return localStorage.getItem('dav_selected_ringtone') || 'dav_gurukul_chime';
+    } catch (e) {
+      return 'dav_gurukul_chime';
+    }
+  });
+  const [isRingtoneModalOpen, setIsRingtoneModalOpen] = useState(false);
+  const [previewingRingtoneId, setPreviewingRingtoneId] = useState(null);
+  const ringtonePreviewPlayerRef = useRef(null);
+  const incomingCallTimerRef = useRef(null);
+
+  const [blockedUsers, setBlockedUsers] = useState(() => {
+    try {
+      const saved = localStorage.getItem('dav_blocked_users');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const isUserBlocked = (contactId, contactName) => {
+    if (!contactId && !contactName) return false;
+    const cid = String(contactId || '').toLowerCase().trim();
+    const cname = String(contactName || '').toLowerCase().trim();
+    return blockedUsers.some(b => {
+      const bid = String(b.id || '').toLowerCase().trim();
+      const bname = String(b.name || '').toLowerCase().trim();
+      return (cid && bid && cid === bid) || (cname && bname && cname === bname);
+    });
+  };
+
+  const handleToggleBlock = (contact) => {
+    if (!contact) return;
+    const cid = contact.id || 'contact_' + Date.now();
+    const cname = contact.name || 'User';
+    const isCurrentlyBlocked = isUserBlocked(cid, cname);
+
+    if (isCurrentlyBlocked) {
+      const updated = blockedUsers.filter(b => {
+        const bid = String(b.id || '').toLowerCase().trim();
+        const bname = String(b.name || '').toLowerCase().trim();
+        const targetId = String(cid).toLowerCase().trim();
+        const targetName = String(cname).toLowerCase().trim();
+        return bid !== targetId && bname !== targetName;
+      });
+      setBlockedUsers(updated);
+      try { localStorage.setItem('dav_blocked_users', JSON.stringify(updated)); } catch (e) {}
+      playSoundChime('delivered');
+      alert('Unblocked ' + cname + '. You can now send/receive calls and messages with this user.');
+    } else {
+      if (window.confirm('Are you sure you want to block ' + cname + '? They will no longer be able to call you, ring your device, or send spam messages.')) {
+        const updated = [...blockedUsers, { id: cid, name: cname, role: contact.role || contact.subtitle || 'User', timestamp: Date.now() }];
+        setBlockedUsers(updated);
+        try { localStorage.setItem('dav_blocked_users', JSON.stringify(updated)); } catch (e) {}
+        playSoundChime('alert');
+        alert(cname + ' has been blocked. Any incoming calls from them will be automatically and silently rejected.');
+      }
+    }
+  };
+
+  const handleSelectRingtone = (toneId) => {
+    setSelectedRingtone(toneId);
+    try {
+      localStorage.setItem('dav_selected_ringtone', toneId);
+    } catch (e) {}
+    previewRingtone(toneId);
+  };
+
+  const previewRingtone = (toneId) => {
+    if (ringtonePreviewPlayerRef.current) {
+      ringtonePreviewPlayerRef.current.stop();
+      ringtonePreviewPlayerRef.current = null;
+    }
+    if (previewingRingtoneId === toneId) {
+      setPreviewingRingtoneId(null);
+      return;
+    }
+    setPreviewingRingtoneId(toneId);
+    ringtonePreviewPlayerRef.current = createWhatsAppRingtonePlayer('incoming', toneId);
+    setTimeout(() => {
+      if (ringtonePreviewPlayerRef.current) {
+        ringtonePreviewPlayerRef.current.stop();
+        ringtonePreviewPlayerRef.current = null;
+      }
+      setPreviewingRingtoneId(null);
+    }, 5000);
+  };
+
   // Contact Profile Modal State & Full Photo Lightbox
   const [viewingContactProfile, setViewingContactProfile] = useState(null);
   const [isEnlargedPhotoOpen, setIsEnlargedPhotoOpen] = useState(false);
@@ -1602,8 +1701,8 @@ export function TeachersSection({
   const queuedCandidatesRef = useRef([]);
   const speechRecogRef = useRef(null);
 
-  // Synthesized WhatsApp Ringtone Player
-  const createWhatsAppRingtonePlayer = (mode = 'incoming') => {
+  // Synthesized 5-Ringtone Master Audio Engine (Web Audio API)
+  const createWhatsAppRingtonePlayer = (mode = 'incoming', toneId = null) => {
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtx) return null;
@@ -1635,27 +1734,128 @@ export function TeachersSection({
         playTone();
         timerId = setInterval(playTone, 3800);
       } else {
-        const melody = [659.25, 830.61, 987.77, 1318.51, 987.77, 830.61];
-        const playMelody = () => {
-          try {
-            if (ctx.state === 'suspended') ctx.resume();
-            melody.forEach((freq, i) => {
-              const osc = ctx.createOscillator();
-              const gain = ctx.createGain();
-              osc.type = 'triangle';
-              osc.frequency.value = freq;
-              const t = ctx.currentTime + (i * 0.14);
-              gain.gain.setValueAtTime(0.12, t);
-              gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
-              osc.connect(gain);
-              gain.connect(ctx.destination);
-              osc.start(t);
-              osc.stop(t + 0.25);
-            });
-          } catch (e) {}
-        };
-        playMelody();
-        timerId = setInterval(playMelody, 2200);
+        const chosenTone = toneId || selectedRingtone || (typeof localStorage !== 'undefined' ? localStorage.getItem('dav_selected_ringtone') : null) || 'dav_gurukul_chime';
+
+        if (chosenTone === 'whatsapp_pulse') {
+          const playPulse = () => {
+            try {
+              if (ctx.state === 'suspended') ctx.resume();
+              [0, 0.45].forEach((offset) => {
+                const osc1 = ctx.createOscillator();
+                const osc2 = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc1.type = 'sine';
+                osc2.type = 'sine';
+                osc1.frequency.value = 440;
+                osc2.frequency.value = 480;
+                const t = ctx.currentTime + offset;
+                gain.gain.setValueAtTime(0.08, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(ctx.destination);
+                osc1.start(t);
+                osc2.start(t);
+                osc1.stop(t + 0.35);
+                osc2.stop(t + 0.35);
+              });
+            } catch (e) {}
+          };
+          playPulse();
+          timerId = setInterval(playPulse, 2400);
+
+        } else if (chosenTone === 'vedic_resonance') {
+          const vedicNotes = [329.63, 392.00, 493.88, 587.33, 493.88, 392.00];
+          const playVedic = () => {
+            try {
+              if (ctx.state === 'suspended') ctx.resume();
+              vedicNotes.forEach((freq, idx) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.value = freq;
+                const t = ctx.currentTime + (idx * 0.18);
+                gain.gain.setValueAtTime(0.14, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(t);
+                osc.stop(t + 0.45);
+              });
+            } catch (e) {}
+          };
+          playVedic();
+          timerId = setInterval(playVedic, 2500);
+
+        } else if (chosenTone === 'cyber_radar') {
+          const blips = [880.0, 1174.66, 880.0, 1318.51];
+          const playCyber = () => {
+            try {
+              if (ctx.state === 'suspended') ctx.resume();
+              blips.forEach((freq, idx) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime + (idx * 0.12));
+                osc.frequency.exponentialRampToValueAtTime(freq * 0.7, ctx.currentTime + (idx * 0.12) + 0.1);
+                const t = ctx.currentTime + (idx * 0.12);
+                gain.gain.setValueAtTime(0.12, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(t);
+                osc.stop(t + 0.1);
+              });
+            } catch (e) {}
+          };
+          playCyber();
+          timerId = setInterval(playCyber, 2000);
+
+        } else if (chosenTone === 'brass_bell') {
+          const playBell = () => {
+            try {
+              if (ctx.state === 'suspended') ctx.resume();
+              [587.33, 740.0, 880.0, 1174.66].forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.value = freq;
+                const t = ctx.currentTime + (i * 0.04);
+                gain.gain.setValueAtTime(0.10, t);
+                gain.gain.exponentialRampToValueAtTime(0.0001, t + 1.2);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(t);
+                osc.stop(t + 1.2);
+              });
+            } catch (e) {}
+          };
+          playBell();
+          timerId = setInterval(playBell, 2600);
+
+        } else {
+          const melody = [523.25, 659.25, 783.99, 1046.50, 783.99, 659.25];
+          const playMelody = () => {
+            try {
+              if (ctx.state === 'suspended') ctx.resume();
+              melody.forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.value = freq;
+                const t = ctx.currentTime + (i * 0.14);
+                gain.gain.setValueAtTime(0.12, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(t);
+                osc.stop(t + 0.28);
+              });
+            } catch (e) {}
+          };
+          playMelody();
+          timerId = setInterval(playMelody, 2200);
+        }
       }
 
       return {
@@ -1827,6 +2027,8 @@ export function TeachersSection({
     const handleSignal = async (data) => {
       if (!data || !data.type) return;
 
+      if (data.senderTabId && typeof window !== 'undefined' && data.senderTabId === window.__DAV_TAB_SESSION_ID) return;
+
       const myName = String(user?.name || '').toLowerCase().trim();
       const myId = String(user?.id || '').toLowerCase().trim();
       const targetName = String(data.targetName || '').toLowerCase().trim();
@@ -1834,21 +2036,35 @@ export function TeachersSection({
       const callerId = String(data.callerId || '').toLowerCase().trim();
       const callerName = String(data.callerName || '').toLowerCase().trim();
 
-      // Don't process signals sent by our own device
       if (callerId && myId && callerId === myId) return;
       if (callerName && myName && callerName === myName) return;
+
+      if (callState.isOpen && data.callId === activeCallIdRef.current && (callState.status === 'calling' || callState.status === 'ringing')) {
+        return;
+      }
 
       const isTargetMe = (myId && targetId && (myId === targetId || targetId.includes(myId))) ||
                          (myName && targetName && (myName === targetName || targetName.includes(myName)));
 
-      // If caller is student and current session is faculty, OR caller is faculty and current session is student
       const roleMatch = (data.callerRole === 'Student' && isDimension5) ||
                         (data.callerRole === 'Faculty' && !isDimension5);
 
       const shouldReceive = isTargetMe || roleMatch || (!targetId && !targetName);
 
-      // 1. INCOMING CALL OFFER
       if (data.type === 'INCOMING_CALL' && shouldReceive) {
+        if (isUserBlocked(data.callerId, data.callerName)) {
+          if (typeof broadcastCallSignal === 'function') {
+            broadcastCallSignal({
+              type: 'CALL_DECLINED',
+              callId: data.callId,
+              callerId: myId || 'me',
+              targetId: data.callerId,
+              reason: 'blocked'
+            });
+          }
+          return;
+        }
+
         if (callState.isOpen) {
           if (typeof broadcastCallSignal === 'function') {
             broadcastCallSignal({
@@ -1872,12 +2088,44 @@ export function TeachersSection({
           callerAvatar: data.callerAvatar || '',
           callType: data.callType || 'video',
           callId: data.callId || Date.now(),
-          sdpOffer: data.sdpOffer || null
+          sdpOffer: data.sdpOffer || null,
+          startedAt: Date.now()
         });
 
         if (ringtonePlayerRef.current) ringtonePlayerRef.current.stop();
         ringtonePlayerRef.current = createWhatsAppRingtonePlayer('incoming');
         playSoundChime('alert');
+
+        if (incomingCallTimerRef.current) clearTimeout(incomingCallTimerRef.current);
+        incomingCallTimerRef.current = setTimeout(() => {
+          if (ringtonePlayerRef.current) {
+            ringtonePlayerRef.current.stop();
+            ringtonePlayerRef.current = null;
+          }
+          setIncomingCall(null);
+          if (typeof broadcastCallSignal === 'function') {
+            broadcastCallSignal({
+              type: 'CALL_DECLINED',
+              callId: data.callId,
+              callerId: myId || 'me',
+              targetId: data.callerId,
+              reason: 'timeout'
+            });
+          }
+          setRecentCalls(prev => [
+            {
+              id: Date.now(),
+              contactId: data.callerId || 'peer',
+              contactName: data.callerName || 'DAV User',
+              type: data.callType || 'video',
+              direction: 'missed',
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              date: 'Today',
+              duration: 0
+            },
+            ...prev
+          ]);
+        }, 30000);
       }
 
       // 2. CALL ANSWERED (Caller receives Callee's SDP Answer)
@@ -1933,9 +2181,33 @@ export function TeachersSection({
       if (data.type === 'CALL_ENDED' || data.type === 'CALL_DECLINED') {
         const isMyCall = activeCallIdRef.current && (data.callId === activeCallIdRef.current);
         if (isMyCall || isTargetMe) {
+          if (incomingCallTimerRef.current) {
+            clearTimeout(incomingCallTimerRef.current);
+            incomingCallTimerRef.current = null;
+          }
+          if (ringtonePlayerRef.current) {
+            ringtonePlayerRef.current.stop();
+            ringtonePlayerRef.current = null;
+          }
           setIncomingCall(null);
           if (callState.isOpen) {
-            handleEndCall(false, data.type === 'CALL_DECLINED' ? 'declined' : 'ended');
+            if (data.reason === 'blocked') {
+              setCallState(prev => ({
+                ...prev,
+                status: 'unanswered_timeout',
+                timeoutMessage: 'Call unavailable: The recipient has blocked incoming calls or is currently unreachable.'
+              }));
+              playWhatsAppCallEndTone();
+            } else if (data.reason === 'timeout') {
+              setCallState(prev => ({
+                ...prev,
+                status: 'unanswered_timeout',
+                timeoutMessage: 'No answer: Calling reached the maximum 30 seconds limit.'
+              }));
+              playWhatsAppCallEndTone();
+            } else {
+              handleEndCall(false, data.type === 'CALL_DECLINED' ? 'declined' : 'ended');
+            }
           }
         }
       }
@@ -2043,6 +2315,10 @@ export function TeachersSection({
   // Initiate Outgoing Call (Student to Teacher or Teacher to Student)
   const handleStartCall = async (contact, type = 'video') => {
     if (!contact) return;
+    if (isUserBlocked(contact.id, contact.name)) {
+      alert('You have blocked ' + contact.name + '. Please unblock this contact before starting a call.');
+      return;
+    }
     playSoundChime('sent');
 
     const callId = Date.now();
@@ -2187,6 +2463,7 @@ export function TeachersSection({
   // Accept Incoming Call (Callee)
   const handleAcceptCall = async (incomingData) => {
     if (!incomingData) return;
+    if (incomingCallTimerRef.current) { clearTimeout(incomingCallTimerRef.current); incomingCallTimerRef.current = null; }
     setIncomingCall(null);
     if (ringtonePlayerRef.current) {
       ringtonePlayerRef.current.stop();
@@ -2307,6 +2584,7 @@ export function TeachersSection({
 
   // Decline Incoming Call
   const handleDeclineCall = (incomingData) => {
+    if (incomingCallTimerRef.current) { clearTimeout(incomingCallTimerRef.current); incomingCallTimerRef.current = null; }
     setIncomingCall(null);
     if (ringtonePlayerRef.current) {
       ringtonePlayerRef.current.stop();
@@ -5060,6 +5338,66 @@ export function TeachersSection({
                               <span className="text-[10px] font-black uppercase tracking-wider block">DAV Institutional Status</span>
                               <p className="text-xs font-medium">Verified under DAV Public School Academic Registry.</p>
                             </div>
+
+                            {/* Ringtone Customizer Card */}
+                            <div className="p-3.5 rounded-2xl bg-white border border-[#d1d7db] shadow-xs space-y-2">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <Music className="w-4 h-4 text-purple-600" />
+                                  <span className="text-xs font-bold text-[#111b21]">Ringtone & Audio</span>
+                                </div>
+                                <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
+                                  5 Tones
+                                </span>
+                              </div>
+                              <p className="text-[11px] text-[#667781] leading-relaxed">
+                                Current tone: <strong className="text-[#111b21]">{RINGTONE_OPTIONS.find(t => t.id === selectedRingtone)?.name || 'DAV Gurukul Chime'}</strong>. Persistent across browser refreshes.
+                              </p>
+                              <button
+                                type="button"
+                                onClick={() => setIsRingtoneModalOpen(true)}
+                                className="w-full py-2 px-3 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
+                              >
+                                <Settings className="w-3.5 h-3.5" />
+                                <span>Change Ringtone (5 Options)</span>
+                              </button>
+                            </div>
+
+                            {/* Blocked Contacts Card */}
+                            <div className="p-3.5 rounded-2xl bg-white border border-[#d1d7db] shadow-xs space-y-2">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <Ban className="w-4 h-4 text-rose-600" />
+                                  <span className="text-xs font-bold text-[#111b21]">Blocked Contacts</span>
+                                </div>
+                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700">
+                                  {blockedUsers.length} Blocked
+                                </span>
+                              </div>
+                              <div className="space-y-1.5 max-h-36 overflow-y-auto">
+                                {blockedUsers.length === 0 ? (
+                                  <p className="text-[11px] text-[#8696a0]">
+                                    No blocked contacts. Blocked users cannot ring or spam your desk.
+                                  </p>
+                                ) : (
+                                  blockedUsers.map((b) => (
+                                    <div key={b.id} className="p-2 rounded-xl bg-rose-50/70 border border-rose-200 flex items-center justify-between gap-2">
+                                      <div className="min-w-0">
+                                        <h5 className="text-xs font-bold text-rose-950 truncate">{b.name}</h5>
+                                        <p className="text-[10px] text-rose-600 truncate">{b.role || 'Blocked'}</p>
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleToggleBlock(b)}
+                                        className="px-2 py-0.5 rounded bg-white border border-rose-300 hover:bg-rose-100 text-rose-700 text-[10px] font-bold transition cursor-pointer"
+                                      >
+                                        Unblock
+                                      </button>
+                                    </div>
+                                  ))
+                                )}
+                              </div>
+                            </div>
                           </div>
                         </div>
 
@@ -5486,6 +5824,11 @@ export function TeachersSection({
                                 <div>
                                   <h3 className="text-sm font-bold text-[#111b21] flex items-center gap-1.5 leading-tight hover:underline">
                                     <span>{activeContact.name}</span>
+                                    {isUserBlocked(activeContact.id, activeContact.name) && (
+                                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-rose-100 text-rose-700 border border-rose-300">
+                                        Blocked
+                                      </span>
+                                    )}
                                   </h3>
                                   <p className="text-[11px] font-semibold text-[#667781]">
                                     {isUserOnline(activeContact) ? (
@@ -5566,6 +5909,41 @@ export function TeachersSection({
                                     <Trash2 className="w-4 h-4 text-rose-600" />
                                     <span>Clear All Chats (All Teachers)</span>
                                   </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setShowChatMenu(false);
+                                      setIsRingtoneModalOpen(true);
+                                    }}
+                                    className="w-full px-4 py-2.5 text-left hover:bg-[#f0f2f5] flex items-center gap-2 cursor-pointer transition text-[#111b21]"
+                                  >
+                                    <Music className="w-4 h-4 text-purple-600" />
+                                    <span>Ringtone Settings (5 Tones)</span>
+                                  </button>
+
+                                  {activeContact && (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setShowChatMenu(false);
+                                        handleToggleBlock(activeContact);
+                                      }}
+                                      className="w-full px-4 py-2.5 text-left flex items-center gap-2 cursor-pointer transition border-b border-[#f0f2f5] hover:bg-rose-50 text-rose-600"
+                                    >
+                                      {isUserBlocked(activeContact.id, activeContact.name) ? (
+                                        <>
+                                          <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                                          <span className="text-emerald-600">Unblock {activeContact.name}</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Ban className="w-4 h-4 text-rose-600" />
+                                          <span>Block {activeContact.name}</span>
+                                        </>
+                                      )}
+                                    </button>
+                                  )}
+
                                   <button
                                     type="button"
                                     onClick={() => {
@@ -6136,6 +6514,29 @@ export function TeachersSection({
                           >
                             <Video className="w-4 h-4 text-[#00a884]" />
                             <span>Video Call</span>
+                          </button>
+                        </div>
+
+                        {/* Block / Unblock Contact Action */}
+                        <div className="pt-2 border-t border-[#222d34]">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleToggleBlock(viewingContactProfile);
+                            }}
+                            className="w-full py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-sm bg-rose-600/20 text-rose-400 border border-rose-500/40 hover:bg-rose-600/30"
+                          >
+                            {isUserBlocked(viewingContactProfile.id, viewingContactProfile.name) ? (
+                              <>
+                                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                                <span className="text-emerald-400">Unblock {viewingContactProfile.name}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Ban className="w-4 h-4 text-rose-400" />
+                                <span>Block Contact (Prevent Calls & Spam)</span>
+                              </>
+                            )}
                           </button>
                         </div>
                       </div>
@@ -6785,6 +7186,123 @@ export function TeachersSection({
                 )}
 
                 {/* ========================================================================= */}
+                
+                {/* 5-Ringtone Master Settings Modal */}
+                {isRingtoneModalOpen && (
+                  <div className="fixed inset-0 z-[100020] bg-black/80 flex items-center justify-center p-4 backdrop-blur-xs animate-fadeIn">
+                    <div className="w-full max-w-md bg-[#111b21] border border-[#222d34] rounded-3xl shadow-2xl overflow-hidden text-white animate-scaleUp">
+                      
+                      {/* Top Bar */}
+                      <div className="p-4 bg-[#202c33] flex items-center justify-between border-b border-[#222d34]">
+                        <div className="flex items-center gap-2">
+                          <Music className="w-5 h-5 text-[#00a884]" />
+                          <h3 className="text-sm font-bold text-white tracking-wide">
+                            Incoming Call Ringtone Settings
+                          </h3>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (ringtonePreviewPlayerRef.current) {
+                              ringtonePreviewPlayerRef.current.stop();
+                              ringtonePreviewPlayerRef.current = null;
+                            }
+                            setPreviewingRingtoneId(null);
+                            setIsRingtoneModalOpen(false);
+                          }}
+                          className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center text-[#aebac1] hover:text-white transition cursor-pointer"
+                          title="Close"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+
+                      {/* Header Subtitle */}
+                      <div className="p-5 pb-3">
+                        <p className="text-xs text-[#8696a0] leading-relaxed">
+                          Choose your preferred ringtone for video and voice calls. Selection is permanently saved to your browser and will never reset on page refresh.
+                        </p>
+                      </div>
+
+                      {/* 5 Ringtones List */}
+                      <div className="px-5 pb-5 space-y-2.5 max-h-[60vh] overflow-y-auto">
+                        {RINGTONE_OPTIONS.map((tone) => {
+                          const isSelected = selectedRingtone === tone.id;
+                          const isPreviewing = previewingRingtoneId === tone.id;
+
+                          return (
+                            <div
+                              key={tone.id}
+                              onClick={() => handleSelectRingtone(tone.id)}
+                              className="p-3.5 rounded-2xl border transition cursor-pointer flex items-center justify-between gap-3 bg-[#202c33]/70 border-[#2a3942] hover:border-[#00a884]/50 text-[#e9edef]"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 border-[#8696a0]">
+                                  {isSelected && <div className="w-2 h-2 rounded-full bg-[#00a884]" />}
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="flex items-center gap-2">
+                                    <h4 className="text-xs font-bold truncate">{tone.name}</h4>
+                                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.2 rounded-full bg-white/10 text-[#25d366] border border-white/15">
+                                      {tone.badge}
+                                    </span>
+                                  </div>
+                                  <p className="text-[11px] text-[#8696a0] truncate mt-0.5">{tone.desc}</p>
+                                </div>
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  previewRingtone(tone.id);
+                                }}
+                                className="px-2.5 py-1.5 rounded-xl text-xs font-bold shrink-0 transition flex items-center gap-1.5 cursor-pointer bg-[#222d34] hover:bg-[#2a3942] text-[#00a884]"
+                                title={isPreviewing ? 'Stop Preview' : 'Listen to Preview'}
+                              >
+                                {isPreviewing ? (
+                                  <>
+                                    <VolumeX className="w-3.5 h-3.5" />
+                                    <span>Stop</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Volume2 className="w-3.5 h-3.5" />
+                                    <span>Play</span>
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Modal Footer */}
+                      <div className="p-4 bg-[#202c33] border-t border-[#222d34] flex items-center justify-between">
+                        <div className="text-[11px] text-[#8696a0]">
+                          Active: <span className="text-[#25d366] font-bold">{RINGTONE_OPTIONS.find(t => t.id === selectedRingtone)?.name || 'Default'}</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (ringtonePreviewPlayerRef.current) {
+                              ringtonePreviewPlayerRef.current.stop();
+                              ringtonePreviewPlayerRef.current = null;
+                            }
+                            setPreviewingRingtoneId(null);
+                            setIsRingtoneModalOpen(false);
+                            playSoundChime('delivered');
+                          }}
+                          className="px-4 py-2 rounded-xl bg-[#00a884] hover:bg-[#008f6f] text-white font-bold text-xs shadow-md transition cursor-pointer"
+                        >
+                          Save & Apply Tone
+                        </button>
+                      </div>
+
+                    </div>
+                  </div>
+                )}
+
                 {/* REAL-TIME INCOMING LIVE VIDEO / VOICE CALL POPUP BANNER (Front screen on mobile) */}
                 {/* ========================================================================= */}
                 {incomingCall && !callState.isOpen && (
