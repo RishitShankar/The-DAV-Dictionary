@@ -72,37 +72,42 @@ export async function sendRealEmailOtp(email) {
     return { success: false, error: 'Please enter a valid Google email address.' };
   }
 
-  const client = getSupabaseClient();
-  if (!client) {
-    return { success: false, error: 'Authentication engine not connected.' };
-  }
-
+  // 1. Direct high-speed Gmail SMTP dispatch API
   try {
-    const { data, error } = await client.auth.signInWithOtp({
-      email: cleanEmail,
-      options: {
-        shouldCreateUser: true
-      }
+    const apiRes = await fetch('/api/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: cleanEmail })
     });
 
-    if (error) {
-      console.error('Supabase signInWithOtp error:', error);
-      return { 
-        success: false, 
-        error: error.message || 'Failed to dispatch OTP email. Please ensure your email is correct.' 
-      };
+    if (apiRes.ok) {
+      const data = await apiRes.json();
+      if (data.success) {
+        return { success: true, email: cleanEmail };
+      }
     }
-
-    return {
-      success: true,
-      email: cleanEmail
-    };
-  } catch (err) {
-    return {
-      success: false,
-      error: err.message || 'Error communicating with email authentication server.'
-    };
+  } catch (apiErr) {
+    console.warn('API /api/send-otp unreachable, falling back:', apiErr);
   }
+
+  // 2. Fallback to Supabase signInWithOtp
+  const client = getSupabaseClient();
+  if (client) {
+    try {
+      const { data, error } = await client.auth.signInWithOtp({
+        email: cleanEmail,
+        options: { shouldCreateUser: true }
+      });
+      if (!error) {
+        return { success: true, email: cleanEmail };
+      }
+    } catch (e) {}
+  }
+
+  return {
+    success: false,
+    error: 'Failed to deliver OTP to your Gmail. Please check your email address and try again.'
+  };
 }
 
 /**
@@ -118,21 +123,35 @@ export async function verifyRealEmailOtp({ email, otp, fullName = '', classNum =
     return { success: false, error: 'Please enter the 6-digit OTP code.' };
   }
 
-  // 1. Primary check: Verify authentic OTP token via Supabase Custom SMTP
+  // 1. Primary check: Verify code via /api/verify-otp
   let isValid = false;
-  const client = getSupabaseClient();
-  if (client) {
-    try {
-      const { error } = await client.auth.verifyOtp({
-        email: cleanEmail,
-        token: cleanOtp,
-        type: 'email'
-      });
-      if (!error) isValid = true;
-    } catch (e) {}
+  try {
+    const apiRes = await fetch('/api/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: cleanEmail, otp: cleanOtp })
+    });
+    if (apiRes.ok) {
+      const data = await apiRes.json();
+      if (data.success) isValid = true;
+    }
+  } catch (e) {}
+
+  // 2. Secondary check: Supabase verifyOtp fallback
+  if (!isValid) {
+    const client = getSupabaseClient();
+    if (client) {
+      try {
+        const { error } = await client.auth.verifyOtp({
+          email: cleanEmail,
+          token: cleanOtp,
+          type: 'email'
+        });
+        if (!error) isValid = true;
+      } catch (e) {}
+    }
   }
 
-  // 2. Fallback check: Session OTP
   if (!isValid) {
     try {
       const raw = sessionStorage.getItem(`dav_active_otp_${cleanEmail}`);
