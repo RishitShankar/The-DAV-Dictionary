@@ -1499,10 +1499,70 @@
       "title": "Class 7 Secondary Mathematics (STD 7) - Ch 11: Perimeter and Area (10-Page Master Notes)",
       "pdfUrl": "/notes/Class%207/math7/Chapter-11.pdf",
       "timestamp": "2026-10-29T13:16:46.482Z"
+    },
+    "Class_7_math7_Ch_12": {
+      "noteId": "note_c7_math7_ch12",
+      "title": "Class 7 Secondary Mathematics (STD 7) - Ch 12: Data Handling (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/math7/Chapter-12.pdf",
+      "timestamp": "2026-10-29T13:17:29.010Z"
+    },
+    "Class_7_math7_Ch_13": {
+      "noteId": "note_c7_math7_ch13",
+      "title": "Class 7 Secondary Mathematics (STD 7) - Ch 13: Symmetry (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/math7/Chapter-13.pdf",
+      "timestamp": "2026-10-29T13:18:09.754Z"
+    },
+    "Class_7_math7_Ch_14": {
+      "noteId": "note_c7_math7_ch14",
+      "title": "Class 7 Secondary Mathematics (STD 7) - Ch 14: Visualising Solids (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/math7/Chapter-14.pdf",
+      "timestamp": "2026-10-29T13:18:47.654Z"
+    },
+    "Class_7_sci7_Ch_1": {
+      "noteId": "note_c7_sci7_ch1",
+      "title": "Class 7 The Living World: Science (STD 7) - Ch 1: Nutrition in Living Organisms—Plants (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/sci7/Chapter-1.pdf",
+      "timestamp": "2026-10-29T13:19:19.232Z"
+    },
+    "Class_7_sci7_Ch_2": {
+      "noteId": "note_c7_sci7_ch2",
+      "title": "Class 7 The Living World: Science (STD 7) - Ch 2: Nutrition in Living Organisms—Animals and Man (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/sci7/Chapter-2.pdf",
+      "timestamp": "2026-10-29T13:19:53.105Z"
+    },
+    "Class_7_sci7_Ch_3": {
+      "noteId": "note_c7_sci7_ch3",
+      "title": "Class 7 The Living World: Science (STD 7) - Ch 3: Chemical Substances and Processes (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/sci7/Chapter-3.pdf",
+      "timestamp": "2026-10-29T13:20:23.238Z"
+    },
+    "Class_7_sci7_Ch_4": {
+      "noteId": "note_c7_sci7_ch4",
+      "title": "Class 7 The Living World: Science (STD 7) - Ch 4: Acids, Bases and Salts (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/sci7/Chapter-4.pdf",
+      "timestamp": "2026-10-29T13:21:26.702Z"
+    },
+    "Class_7_sci7_Ch_5": {
+      "noteId": "note_c7_sci7_ch5",
+      "title": "Class 7 The Living World: Science (STD 7) - Ch 5: Heat (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/sci7/Chapter-5.pdf",
+      "timestamp": "2026-10-29T13:22:06.388Z"
+    },
+    "Class_7_sci7_Ch_6": {
+      "noteId": "note_c7_sci7_ch6",
+      "title": "Class 7 The Living World: Science (STD 7) - Ch 6: Motion and Time (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/sci7/Chapter-6.pdf",
+      "timestamp": "2026-10-29T13:22:58.303Z"
+    },
+    "Class_7_sci7_Ch_7": {
+      "noteId": "note_c7_sci7_ch7",
+      "title": "Class 7 The Living World: Science (STD 7) - Ch 7: Respiration in Organisms (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%207/sci7/Chapter-7.pdf",
+      "timestamp": "2026-10-29T13:23:30.745Z"
     }
   },
   "stats": {
-    "totalCompleted": 250,
+    "totalCompleted": 260,
     "startTime": "2026-10-29T03:02:26.924Z"
   }
 }
