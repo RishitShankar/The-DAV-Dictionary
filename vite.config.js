@@ -5,9 +5,10 @@ import http from 'http'
 import path from 'path'
 import crypto from 'crypto'
 import { fileURLToPath } from 'url'
-import { sendGmailTls, activeOtpStore } from './api/send-otp.js'
+import { sendGmailTls } from './api/send-otp.js'
 
 const AUTH_SECRET = 'DAV_PORTAL_SECURE_AUTH_KEY_2026_HEADBOY_RISHIT';
+const activeOtpStore = new Map();
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
