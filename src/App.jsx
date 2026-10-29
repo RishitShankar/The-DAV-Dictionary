@@ -13,7 +13,7 @@ import { RishiAI } from './components/RishiAI';
 import { PdfReaderModal } from './components/PdfReaderModal';
 import { PricingModal } from './components/PricingModal';
 import { CustomPurchaseModal } from './components/CustomPurchaseModal';
-import { Cinematic15sExperience } from './components/Cinematic15sExperience';
+import { CinematicFlameVfx } from './components/vfx/CinematicFlameVfx';
 import { VfxGlobalSuite } from './components/VfxGlobalSuite';
 import { AuthModal } from './components/AuthModal';
 import { UploadPdfModal } from './components/UploadPdfModal';
@@ -41,6 +41,29 @@ import { safeSetUser, safeSetItem } from './utils/safeStorage';
 
 export function App() {
   const [activeSection, setActiveSection] = useState(1);
+  const [flameVfx, setFlameVfx] = useState({
+    isOpen: false,
+    title: '',
+    subtitle: '',
+    onComplete: null
+  });
+
+  const trigger5sFlameVfx = (title, subtitle, onComplete = null) => {
+    setFlameVfx({
+      isOpen: true,
+      title: title || 'Opening Digital Textbook Vault',
+      subtitle: subtitle || 'DAV School Academic Curriculum • Classes 1 to 8',
+      onComplete
+    });
+  };
+
+  useEffect(() => {
+    const handleGlobalFlame = (e) => {
+      trigger5sFlameVfx(e?.detail?.title, e?.detail?.subtitle, e?.detail?.onComplete);
+    };
+    window.addEventListener('dav_trigger_flame_vfx', handleGlobalFlame);
+    return () => window.removeEventListener('dav_trigger_flame_vfx', handleGlobalFlame);
+  }, []);
   const [isCinematicOpen, setIsCinematicOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
@@ -252,6 +275,12 @@ export function App() {
       return;
     }
     // In 5B Teacher & Explorer mode, teacher can explore all sections freely!
+    if (secId === 2 && activeSection !== 2) {
+      trigger5sFlameVfx(
+        'Opening Digital Textbook Vault • Classes 1 to 8',
+        'DAV School Master Curriculum & Digital Library'
+      );
+    }
     setActiveSection(secId);
     setIsSidebarOpen(false);
   };
@@ -304,8 +333,15 @@ export function App() {
       );
       return;
     }
-    setReaderBook(book);
-    setIsPdfReaderOpen(true);
+    // 5-Second Cinematic Flame VFX while loading PDF
+    trigger5sFlameVfx(
+      `Opening Official Textbook: ${book?.title || 'DAV Textbook'}`,
+      `Rendering Class ${book?.grade || book?.class || '8'} Curriculum • Authentic DAV School Archive`,
+      () => {
+        setReaderBook(book);
+        setIsPdfReaderOpen(true);
+      }
+    );
   };
 
   const handleClosePdfReader = () => {
@@ -388,7 +424,7 @@ export function App() {
   const isGuest = user.plan === 'guest' || user.isDemo;
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans selection:bg-amber-300 selection:text-red-950">
+    <div className={`min-h-screen ${activeSection === 4 ? 'h-screen max-h-screen overflow-hidden' : ''} bg-slate-50 flex flex-col font-sans selection:bg-amber-300 selection:text-red-950`}>
       
       {/* Guest Mode Floating Notification */}
       {isGuest && (
@@ -452,7 +488,7 @@ export function App() {
 
 
       {/* Main Content Area */}
-      <main className={`flex-1 ${deviceDimension === 'mobile' ? 'pb-24' : ''} ${activeSection === 4 ? 'overflow-hidden' : ''}`}>
+      <main className={`flex-1 min-h-0 flex flex-col ${deviceDimension === 'mobile' ? 'pb-24' : ''} ${activeSection === 4 ? 'h-full overflow-hidden' : ''}`}>
         <SectionErrorBoundary
           key={`section-boundary-${activeSection}`}
           sectionName={`Section ${activeSection}`}
@@ -622,16 +658,14 @@ export function App() {
       {/* Global VFX Engine (Click Ripples, Constellation Net, Confetti Cannon) */}
       <VfxGlobalSuite />
 
-      {/* 15-Second Cinematic Experience (2 High-Impact Films: Vedic Awakening & 6D Hyperdrive) */}
-      <Cinematic15sExperience
-        isOpen={isCinematicOpen}
-        onClose={() => setIsCinematicOpen(false)}
-        onFinish={() => {
-          setIsCinematicOpen(false);
-          // If in public homepage, enter demo preview
-          if (viewMode === 'home') {
-            handleEnterDemoPreview(1);
-          }
+      {/* 5-Second Cinematic Flame VFX (Section 2 Open, PDF Reader Loading, Custom Upload Save) */}
+      <CinematicFlameVfx
+        isOpen={flameVfx.isOpen}
+        title={flameVfx.title}
+        subtitle={flameVfx.subtitle}
+        onComplete={() => {
+          if (flameVfx.onComplete) flameVfx.onComplete();
+          setFlameVfx(prev => ({ ...prev, isOpen: false }));
         }}
       />
 

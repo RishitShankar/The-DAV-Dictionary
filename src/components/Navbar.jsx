@@ -107,7 +107,7 @@ export function Navbar({
   }
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 border-b border-slate-200 shadow-sm">
+    <header className="sticky top-0 z-40 bg-white/95 border-b border-slate-200 shadow-sm shrink-0">
       {/* Top Banner - Head Boy Dedication */}
       <div className="bg-gradient-to-r from-amber-600 via-rose-900 to-amber-700 text-amber-100 text-xs py-1.5 px-4 text-center font-medium flex items-center justify-center gap-2">
         <Award className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
@@ -180,18 +180,7 @@ export function Navbar({
               </button>
             )}
 
-                        {/* 15s Cinematic Cinema Button */}
-            {onOpenCinematic && (
-              <button
-                onClick={onOpenCinematic}
-                className="py-1.5 px-3 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:from-purple-500 hover:to-amber-400 text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md shadow-purple-900/30 border border-amber-300/40 transition-transform active:scale-95"
-                title="Watch 15-Second Cinematic Experience"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-spin" style={{ animationDuration: '4s' }} />
-                <span className="hidden sm:inline">15s Film</span>
-                <span className="sm:hidden">15s</span>
-              </button>
-            )}
+                        
 
 {/* Launch Rishi AI Button */}
             {onOpenAI && (

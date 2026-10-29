@@ -481,8 +481,13 @@ export function getCallSignalingChannel() {
   return callSignalingChannelInstance;
 }
 
+// Unique Session Identifier for this browser tab instance to prevent self-echo and premature decline
+const CURRENT_TAB_ID = typeof window !== 'undefined'
+  ? (window.__DAV_TAB_SESSION_ID || (window.__DAV_TAB_SESSION_ID = 'tab_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now()))
+  : 'tab_server';
+
 export function broadcastCallSignal(signalData) {
-  const payload = { ...signalData, timestamp: Date.now() };
+  const payload = { ...signalData, senderTabId: signalData.senderTabId || CURRENT_TAB_ID, timestamp: Date.now() };
 
   // 1. Instant intra-browser BroadcastChannel
   try {
@@ -531,13 +536,22 @@ export function broadcastCallSignal(signalData) {
 export function subscribeCallSignals(onSignal) {
   if (typeof onSignal !== 'function') return () => {};
 
+  // Wrap handler to safely ignore signals emitted by this exact browser tab
+  const safeHandler = (data) => {
+    if (!data) return;
+    if (data.senderTabId && data.senderTabId === CURRENT_TAB_ID) {
+      return; // Discard echo of our own outgoing signal
+    }
+    onSignal(data);
+  };
+
   // 1. Listen via BroadcastChannel
   let bc = null;
   try {
     if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
       bc = new BroadcastChannel('dav_whatsapp_real_call_signaling');
       bc.onmessage = (event) => {
-        if (event.data) onSignal(event.data);
+        if (event.data) safeHandler(event.data);
       };
     }
   } catch (e) {}
@@ -547,7 +561,7 @@ export function subscribeCallSignals(onSignal) {
     if (e.key === 'dav_active_call_signal_event' && e.newValue) {
       try {
         const parsed = JSON.parse(e.newValue);
-        onSignal(parsed);
+        safeHandler(parsed);
       } catch (err) {}
     }
   };
@@ -559,7 +573,7 @@ export function subscribeCallSignals(onSignal) {
   const ch = getCallSignalingChannel();
   if (ch) {
     ch.on('broadcast', { event: 'call_signal' }, ({ payload }) => {
-      if (payload) onSignal(payload);
+      if (payload) safeHandler(payload);
     });
   }
 
@@ -583,7 +597,7 @@ export function subscribeCallSignals(onSignal) {
               if (payload.new && payload.new.canvas_data) {
                 const signal = JSON.parse(payload.new.canvas_data);
                 if (signal && Date.now() - (signal.timestamp || 0) < 60000) {
-                  onSignal(signal);
+                  safeHandler(signal);
                 }
               }
             } catch (err) {}

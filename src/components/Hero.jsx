@@ -76,16 +76,7 @@ export function Hero({ onOpenAI, onOpenPricing, onOpenUpload, onSelectClass, sel
             <span className="bg-stone-950 text-amber-300 text-xs px-2 py-0.5 rounded-full font-black border border-amber-400/40">ONLINE</span>
           </button>
 
-          {onOpenCinematic && (
-            <button
-              onClick={onOpenCinematic}
-              className="px-5 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:from-purple-500 hover:to-amber-400 text-white font-black text-sm sm:text-base flex items-center gap-2 shadow-xl shadow-purple-900/40 border border-amber-300/60 cursor-pointer btn-interactive transform hover:-translate-y-0.5"
-            >
-              <Sparkles className="w-5 h-5 text-amber-300 animate-spin" style={{ animationDuration: '4s' }} />
-              <span>✨ 15s Cinematic Films</span>
-              <span className="bg-amber-400 text-stone-950 text-[10px] px-2 py-0.5 rounded-full font-black uppercase">VFX</span>
-            </button>
-          )}
+          
         </div>
 
         {/* Feature Highlights Row */}

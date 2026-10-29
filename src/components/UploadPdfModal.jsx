@@ -35,6 +35,14 @@ export function UploadPdfModal({ isOpen, onClose, onAddPdf }) {
 
       onAddPdf(newPdfRecord);
       setIsSuccess(true);
+      try {
+        window.dispatchEvent(new CustomEvent('dav_trigger_flame_vfx', {
+          detail: {
+            title: 'Custom Textbook Saved to Digital Library!',
+            subtitle: `Class ${classNum} ${subject} • Master Digital Archive Updated`
+          }
+        }));
+      } catch (e) {}
       setTimeout(() => {
         setIsSuccess(false);
         setFile(null);

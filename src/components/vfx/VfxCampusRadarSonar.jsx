@@ -25,8 +25,7 @@ export function VfxCampusRadarSonar() {
     };
     window.addEventListener('resize', handleResize);
 
-    const beaconLabels = ['BUS #1', 'BUS #4', 'GATE A', 'MAIN LAB', 'GROUND', 'RADAR', 'CAMPUS'];
-    const beaconCount = Math.min(Math.floor(width / 34), 42);
+        const beaconCount = Math.min(Math.floor(width / 34), 42);
 
     const beacons = Array.from({ length: beaconCount }, (_, i) => ({
       x: Math.random() * width,
@@ -34,8 +33,7 @@ export function VfxCampusRadarSonar() {
       vx: (Math.random() - 0.5) * 0.4,
       vy: (Math.random() - 0.5) * 0.4,
       radius: Math.random() * 2.2 + 1.2,
-      label: i % 6 === 0 ? beaconLabels[Math.floor(Math.random() * beaconLabels.length)] : null,
-      color: ['#10b981', '#34d399', '#059669', '#fbbf24', '#38bdf8'][Math.floor(Math.random() * 5)],
+            color: ['#10b981', '#34d399', '#059669', '#fbbf24', '#38bdf8'][Math.floor(Math.random() * 5)],
       pulse: Math.random() * Math.PI * 2
     }));
 
@@ -163,13 +161,7 @@ export function VfxCampusRadarSonar() {
         ctx.fill();
         ctx.shadowBlur = 0;
 
-        // Label if present
-        if (b.label) {
-          ctx.font = 'bold 9px monospace';
-          ctx.fillStyle = 'rgba(110, 231, 183, 0.85)';
-          ctx.textAlign = 'center';
-          ctx.fillText(b.label, b.x, b.y - 8);
-        }
+
       });
 
       // 4. Cursor Targeting Crosshair

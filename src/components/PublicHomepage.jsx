@@ -357,18 +357,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
           {/* Action CTAs */}
           <div className="flex items-center gap-2.5 sm:gap-3">
             
-            {/* 15s Cinematic Experience Button */}
-            {onOpenCinematic && (
-              <button
-                onClick={onOpenCinematic}
-                className="px-3 sm:px-3.5 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:from-purple-500 hover:to-amber-400 text-white border border-amber-300/40 hover:border-amber-300 transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-purple-900/30 active:scale-95"
-                title="Experience 15-Second Cinematic Film"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-spin" style={{ animationDuration: '4s' }} />
-                <span className="hidden sm:inline">15s Cinema</span>
-                <span className="sm:hidden">15s</span>
-              </button>
-            )}
+            
 
             {/* Have a Demo Preview Button (Header Shortcut) */}
             <button
@@ -610,70 +599,103 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
 
       
       {/* =========================================================================
-          GOOGLE SEARCH SITELINKS & FAST DIRECT PORTALS (NETFLIX STYLE)
+          NETFLIX-STYLE 5-SECTION MASTER DIRECTORY & GOOGLE SITELINKS
       ========================================================================= */}
-      <section className="py-12 bg-slate-950 border-b border-stone-800/80 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-14 bg-gradient-to-b from-[#141414] via-[#0d0e12] to-[#141414] border-b border-stone-800/90 relative overflow-hidden">
+        {/* Subtle Ambient Red/Amber Glow */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-red-600/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           
-          {/* Header with Google Search Badges */}
+          {/* Header with Netflix-Style Badge & Search Verification */}
           <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-8">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold mb-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Google Search Verified Sitelinks</span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2.5">
-                <span>Fast Direct Portals</span>
-                <span className="text-xs font-bold text-stone-400 px-2.5 py-1 rounded-lg bg-stone-900 border border-stone-800">
-                  Netflix-Style Directory
+              <div className="flex items-center gap-2 mb-2.5">
+                <span className="px-2.5 py-0.5 rounded text-[11px] font-black uppercase tracking-widest bg-red-600 text-white shadow-sm flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                  <span>TOP 5 SECTIONS</span>
                 </span>
+                <span className="text-xs font-bold text-stone-400 px-2.5 py-0.5 rounded bg-stone-900 border border-stone-800">
+                  Trending on DAV Dictionary Today
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight flex items-center gap-3">
+                <span>Top 5 Portals in DAV Dictionary</span>
               </h2>
-              <p className="text-xs sm:text-sm text-stone-400 mt-1 max-w-2xl">
-                Official sub-portals indexed for Google Search. Jump directly into any key section of DAV Dictionary.
+              <p className="text-xs sm:text-sm text-stone-400 mt-1.5 max-w-2xl leading-relaxed">
+                Cinematic quick-launch directory for the 5 most popular sections. Indexed and verified on Google Search Console for sub-second access.
               </p>
             </div>
 
-            <div className="flex items-center gap-2 text-xs font-mono text-stone-400 bg-stone-900/90 px-3.5 py-2 rounded-xl border border-stone-800 shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-amber-400" />
-              <span className="text-amber-300 font-bold">google.com/search?q=dav+dictionary</span>
+            <div className="flex items-center gap-2 text-xs font-mono text-stone-300 bg-stone-900/95 px-4 py-2 rounded-xl border border-stone-800 shadow-md">
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              <span className="text-stone-400">Google Sitelinks:</span>
+              <span className="text-amber-300 font-bold">dav dictionary</span>
             </div>
           </div>
 
-          {/* 5 Netflix-Style Sitelinks Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            {sitelinks.map((link, idx) => (
-              <a
-                key={idx}
-                href={link.path}
-                onClick={(e) => {
-                  e.preventDefault();
-                  link.action();
-                }}
-                className="group relative p-5 rounded-2xl bg-stone-900/80 hover:bg-stone-900 border border-stone-800 hover:border-amber-400/50 shadow-lg hover:shadow-xl hover:shadow-amber-500/10 transition-all duration-300 flex flex-col justify-between cursor-pointer transform hover:-translate-y-1"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${link.color} p-2 text-stone-950 flex items-center justify-center font-black shadow-md group-hover:scale-110 transition-transform`}>
-                      <link.icon className="w-5 h-5 text-stone-950" />
-                    </div>
-                    <span className="text-[10px] font-black uppercase tracking-wider text-stone-400 bg-stone-800/80 px-2 py-0.5 rounded-full group-hover:text-amber-300 transition-colors">
-                      {link.badge}
-                    </span>
-                  </div>
-                  <h3 className="text-sm font-black text-white group-hover:text-amber-300 transition-colors line-clamp-2">
-                    {link.title}
-                  </h3>
-                  <p className="text-xs text-stone-400 mt-2 line-clamp-3 leading-relaxed">
-                    {link.description}
-                  </p>
-                </div>
+          {/* 5 Netflix-Style Cinematic Poster Cards with Giant Rank Numerals */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+            {sitelinks.map((link, idx) => {
+              const rank = idx + 1;
+              return (
+                <div
+                  key={idx}
+                  onClick={link.action}
+                  className="group relative rounded-2xl bg-gradient-to-b from-stone-900/90 to-stone-950/90 border border-stone-800/90 hover:border-red-500/70 shadow-xl hover:shadow-2xl hover:shadow-red-600/15 transition-all duration-300 flex flex-col justify-between cursor-pointer overflow-hidden transform hover:-translate-y-2 hover:scale-[1.02]"
+                >
+                  {/* Top Netflix-Style Banner Accent */}
+                  <div className="h-1.5 w-full bg-gradient-to-r from-red-600 via-amber-500 to-rose-600 opacity-80 group-hover:opacity-100 transition-opacity" />
 
-                <div className="mt-4 pt-3 border-t border-stone-800/60 flex items-center justify-between text-xs font-bold text-amber-400 group-hover:text-amber-300">
-                  <span className="text-[11px] font-mono text-stone-500 group-hover:text-stone-400">{link.path}</span>
-                  <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                  <div className="p-5 flex-1 flex flex-col justify-between relative">
+                    
+                    {/* Big Netflix Top 10 Styled Rank Numeral Background */}
+                    <div className="absolute top-2 right-3 pointer-events-none select-none">
+                      <span className="text-6xl sm:text-7xl font-black font-mono leading-none tracking-tighter text-stone-800/60 group-hover:text-red-500/20 transition-colors">
+                        #{rank}
+                      </span>
+                    </div>
+
+                    <div className="relative z-10">
+                      {/* Icon & Category Badge */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${link.color} p-2.5 text-stone-950 flex items-center justify-center font-black shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform`}>
+                          <link.icon className="w-6 h-6 text-stone-950" />
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-wider text-stone-300 bg-stone-800/90 border border-stone-700/60 px-2 py-0.5 rounded-md group-hover:text-amber-300 transition-colors">
+                          {link.badge}
+                        </span>
+                      </div>
+
+                      {/* Title */}
+                      <h3 className="text-sm sm:text-base font-black text-white group-hover:text-red-400 transition-colors line-clamp-2 leading-snug">
+                        {link.title}
+                      </h3>
+
+                      {/* Description */}
+                      <p className="text-xs text-stone-400 mt-2.5 line-clamp-3 leading-relaxed">
+                        {link.description}
+                      </p>
+                    </div>
+
+                    {/* Bottom Action Bar: Netflix "Watch / Launch" Style */}
+                    <div className="mt-5 pt-3 border-t border-stone-800/80 flex items-center justify-between relative z-10">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-white group-hover:text-amber-300 transition-colors">
+                        <div className="w-6 h-6 rounded-full bg-white/10 group-hover:bg-red-600 text-white flex items-center justify-center transition-colors">
+                          <Play className="w-3 h-3 fill-current ml-0.5" />
+                        </div>
+                        <span className="text-[11px] uppercase tracking-wider font-extrabold">Launch</span>
+                      </div>
+                      <span className="text-[10px] font-mono text-stone-500 group-hover:text-stone-400">
+                        {link.path}
+                      </span>
+                    </div>
+
+                  </div>
                 </div>
-              </a>
-            ))}
+              );
+            })}
           </div>
 
         </div>

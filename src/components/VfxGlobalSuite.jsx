@@ -7,7 +7,7 @@ export function triggerCelebrationConfetti(count = 120) {
   } catch (e) {}
 }
 
-export function VfxGlobalSuite({ isDevMode = false, showConstellation = true }) {
+export function VfxGlobalSuite({ isDevMode = false, showConstellation = false }) {
   const constellationCanvasRef = useRef(null);
   const [ripples, setRipples] = useState([]);
 
