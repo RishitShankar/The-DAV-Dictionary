@@ -10392,6 +10392,20 @@ export const OFFICIAL_CHAPTER_NOTES = [
     "uploadedBy": "Google Gemini Master Agent"
   },
   {
+    "id": "note_c4_sst4_ch6",
+    "classNum": "4",
+    "subjectId": "sst4",
+    "subjectName": "Social Science - We and Our World",
+    "chapterNum": 6,
+    "chapterTitle": "Waste Management",
+    "title": "Class 4 Social Science - We and Our World - Ch 6: Waste Management (10-Page Master Notes)",
+    "pdfUrl": "/notes/Class%204/sst4/Chapter-6.pdf",
+    "fileName": "sst4-ch6-10page-notes.pdf",
+    "fileSize": "10 Pages PDF",
+    "uploadedAt": "Oct 30, 2026",
+    "uploadedBy": "Google Gemini Master Agent"
+  },
+  {
     "id": "note_c4_sst4_ch7",
     "classNum": "4",
     "subjectId": "sst4",
@@ -14825,6 +14839,20 @@ export const OFFICIAL_CHAPTER_NOTES = [
     "title": "Class 1 Wow General Knowledge (Class 1) - Ch 12: कौशल की सालगिरह (औ की मात्रा) (10-Page Master Notes)",
     "pdfUrl": "/notes/Class%201/gk1/Chapter-12.pdf",
     "fileName": "gk1-ch12-10page-notes.pdf",
+    "fileSize": "10 Pages PDF",
+    "uploadedAt": "Oct 30, 2026",
+    "uploadedBy": "Google Gemini Master Agent"
+  },
+  {
+    "id": "note_c1_gk1_ch13",
+    "classNum": "1",
+    "subjectId": "gk1",
+    "subjectName": "Wow General Knowledge (Class 1)",
+    "chapterNum": 13,
+    "chapterTitle": "संजय की पतंग (अं की मात्रा)",
+    "title": "Class 1 Wow General Knowledge (Class 1) - Ch 13: संजय की पतंग (अं की मात्रा) (10-Page Master Notes)",
+    "pdfUrl": "/notes/Class%201/gk1/Chapter-13.pdf",
+    "fileName": "gk1-ch13-10page-notes.pdf",
     "fileSize": "10 Pages PDF",
     "uploadedAt": "Oct 30, 2026",
     "uploadedBy": "Google Gemini Master Agent"
