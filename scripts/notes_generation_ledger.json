@@ -4979,10 +4979,70 @@
       "title": "Class 3 Hands On in Computer (Class 3) - Ch 1: Getting Started (10-Page Master Notes)",
       "pdfUrl": "/notes/Class%203/comp3/Chapter-1.pdf",
       "timestamp": "2026-10-30T01:27:35.124Z"
+    },
+    "Class_3_comp3_Ch_2": {
+      "noteId": "note_c3_comp3_ch2",
+      "title": "Class 3 Hands On in Computer (Class 3) - Ch 2: Fundamentals of Computers (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%203/comp3/Chapter-2.pdf",
+      "timestamp": "2026-10-30T01:28:08.007Z"
+    },
+    "Class_3_comp3_Ch_3": {
+      "noteId": "note_c3_comp3_ch3",
+      "title": "Class 3 Hands On in Computer (Class 3) - Ch 3: Keyboard 1 (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%203/comp3/Chapter-3.pdf",
+      "timestamp": "2026-10-30T01:28:30.135Z"
+    },
+    "Class_3_comp3_Ch_4": {
+      "noteId": "note_c3_comp3_ch4",
+      "title": "Class 3 Hands On in Computer (Class 3) - Ch 4: Touch Typing: Play with Text Editor (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%203/comp3/Chapter-4.pdf",
+      "timestamp": "2026-10-30T01:28:52.030Z"
+    },
+    "Class_3_comp3_Ch_5": {
+      "noteId": "note_c3_comp3_ch5",
+      "title": "Class 3 Hands On in Computer (Class 3) - Ch 5: Know the Keyboard (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%203/comp3/Chapter-5.pdf",
+      "timestamp": "2026-10-30T01:29:16.713Z"
+    },
+    "Class_3_comp3_Ch_6": {
+      "noteId": "note_c3_comp3_ch6",
+      "title": "Class 3 Hands On in Computer (Class 3) - Ch 6: Using the Icons (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%203/comp3/Chapter-6.pdf",
+      "timestamp": "2026-10-30T01:29:39.131Z"
+    },
+    "Class_3_comp3_Ch_7": {
+      "noteId": "note_c3_comp3_ch7",
+      "title": "Class 3 Hands On in Computer (Class 3) - Ch 7: Tux Paint: Let's Paint the World (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%203/comp3/Chapter-7.pdf",
+      "timestamp": "2026-10-30T01:30:00.583Z"
+    },
+    "Class_3_comp3_Ch_8": {
+      "noteId": "note_c3_comp3_ch8",
+      "title": "Class 3 Hands On in Computer (Class 3) - Ch 8: Use Safe: Precautions While Using Computers (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%203/comp3/Chapter-8.pdf",
+      "timestamp": "2026-10-30T01:30:21.799Z"
+    },
+    "Class_3_gk3_Ch_1": {
+      "noteId": "note_c3_gk3_ch1",
+      "title": "Class 3 Kid Wiz (General Knowledge Class 3) - Ch 1: भोलू भुलक्कड़ (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%203/gk3/Chapter-1.pdf",
+      "timestamp": "2026-10-30T01:30:44.906Z"
+    },
+    "Class_3_gk3_Ch_2": {
+      "noteId": "note_c3_gk3_ch2",
+      "title": "Class 3 Kid Wiz (General Knowledge Class 3) - Ch 2: चतुर कौवा (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%203/gk3/Chapter-2.pdf",
+      "timestamp": "2026-10-30T01:31:07.637Z"
+    },
+    "Class_3_gk3_Ch_3": {
+      "noteId": "note_c3_gk3_ch3",
+      "title": "Class 3 Kid Wiz (General Knowledge Class 3) - Ch 3: हाथी और चिड़िया (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%203/gk3/Chapter-3.pdf",
+      "timestamp": "2026-10-30T01:31:34.150Z"
     }
   },
   "stats": {
-    "totalCompleted": 830,
+    "totalCompleted": 840,
     "startTime": "2026-10-29T03:02:26.924Z"
   }
 }
