@@ -4319,10 +4319,70 @@
       "title": "Class 4 Social Science - We and Our World - Ch 11: Let Us Travel (10-Page Master Notes)",
       "pdfUrl": "/notes/Class%204/sst4/Chapter-11.pdf",
       "timestamp": "2026-10-30T00:41:30.547Z"
+    },
+    "Class_4_sst4_Ch_12": {
+      "noteId": "note_c4_sst4_ch12",
+      "title": "Class 4 Social Science - We and Our World - Ch 12: Let Us Communicate (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%204/sst4/Chapter-12.pdf",
+      "timestamp": "2026-10-30T00:41:58.086Z"
+    },
+    "Class_4_sst4_Ch_13": {
+      "noteId": "note_c4_sst4_ch13",
+      "title": "Class 4 Social Science - We and Our World - Ch 13: India—Our Motherland (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%204/sst4/Chapter-13.pdf",
+      "timestamp": "2026-10-30T00:42:21.180Z"
+    },
+    "Class_4_comp4_Ch_1": {
+      "noteId": "note_c4_comp4_ch1",
+      "title": "Class 4 Hands On in Computer (STD-IV) - Ch 1: Computer—A Machine (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%204/comp4/Chapter-1.pdf",
+      "timestamp": "2026-10-30T00:42:45.302Z"
+    },
+    "Class_4_comp4_Ch_2": {
+      "noteId": "note_c4_comp4_ch2",
+      "title": "Class 4 Hands On in Computer (STD-IV) - Ch 2: More on Tux Paint (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%204/comp4/Chapter-2.pdf",
+      "timestamp": "2026-10-30T00:43:11.004Z"
+    },
+    "Class_4_comp4_Ch_3": {
+      "noteId": "note_c4_comp4_ch3",
+      "title": "Class 4 Hands On in Computer (STD-IV) - Ch 3: Exploring Tux Paint (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%204/comp4/Chapter-3.pdf",
+      "timestamp": "2026-10-30T00:43:39.964Z"
+    },
+    "Class_4_comp4_Ch_4": {
+      "noteId": "note_c4_comp4_ch4",
+      "title": "Class 4 Hands On in Computer (STD-IV) - Ch 4: LOGO-I (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%204/comp4/Chapter-4.pdf",
+      "timestamp": "2026-10-30T00:44:09.858Z"
+    },
+    "Class_4_comp4_Ch_5": {
+      "noteId": "note_c4_comp4_ch5",
+      "title": "Class 4 Hands On in Computer (STD-IV) - Ch 5: LOGO-II (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%204/comp4/Chapter-5.pdf",
+      "timestamp": "2026-10-30T00:44:34.366Z"
+    },
+    "Class_4_comp4_Ch_6": {
+      "noteId": "note_c4_comp4_ch6",
+      "title": "Class 4 Hands On in Computer (STD-IV) - Ch 6: Writer-Getting Started (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%204/comp4/Chapter-6.pdf",
+      "timestamp": "2026-10-30T00:44:57.669Z"
+    },
+    "Class_4_comp4_Ch_7": {
+      "noteId": "note_c4_comp4_ch7",
+      "title": "Class 4 Hands On in Computer (STD-IV) - Ch 7: Editing in Writer (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%204/comp4/Chapter-7.pdf",
+      "timestamp": "2026-10-30T00:45:22.291Z"
+    },
+    "Class_4_comp4_Ch_8": {
+      "noteId": "note_c4_comp4_ch8",
+      "title": "Class 4 Hands On in Computer (STD-IV) - Ch 8: Internet as A Pool of Information (10-Page Master Notes)",
+      "pdfUrl": "/notes/Class%204/comp4/Chapter-8.pdf",
+      "timestamp": "2026-10-30T00:45:49.371Z"
     }
   },
   "stats": {
-    "totalCompleted": 720,
+    "totalCompleted": 730,
     "startTime": "2026-10-29T03:02:26.924Z"
   }
 }
