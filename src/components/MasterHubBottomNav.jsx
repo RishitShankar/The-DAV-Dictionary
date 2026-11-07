@@ -193,19 +193,19 @@ export function MasterHubBottomNav({ activeSection, onSelectSection }) {
   return (
     <>
       {/* ========================================================================= */}
-      {/* ANIMATED POP-UP DRAWER FOR 3 SUB-SECTIONS                                 */}
+      {/* ANIMATED POP-UP DRAWER FOR 3 SUB-SECTIONS (SOLID OPAQUE Z-[160] OVERLAY)  */}
       {/* ========================================================================= */}
       {activeHubDetails && (
-        <div className="fixed inset-0 z-45 bg-black/60 backdrop-blur-xs flex flex-col justify-end animate-fadeIn select-none">
+        <div className="fixed inset-0 z-[150] bg-black/75 backdrop-blur-sm flex flex-col justify-end select-none">
           {/* Backdrop dismiss */}
           <div className="flex-1 w-full" onClick={() => setOpenHubId(null)} />
 
-          <div className="w-full max-w-lg mx-auto bg-white rounded-t-3xl shadow-2xl border-t border-slate-200 p-5 pb-24 animate-slideUp relative">
+          <div className="w-full max-w-lg mx-auto bg-white rounded-t-3xl shadow-2xl border-t-4 border-amber-500 p-5 pb-28 relative z-[160] overflow-y-auto max-h-[85vh]">
             
             {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 mb-3 bg-white">
               <div className="flex items-center gap-2.5">
-                <div className={`w-9 h-9 rounded-xl bg-gradient-to-tr ${activeHubDetails.accentColor} text-white flex items-center justify-center shadow-md`}>
+                <div className={`w-10 h-10 rounded-2xl bg-gradient-to-tr ${activeHubDetails.accentColor} text-white flex items-center justify-center shadow-md`}>
                   <activeHubDetails.icon className="w-5 h-5" />
                 </div>
                 <div>
@@ -219,13 +219,13 @@ export function MasterHubBottomNav({ activeSection, onSelectSection }) {
               </div>
               <button
                 onClick={() => setOpenHubId(null)}
-                className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer"
+                className="p-2 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-[11px] text-slate-500 mb-3 font-medium">
+            <p className="text-[11px] text-slate-600 mb-3 font-semibold">
               Choose one of the 3 redirection sections below to launch immediately:
             </p>
 
@@ -240,8 +240,8 @@ export function MasterHubBottomNav({ activeSection, onSelectSection }) {
                     onClick={() => handleChooseSection(sec.number)}
                     className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between gap-3 transform active:scale-98 ${
                       isSelected
-                        ? 'bg-amber-50/80 border-amber-400 shadow-md ring-2 ring-amber-400/30'
-                        : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-amber-300 shadow-2xs'
+                        ? 'bg-amber-50 border-amber-400 shadow-md ring-2 ring-amber-400/40'
+                        : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-amber-300 shadow-xs'
                     }`}
                   >
                     <div className="flex items-center gap-3 overflow-hidden">
@@ -254,18 +254,18 @@ export function MasterHubBottomNav({ activeSection, onSelectSection }) {
                             {sec.title}
                           </span>
                           {isSelected && (
-                            <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 uppercase">
+                            <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 uppercase">
                               Active
                             </span>
                           )}
                         </div>
-                        <p className="text-[10px] text-slate-500 line-clamp-1 mt-0.5">
+                        <p className="text-[10px] text-slate-600 line-clamp-1 mt-0.5 font-medium">
                           {sec.desc}
                         </p>
                       </div>
                     </div>
 
-                    <div className="shrink-0 flex items-center gap-1 text-xs font-black text-amber-700">
+                    <div className="shrink-0 flex items-center gap-1 text-xs font-black text-amber-700 bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-200">
                       <span className="text-[11px]">Open</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </div>
@@ -279,11 +279,11 @@ export function MasterHubBottomNav({ activeSection, onSelectSection }) {
       )}
 
       {/* ========================================================================= */}
-      {/* 5 MASTER HUB BOTTOM FLOATING DOCK                                         */}
+      {/* 5 MASTER HUB BOTTOM FLOATING DOCK (SOLID OPAQUE Z-[140])                  */}
       {/* ========================================================================= */}
       <nav 
         aria-label="5 Master Hub Navigation"
-        className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 border-t border-slate-200 py-2 px-2 shadow-2xl flex items-center justify-around select-none backdrop-blur-md"
+        className="fixed bottom-0 left-0 right-0 z-[140] bg-white border-t border-slate-200 py-2 px-2 shadow-2xl flex items-center justify-around select-none"
       >
         {MASTER_HUBS.map((hub) => {
           const isHoldingActive = hub.sections.some(s => s.number === activeSection);

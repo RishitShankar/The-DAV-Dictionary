@@ -493,7 +493,12 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
         const sanitized = expr.replace(/[^0-9+\-*/().MathPIEsqrtcossintaexp]/g, '');
         // eslint-disable-next-line no-new-func
         const result = Function(`'use strict'; return (${sanitized})`)();
-        const formattedResult = (Math.round(result * 10000000) / 10000000).toString();
+        if (!isFinite(result) || isNaN(result)) {
+          setCalcDisplay('Cannot divide by 0');
+          setIsNewCalc(true);
+          return;
+        }
+        const formattedResult = Number(result.toFixed(8)).toString();
         
         setCalcHistory(prev => [{ expr: calcDisplay, res: formattedResult }, ...prev.slice(0, 9)]);
         setCalcPrevDisplay(`${calcDisplay} =`);
@@ -681,12 +686,24 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
       return;
     }
 
+    // Prevent duplicate decimal points in a single number
+    if (btn === '.') {
+      const currentToken = calcDisplay.split(/[\+\-\×\÷\^]/).pop() || '';
+      if (currentToken.includes('.')) return;
+    }
+
     // Number or operator
     if (isNewCalc && !['+', '-', '×', '÷', '%', '^'].includes(btn)) {
       setCalcDisplay(btn === '.' ? '0.' : btn);
       setIsNewCalc(false);
     } else {
-      if (calcDisplay === '0' && btn !== '.') {
+      const isOperator = ['+', '-', '×', '÷', '^'].includes(btn);
+      const lastCharIsOperator = ['+', '-', '×', '÷', '^'].includes(calcDisplay.slice(-1));
+
+      if (isOperator && lastCharIsOperator) {
+        // Replace previous operator with the newly pressed operator
+        setCalcDisplay(calcDisplay.slice(0, -1) + btn);
+      } else if (calcDisplay === '0' && btn !== '.') {
         setCalcDisplay(btn);
       } else {
         setCalcDisplay(calcDisplay + btn);

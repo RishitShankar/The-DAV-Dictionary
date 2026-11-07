@@ -50,7 +50,22 @@ import {
   fetchCloudDonations
 } from '../services/supabaseClient';
 
-export function AdminPanelModal({ isOpen, onClose, currentUser, onOpenDbGuide }) {
+export function AdminPanelModal({isOpen, onClose, currentUser, onOpenDbGuide }) {
+  // Prevent background scroll and allow Escape key dismissal
+  useEffect(() => {
+    if (!isOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose?.();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+ 
   if (!isOpen) return null;
 
   const isAuthorizedAdmin = Boolean(

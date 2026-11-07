@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   X, Check, Sparkles, Shield, IndianRupee, QrCode, 
   ArrowRight, ArrowLeft, CheckCircle2, Clock, Smartphone, 
@@ -6,7 +6,22 @@ import {
 } from 'lucide-react';
 import { submitPurchaseRequest, getPurchases } from '../services/purchaseService';
 
-export function CustomPurchaseModal({ isOpen, onClose, user, onPurchaseSubmitted }) {
+export function CustomPurchaseModal({isOpen, onClose, user, onPurchaseSubmitted }) {
+  // Prevent background scroll and allow Escape key dismissal
+  useEffect(() => {
+    if (!isOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose?.();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+ 
   // Page Steps: 1 ('plan_amount') -> 2 ('profile_details') -> 3 ('payment_mode') -> 4 ('success')
   const [currentPage, setCurrentPage] = useState(1);
 

@@ -1,6 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { 
-  X, Download, BookOpen, Send, RefreshCw, ExternalLink 
+  X, Download, BookOpen, Send, RefreshCw, ExternalLink, 
+  Maximize2, Smartphone, Monitor, ChevronRight, Sparkles, 
+  BookMarked, HelpCircle, Layers, ArrowLeft
 } from 'lucide-react';
 import { BlackDogLogo } from './BlackDogLogo';
 import { askRishiAI } from '../services/geminiService';
@@ -8,28 +10,60 @@ import { getChaptersForClassSubject } from '../data/curriculumData';
 import { getPrecomputedSummary } from '../data/davChapterSummaries.js';
 
 export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, currentUser }) {
-  if (!isOpen || !book) return null;
+  // Prevent background scroll and allow Escape key dismissal
+  useEffect(() => {
+    if (!isOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose?.();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
+  // Mobile detection
+  const isMobileScreen = typeof window !== 'undefined' && (
+    window.innerWidth <= 768 ||
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+    (navigator.userAgent && navigator.userAgent.includes('DAVSmartPortalApp')) ||
+    (window.location.host && window.location.host.includes('appassets'))
+  );
+
+  // Mobile View Tabs: 'pdf' | 'ai'
+  const [mobileTab, setMobileTab] = useState('pdf');
   const [showAiCompanion, setShowAiCompanion] = useState(false);
   const [aiQuestion, setAiQuestion] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
 
-  // GitHub Media CDN Fallback: Guarantees full binary PDFs are served without Git LFS 133-byte pointer issues
+  // Viewer Engine: On mobile, Google Cloud viewer embeds seamlessly inside iframe without Android blank screen!
+  // On desktop, Direct Stream delivers Chrome's native PDFium experience.
+  const [viewerEngine, setViewerEngine] = useState(() => (isMobileScreen ? 'google' : 'direct'));
+
+  // Reset states on book change
+  useEffect(() => {
+    if (isMobileScreen) {
+      setMobileTab('pdf');
+      setViewerEngine('google');
+    }
+  }, [book?.title, isMobileScreen]);
+
+  if (!isOpen || !book) return null;
+
+  // GitHub Media CDN Fallback
   const GITHUB_MEDIA_BASE = 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public';
 
   const resolvePdfUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('data:') || url.startsWith('blob:')) return url;
 
-    // Supabase already serves with Content-Type: application/pdf & inline disposition!
-    // This is why English Literature opens inline with continuous streaming.
     if (url.includes('supabase.co')) {
       return url;
     }
 
-    // GitHub Media CDN serves with Content-Type: application/octet-stream, which forces
-    // browsers to download the file instead of previewing. Route through our streaming proxy
-    // to guarantee Content-Type: application/pdf and inline disposition for ALL books!
     if (url.includes('githubusercontent.com')) {
       return `/api/pdf-stream?url=${encodeURIComponent(url)}`;
     }
@@ -40,7 +74,6 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
     const cleanPath = url.startsWith('/') ? url : `/${url}`;
     
-    // In production on Vercel or HTTPS, route /books/ to GitHub Media CDN via streaming proxy
     const isVercelOrProduction = typeof window !== 'undefined' && (
       window.location.hostname.includes('vercel.app') || 
       window.location.hostname.includes('dav-dictionary') ||
@@ -56,30 +89,36 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     return encodeURI(cleanPath);
   };
 
-  
-  const isMobileOrApk = typeof window !== 'undefined' && (
-    window.innerWidth <= 768 ||
-    (navigator.userAgent && navigator.userAgent.includes('DAVSmartPortalApp')) ||
-    (window.location.host && window.location.host.includes('appassets'))
-  );
-
-  const getEmbeddedViewerUrl = (pdfUrl) => {
-    if (!pdfUrl) return '';
-    if (pdfUrl.startsWith('data:') || pdfUrl.startsWith('blob:')) return pdfUrl;
-
-    let absoluteUrl = pdfUrl;
-    if (pdfUrl.startsWith('/')) {
-      absoluteUrl = `https://thedavdictionary.vercel.app${pdfUrl}`;
-    }
-    // Stream direct PDF without Google Docs Viewer 25MB limit or third-party iframe blocks
-    return absoluteUrl;
-  };
-
   const rawSource = book.pdfUrl || book.fileData || '';
   const resolvedPdfUrl = resolvePdfUrl(rawSource);
   const hasRealPdf = Boolean(rawSource);
 
-  // Universal Chapter Index & Syllabus Grounding for Active Book across ANY Class (1-8, UKG, LKG)
+  // Absolute URL for external & Google Docs viewers
+  const getAbsolutePdfUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    if (typeof window !== 'undefined') {
+      return `${window.location.origin}${url.startsWith('/') ? url : '/' + url}`;
+    }
+    return `https://thedavdictionary.vercel.app${url.startsWith('/') ? url : '/' + url}`;
+  };
+
+  const absolutePdfUrl = getAbsolutePdfUrl(resolvedPdfUrl);
+
+  // Google Docs Cloud Viewer stream (Guaranteed to render PDF pages on mobile Android & iOS)
+  const googleViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(absolutePdfUrl)}&embedded=true`;
+
+  // Active embedded src based on engine
+  const activeStreamSrc = viewerEngine === 'google' ? googleViewerUrl : resolvedPdfUrl;
+
+  // 1-Tap Mobile Redirect handler
+  const handleOpenNativeMobile = () => {
+    if (resolvedPdfUrl) {
+      window.open(resolvedPdfUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  // Subject Key & Chapters
   const getSubjectKey = (title = '', subject = '') => {
     const s = `${title} ${subject}`.toLowerCase();
     if (s.includes('science') || s.includes('living world')) return 'science';
@@ -92,7 +131,6 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
   const subjectKey = getSubjectKey(book?.title, book?.subject);
   
-  // Dynamically load chapters for this exact class and subject
   const chapterList = useMemo(() => {
     if (!book) return [];
     const cls = book.classNum || 8;
@@ -101,11 +139,11 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     return Array.isArray(list) ? list : [];
   }, [book?.classNum, book?.title, book?.subject]);
 
-  // Rishi AI Textbook Companion State
+  // Rishi AI State
   const [aiMessages, setAiMessages] = useState([
     {
       role: 'assistant',
-      text: `👋 I am your **Rishi AI Textbook Guide** for **"${book.title}"** (Class ${book.classNum || 8}). Ask me any questions, definitions, or exam problems from this book!`
+      text: `👋 I am your **Rishi AI Textbook Guide** for **"${book.title}"** (Class ${book.classNum || 8}). Ask me any questions, definitions, formulas, or exam problems from this book!`
     }
   ]);
 
@@ -130,16 +168,15 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     }
 
     try {
-      const prompt = `Summarize Chapter ${chNum}: "${chTitle}" with key concepts, definitions, and 3 board exam questions.`;
+      const prompt = `Summarize Chapter ${chNum}: "${chTitle}" from DAV Class ${book.classNum || 8} textbook with core concepts, formulas, and 3 high-yield DAV board exam questions.`;
       const response = await askRishiAI(prompt, {
         classNum: book.classNum || 8,
-        subject: book.title || book.subject || 'English Literature',
+        subject: book.title || book.subject || 'Textbook',
         chapter: chNum,
         chapterTitle: chTitle,
         actionType: 'summary'
       });
 
-      // Defensive: Ensure we always store a clean string, never a raw object (prevents React Error #31)
       const cleanText = (response && typeof response === 'object' && response.text)
         ? response.text
         : (typeof response === 'string' ? response : JSON.stringify(response));
@@ -168,20 +205,13 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     setAiLoading(true);
 
     try {
-      // Check if user is asking to summarize a specific chapter (e.g. "summarize chapter 10")
-      const chMatch = q.match(/(?:summarize|summary\s+of|explain|tell\s+me\s+about)\s+chapter\s*(\d{1,2})/i) ||
-                      q.match(/^chapter\s*(\d{1,2})/i);
-      
-      let matchedCh = null;
-      if (chMatch) {
-        const targetNum = parseInt(chMatch[1], 10);
-        matchedCh = chapterList.find(c => (c.num || c.number) === targetNum);
-      }
+      const matchedCh = chapterList.find(c => {
+        const titleMatch = c.title && q.toLowerCase().includes(c.title.toLowerCase());
+        const numMatch = q.match(/chapter\s*(\d+)/i);
+        return titleMatch || (numMatch && (c.num === Number(numMatch[1]) || c.number === Number(numMatch[1])));
+      });
 
-      const prompt = matchedCh 
-        ? `Summarize Chapter ${matchedCh.num || matchedCh.number}: "${matchedCh.title}" with key concepts, definitions, and 3 board exam questions.`
-        : `Student is studying DAV Class ${book.classNum || 8} "${book.title}". Student Query: "${q}". Provide a curriculum-accurate answer based on official DAV syllabus.`;
-
+      const prompt = `Student Question about DAV Class ${book.classNum || 8} "${book.title}": "${q}". Provide a comprehensive, accurate textbook answer with formulas and bullet points so the student can score 100% in DAV exams.`;
       const response = await askRishiAI(prompt, {
         classNum: book.classNum || 8,
         subject: book.title || book.subject || 'General',
@@ -190,7 +220,6 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
         actionType: matchedCh ? 'summary' : undefined
       });
 
-      // Defensive: Ensure we always store a clean string, never a raw object (prevents React Error #31)
       const cleanText = (response && typeof response === 'object' && response.text)
         ? response.text
         : (typeof response === 'string' ? response : JSON.stringify(response));
@@ -212,17 +241,27 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
   return (
     <div className="fixed inset-0 z-[100] w-screen h-screen flex flex-col bg-stone-950 overflow-hidden font-sans select-none">
       
-      {/* Top Header Bar */}
+      {/* ===================================================================== */}
+      {/* TOP HEADER: UNIFIED ACROSS PC & MOBILE WITH 100% RESPONSIVE CONTROLS  */}
+      {/* ===================================================================== */}
       <header className="p-2 sm:p-2.5 bg-stone-900 border-b border-orange-500/40 text-white flex items-center justify-between flex-wrap gap-2 shrink-0 z-40">
         
         {/* Book Title & School Badge */}
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-orange-600/30 border border-orange-500 flex items-center justify-center text-amber-300 font-extrabold text-xs shrink-0">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white transition cursor-pointer sm:hidden"
+            title="Back / Close"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </button>
+
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-red-600 to-amber-600 border border-amber-400 flex items-center justify-center text-white font-black text-xs shrink-0 shadow-md">
             DAV
           </div>
-          <div>
+          <div className="overflow-hidden">
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="font-black text-xs sm:text-sm text-white truncate max-w-[200px] sm:max-w-xs md:max-w-md">
+              <h3 className="font-black text-xs sm:text-sm text-white truncate max-w-[170px] sm:max-w-xs md:max-w-md">
                 {book.title}
               </h3>
               <span className="text-[10px] bg-stone-950 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-full font-mono font-bold">
@@ -231,48 +270,63 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
             </div>
             <p className="text-[10px] text-orange-200/80 truncate flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Instant Continuous Stream • Vertical Scroll Active</span>
+              <span>{viewerEngine === 'google' ? 'Google Cloud Reader (Mobile Active)' : 'Direct Stream Active'}</span>
             </p>
           </div>
         </div>
 
-        {/* Right Action Bar */}
+        {/* Action Controls & Engine Switchers */}
         <div className="flex items-center gap-1.5 sm:gap-2">
           
-          {/* Open in Dedicated Browser Tab */}
+          {/* Engine Switcher (Google Docs Cloud vs Direct Stream) */}
+          <button
+            onClick={() => setViewerEngine(prev => prev === 'google' ? 'direct' : 'google')}
+            className="px-2.5 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-amber-300 hover:text-amber-200 border border-stone-700 transition cursor-pointer flex items-center gap-1 text-[11px] font-bold"
+            title={viewerEngine === 'google' ? 'Switch to Direct Stream' : 'Switch to Google Docs Cloud Viewer'}
+          >
+            <RefreshCw className="w-3 h-3 text-amber-400" />
+            <span className="hidden sm:inline">Engine:</span>
+            <span>{viewerEngine === 'google' ? 'Google Cloud' : 'Direct'}</span>
+          </button>
+
+          {/* 1-Tap Mobile Native Redirect / New Tab */}
           {hasRealPdf && (
-            <a
-              href={resolvedPdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-2.5 sm:px-3 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-amber-300 hover:text-amber-200 border border-stone-700 transition cursor-pointer flex items-center gap-1.5 text-xs font-bold"
-              title="Open stream in dedicated browser tab"
+            <button
+              onClick={handleOpenNativeMobile}
+              className="px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-stone-950 font-black transition cursor-pointer flex items-center gap-1.5 text-xs shadow-md"
+              title="Open full PDF in mobile viewer or dedicated browser tab"
             >
               <ExternalLink className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">New Tab</span>
-            </a>
+              <span>{isMobileScreen ? 'Mobile View' : 'New Tab'}</span>
+            </button>
           )}
 
-          {/* AI Guide Toggle */}
+          {/* PC AI Companion Toggle */}
           <button
-            onClick={() => setShowAiCompanion(!showAiCompanion)}
+            onClick={() => {
+              if (isMobileScreen) {
+                setMobileTab(prev => prev === 'ai' ? 'pdf' : 'ai');
+              } else {
+                setShowAiCompanion(prev => !prev);
+              }
+            }}
             className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition border cursor-pointer ${
-              showAiCompanion
+              (isMobileScreen ? mobileTab === 'ai' : showAiCompanion)
                 ? 'bg-amber-500 text-stone-950 border-amber-400 font-black shadow-lg shadow-amber-500/20'
                 : 'bg-stone-800 hover:bg-stone-700 text-amber-300 border-orange-500/40'
             }`}
-            title="Toggle Rishi AI Guide"
+            title="Toggle Rishi AI Companion"
           >
             <BlackDogLogo className="w-3.5 h-3.5" bgClassName="bg-stone-950" />
             <span className="hidden sm:inline">AI Guide</span>
           </button>
 
-          {/* Dedicated Download Button */}
+          {/* Download Button */}
           {hasRealPdf && (
             <a
               href={resolvedPdfUrl}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               download={`${book.title}.pdf`}
               className="p-1.5 sm:p-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white border border-stone-700 transition cursor-pointer"
               title="Download textbook copy"
@@ -293,14 +347,74 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
 
       </header>
 
-      {/* Main Workspace Split: Stream & Scroll Viewer + Optional AI Sidebar */}
+      {/* ===================================================================== */}
+      {/* MOBILE SEGMENTED BAR: Switch between PDF Canvas & Rishi AI Companion  */}
+      {/* ===================================================================== */}
+      {isMobileScreen && (
+        <div className="bg-stone-900 px-3 py-1.5 border-b border-stone-800 flex items-center justify-between gap-2 shrink-0 sm:hidden">
+          <div className="flex-1 grid grid-cols-2 gap-1.5 bg-stone-950 p-1 rounded-xl border border-stone-800">
+            <button
+              onClick={() => setMobileTab('pdf')}
+              className={`py-1.5 rounded-lg text-xs font-black transition flex items-center justify-center gap-1.5 ${
+                mobileTab === 'pdf'
+                  ? 'bg-amber-500 text-stone-950 shadow-sm'
+                  : 'text-stone-400 hover:text-white'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Read Textbook</span>
+            </button>
+            <button
+              onClick={() => setMobileTab('ai')}
+              className={`py-1.5 rounded-lg text-xs font-black transition flex items-center justify-center gap-1.5 ${
+                mobileTab === 'ai'
+                  ? 'bg-purple-600 text-white shadow-sm'
+                  : 'text-stone-400 hover:text-white'
+              }`}
+            >
+              <BlackDogLogo className="w-3.5 h-3.5" bgClassName="bg-stone-900" />
+              <span>AI Guide ({chapterList.length} Ch)</span>
+            </button>
+          </div>
+
+          <button
+            onClick={handleOpenNativeMobile}
+            className="px-2.5 py-1.5 rounded-xl bg-stone-800 border border-stone-700 text-amber-300 text-[11px] font-bold flex items-center gap-1 shrink-0"
+            title="Open Fullscreen in External Mobile Viewer"
+          >
+            <Maximize2 className="w-3 h-3 text-amber-400" />
+            <span>Fullscreen</span>
+          </button>
+        </div>
+      )}
+
+      {/* ===================================================================== */}
+      {/* MAIN WORKSPACE: Adaptive View for PC & Mobile                         */}
+      {/* ===================================================================== */}
       <div className="flex-1 h-full w-full flex overflow-hidden bg-stone-950 relative">
         
         {/* Stream & Scroll Container (Continuous Vertical Scroll) */}
-        <div className="flex-1 h-full w-full bg-stone-900 overflow-hidden flex flex-col relative">
+        <div className={`flex-1 h-full w-full bg-stone-900 overflow-hidden flex flex-col relative ${
+          isMobileScreen && mobileTab === 'ai' ? 'hidden' : 'flex'
+        }`}>
+          {/* Top Quick Engine Tip on Mobile */}
+          {isMobileScreen && (
+            <div className="px-3 py-1 bg-stone-950/80 border-b border-stone-800 flex items-center justify-between text-[10px] text-stone-400">
+              <span className="truncate">
+                Using <strong>{viewerEngine === 'google' ? 'Google Cloud Embed' : 'Direct Stream'}</strong>
+              </span>
+              <button
+                onClick={handleOpenNativeMobile}
+                className="text-amber-400 font-bold underline ml-2"
+              >
+                Tap for Android Reader ↗
+              </button>
+            </div>
+          )}
+
           <iframe
-            key={`stream-${resolvedPdfUrl}`}
-            src={getEmbeddedViewerUrl(resolvedPdfUrl)}
+            key={`stream-${viewerEngine}-${activeStreamSrc}`}
+            src={activeStreamSrc}
             title={`${book.title} - Textbook Cloud Reader`}
             className="w-full h-full min-h-full flex-1 border-none bg-stone-900 block"
             style={{ width: '100%', height: '100%', minHeight: '100%' }}
@@ -308,9 +422,14 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
           />
         </div>
 
-        {/* Right: Collapsible Rishi AI Guide Sidebar */}
-        {showAiCompanion && (
-          <aside className="w-80 sm:w-88 md:w-96 bg-stone-900 border-l border-stone-800 flex flex-col shrink-0 z-30 shadow-2xl">
+        {/* Rishi AI Guide Sidebar / Mobile Full Screen */}
+        {((isMobileScreen && mobileTab === 'ai') || (!isMobileScreen && showAiCompanion)) && (
+          <aside className={`${
+            isMobileScreen 
+              ? 'w-full h-full flex-1' 
+              : 'w-80 sm:w-88 md:w-96 border-l border-stone-800'
+          } bg-stone-900 flex flex-col shrink-0 z-30 shadow-2xl`}>
+            
             {/* AI Header */}
             <div className="p-3 bg-stone-950 border-b border-stone-800 flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -321,13 +440,16 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   </h4>
                   <p className="text-[10px] text-amber-300/80">
-                    Live assistant for {book.title}
+                    Live tutor for {book.title}
                   </p>
                 </div>
               </div>
               <button
                 type="button"
-                onClick={() => setShowAiCompanion(false)}
+                onClick={() => {
+                  if (isMobileScreen) setMobileTab('pdf');
+                  else setShowAiCompanion(false);
+                }}
                 className="p-1 rounded-lg text-stone-400 hover:text-white hover:bg-stone-800 transition cursor-pointer"
               >
                 <X className="w-4 h-4" />
@@ -354,7 +476,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
               {aiLoading && (
                 <div className="p-3 rounded-xl bg-stone-800/90 text-amber-300 border border-amber-500/30 flex items-center gap-2">
                   <RefreshCw className="w-3.5 h-3.5 animate-spin text-amber-400" />
-                  <span className="text-[11px] font-semibold">Preparing answer...</span>
+                  <span className="text-[11px] font-semibold">Preparing textbook intelligence...</span>
                 </div>
               )}
             </div>
@@ -367,9 +489,9 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                     <BookOpen className="w-3 h-3 text-amber-400" />
                     <span>Chapter Summaries ({chapterList.length} Chapters):</span>
                   </span>
-                  <span className="text-stone-400 font-mono text-[9px]">Click for Summary</span>
+                  <span className="text-stone-400 font-mono text-[9px]">Tap to Summarize</span>
                 </div>
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-thin">
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
                   {chapterList.map((ch, idx) => {
                     const cNum = ch.num || ch.number || (idx + 1);
                     return (
@@ -435,16 +557,18 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
                 value={aiQuestion}
                 onChange={(e) => setAiQuestion(e.target.value)}
                 disabled={aiLoading}
-                className="flex-1 px-3 py-2 text-xs bg-stone-900 border border-stone-700 rounded-xl text-white placeholder-stone-500 focus:outline-none focus:border-amber-400"
+                className="flex-1 px-3 py-2 bg-stone-900 border border-stone-700 rounded-xl text-xs text-white placeholder-stone-500 focus:outline-none focus:border-amber-400"
               />
               <button
                 type="submit"
-                disabled={!aiQuestion.trim() || aiLoading}
-                className="p-2 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-stone-950 font-bold transition cursor-pointer"
+                disabled={aiLoading || !aiQuestion.trim()}
+                className="p-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 disabled:opacity-40 transition cursor-pointer shrink-0"
+                title="Send Question"
               >
-                <Send className="w-4 h-4" />
+                <Send className="w-3.5 h-3.5" />
               </button>
             </form>
+
           </aside>
         )}
 
@@ -453,3 +577,5 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     </div>
   );
 }
+
+export default PdfReaderModal;

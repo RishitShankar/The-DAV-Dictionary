@@ -1,8 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PRICING_TIERS } from '../data/mockData';
 import { Check, X, Shield, Sparkles, QrCode, ArrowRight, Zap, CheckCircle2 } from 'lucide-react';
 
-export function PricingModal({ isOpen, onClose, currentPlan, onUpgradePlan }) {
+export function PricingModal({isOpen, onClose, currentPlan, onUpgradePlan }) {
+  // Prevent background scroll and allow Escape key dismissal
+  useEffect(() => {
+    if (!isOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose?.();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+ 
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [paymentStep, setPaymentStep] = useState('select'); // 'select' | 'pay' | 'success'
   const [upiId, setUpiId] = useState('davschool@upi');

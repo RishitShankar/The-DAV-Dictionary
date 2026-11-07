@@ -5,7 +5,7 @@ import {
   BookOpen, Calculator, Languages, HeartHandshake, Globe, Sparkles, 
   Compass, Cpu, FileText, Download, Eye, Upload, ChevronRight, Lock, 
   CheckCircle2, Search, ExternalLink, HelpCircle, BookMarked, Trash2,
-  Award, Bookmark, ArrowRight, Layers, Flame, Check, Sparkle
+  Award, Bookmark, ArrowRight, Layers, Flame, Check, Sparkle, GraduationCap
 } from 'lucide-react';
 
 const ICON_MAP = {
@@ -296,47 +296,60 @@ export function BookLibrary({
       </div>
 
       {/* ========================================================================= */}
-      {/* CLASS SELECTOR TABS (LKG to Class 8)                                      */}
+      {/* CLASS SELECTOR TABS (LKG to Class 8) - Smooth Mobile Horizontal Scroll    */}
       {/* ========================================================================= */}
-      <div className="bg-white/90 p-2 rounded-2xl flex flex-wrap gap-1.5 mb-6 border border-slate-200/80 shadow-sm">
-        {[8, 7, 6, 5, 4, 3, 2, 1, 'UKG', 'LKG'].map((cls) => {
-          const isSelected = selectedClass === cls;
-          const label = (cls === 'LKG' || cls === 'UKG') ? cls : `Class ${cls}`;
-          return (
-            <button
-              key={cls}
-              onClick={() => {
-                setSelectedClass(cls);
-                setActiveFilter('ALL');
-              }}
-              className={`flex-1 min-w-[85px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all text-center relative cursor-pointer ${
-                isSelected
-                  ? 'bg-gradient-to-r from-red-800 to-red-950 text-white shadow-md shadow-red-950/30 scale-[1.03] border border-amber-400/40'
-                  : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100/80'
-              }`}
-            >
-              {label}
-            </button>
-          );
-        })}
-        {/* View PDFs Uploaded by Teacher Button right next to LKG */}
-        <button
-          type="button"
-          onClick={() => {
-            setSelectedClass('TEACHER_PDFS');
-            setActiveFilter('ALL');
-          }}
-          className={`flex-1 min-w-[130px] sm:min-w-[160px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all text-center relative cursor-pointer border ${
-            selectedClass === 'TEACHER_PDFS'
-              ? 'bg-gradient-to-r from-purple-700 via-indigo-700 to-purple-800 text-white border-purple-400 shadow-md ring-2 ring-purple-400/40'
-              : 'bg-purple-50 text-purple-900 border-purple-200 hover:bg-purple-100'
-          }`}
-        >
-          <span className="flex items-center justify-center gap-1.5">
-            <GraduationCap className="w-4 h-4 text-amber-400 shrink-0" />
-            <span className="truncate">View Teacher PDFs</span>
+      <div className="relative mb-6">
+        {/* Mobile Swipe / Scroll Hint */}
+        <div className="flex items-center justify-between px-1 mb-2 text-[11px] text-slate-500 font-bold sm:hidden">
+          <span className="flex items-center gap-1.5 text-red-900 font-black">
+            <BookOpen className="w-3.5 h-3.5 text-red-700" />
+            <span>Select Class:</span>
           </span>
-        </button>
+          <span className="text-[10px] text-amber-700 font-mono font-bold flex items-center gap-1 bg-amber-100/80 px-2 py-0.5 rounded-full border border-amber-300">
+            <span>Swipe for more &rarr;</span>
+          </span>
+        </div>
+
+        <div className="bg-white/95 p-2 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-1.5 overflow-x-auto scrollbar-thin scroll-smooth flex-nowrap sm:flex-wrap">
+          {[8, 7, 6, 5, 4, 3, 2, 1, 'UKG', 'LKG'].map((cls) => {
+            const isSelected = selectedClass === cls;
+            const label = (cls === 'LKG' || cls === 'UKG') ? cls : `Class ${cls}`;
+            return (
+              <button
+                key={cls}
+                onClick={() => {
+                  setSelectedClass(cls);
+                  setActiveFilter('ALL');
+                }}
+                className={`shrink-0 sm:flex-1 min-w-[76px] sm:min-w-[85px] py-2 px-3 rounded-xl text-xs sm:text-sm font-black transition-all text-center relative cursor-pointer whitespace-nowrap ${
+                  isSelected
+                    ? 'bg-gradient-to-r from-red-800 to-red-950 text-white shadow-md shadow-red-950/30 scale-[1.03] border border-amber-400/40 ring-1 ring-amber-400/50'
+                    : 'text-slate-600 hover:text-slate-950 bg-slate-50 hover:bg-slate-100/80 border border-slate-200/60'
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
+          {/* View PDFs Uploaded by Teacher Button right next to LKG */}
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedClass('TEACHER_PDFS');
+              setActiveFilter('ALL');
+            }}
+            className={`shrink-0 sm:flex-1 min-w-[145px] sm:min-w-[160px] py-2 px-3.5 rounded-xl text-xs sm:text-sm font-black transition-all text-center relative cursor-pointer border whitespace-nowrap ${
+              selectedClass === 'TEACHER_PDFS'
+                ? 'bg-gradient-to-r from-purple-700 via-indigo-700 to-purple-800 text-white border-purple-400 shadow-md ring-2 ring-purple-400/40'
+                : 'bg-purple-50 text-purple-900 border-purple-200 hover:bg-purple-100'
+            }`}
+          >
+            <span className="flex items-center justify-center gap-1.5">
+              <GraduationCap className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>View Teacher PDFs</span>
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Teacher PDFs Empty State when none uploaded */}
@@ -439,8 +452,8 @@ export function BookLibrary({
           />
         </div>
 
-        {/* Quick Subject Filter Chips */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 text-xs">
+        {/* Quick Subject Filter Chips with smooth scrolling */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 sm:pb-0 text-xs scrollbar-thin scroll-smooth flex-nowrap">
           {[
             { id: 'ALL', label: 'All Subjects' },
             { id: 'MATH', label: 'Math' },
@@ -452,9 +465,9 @@ export function BookLibrary({
             <button
               key={f.id}
               onClick={() => setActiveFilter(f.id)}
-              className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition cursor-pointer shrink-0 ${
                 activeFilter === f.id
-                  ? 'bg-red-800 text-white shadow-xs'
+                  ? 'bg-red-800 text-white shadow-xs scale-102 border border-amber-400/40'
                   : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
             >

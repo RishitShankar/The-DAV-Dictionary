@@ -1,7 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, UploadCloud, FileText, CheckCircle2, FolderPlus, AlertCircle, ShieldAlert } from 'lucide-react';
 
 export function UploadPdfModal({ isOpen, onClose, onAddPdf, currentUser }) {
+  // Prevent background scroll and allow Escape key dismissal
+  useEffect(() => {
+    if (!isOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose?.();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState('');
   const [classNum, setClassNum] = useState('8');

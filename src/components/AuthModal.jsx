@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   X, User, Lock, Mail, Shield, CheckCircle, Database, Sparkles, 
   Key, ArrowRight, UserCheck, RefreshCw 
@@ -10,7 +10,22 @@ import { GoogleIcon } from './GoogleIcon';
 import { GoogleAuthModal } from './GoogleAuthModal';
 import { compressImageFile } from '../utils/safeStorage';
 
-export function AuthModal({ isOpen, onClose, user, onLogin, onLogout, onOpenDbGuide, onGoToSection }) {
+export function AuthModal({isOpen, onClose, user, onLogin, onLogout, onOpenDbGuide, onGoToSection }) {
+  // Prevent background scroll and allow Escape key dismissal
+  useEffect(() => {
+    if (!isOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose?.();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+ 
   const [isRegister, setIsRegister] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

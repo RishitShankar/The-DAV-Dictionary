@@ -2076,7 +2076,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                     DAV Official PYQ & Question Paper Archive
                   </h2>
                   <p className="text-xs sm:text-sm text-stone-300 mt-1 max-w-2xl leading-relaxed">
-                    Featuring video solutions, marking rubrics, and detailed breakdowns exclusively from verified YouTuber <strong className="text-amber-400">VKPDT IT GURU DAV</strong> (<a href="https://www.youtube.com/@VKPDTITGURU" target="_blank" rel="noreferrer" className="underline hover:text-white">@VKPDTITGURU</a>). All demo PDFs removed.
+                    Featuring video solutions, marking rubrics, and detailed breakdowns exclusively from verified YouTuber <strong className="text-amber-400">VKPDT IT GURU DAV</strong> (<a href="https://www.youtube.com/@VKPDTITGURU" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">@VKPDTITGURU</a>). All demo PDFs removed.
                   </p>
                 </div>
 
@@ -2186,7 +2186,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                       <a 
                         href="https://www.youtube.com/@VKPDTITGURU" 
                         target="_blank" 
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="text-blue-400 hover:text-blue-300 underline font-bold inline-flex items-center gap-0.5"
                       >
                         <span>Visit Channel</span>
@@ -2428,7 +2428,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                             <a
                               href={paper.educatorChannel}
                               target="_blank"
-                              rel="noreferrer"
+                              rel="noopener noreferrer"
                               className="text-amber-300 font-bold hover:underline inline-flex items-center gap-1"
                             >
                               <span>{paper.educator}</span>
@@ -2486,7 +2486,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                             <a
                               href={paper.videoUrl || `https://www.youtube.com/watch?v=${paper.videoId}`}
                               target="_blank"
-                              rel="noreferrer"
+                              rel="noopener noreferrer"
                               className="px-2.5 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white transition cursor-pointer flex items-center justify-center shadow-md gap-1 text-xs font-bold"
                               title="Open Directly on YouTube (VKPDT IT GURU)"
                             >
@@ -2597,7 +2597,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                             <a
                               href={paper.educatorChannel}
                               target="_blank"
-                              rel="noreferrer"
+                              rel="noopener noreferrer"
                               className="text-amber-300 font-bold hover:underline inline-flex items-center gap-1"
                             >
                               <span>{paper.educator}</span>
@@ -2655,7 +2655,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                             <a
                               href={paper.videoUrl || `https://www.youtube.com/watch?v=${paper.videoId}`}
                               target="_blank"
-                              rel="noreferrer"
+                              rel="noopener noreferrer"
                               className="px-2.5 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white transition cursor-pointer flex items-center justify-center shadow-md gap-1 text-xs font-bold"
                               title="Open Directly on YouTube (VKPDT IT GURU)"
                             >
@@ -2858,7 +2858,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                       <a
                         href={activePyqVideoModal.videoUrl || `https://www.youtube.com/watch?v=${activePyqVideoModal.videoId}`}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-black flex items-center gap-1.5 transition cursor-pointer shadow-md"
                         title="Watch directly on YouTube"
                       >
@@ -2898,7 +2898,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                       <a
                         href={activePyqVideoModal.videoUrl || `https://www.youtube.com/watch?v=${activePyqVideoModal.videoId}`}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="text-red-400 hover:text-red-300 font-bold underline inline-flex items-center gap-0.5"
                       >
                         <span>Open on YouTube</span>
@@ -2916,7 +2916,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                       <a
                         href={activePyqVideoModal.videoUrl || `https://www.youtube.com/watch?v=${activePyqVideoModal.videoId}`}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="px-3.5 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black flex items-center gap-1.5 cursor-pointer shadow-md transition"
                       >
                         <Play className="w-3.5 h-3.5 fill-current" />

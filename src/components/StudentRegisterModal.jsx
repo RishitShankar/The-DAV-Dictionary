@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   X, User, KeyRound, Lock, Eye, EyeOff, Mail, School, 
   GraduationCap, Sparkles, ArrowRight, ArrowLeft, Check, 
@@ -22,7 +22,22 @@ const CLASS_OPTIONS = [
 // Sections from A to Z
 const SECTION_OPTIONS = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
 
-export function StudentRegisterModal({ isOpen, onClose, onRegisterSuccess }) {
+export function StudentRegisterModal({isOpen, onClose, onRegisterSuccess }) {
+  // Prevent background scroll and allow Escape key dismissal
+  useEffect(() => {
+    if (!isOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose?.();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+ 
   // Step indicator: 1 to 7
   // 1: Name -> 2: ID -> 3: Password -> 4: Class & Section -> 5: Dossier -> 6: Email OTP -> 7: Verify OTP
   const [currentStep, setCurrentStep] = useState(1);
