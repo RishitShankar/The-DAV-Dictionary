@@ -171,6 +171,15 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
   const chatEndRef = useRef(null);
   const [copiedMsgIdx, setCopiedMsgIdx] = useState(null);
 
+    // Persist conversation history to sessionStorage (Bug 24)
+  useEffect(() => {
+    try {
+      if (messages.length > 1) {
+        sessionStorage.setItem('dav_ai_chat_history', JSON.stringify(messages.slice(-25)));
+      }
+    } catch (e) {}
+  }, [messages]);
+
   const handleCopyAnswer = (idx, text) => {
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(text);

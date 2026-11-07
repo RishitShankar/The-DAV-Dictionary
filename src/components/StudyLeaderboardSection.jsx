@@ -246,13 +246,26 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
   // Save stats helper
   const updateMyStudyTime = (addedMinutes, subject) => {
     setMyStudyStats(prev => {
+      const todayStr = new Date().toISOString().slice(0, 10);
+      let newStreak = prev.streakDays || 1;
+      if (prev.lastStudiedDate !== todayStr) {
+        if (prev.lastStudiedDate) {
+          const diffDays = Math.round((new Date(todayStr) - new Date(prev.lastStudiedDate)) / (1000 * 60 * 60 * 24));
+          if (diffDays === 1) newStreak += 1;
+          else if (diffDays > 1) newStreak = 1;
+        } else {
+          newStreak += 1;
+        }
+      }
       const next = {
         ...prev,
         todayMinutes: prev.todayMinutes + addedMinutes,
         weekMinutes: prev.weekMinutes + addedMinutes,
         allTimeMinutes: prev.allTimeMinutes + addedMinutes,
         sessionsCompleted: (prev.sessionsCompleted || 0) + 1,
-        favoriteSubject: subject || prev.favoriteSubject
+        favoriteSubject: subject || prev.favoriteSubject,
+        lastStudiedDate: todayStr,
+        streakDays: newStreak
       };
       try {
         localStorage.setItem(`dav_study_stats_${currentUserId}`, JSON.stringify(next));

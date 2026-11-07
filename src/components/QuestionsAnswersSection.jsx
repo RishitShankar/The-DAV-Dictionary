@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useDeferredValue } from 'react';
 import { 
   HelpCircle, BookOpen, Sparkles, CheckCircle2, Lock, 
   ArrowRight, ExternalLink, ChevronRight, RotateCcw, 

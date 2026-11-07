@@ -1,3 +1,25 @@
+// Client-Side AI Rate Limiting Protection (Max 6 requests per 20 seconds) (Bug 10)
+const requestTimestamps = [];
+const RATE_LIMIT_WINDOW_MS = 20000;
+const MAX_REQUESTS_PER_WINDOW = 6;
+
+export function checkAiRateLimit() {
+  const now = Date.now();
+  while (requestTimestamps.length > 0 && requestTimestamps[0] < now - RATE_LIMIT_WINDOW_MS) {
+    requestTimestamps.shift();
+  }
+  if (requestTimestamps.length >= MAX_REQUESTS_PER_WINDOW) {
+    const waitSeconds = Math.ceil((requestTimestamps[0] + RATE_LIMIT_WINDOW_MS - now) / 1000);
+    return {
+      allowed: false,
+      waitSeconds,
+      message: `Rishi AI rate limit reached. Please wait ${waitSeconds}s before asking your next question.`
+    };
+  }
+  requestTimestamps.push(now);
+  return { allowed: true };
+}
+
 // Rishi AI Engine for DAV Dictionary
 // Dedicated high-intelligence AI created by Rishit Shankar
 // 4-Tier Dimension Architecture (Dimension 1 Normal, Dimension 2 VIP, Dimension 3 VVIP, Dimension 4 Master Developer)

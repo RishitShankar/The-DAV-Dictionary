@@ -98,7 +98,7 @@ export function DonationSection({ currentUser, onRequireLogin }) {
   const grandTotalAfterDonation = currentPaidNum + newDonationNum;
 
   const upiId = '9470033984@upi';
-  const upiPayLink = `upi://pay?pa=${upiId}&pn=Rishit%20Shankar&am=${newDonationNum}&cu=INR&tn=DAV%20Dictionary%20Support`;
+  const upiPayLink = `upi://pay?pa=${upiId}&pn=Rishit%20Shankar&am=${newDonationNum.toFixed(2)}&cu=INR&tn=DAV%20Dictionary%20Support`;
   const upiQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(upiPayLink)}`;
 
   const handleCopyUpi = () => {

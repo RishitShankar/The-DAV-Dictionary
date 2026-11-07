@@ -1,3 +1,17 @@
+/**
+ * Defensive XSS Sanitizer for user submitted text
+ */
+export function sanitizeInputText(str, maxLen = 2000) {
+  if (typeof str !== 'string') return '';
+  return str
+    .replace(/<[^>]*>?/gm, '')
+    .replace(/javascript:/gi, '')
+    .replace(/onload=/gi, '')
+    .replace(/onerror=/gi, '')
+    .trim()
+    .slice(0, maxLen);
+}
+
 import { getSupabaseClient } from './supabaseClient';
 
 const DEVELOPER_REVIEWS_STORAGE_KEY = 'dav_developer_reviews';
@@ -116,6 +130,10 @@ export async function getDeveloperReviews() {
  * Submit a new review to Supabase and LocalStorage
  */
 export async function submitDeveloperReview(newReview) {
+  if (newReview) {
+    newReview.reviewText = sanitizeInputText(newReview.reviewText);
+    newReview.studentName = sanitizeInputText(newReview.studentName, 100);
+  }
   const reviews = await getDeveloperReviews();
   // Strip oversized base64 blobs for storage stability
   const safeReview = {

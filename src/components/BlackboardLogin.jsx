@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, Sparkles, Check, Key, UserCheck, Eye, EyeOff, Lock, Crown, Award, ExternalLink, Loader2, ShieldAlert, ShieldCheck, Smartphone, Monitor, AlertTriangle, LogOut, X, GraduationCap } from 'lucide-react';
 import { PRELOADED_DATABASE_USERS, getRegisteredUsers, saveRegisteredUsers, isMasterAdminId, isMasterPasswordValid } from '../data/preloadedUsers';
-import { fetchCloudStudents } from '../services/supabaseClient';
+import { fetchCloudStudents, verifyCloudStudentLogin } from '../services/supabaseClient';
 import { checkDeviceSession, registerDeviceSession, getDeviceMetadata } from '../services/deviceAuthManager';
 import { GoogleIcon } from './GoogleIcon';
 import { GoogleAuthModal } from './GoogleAuthModal';
@@ -131,7 +131,14 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
     // If not found in local cache, query live Supabase Cloud Database!
     if (!matched) {
       try {
-        const cloudUsers = await fetchCloudStudents();
+        // Targeted cloud login check
+        const directMatch = await verifyCloudStudentLogin(normalizedId, passVal);
+        if (directMatch) {
+          matched = directMatch;
+          const updated = [matched, ...storedUsers.filter(u => u.id?.toLowerCase() !== matched.id?.toLowerCase())];
+          saveRegisteredUsers(updated);
+        } else {
+          const cloudUsers = await fetchCloudStudents(true);
         if (cloudUsers && Array.isArray(cloudUsers)) {
           matched = cloudUsers.find((u) => {
             const idMatch = (
@@ -148,6 +155,7 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
             const updated = [matched, ...storedUsers.filter(u => u.id?.toLowerCase() !== matched.id?.toLowerCase())];
             saveRegisteredUsers(updated);
           }
+        }
         }
       } catch (err) {
         console.warn('Supabase cloud login fallback warning:', err);

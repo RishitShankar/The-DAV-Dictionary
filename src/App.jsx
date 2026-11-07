@@ -30,7 +30,7 @@ import { registerDeviceSession, releaseDeviceSession, startDeviceGuard, getDevic
 import { ShieldAlert } from 'lucide-react';
 import { getSupabaseClient } from './services/supabaseClient';
 import { findUserByGoogleEmail, createStudentWithGoogle } from './services/googleAuthService';
-import { safeSetUser, safeSetItem } from './utils/safeStorage';
+import { safeSetUser, safeSetItem, validateUserIntegrity } from './utils/safeStorage';
 
 
 // Code-split heavy modules (Bug 3)
@@ -70,7 +70,7 @@ export function App() {
           try {
             const parsed = JSON.parse(e.newValue);
             if (parsed && parsed.id && parsed.id !== 'guest_student') {
-              setUser(parsed);
+              setUser(validateUserIntegrity(parsed));
               setViewMode('app');
             }
           } catch (err) {}
@@ -145,7 +145,7 @@ export function App() {
     try {
       const saved = localStorage.getItem('dav_user');
       if (saved) {
-        const parsed = JSON.parse(saved);
+        const parsed = validateUserIntegrity(JSON.parse(saved));
         if (parsed && !parsed.isDemo && parsed.id !== 'guest_student') return parsed;
       }
     } catch (e) {}
@@ -156,7 +156,7 @@ export function App() {
     try {
       const saved = localStorage.getItem('dav_user');
       if (saved) {
-        const parsed = JSON.parse(saved);
+        const parsed = validateUserIntegrity(JSON.parse(saved));
         if (parsed && !parsed.isDemo && parsed.id !== 'guest_student') return 'app';
       }
     } catch (e) {}
@@ -514,7 +514,7 @@ export function App() {
   const isGuest = user.plan === 'guest' || user.isDemo;
 
   return (
-    <div className={`min-h-screen ${activeSection === 4 ? 'h-screen max-h-screen overflow-hidden' : ''} bg-slate-50 flex flex-col font-sans selection:bg-amber-300 selection:text-red-950`}>
+    <div className={`min-h-[100dvh] ${activeSection === 4 ? 'h-screen max-h-screen overflow-hidden' : ''} bg-slate-50 flex flex-col font-sans selection:bg-amber-300 selection:text-red-950`}>
       {/* Offline Connectivity Notification Banner (Bug 12) */}
       {!isOnline && (
         <div className="fixed top-0 left-0 right-0 z-[9999] bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 text-white text-xs sm:text-sm font-black px-4 py-2.5 text-center shadow-xl flex items-center justify-center gap-2 animate-bounce">
@@ -604,7 +604,7 @@ export function App() {
         ) : activeSection === 1 ? (
           <SectionOverview currentUser={user} onSelectSection={handleSelectSection} onOpenPurchaseModal={() => setIsPricingOpen(true)} />
         ) : activeSection === 2 ? (
-          <div className="relative min-h-screen bg-[#030712] text-white">
+          <div className="relative min-h-[100dvh] bg-[#030712] text-white">
             {/* Section 2 Cosmic Solar System Canvas (The Sun, 9 Planets, Rocket, Spaceship, Starfield) */}
             {/* VfxSolarSystemGalaxy removed */}
             <div className="relative z-10">

@@ -1,4 +1,25 @@
 /**
+ * Security: Validates user identity and role integrity.
+ * Prevents localStorage privilege escalation via DevTools console.
+ * Only verified developer/admin identities may claim role 'admin' or dimension 4.
+ */
+export function validateUserIntegrity(user) {
+  if (!user || typeof user !== 'object') return null;
+  const clone = { ...user };
+  const uid = String(clone.id || clone.studentId || '').trim().toLowerCase();
+  const isGenuineAdmin = (uid === 'rishibhai' || uid === 'adm-root-001' || uid === 'developer_rishit');
+  
+  if (clone.role === 'admin' && !isGenuineAdmin) {
+    clone.role = 'Student';
+  }
+  if (clone.dimension === 4 && !isGenuineAdmin) {
+    clone.dimension = 1;
+    clone.dimensionName = 'Dimension 1: Normal';
+  }
+  return clone;
+}
+
+/**
  * Safe LocalStorage & Image Compression Manager
  * Prevents QuotaExceededError DOMException crashes on mobile and desktop browsers.
  */
@@ -81,7 +102,7 @@ export function safeSetUser(user) {
     return;
   }
 
-  const sanitized = sanitizeUserForStorage(user);
+  const sanitized = sanitizeUserForStorage(validateUserIntegrity(user));
   let payload = '';
   try {
     payload = JSON.stringify(sanitized);

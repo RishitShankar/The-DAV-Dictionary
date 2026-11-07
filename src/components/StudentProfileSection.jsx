@@ -336,6 +336,7 @@ export function StudentProfileSection({ user, onLogout }) {
                         alt="Student" 
                         className="w-full h-full object-cover object-top"
                         onError={(e) => {
+                          e.target.onerror = null;
                           if (isMasterRishit) {
                             e.target.src = '/rishit_shankar.jpg';
                           } else {
@@ -551,9 +552,11 @@ export function StudentProfileSection({ user, onLogout }) {
                   <input
                     type="text"
                     value={profile.admissionNumber}
-                    onChange={(e) => handleChange('admissionNumber', e.target.value)}
+                    readOnly={!isMasterRishit}
+                    onChange={(e) => isMasterRishit && handleChange('admissionNumber', e.target.value)}
                     placeholder="ADM-XXXX"
-                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-700 text-white focus:outline-none focus:border-amber-400"
+                    className={`w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-700 text-white focus:outline-none focus:border-amber-400 ${!isMasterRishit ? 'cursor-not-allowed opacity-80' : ''}`}
+                    title={!isMasterRishit ? "Official School Admission Number (Locked)" : ""}
                   />
                 </div>
               </div>

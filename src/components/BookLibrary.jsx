@@ -1,5 +1,5 @@
 import { VfxSolarSystemGalaxy } from './vfx/VfxSolarSystemGalaxy';
-import React, { useState } from 'react';
+import React, { useState, useDeferredValue } from 'react';
 import { DAV_SUBJECTS } from '../data/mockData';
 import { 
   BookOpen, Calculator, Languages, HeartHandshake, Globe, Sparkles, 

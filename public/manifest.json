@@ -1,0 +1,22 @@
+{
+  "short_name": "DAV Dictionary",
+  "name": "The DAV Dictionary - Student Academic Portal",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/logo-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#030712",
+  "theme_color": "#030712",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "scope": "/"
+}

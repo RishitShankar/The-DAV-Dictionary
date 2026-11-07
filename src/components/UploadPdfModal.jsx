@@ -36,6 +36,14 @@ export function UploadPdfModal({ isOpen, onClose, onAddPdf, currentUser }) {
   const handleFileChange = (e) => {
     const selected = e.target.files?.[0];
     if (selected) {
+      if (selected.type !== 'application/pdf' && !selected.name.toLowerCase().endsWith('.pdf')) {
+        alert('Please select a valid PDF document.');
+        return;
+      }
+      if (selected.size > 10 * 1024 * 1024) {
+        alert('PDF size exceeds 10 MB limit. Please select a compressed file.');
+        return;
+      }
       setFile(selected);
       setFileName(selected.name.replace('.pdf', ''));
     }
@@ -97,6 +105,7 @@ export function UploadPdfModal({ isOpen, onClose, onAddPdf, currentUser }) {
 
     if (file) {
       const reader = new FileReader();
+      reader.onerror = () => alert('Failed to read document.');
       reader.onloadend = () => {
         processUpload(reader.result);
       };
