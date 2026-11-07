@@ -111,11 +111,17 @@ async function main() {
   // 1. Copy index.html
   fs.copyFileSync(indexHtmlPath, path.join(assetsDir, 'index.html'));
 
-  // 2. Copy ONLY active JS and CSS bundles
+  // 2. Copy ALL active JS and CSS production code bundles (Prevents runtime chunk 404s!)
   const assetsSubDir = path.join(assetsDir, 'assets');
   ensureDir(assetsSubDir);
-  if (activeJs) fs.copyFileSync(path.join(distDir, 'assets', activeJs), path.join(assetsSubDir, activeJs));
-  if (activeCss) fs.copyFileSync(path.join(distDir, 'assets', activeCss), path.join(assetsSubDir, activeCss));
+  const distAssetsDir = path.join(distDir, 'assets');
+  if (fs.existsSync(distAssetsDir)) {
+    for (const f of fs.readdirSync(distAssetsDir)) {
+      if (f.endsWith('.js') || f.endsWith('.css')) {
+        fs.copyFileSync(path.join(distAssetsDir, f), path.join(assetsSubDir, f));
+      }
+    }
+  }
 
   // 3. Copy essential lightweight UI icons and graphics
   const coreFiles = [

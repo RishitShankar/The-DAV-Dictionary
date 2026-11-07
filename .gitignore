@@ -60,3 +60,6 @@ scripts/*
 android_build/
 mobile ui images/
 FIRST Page.jpeg
+
+android/
+scratch_build_track_bus.py

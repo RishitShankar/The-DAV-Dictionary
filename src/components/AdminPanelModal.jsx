@@ -30,11 +30,14 @@ import {
   Heart,
   CheckCircle2,
   Clock,
-  AlertCircle
+  AlertCircle,
+  Lock,
+  Bus
 } from 'lucide-react';
 import { DavInvoiceModal } from './DavInvoiceModal';
 import { WhatsAppLogo } from './SocialLogos';
-import { PRELOADED_DATABASE_USERS, getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
+import { PRELOADED_DATABASE_USERS, getRegisteredUsers, saveRegisteredUsers, getBusDriverAccounts, createBusDriverAccount, deleteBusDriverAccount } from '../data/preloadedUsers';
+import { getFleet100 } from '../data/busFleet100';
 import { 
   getPurchases, 
   verifyAndApprovePurchase, 
@@ -79,6 +82,42 @@ function AdminPanelModalInner({ isOpen, onClose, currentUser, onOpenDbGuide }) {
 
   // 3-Tab Navigation State: 'students' | 'donations' | 'purchases'
   const [activeTab, setActiveTab] = useState('students');
+  // Dimension 7 Bus Driver Accounts State
+  const [driverAccounts, setDriverAccounts] = useState(() => getBusDriverAccounts());
+  const [driverSearch, setDriverSearch] = useState('');
+  const [genBusNum, setGenBusNum] = useState(1);
+  const [genDriverName, setGenDriverName] = useState('');
+  const [genDriverPhone, setGenDriverPhone] = useState('');
+  const [genDriverPass, setGenDriverPass] = useState('');
+  const [driverGenSuccess, setDriverGenSuccess] = useState('');
+  const [driverCopiedId, setDriverCopiedId] = useState(null);
+
+  const handleCreateDriverAccount = (e) => {
+    e.preventDefault();
+    if (!genDriverName.trim()) {
+      alert('Please enter driver name');
+      return;
+    }
+    const acc = createBusDriverAccount({
+      busNumber: genBusNum,
+      driverName: genDriverName,
+      phone: genDriverPhone,
+      password: genDriverPass || '123'
+    });
+    setDriverAccounts(getBusDriverAccounts());
+    setDriverGenSuccess('Driver Account generated: ID: ' + acc.id + ' | Pass: ' + acc.password + ' (Bus ' + acc.busNumber + ')');
+    setGenDriverName('');
+    setGenDriverPhone('');
+    setGenDriverPass('');
+    setTimeout(() => setDriverGenSuccess(''), 5000);
+  };
+
+  const handleDeleteDriverAccount = (id) => {
+    if (window.confirm('Revoke and delete Bus Driver account ' + id + '?')) {
+      deleteBusDriverAccount(id);
+      setDriverAccounts(getBusDriverAccounts());
+    }
+  };
   const [donationsList, setDonationsList] = useState([]);
   const [donationSearchQuery, setDonationSearchQuery] = useState('');
 
@@ -805,6 +844,23 @@ _With heartfelt gratitude from the entire DAV student community!_`;
                 {purchasesList.length}
               </span>
             )}
+          </button>
+
+          {/* 4th Subsection: Dimension 7 Bus Drivers */}
+          <button
+            type="button"
+            onClick={() => setActiveTab('bus_drivers')}
+            className={`py-3 px-3 sm:px-5 font-black text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2 border-b-2 transition cursor-pointer ${
+              activeTab === 'bus_drivers'
+                ? 'border-cyan-400 text-cyan-300 bg-cyan-400/10'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Bus className="w-4 h-4 text-cyan-400" />
+            <span>Dimension 7: Bus Drivers</span>
+            <span className="px-2 py-0.5 rounded-full bg-cyan-950 text-[10px] text-cyan-300 font-mono border border-cyan-800/60">
+              {driverAccounts.length} Drivers
+            </span>
           </button>
         </div>
 
@@ -1661,7 +1717,7 @@ _With heartfelt gratitude from the entire DAV student community!_`;
           </div>
 
         </div>
-      ) : (
+      ) : activeTab === 'purchases' ? (
         /* ======================================================================= */
         /* TAB 3: VERIFY PURCHASES (Admin Verification for Student Subscriptions)  */
         /* ======================================================================= */
@@ -1917,6 +1973,217 @@ _With heartfelt gratitude from the entire DAV student community!_`;
             <span className="text-slate-500">Live Verification • Instantly Ends Initial Trial</span>
           </div>
 
+        </div>
+      ) : (
+        /* ======================================================================= */
+        /* TAB 4: DIMENSION 7 - BUS DRIVER FLEET ACCOUNTS (DEVELOPER-ONLY)        */
+        /* ======================================================================= */
+        <div className="flex-1 flex flex-col min-h-0 bg-slate-900/60 p-4 sm:p-6 overflow-hidden space-y-4">
+          {/* Header & Metric Banner */}
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-cyan-950/70 via-slate-900 to-slate-950 border border-cyan-500/40 shrink-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 flex items-center justify-center font-black">
+                <Bus className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-base font-black text-white flex items-center gap-2">
+                  <span>Dimension 7: Bus Driver Fleet Management</span>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">100% Free For All Drivers</span>
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Strict Policy: Only the Master Developer (Rishit Shankar) can generate Dimension 7 accounts. Bus Drivers have dedicated access strictly to Track Bus (Section 7).
+                </p>
+              </div>
+            </div>
+            <div className="px-4 py-2 rounded-xl bg-cyan-900/40 border border-cyan-700/50 text-right shrink-0">
+              <span className="text-[10px] text-cyan-300 uppercase font-bold block">Master Fleet Scale</span>
+              <strong className="text-lg font-mono text-cyan-200">Bus 01 to Bus 100</strong>
+            </div>
+          </div>
+
+          {/* Quick Generator Form */}
+          <form onSubmit={handleCreateDriverAccount} className="p-4 rounded-2xl bg-slate-950 border border-slate-800 shrink-0 space-y-3">
+            <div className="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              <span>Generate New Dimension 7 Driver Account</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-5 gap-2.5 text-xs">
+              <div>
+                <label className="text-[10px] text-slate-400 block mb-1 font-semibold">Assigned Bus (1-100)</label>
+                <select
+                  value={genBusNum}
+                  onChange={(e) => setGenBusNum(parseInt(e.target.value, 10))}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white font-mono text-xs focus:outline-none focus:border-cyan-400"
+                >
+                  {Array.from({ length: 100 }, (_, i) => i + 1).map(n => (
+                    <option key={n} value={n}>Bus #{n < 10 ? '0' + n : n}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[10px] text-slate-400 block mb-1 font-semibold">Driver Full Name</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Ramesh Singh"
+                  value={genDriverName}
+                  onChange={(e) => setGenDriverName(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-cyan-400"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] text-slate-400 block mb-1 font-semibold">Phone Number</label>
+                <input
+                  type="tel"
+                  placeholder="e.g. 9876543210"
+                  value={genDriverPhone}
+                  onChange={(e) => setGenDriverPhone(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-cyan-400"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] text-slate-400 block mb-1 font-semibold">Password</label>
+                <input
+                  type="text"
+                  placeholder="Default: 123"
+                  value={genDriverPass}
+                  onChange={(e) => setGenDriverPass(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-cyan-400 font-mono"
+                />
+              </div>
+
+              <div className="flex items-end">
+                <button
+                  type="submit"
+                  className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-lg shadow-cyan-950 cursor-pointer transition"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span>Generate Dim 7</span>
+                </button>
+              </div>
+            </div>
+
+            {driverGenSuccess && (
+              <div className="p-2.5 rounded-xl bg-emerald-950/70 border border-emerald-500/50 text-emerald-300 text-xs font-mono font-bold flex items-center gap-2">
+                <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>{driverGenSuccess}</span>
+              </div>
+            )}
+          </form>
+
+          {/* Search Drivers Filter */}
+          <div className="flex items-center justify-between gap-3 shrink-0">
+            <div className="relative w-full sm:w-96">
+              <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search driver name, ID (e.g. driver1), or Bus #..."
+                value={driverSearch}
+                onChange={(e) => setDriverSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 text-xs rounded-xl bg-slate-950 border border-slate-800 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+              />
+            </div>
+            <span className="text-xs text-slate-400 font-mono">
+              {driverAccounts.length} Active Driver Accounts
+            </span>
+          </div>
+
+          {/* Driver Accounts List */}
+          <div className="flex-1 overflow-y-auto space-y-2.5 pr-1">
+            {driverAccounts.filter(d => {
+              const q = driverSearch.toLowerCase().trim();
+              if (!q) return true;
+              return (
+                d.id.toLowerCase().includes(q) ||
+                (d.name && d.name.toLowerCase().includes(q)) ||
+                (d.busNumber && d.busNumber.toString().includes(q)) ||
+                (d.phone && d.phone.includes(q))
+              );
+            }).length === 0 ? (
+              <div className="py-16 text-center text-slate-500 text-xs">
+                <Bus className="w-10 h-10 text-slate-700 mx-auto mb-2" />
+                <p>No driver accounts match your search. Generate one above!</p>
+              </div>
+            ) : (
+              driverAccounts
+                .filter(d => {
+                  const q = driverSearch.toLowerCase().trim();
+                  if (!q) return true;
+                  return (
+                    d.id.toLowerCase().includes(q) ||
+                    (d.name && d.name.toLowerCase().includes(q)) ||
+                    (d.busNumber && d.busNumber.toString().includes(q)) ||
+                    (d.phone && d.phone.includes(q))
+                  );
+                })
+                .map((d) => (
+                  <div key={d.id} className="p-3.5 rounded-2xl bg-slate-950/90 border border-slate-800 hover:border-cyan-500/40 transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-11 h-11 rounded-xl bg-cyan-950/80 border border-cyan-800/60 text-cyan-300 flex flex-col items-center justify-center font-black font-mono shrink-0">
+                        <span className="text-[9px] uppercase text-cyan-400">Bus</span>
+                        <span className="text-sm">#{d.busNumber}</span>
+                      </div>
+                      <div>
+                        <div className="font-bold text-sm text-white flex items-center gap-2">
+                          <span>{d.name}</span>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 font-mono">Dimension 7</span>
+                        </div>
+                        <div className="text-xs text-slate-400 flex items-center gap-3 mt-0.5 font-mono">
+                          <span>ID: <strong className="text-cyan-300">{d.id}</strong></span>
+                          <span>Password: <strong className="text-amber-300">{d.password}</strong></span>
+                          {d.phone && <span>Phone: {d.phone}</span>}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText('ID: ' + d.id + ' | Pass: ' + d.password);
+                          setDriverCopiedId(d.id);
+                          setTimeout(() => setDriverCopiedId(null), 2000);
+                        }}
+                        className="py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 transition flex items-center gap-1.5 cursor-pointer border border-slate-700"
+                      >
+                        {driverCopiedId === d.id ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                            <span className="text-emerald-400">Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5 text-slate-400" />
+                            <span>Copy Login</span>
+                          </>
+                        )}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteDriverAccount(d.id)}
+                        className="p-2 rounded-xl bg-slate-800 hover:bg-rose-950 text-slate-400 hover:text-rose-400 border border-slate-700 transition cursor-pointer"
+                        title="Delete / Revoke Driver Account"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))
+            )}
+          </div>
+
+          {/* Bottom Security Note */}
+          <div className="pt-3 mt-2 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between shrink-0">
+            <span className="flex items-center gap-1.5 text-cyan-300 font-semibold">
+              <ShieldCheck className="w-4 h-4 text-cyan-400" />
+              <span>Dimension 7 Exclusive Access • Bus Drivers can only access Track Bus</span>
+            </span>
+            <span className="text-slate-500">Master Bus Fleet 1 to 100</span>
+          </div>
         </div>
       )}
 

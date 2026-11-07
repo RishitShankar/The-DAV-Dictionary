@@ -165,6 +165,13 @@ export function App() {
     return 'home';
   });
 
+  // Auto-lock Dimension 7 (Bus Driver) to Section 7 (Track Bus)
+  useEffect(() => {
+    if (user?.dimension === 7 || user?.plan === 'bus_driver') {
+      setActiveSection(7);
+    }
+  }, [user]);
+
   // Castle App-Inspired 12-Hour Ad-Watch Pass Resolver
   const [adPassUpdated, setAdPassUpdated] = useState(0);
 
@@ -356,6 +363,15 @@ export function App() {
     if (userIsTeacher) {
       setActiveSection(5);
     }
+    const userIsBusDriver = Boolean(
+      loggedInUser?.dimension === 7 ||
+      loggedInUser?.plan === 'bus_driver' ||
+      loggedInUser?.isDriver ||
+      (loggedInUser?.dimensionName && loggedInUser?.dimensionName.toLowerCase().includes('driver'))
+    );
+    if (userIsBusDriver) {
+      setActiveSection(7);
+    }
     try {
       const guidePending = localStorage.getItem('dav_new_user_guide_pending_' + loggedInUser.id) === 'true';
       const guideCompleted = localStorage.getItem('dav_user_guide_completed_' + loggedInUser.id) === 'true';
@@ -403,6 +419,14 @@ export function App() {
   }, []);
 
   const handleSelectSection = (secId) => {
+    // Dimension 7 (Bus Driver) is strictly locked to Track Bus (Section 7)
+    if (user?.dimension === 7 || user?.plan === 'bus_driver') {
+      if (secId !== 7) {
+        alert('Bus Driver Account Notice: Dimension 7 accounts have access strictly and exclusively to the Track Bus feature (Section 7).');
+        setActiveSection(7);
+        return;
+      }
+    }
     // Section 12 is strictly for Dimension 4 only (hidden from dimensions 1, 2, 3, 5)
     if (secId === 12 && !(user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai')) {
       return;
