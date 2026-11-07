@@ -231,7 +231,11 @@ export function RangoliCursorEffect() {
 
     // Main Animation Render Loop
     const render = () => {
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      // High-DPI physical buffer clear (Bug 14)
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
 
       // Update and draw each Rangoli particle
       for (let i = particles.length - 1; i >= 0; i--) {

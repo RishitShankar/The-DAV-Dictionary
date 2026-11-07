@@ -6,6 +6,13 @@ const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3Mi
 let cachedClient = null;
 
 /**
+ * Checks whether the browser currently has active internet connectivity.
+ */
+export function isNetworkOnline() {
+  return typeof navigator === 'undefined' || navigator.onLine !== false;
+}
+
+/**
  * Returns the active Supabase client instance.
  * Automatically connects to live Supabase Cloud Database across all devices,
  * localhost, and Vercel production deployment.
@@ -50,6 +57,7 @@ export async function testSupabaseConnection(url, anonKey) {
  * Fetch all verified students from Supabase cloud
  */
 export async function fetchCloudStudents() {
+  if (!isNetworkOnline()) return null;
   const client = getSupabaseClient();
   if (!client) return null;
   try {
@@ -84,6 +92,7 @@ export async function fetchCloudStudents() {
  * Save or update a single student account to Supabase
  */
 export async function saveCloudStudent(student) {
+  if (!isNetworkOnline()) return false;
   const client = getSupabaseClient();
   if (!client || !student) return false;
   try {
@@ -139,8 +148,18 @@ export async function deleteCloudStudent(userId) {
   const client = getSupabaseClient();
   if (!client || !userId) return false;
   try {
-    const { error } = await client.from('dav_students').delete().eq('id', userId);
-    return !error;
+    const normalizedUid = String(userId).trim().toLowerCase();
+    // 1. Delete student core account
+    await client.from('dav_students').delete().eq('id', userId);
+    // 2. Cascade delete orphaned records in dav_doubt_chats (Bug 16)
+    try {
+      await client.from('dav_doubt_chats').delete().eq('user_id', normalizedUid);
+    } catch (e) {}
+    // 3. Cascade delete orphaned annotations and device sessions in dav_pdf_annotations (Bug 16)
+    try {
+      await client.from('dav_pdf_annotations').delete().eq('user_id', normalizedUid);
+    } catch (e) {}
+    return true;
   } catch (e) {
     return false;
   }

@@ -243,6 +243,18 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
     }
   }, [isSectionView]);
 
+  // Clean up any active speech recognition on unmount (Bug 9)
+  useEffect(() => {
+    return () => {
+      try {
+        if (recognitionRef.current) {
+          recognitionRef.current.abort();
+          recognitionRef.current = null;
+        }
+      } catch (e) {}
+    };
+  }, []);
+
   const handleSaveKey = () => {
     saveApiKey(apiKey);
     setSavedSuccess(true);
@@ -272,7 +284,7 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
     try {
       const recognition = new SpeechRecognition();
       recognition.lang = 'en-IN';
-      recognition.continuous = true;
+      recognition.continuous = false;
       recognition.interimResults = true;
 
       baseInputRef.current = input;

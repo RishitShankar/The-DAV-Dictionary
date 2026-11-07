@@ -30,13 +30,24 @@ function PdfReaderModalInner({ isOpen, onClose, book, onOpenAIWithQuestion, curr
     };
   }, [isOpen, onClose]);
 
-  // Mobile detection
-  const isMobileScreen = typeof window !== 'undefined' && (
+  // Mobile detection with dynamic orientation/resize listener (Bug 6)
+  const checkIsMobileScreen = () => typeof window !== 'undefined' && (
     window.innerWidth <= 768 ||
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
     (navigator.userAgent && navigator.userAgent.includes('DAVSmartPortalApp')) ||
     (window.location.host && window.location.host.includes('appassets'))
   );
+  const [isMobileScreen, setIsMobileScreen] = useState(checkIsMobileScreen);
+
+  useEffect(() => {
+    const handleOrientationResize = () => setIsMobileScreen(checkIsMobileScreen());
+    window.addEventListener('resize', handleOrientationResize);
+    window.addEventListener('orientationchange', handleOrientationResize);
+    return () => {
+      window.removeEventListener('resize', handleOrientationResize);
+      window.removeEventListener('orientationchange', handleOrientationResize);
+    };
+  }, []);
 
   // Mobile View Tabs: 'pdf' | 'ai'
   const [mobileTab, setMobileTab] = useState('pdf');
@@ -423,7 +434,7 @@ function PdfReaderModalInner({ isOpen, onClose, book, onOpenAIWithQuestion, curr
             title={`${book.title} - Textbook Cloud Reader`}
             className="w-full h-full min-h-full flex-1 border-none bg-stone-900 block"
             style={{ width: '100%', height: '100%', minHeight: '100%' }}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen
           />
         </div>
 

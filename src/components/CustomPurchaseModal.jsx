@@ -392,7 +392,7 @@ export function CustomPurchaseModal({isOpen, onClose, user, onPurchaseSubmitted 
               PAGE 2: STUDENT PROFILE DETAILS (Section 9 essentials)
               ========================================================================= */}
           {currentPage === 2 && (
-            <form onSubmit={handleGoToPage3} className="space-y-4 animate-fadeIn">
+            <form onSubmit={handleGoToPage3} onKeyDown={(e) => { if (e.key === "Enter" && e.target.tagName === "INPUT") e.preventDefault(); }} className="space-y-4 animate-fadeIn">
               <div className="p-3 rounded-xl bg-amber-50/80 border border-amber-200 text-xs text-amber-900 font-medium">
                 Please enter the student details for Section 9 (Student Profile Card) and verification records:
               </div>
@@ -518,7 +518,7 @@ export function CustomPurchaseModal({isOpen, onClose, user, onPurchaseSubmitted 
               PAGE 3: PAYMENT MODE (ONLY TWO: Cash or Online) & Send Request
               ========================================================================= */}
           {currentPage === 3 && (
-            <form onSubmit={handleFinalSubmit} className="space-y-5 animate-fadeIn">
+            <form onSubmit={handleFinalSubmit} onKeyDown={(e) => { if (e.key === "Enter" && e.target.tagName === "INPUT") e.preventDefault(); }} className="space-y-5 animate-fadeIn">
               
               {/* Summary of Plan & Amount */}
               <div className="p-3.5 rounded-2xl bg-stone-900 text-white flex items-center justify-between text-xs">

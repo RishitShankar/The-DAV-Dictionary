@@ -151,20 +151,27 @@ export function StudentProfileSection({ user, onLogout }) {
 
   const handlePhotoUpload = async (e) => {
     const file = e.target.files?.[0];
-    if (file) {
-      try {
-        const compressedBase64 = await compressImageFile(file, 256, 0.8);
-        if (compressedBase64) {
-          setPhotoPreview(compressedBase64);
-          handleChange('photoUrl', compressedBase64);
-          // Instant synchronization with Navbar and site-wide mini-profile
-          window.dispatchEvent(new CustomEvent('dav_profile_photo_updated', {
-            detail: { photoUrl: compressedBase64, userId: currentUserId }
-          }));
-        }
-      } catch (err) {
-        console.warn('Failed to compress uploaded photo:', err);
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file (JPEG, PNG, WEBP).');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Image file exceeds 10 MB limit. Please select a smaller photo.');
+      return;
+    }
+    try {
+      const compressedBase64 = await compressImageFile(file, 200, 0.75);
+      if (compressedBase64) {
+        setPhotoPreview(compressedBase64);
+        handleChange('photoUrl', compressedBase64);
+        window.dispatchEvent(new CustomEvent('dav_profile_photo_updated', {
+          detail: { photoUrl: compressedBase64, userId: currentUserId }
+        }));
       }
+    } catch (err) {
+      console.warn('Failed to compress uploaded photo:', err);
+      alert('Could not process this image. Please choose another file.');
     }
   };
 

@@ -182,49 +182,7 @@ const calculateCbseGrade = (percentage) => {
   return { grade: 'E', remarks: 'Needs Essential Remedial Guidance', color: 'text-rose-400 bg-rose-500/20 border-rose-500/40' };
 };
 
-// =========================================================================
-// AUTHENTIC WHATSAPP VOICE CALLING SYNTHESIZER & TONES
-// =========================================================================
-const createWhatsAppRingtonePlayer = () => {
-  const AudioContextClass = typeof window !== 'undefined' ? (window.AudioContext || window.webkitAudioContext) : null;
-  if (!AudioContextClass) return null;
-  const ctx = new AudioContextClass();
-  let isRunning = true;
-  let intervalId = null;
-
-  const playRingBurst = () => {
-    if (!isRunning || ctx.state === 'closed') return;
-    try {
-      const osc1 = ctx.createOscillator();
-      const osc2 = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc1.type = 'sine';
-      osc2.type = 'sine';
-      osc1.frequency.value = 440;
-      osc2.frequency.value = 480;
-      gain.gain.setValueAtTime(0.06, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.8);
-      osc1.connect(gain);
-      osc2.connect(gain);
-      gain.connect(ctx.destination);
-      osc1.start();
-      osc2.start();
-      osc1.stop(ctx.currentTime + 1.8);
-      osc2.stop(ctx.currentTime + 1.8);
-    } catch (e) {}
-  };
-
-  playRingBurst();
-  intervalId = setInterval(playRingBurst, 3600);
-
-  return {
-    stop: () => {
-      isRunning = false;
-      if (intervalId) clearInterval(intervalId);
-      try { ctx.close(); } catch (e) {}
-    }
-  };
-};
+// Authentic WhatsApp Audio synthesizer managed in Master Audio Engine
 
 const playWhatsAppCallConnectedTone = () => {
   try {
@@ -1709,9 +1667,13 @@ export function TeachersSection({
     return () => {
       try {
         if (ringtonePlayerRef.current?.stop) ringtonePlayerRef.current.stop();
+        if (ringtonePreviewPlayerRef?.current?.stop) ringtonePreviewPlayerRef.current.stop();
         if (callTimerRef.current) clearInterval(callTimerRef.current);
         if (callAnimFrameRef.current) cancelAnimationFrame(callAnimFrameRef.current);
         if (speechRecogRef.current) speechRecogRef.current.stop();
+        if (callAudioCtxRef.current?.close) callAudioCtxRef.current.close();
+        if (callStreamRef.current?.getTracks) callStreamRef.current.getTracks().forEach(t => t.stop());
+        if (remoteStreamRef.current?.getTracks) remoteStreamRef.current.getTracks().forEach(t => t.stop());
         if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       } catch (e) {}
     };

@@ -177,6 +177,7 @@ export function BookLibrary({
 }) {
   const [selectedClass, setSelectedClass] = useState(8);
   const [searchQuery, setSearchQuery] = useState('');
+  const deferredSearchQuery = useDeferredValue(searchQuery);
   const [selectedBookTab, setSelectedBookTab] = useState({});
   const [activeFilter, setActiveFilter] = useState('ALL');
 
@@ -206,9 +207,9 @@ export function BookLibrary({
   const subjects = isTeacherPdfsMode ? [] : (DAV_SUBJECTS[selectedClass] || []);
 
   const filteredSubjects = subjects.filter(s => {
-    const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (s.tagline && s.tagline.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (s.books && s.books.some(b => b.title.toLowerCase().includes(searchQuery.toLowerCase())));
+    const matchesSearch = s.name.toLowerCase().includes(deferredSearchQuery.toLowerCase()) ||
+      (s.tagline && s.tagline.toLowerCase().includes(deferredSearchQuery.toLowerCase())) ||
+      (s.books && s.books.some(b => b.title.toLowerCase().includes(deferredSearchQuery.toLowerCase())));
     
     if (!matchesSearch) return false;
     if (activeFilter === 'ALL') return true;

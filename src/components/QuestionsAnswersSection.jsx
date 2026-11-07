@@ -54,6 +54,8 @@ export function QuestionsAnswersSection({
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [subjectSearch, setSubjectSearch] = useState('');
   const [chapterSearch, setChapterSearch] = useState('');
+  const deferredSubjectSearch = useDeferredValue(subjectSearch);
+  const deferredChapterSearch = useDeferredValue(chapterSearch);
   const [redirectToast, setRedirectToast] = useState(null);
 
   // Plan unlock rules

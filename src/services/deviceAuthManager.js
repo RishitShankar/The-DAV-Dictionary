@@ -4,7 +4,7 @@ const DEVICE_ID_KEY = 'dav_device_fingerprint_id';
 const LOCAL_SESSION_KEY = 'dav_active_device_session';
 const SESSION_BOOK_TITLE = 'ACTIVE_DEVICE_SESSION';
 const HEARTBEAT_INTERVAL_MS = 30000; // 30 seconds
-const SESSION_STALE_TIMEOUT_MS = 20 * 60 * 1000; // 20 minutes of no heartbeat considered stale
+const SESSION_STALE_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes (reduced from 20 to prevent false lockouts)
 
 let heartbeatTimer = null;
 let realtimeChannel = null;
@@ -99,8 +99,20 @@ export async function checkDeviceSession(userId, currentUserObj = null) {
     return { allowed: true, isSameDevice: true, currentActiveSession: null };
   }
 
-  const currentDeviceId = getDeviceId();
   const normalizedUid = String(userId).trim().toLowerCase();
+  
+  // Administrator bypass: Root Admin & Rishit Shankar never locked out by device conflicts
+  if (
+    normalizedUid === 'rishibhai' ||
+    normalizedUid === 'adm-root-001' ||
+    normalizedUid.startsWith('adm-') ||
+    currentUserObj?.role === 'admin'
+  ) {
+    return { allowed: true, isSameDevice: true, currentActiveSession: null };
+  }
+
+  const currentDeviceId = getDeviceId();
+  const currentMeta = getDeviceMetadata();
   const client = getSupabaseClient();
   const maxAllowed = getMaxDevicesForUser(currentUserObj);
 
@@ -433,6 +445,16 @@ export function startDeviceGuard(user, onForceLoggedOut) {
   }
 
   const normalizedUid = String(user.id).trim().toLowerCase();
+  // Administrator and Head Boy bypass: Never kick Rishit Shankar or admins out
+  if (
+    normalizedUid === 'rishibhai' ||
+    normalizedUid === 'adm-root-001' ||
+    normalizedUid.startsWith('adm-') ||
+    user?.role === 'admin'
+  ) {
+    return () => {};
+  }
+
   const currentDeviceId = getDeviceId();
   const client = getSupabaseClient();
 

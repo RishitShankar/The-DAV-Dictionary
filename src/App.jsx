@@ -1,34 +1,23 @@
 import { MasterHubBottomNav } from './components/MasterHubBottomNav';
 import { detectPlatformDimensions } from './utils/dimensionHelper';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { PublicHomepage } from './components/PublicHomepage';
 import { BlackboardLogin } from './components/BlackboardLogin';
-import { AdminPanelModal } from './components/AdminPanelModal';
 import { Navbar } from './components/Navbar';
 import { GeminiSidebar } from './components/GeminiSidebar';
 import { Hero } from './components/Hero';
 import { BookLibrary } from './components/BookLibrary';
 import { UntitledSection } from './components/UntitledSection';
-import { AboutCreatorSection } from './components/AboutCreatorSection';
 import { StudentProfileSection } from './components/StudentProfileSection';
 import { RishiAI } from './components/RishiAI';
-import { PdfReaderModal } from './components/PdfReaderModal';
 import { PricingModal } from './components/PricingModal';
-import { CustomPurchaseModal } from './components/CustomPurchaseModal';
 import { CinematicFlameVfx } from './components/vfx/CinematicFlameVfx';
 import { VfxSolarSystemGalaxy } from './components/vfx/VfxSolarSystemGalaxy';
 import { VfxCycloneVortex } from './components/vfx/VfxCycloneVortex';
 import { VfxGlobalSuite } from './components/VfxGlobalSuite';
 import { AuthModal } from './components/AuthModal';
-import { UploadPdfModal } from './components/UploadPdfModal';
 import { SectionOverview } from './components/SectionOverview';
 import { QuestionsAnswersSection } from './components/QuestionsAnswersSection';
-import { DonationSection } from './components/DonationSection';
-import { TeachersSection } from './components/TeachersSection';
-import { ChapterExplanationsSection } from './components/ChapterExplanationsSection';
-import { KidsFunNavigatorSection } from './components/KidsFunNavigatorSection';
-import { StudyLeaderboardSection } from './components/StudyLeaderboardSection';
-import { DeveloperReviewsSection } from './components/DeveloperReviewsSection';
 import { PurpleFooter } from './components/PurpleFooter';
 import { SectionErrorBoundary } from './components/SectionErrorBoundary';
 import { 
@@ -43,8 +32,66 @@ import { getSupabaseClient } from './services/supabaseClient';
 import { findUserByGoogleEmail, createStudentWithGoogle } from './services/googleAuthService';
 import { safeSetUser, safeSetItem } from './utils/safeStorage';
 
+
+// Code-split heavy modules (Bug 3)
+const TeachersSection = lazy(() => import('./components/TeachersSection').then(m => ({ default: m.TeachersSection })));
+const ChapterExplanationsSection = lazy(() => import('./components/ChapterExplanationsSection').then(m => ({ default: m.ChapterExplanationsSection })));
+const KidsFunNavigatorSection = lazy(() => import('./components/KidsFunNavigatorSection').then(m => ({ default: m.KidsFunNavigatorSection })));
+const StudyLeaderboardSection = lazy(() => import('./components/StudyLeaderboardSection').then(m => ({ default: m.StudyLeaderboardSection })));
+const DonationSection = lazy(() => import('./components/DonationSection').then(m => ({ default: m.DonationSection })));
+const AboutCreatorSection = lazy(() => import('./components/AboutCreatorSection').then(m => ({ default: m.AboutCreatorSection })));
+const DeveloperReviewsSection = lazy(() => import('./components/DeveloperReviewsSection').then(m => ({ default: m.DeveloperReviewsSection })));
+const AdminPanelModal = lazy(() => import('./components/AdminPanelModal').then(m => ({ default: m.AdminPanelModal })));
+const PdfReaderModal = lazy(() => import('./components/PdfReaderModal').then(m => ({ default: m.PdfReaderModal })));
+const CustomPurchaseModal = lazy(() => import('./components/CustomPurchaseModal').then(m => ({ default: m.CustomPurchaseModal })));
+const UploadPdfModal = lazy(() => import('./components/UploadPdfModal').then(m => ({ default: m.UploadPdfModal })));
+
+function SectionLoadingFallback() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[50vh] p-8 text-center animate-pulse">
+      <div className="w-12 h-12 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin mb-4" />
+      <p className="text-stone-400 font-bold text-sm tracking-wide">Loading DAV Academic Module...</p>
+    </div>
+  );
+}
+
 export function App() {
   const [activeSection, setActiveSection] = useState(1);
+  const [isOnline, setIsOnline] = useState(() => (typeof navigator !== 'undefined' ? navigator.onLine : true));
+
+  // Multi-Tab Desynchronization Synchronization (Bug 11)
+  useEffect(() => {
+    const handleStorageSync = (e) => {
+      if (e.key === 'dav_user') {
+        if (!e.newValue) {
+          setUser(null);
+          setViewMode('home');
+        } else {
+          try {
+            const parsed = JSON.parse(e.newValue);
+            if (parsed && parsed.id && parsed.id !== 'guest_student') {
+              setUser(parsed);
+              setViewMode('app');
+            }
+          } catch (err) {}
+        }
+      }
+    };
+    window.addEventListener('storage', handleStorageSync);
+    return () => window.removeEventListener('storage', handleStorageSync);
+  }, []);
+
+  // Offline State Tracking (Bug 12)
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
   const [isCycloneOpen, setIsCycloneOpen] = useState(false);
   const [flameVfx, setFlameVfx] = useState({
     isOpen: false,
@@ -468,6 +515,13 @@ export function App() {
 
   return (
     <div className={`min-h-screen ${activeSection === 4 ? 'h-screen max-h-screen overflow-hidden' : ''} bg-slate-50 flex flex-col font-sans selection:bg-amber-300 selection:text-red-950`}>
+      {/* Offline Connectivity Notification Banner (Bug 12) */}
+      {!isOnline && (
+        <div className="fixed top-0 left-0 right-0 z-[9999] bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 text-white text-xs sm:text-sm font-black px-4 py-2.5 text-center shadow-xl flex items-center justify-center gap-2 animate-bounce">
+          <span className="w-2.5 h-2.5 rounded-full bg-white animate-ping" />
+          <span>Offline Mode Active: Internet connection lost. Some cloud features may be limited until reconnected.</span>
+        </div>
+      )}
       
       {/* Guest Mode Floating Notification */}
       {isGuest && (
@@ -532,6 +586,7 @@ export function App() {
 
       {/* Main Content Area */}
       <main className={`flex-1 min-h-0 flex flex-col ${(deviceDimension === 'mobile' || platformDim.isMobile) ? 'pb-24' : ''} ${activeSection === 4 ? 'h-full overflow-hidden' : ''}`}>
+        <Suspense fallback={<SectionLoadingFallback />}>
         <SectionErrorBoundary
           key={`section-boundary-${activeSection}`}
           sectionName={`Section ${activeSection}`}
@@ -672,6 +727,7 @@ export function App() {
           <UntitledSection sectionNumber={activeSection} />
         )}
         </SectionErrorBoundary>
+        </Suspense>
       </main>
 
       {/* Official Purple Footer displayed on Section 9, 10, 11 & (12 for Dimension 4) */}
@@ -680,6 +736,7 @@ export function App() {
       )}
 
       {/* Modals */}
+      <Suspense fallback={null}>
       <AdminPanelModal
         isOpen={isAdminProgramOpen}
         onClose={() => setIsAdminProgramOpen(false)}
@@ -751,6 +808,7 @@ export function App() {
         onClose={() => setIsUploadOpen(false)}
         onAddPdf={handleAddPdf}
       />
+      </Suspense>
 
       {/* Locked Feature Modal for Free Preview / Demo Mode */}
       {lockedFeatureModal && (

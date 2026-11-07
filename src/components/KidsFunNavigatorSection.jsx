@@ -188,6 +188,7 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
         }));
       },
       (err) => {
+        setIsGpsLoading(false);
         console.warn('watchPosition notice:', err);
       },
       { enableHighAccuracy: true, maximumAge: 2000, timeout: 25000 }
@@ -437,7 +438,8 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
         (err) => {
           setIsGpsLoading(false);
           setLocationPermissionStatus('denied');
-          alert('Could not access live GPS. Please allow location permissions in your browser.');
+          // Fallback to DAV Khabra coordinates so student is never blocked
+          fetchLiveWeather(26.1158, 85.3575, 'DAV Public School, Khabra (Default Location)');
         },
         { enableHighAccuracy: true, timeout: 10000 }
       );

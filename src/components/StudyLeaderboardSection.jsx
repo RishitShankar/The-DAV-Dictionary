@@ -49,6 +49,22 @@ class FocusSoundEngine {
     this.noiseNode = null;
     this.gainNode = null;
     this.currentTrack = 'none';
+    let savedVol = 0.3;
+    try {
+      savedVol = parseFloat(localStorage.getItem('dav_study_volume')) || 0.3;
+    } catch (e) {}
+    this.masterVolume = Math.max(0.01, Math.min(1.0, savedVol));
+  }
+
+  setVolume(vol) {
+    this.masterVolume = Math.max(0.01, Math.min(1.0, Number(vol) || 0.3));
+    try {
+      localStorage.setItem('dav_study_volume', String(this.masterVolume));
+    } catch (e) {}
+    if (this.gainNode && this.ctx) {
+      const base = this.currentTrack === 'rain' ? 0.12 : 0.08;
+      this.gainNode.gain.setValueAtTime(base * this.masterVolume, this.ctx.currentTime);
+    }
   }
 
   init() {
@@ -77,7 +93,7 @@ class FocusSoundEngine {
     if (!this.ctx) return;
     try {
       this.gainNode = this.ctx.createGain();
-      this.gainNode.gain.setValueAtTime(0.08, this.ctx.currentTime);
+      this.gainNode.gain.setValueAtTime(0.08 * this.masterVolume, this.ctx.currentTime);
       this.gainNode.connect(this.ctx.destination);
 
       // True Stereo Separation: 200 Hz in Left Ear, 240 Hz in Right Ear -> 40 Hz Binaural Beat in Brain
@@ -138,7 +154,7 @@ class FocusSoundEngine {
       filter.frequency.setValueAtTime(900, this.ctx.currentTime);
 
       this.gainNode = this.ctx.createGain();
-      this.gainNode.gain.setValueAtTime(0.12, this.ctx.currentTime);
+      this.gainNode.gain.setValueAtTime(0.12 * this.masterVolume, this.ctx.currentTime);
 
       this.noiseNode.connect(filter);
       filter.connect(this.gainNode);

@@ -6030,7 +6030,10 @@ export const DAV_CHAPTERS_MAP = {
  * Get chapters for a class and subject, with intelligent alias normalization
  */
 export function getChaptersForClassSubject(classId, subjectId) {
-  const normClass = String(classId).replace(/class\s*/i, '').trim();
+  if (!classId || !subjectId) return [];
+  let normClass = String(classId).replace(/class\s*/i, '').trim();
+  if (normClass.toLowerCase() === 'ukg') normClass = 'UKG';
+  else if (normClass.toLowerCase() === 'lkg') normClass = 'LKG';
   const rawSubj = String(subjectId).toLowerCase().trim();
   
   // 1. Direct match: e.g. '8_hin8_gs', '8_eng8_lit', '7_hin7_as'

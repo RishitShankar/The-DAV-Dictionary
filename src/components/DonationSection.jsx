@@ -533,13 +533,19 @@ export function DonationSection({ currentUser, onRequireLogin }) {
                   </button>
                 </div>
 
-                <a
-                  href={upiPayLink}
-                  className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs flex items-center justify-center gap-2 transition shadow-md cursor-pointer block"
-                >
-                  <span>Open Supported UPI App Directly</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
+                {typeof navigator !== 'undefined' && /Android|iPhone|iPad/i.test(navigator.userAgent) ? (
+                  <a
+                    href={upiPayLink}
+                    className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs flex items-center justify-center gap-2 transition shadow-md cursor-pointer block text-center"
+                  >
+                    <span>Open Supported UPI App Directly</span>
+                    <ExternalLink className="w-3.5 h-3.5 inline ml-1" />
+                  </a>
+                ) : (
+                  <div className="w-full py-2 px-3 rounded-xl bg-stone-100 border border-stone-200 text-stone-600 font-semibold text-[11px] text-center">
+                    <span>💻 On PC / Mac: Scan QR code above with phone UPI app or copy UPI ID.</span>
+                  </div>
+                )}
               </div>
             )}
 

@@ -37,9 +37,47 @@ export function InteractiveQuiz({
     }
     return { ...base, questions };
   });
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedAnswers, setSelectedAnswers] = useState({}); // { [qIndex]: optionIndex }
   const [isCompleted, setIsCompleted] = useState(false);
+  const draftStorageKey = `dav_quiz_draft_${classNum}_${subjectId}_${chapterNum}`;
+
+  const [currentIndex, setCurrentIndex] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem(`dav_quiz_draft_${classNum}_${subjectId}_${chapterNum}`);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return typeof parsed.currentIndex === 'number' ? parsed.currentIndex : 0;
+      }
+    } catch (e) {}
+    return 0;
+  });
+
+  const [selectedAnswers, setSelectedAnswers] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem(`dav_quiz_draft_${classNum}_${subjectId}_${chapterNum}`);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.answers || {};
+      }
+    } catch (e) {}
+    return {};
+  });
+
+  // Persist draft on every answer or index change
+  useEffect(() => {
+    if (isCompleted) {
+      try { sessionStorage.removeItem(draftStorageKey); } catch (e) {}
+      return;
+    }
+    try {
+      if (Object.keys(selectedAnswers).length > 0 || currentIndex > 0) {
+        sessionStorage.setItem(draftStorageKey, JSON.stringify({
+          currentIndex,
+          answers: selectedAnswers,
+          timestamp: Date.now()
+        }));
+      }
+    } catch (e) {}
+  }, [currentIndex, selectedAnswers, isCompleted, draftStorageKey]);
 
   useEffect(() => {
     let active = true;

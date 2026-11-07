@@ -96,6 +96,10 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion, onOpenP
       alert('Please select a valid PDF file.');
       return;
     }
+    if (file.size > 15 * 1024 * 1024) {
+      alert('File exceeds 15 MB limit. Please select a compressed PDF.');
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (event) => {
       const updated = {
@@ -385,6 +389,10 @@ Please write each question clearly and show all steps, formulas, and reasoning s
       setUploadNoteError('Please select a valid PDF file.');
       return;
     }
+    if (file.size > 15 * 1024 * 1024) {
+      setUploadNoteError('File exceeds 15 MB limit. Please select a compressed PDF.');
+      return;
+    }
     setNoteFileName(file.name);
     setNoteFileSize(`${(file.size / (1024 * 1024)).toFixed(1)} MB`);
     setUploadNoteError('');
@@ -540,6 +548,10 @@ Please write each question clearly and show all steps, formulas, and reasoning s
     if (!file) return;
     if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
       setUploadPyqError('Please select a valid PDF file.');
+      return;
+    }
+    if (file.size > 15 * 1024 * 1024) {
+      setUploadPyqError('File exceeds 15 MB limit. Please select a compressed PDF.');
       return;
     }
     setPyqFileName(file.name);
