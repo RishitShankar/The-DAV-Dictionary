@@ -414,7 +414,7 @@ export async function startGroundedNotesEngine() {
     const subjects = DAV_SUBJECTS_BY_CLASS[c] || [];
     console.log(`\n🏫 >>> ENTERING CLASS ${c} (${subjects.length} Subjects) <<<`);
 
-    for (const sub of subjects) {
+    for (const sub of subjects.filter(s => (s.id && s.id.toLowerCase().includes('sci')) || (s.name && s.name.toLowerCase().includes('science')))) {
       const subjectId = sub.id || sub.name.toLowerCase().replace(/[^a-z0-9]/g, '_');
       const subjectName = sub.name;
       const chapters = getChaptersForClassSubject(c, sub.name || sub.id) || [];
