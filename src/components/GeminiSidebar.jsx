@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   BookOpen, Layers, X, Sparkles, User, ChevronRight, 
   PanelLeftClose, Award, CheckCircle2, LogOut, Lock, Compass, HelpCircle, Heart,
@@ -21,13 +21,58 @@ export function GeminiSidebar({
 }) {
   const isAdmin = user?.isAdmin || user?.id === 'rishibhai';
   const isDimension4 = Boolean(
-    (user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai') &&
+    (user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai' || user?.role === 'developer') &&
     user?.dimension !== 1 &&
     user?.dimension !== 2 &&
     user?.dimension !== 3 &&
     user?.dimension !== 5
   );
   const isGuest = user?.plan === 'guest';
+
+  // State to track user's real uploaded photo from Section 10 (Student Profile)
+  const [userPhoto, setUserPhoto] = useState(() => {
+    try {
+      if (user?.dp) return user.dp;
+      if (user?.avatar) return user.avatar;
+      if (user?.photoUrl) return user.photoUrl;
+      const uid = (user?.id || 'rishibhai').toLowerCase();
+      const saved = localStorage.getItem(`dav_student_profile_${uid}`);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.photoUrl || parsed.dp || parsed.avatar) return parsed.photoUrl || parsed.dp || parsed.avatar;
+      }
+      if (uid === 'rishibhai') return '/rishit_shankar.jpg';
+    } catch (e) {}
+    return null;
+  });
+
+  // Listen to profile photo uploads in real-time
+  useEffect(() => {
+    const handlePhotoUpdate = (e) => {
+      if (e?.detail?.photoUrl) {
+        setUserPhoto(e.detail.photoUrl);
+      }
+    };
+    const handleUserUpdate = (e) => {
+      if (e?.detail?.dp || e?.detail?.avatar || e?.detail?.photoUrl) {
+        setUserPhoto(e.detail.dp || e.detail.avatar || e.detail.photoUrl);
+      }
+    };
+
+    window.addEventListener('dav_profile_photo_updated', handlePhotoUpdate);
+    window.addEventListener('dav_user_updated', handleUserUpdate);
+    return () => {
+      window.removeEventListener('dav_profile_photo_updated', handlePhotoUpdate);
+      window.removeEventListener('dav_user_updated', handleUserUpdate);
+    };
+  }, []);
+
+  // Sync when user prop updates
+  useEffect(() => {
+    if (user?.dp || user?.avatar || user?.photoUrl) {
+      setUserPhoto(user.dp || user.avatar || user.photoUrl);
+    }
+  }, [user]);
 
   const sections = [
     { id: 1, name: 'Section 1: Campus Overview', icon: Compass, status: 'Overview Hub' },
@@ -39,12 +84,12 @@ export function GeminiSidebar({
     { id: 7, name: 'Section 7: Kids Fun Navigator', icon: Bus, status: 'Kids Portal' },
     { id: 8, name: 'Section 8: Examination & Practice', icon: CheckSquare, status: 'Exam & VVI Suite' },
     { id: 9, name: 'Section 9: Study Leaderboard', icon: Trophy, status: 'Leaderboard' },
-    { id: 10, name: 'Section 10: Student Profile', icon: User, status: 'Student ID' },
-    { id: 11, name: 'Section 11: Donate & Reviews', icon: Heart, status: 'Donate & Reviews' },
+    { id: 10, name: 'Section 10: Student Profile', icon: User, status: 'Student ID & Settings' },
+    { id: 11, name: 'Section 11: Donate & Reviews', icon: Heart, status: 'Donate, Reviews & Subscriptions' },
+    { id: 12, name: 'Section 12: About Creator', icon: Award, status: 'Head Boy Profile' },
     ...(isDimension4 ? [
-      { id: 12, name: 'Section 12: Review Vault', icon: Star, status: 'Developer Only' }
+      { id: 13, name: 'Section 13: Developer Settings', icon: Star, status: 'Developer Vault & Settings' }
     ] : []),
-    { id: 13, name: 'Section 13: About Creator', icon: Award, status: 'About Creator' },
   ];
 
   const teacherSubSections = [
@@ -83,96 +128,78 @@ export function GeminiSidebar({
               <div className="font-extrabold text-sm text-white tracking-tight flex items-center gap-1.5">
                 <span>DAV Dictionary</span>
                 <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono font-bold ${
-                  isTeacher ? 'bg-purple-900/80 text-purple-200' : 'bg-red-900/80 text-amber-300'
+                  isTeacher ? 'bg-purple-900 text-purple-300' : 'bg-red-950 text-red-300'
                 }`}>
-                  {isTeacher ? 'DIM 5' : '10'}
+                  {isTeacher ? 'FACULTY' : 'SECTIONS'}
                 </span>
               </div>
               <p className="text-[11px] text-slate-400">
-                {isTeacher ? 'Section 1: Faculty Master OS' : '10 Main Sections Menu'}
+                {isTeacher ? 'Dimension 5 Faculty Navigation' : 'Official Academic Navigation'}
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
-            title="Close Sidebar"
+            className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer"
+            title="Close Menu"
           >
             <PanelLeftClose className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Guest Preview Notice */}
-        {isGuest && (
-          <div className="p-3 bg-orange-950/40 border-b border-orange-500/30 text-xs text-orange-200 flex items-center gap-2">
-            <Lock className="w-4 h-4 text-orange-400 shrink-0" />
-            <div className="text-[11px]">
-              <strong>Free Preview Mode:</strong> Log in via Blackboard with your ID & password to unlock all 4 dimensions.
+        {/* Dimension 5 Faculty Mode Switcher */}
+        {isTeacher && (
+          <div className="p-3 bg-purple-950/60 border-b border-purple-800/60">
+            <div className="text-[10px] font-black uppercase tracking-wider text-purple-300 mb-2 flex items-center justify-between">
+              <span>Dimension 5 Faculty Mode</span>
+              <span className="bg-purple-800 text-white text-[9px] px-1.5 py-0.2 rounded font-bold">ACTIVE</span>
+            </div>
+            <div className="grid grid-cols-2 gap-1.5">
+              <button
+                type="button"
+                onClick={() => onToggleSubDimension && onToggleSubDimension('teacher_desk')}
+                className={`px-2 py-1.5 rounded-lg text-xs font-black transition text-center cursor-pointer ${
+                  teacherSubDimension === 'teacher_desk'
+                    ? 'bg-gradient-to-r from-purple-700 to-indigo-700 text-white shadow-sm border border-purple-400'
+                    : 'bg-purple-900/40 text-purple-200 hover:bg-purple-900/80 border border-transparent'
+                }`}
+              >
+                5A: Teacher Desk
+              </button>
+              <button
+                type="button"
+                onClick={() => onToggleSubDimension && onToggleSubDimension('teacher_explorer')}
+                className={`px-2 py-1.5 rounded-lg text-xs font-black transition text-center cursor-pointer ${
+                  teacherSubDimension === 'teacher_explorer'
+                    ? 'bg-gradient-to-r from-teal-700 to-emerald-700 text-white shadow-sm border border-teal-400'
+                    : 'bg-purple-900/40 text-purple-200 hover:bg-purple-900/80 border border-transparent'
+                }`}
+              >
+                5B: Explorer Mode
+              </button>
             </div>
           </div>
         )}
 
-        {/* Navigation List: Teacher Sub-Sections OR Student 10 Sections */}
+        {/* Section List */}
         <div className="flex-1 overflow-y-auto p-3 space-y-1">
-          {isTeacher && (
-            <div className="p-2.5 mb-3 rounded-2xl bg-purple-950/70 border border-purple-500/40 shadow-inner">
-              <div className="text-[10px] text-purple-300 font-bold uppercase mb-2 flex items-center justify-between">
-                <span>Faculty Dimension Mode:</span>
-                <span className="font-mono text-teal-300 font-black">
-                  {teacherSubDimension === 'teacher_only' ? '5A Only Faculty' : '5B Explorer'}
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-1.5 text-[10px]">
-                <button
-                  type="button"
-                  onClick={() => onToggleSubDimension && onToggleSubDimension('teacher_only')}
-                  className={`py-1.5 px-2 rounded-xl font-bold text-center transition cursor-pointer flex items-center justify-center gap-1 ${
-                    teacherSubDimension === 'teacher_only'
-                      ? 'bg-purple-600 text-white shadow-md font-black border border-purple-400'
-                      : 'bg-purple-900/40 text-purple-300 hover:bg-purple-800/60'
-                  }`}
-                >
-                  <span>🎓 5A: Only OS</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onToggleSubDimension && onToggleSubDimension('teacher_explorer')}
-                  className={`py-1.5 px-2 rounded-xl font-bold text-center transition cursor-pointer flex items-center justify-center gap-1 ${
-                    teacherSubDimension === 'teacher_explorer'
-                      ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md font-black border border-teal-400'
-                      : 'bg-purple-900/40 text-purple-300 hover:bg-purple-800/60'
-                  }`}
-                >
-                  <span>🌐 5B: Explorer</span>
-                </button>
-              </div>
-            </div>
-          )}
-
-          {isTeacher && teacherSubDimension === 'teacher_only' ? (
+          {isTeacher && teacherSubDimension === 'teacher_desk' ? (
             <>
-              <div className="px-3 py-2 text-[11px] font-bold text-purple-300 uppercase tracking-wider flex items-center justify-between">
-                <span className="flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-                  <span>Section 1: Faculty Master OS</span>
-                </span>
-                <span className="text-[9px] px-2 py-0.5 rounded-full bg-purple-900/60 text-purple-300 font-mono">
-                  Dim 5A
-                </span>
+              <div className="px-3 py-2 text-[11px] font-bold text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
+                <Award className="w-3.5 h-3.5 text-purple-400" />
+                <span>5 Dedicated Faculty Sub-Sections</span>
               </div>
 
               {teacherSubSections.map((sub) => {
-                const isActive = teacherSubSection === sub.id;
-                const IconComp = sub.icon || Sparkles;
+                const isActive = activeSection === 5 && teacherSubSection === sub.id;
+                const IconComp = sub.icon;
 
                 return (
                   <button
                     key={sub.id}
                     onClick={() => {
-                      if (onSelectTeacherSubSection) {
-                        onSelectTeacherSubSection(sub.id);
-                      }
+                      onSelectTeacherSubSection(sub.id);
                       onClose();
                     }}
                     className={`w-full text-left p-3 rounded-xl transition-all flex items-center justify-between group cursor-pointer ${
@@ -202,12 +229,12 @@ export function GeminiSidebar({
             <>
               <div className="px-3 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>10 Main Sections</span>
+                <span>Academic Sections</span>
               </div>
 
               {sections.map((sec) => {
                 const isActive = activeSection === sec.id;
-                const isSpecialCreator = sec.id === 10;
+                const isGoldenSection = sec.id === 10 || sec.id === 12;
                 const isTeacherSec5 = sec.id === 5 && isTeacher;
                 const IconComp = sec.icon || Sparkles;
 
@@ -222,19 +249,21 @@ export function GeminiSidebar({
                       isActive
                         ? isTeacherSec5
                           ? 'bg-gradient-to-r from-purple-800 to-teal-900 text-white font-bold shadow-md shadow-purple-950/40 border border-teal-400'
+                          : isGoldenSection
+                          ? 'bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-700 text-stone-950 font-bold shadow-md shadow-amber-950/40 border border-amber-300'
                           : 'bg-gradient-to-r from-red-800 to-red-900 text-white font-bold shadow-md shadow-red-950/40'
                         : isTeacherSec5
                         ? 'bg-purple-950/40 border border-purple-500/40 text-teal-300 hover:bg-purple-900/60 font-semibold'
-                        : isSpecialCreator
-                        ? 'bg-amber-950/20 border border-amber-500/30 text-amber-200 hover:bg-amber-900/40'
+                        : isGoldenSection
+                        ? 'bg-amber-950/30 border border-amber-500/40 text-amber-200 hover:bg-amber-900/50'
                         : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-3 truncate">
                       <IconComp className={`w-4 h-4 shrink-0 ${
                         isActive 
-                          ? isTeacherSec5 ? 'text-teal-300' : 'text-amber-300' 
-                          : isTeacherSec5 ? 'text-teal-400' : isSpecialCreator ? 'text-amber-400' : 'text-slate-400 group-hover:text-slate-200'
+                          ? isTeacherSec5 ? 'text-teal-300' : isGoldenSection ? 'text-stone-950' : 'text-amber-300' 
+                          : isTeacherSec5 ? 'text-teal-400' : isGoldenSection ? 'text-amber-400' : 'text-slate-400 group-hover:text-slate-200'
                       }`} />
                       <div className="truncate">
                         <div className="text-xs truncate font-medium flex items-center gap-1.5">
@@ -250,7 +279,7 @@ export function GeminiSidebar({
                     </div>
 
                     {isActive ? (
-                      <CheckCircle2 className={`w-4 h-4 shrink-0 ${isTeacherSec5 ? 'text-teal-300' : 'text-amber-300'}`} />
+                      <CheckCircle2 className={`w-4 h-4 shrink-0 ${isTeacherSec5 ? 'text-teal-300' : isGoldenSection ? 'text-stone-950' : 'text-amber-300'}`} />
                     ) : (
                       <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-slate-300 shrink-0 transition" />
                     )}
@@ -267,8 +296,17 @@ export function GeminiSidebar({
             <div className="flex items-center gap-3 truncate">
               <div className={`w-9 h-9 rounded-full ${
                 isTeacher ? 'bg-gradient-to-tr from-purple-700 to-indigo-600 border border-purple-400/50' : 'bg-gradient-to-tr from-red-700 to-amber-600 border border-amber-400/50'
-              } text-white font-black text-sm flex items-center justify-center shrink-0`}>
-                {user?.name ? user.name.slice(0, 2).toUpperCase() : isTeacher ? 'FC' : 'RS'}
+              } text-white font-black text-sm flex items-center justify-center shrink-0 overflow-hidden`}>
+                {userPhoto ? (
+                  <img 
+                    src={userPhoto} 
+                    alt={user?.name || 'User DP'} 
+                    className="w-full h-full object-cover rounded-full"
+                    onError={() => setUserPhoto(null)}
+                  />
+                ) : (
+                  <span>{user?.name ? user.name.slice(0, 2).toUpperCase() : isTeacher ? 'FC' : 'RS'}</span>
+                )}
               </div>
               <div className="truncate">
                 <div className="text-xs font-extrabold text-white truncate">
@@ -279,7 +317,7 @@ export function GeminiSidebar({
                   <span>
                     {isTeacher 
                       ? 'Dimension 5: DAV Faculty Teacher'
-                      : (user?.dimensionName || (isAdmin ? 'Dimension 4: Master Developer' : 'Dimension 1: Normal Plan'))
+                      : (user?.dimensionName || (isAdmin ? 'Dimension 4: Master Developer' : 'Dimension 1: Demo Preview'))
                     }
                   </span>
                 </div>
@@ -291,7 +329,7 @@ export function GeminiSidebar({
                 onClose();
                 onLogout();
               }}
-              title="Log out and return to Blackboard Login"
+              title="Log out"
               className="p-2 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition cursor-pointer"
             >
               <LogOut className="w-4 h-4" />

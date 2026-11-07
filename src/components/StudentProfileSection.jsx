@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   User, Camera, Save, RefreshCw, CheckCircle2, Shield, 
-  Crown, Award, MapPin, Heart, BookOpen, Sparkles, Download, 
+  Crown, Award, MapPin, Heart, BookOpen, Sparkles, Download, Settings, Palette, Volume2, 
   Upload, Printer, GraduationCap, Phone, Home, Mail, Key, Lock
 } from 'lucide-react';
 import { updateCloudPassword, saveCloudStudent } from '../services/supabaseClient';
@@ -84,6 +84,37 @@ export function StudentProfileSection({ user, onLogout }) {
   });
 
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [activeProfileTab, setActiveProfileTab] = useState('dossier'); // 'dossier' | 'settings'
+  const [selectedTheme, setSelectedTheme] = useState(() => {
+    try {
+      return localStorage.getItem('dav_theme') || 'gold';
+    } catch (e) {
+      return 'gold';
+    }
+  });
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    try {
+      return localStorage.getItem('dav_sound_enabled') !== 'false';
+    } catch (e) {
+      return true;
+    }
+  });
+
+  const handleSelectTheme = (themeKey) => {
+    setSelectedTheme(themeKey);
+    try {
+      localStorage.setItem('dav_theme', themeKey);
+      document.documentElement.setAttribute('data-theme', themeKey);
+    } catch (e) {}
+  };
+
+  const handleToggleSound = () => {
+    const next = !soundEnabled;
+    setSoundEnabled(next);
+    try {
+      localStorage.setItem('dav_sound_enabled', String(next));
+    } catch (e) {}
+  };
   const [photoPreview, setPhotoPreview] = useState(profile.photoUrl || (isMasterRishit ? '/rishit_shankar.jpg' : ''));
 
   // Password Change State
@@ -191,7 +222,7 @@ export function StudentProfileSection({ user, onLogout }) {
           phone: profile.phoneNumber || '',
           motherName: profile.motherName || '',
           fatherName: profile.fatherName || '',
-          plan: user?.plan || 'normal',
+          plan: user?.plan || 'demo',
           dimension: user?.dimension || 1
         }).catch(() => {});
       }
@@ -235,7 +266,7 @@ export function StudentProfileSection({ user, onLogout }) {
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-950/80 text-amber-300 border border-amber-500/40 text-xs font-black uppercase tracking-wider mb-2">
                 <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>Section 9 • Official Student Profile Registry</span>
+                <span>Section 10 • Official Student ID & Settings Vault</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-black text-white">
                 DAV Student Personal Profile Vault
@@ -296,7 +327,161 @@ export function StudentProfileSection({ user, onLogout }) {
           </span>
         </div>
 
-        {/* Two Column Grid: ID Card Preview (Left) & Form Inputs (Right) */}
+        {/* Profile / Settings Tab Switcher */}
+        <div className="flex items-center gap-2 p-1.5 bg-stone-900 rounded-2xl border border-stone-800 w-full sm:w-auto">
+          <button
+            type="button"
+            onClick={() => setActiveProfileTab('dossier')}
+            className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer ${
+              activeProfileTab === 'dossier'
+                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 shadow-md font-black'
+                : 'text-stone-400 hover:text-white hover:bg-stone-800'
+            }`}
+          >
+            <User className="w-4 h-4" />
+            <span>Student ID &amp; Dossier</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveProfileTab('settings')}
+            className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer ${
+              activeProfileTab === 'settings'
+                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md font-black'
+                : 'text-stone-400 hover:text-white hover:bg-stone-800'
+            }`}
+          >
+            <Settings className="w-4 h-4" />
+            <span>Settings &amp; Themes ⚙️</span>
+          </button>
+        </div>
+
+        {activeProfileTab === 'settings' ? (
+          /* ========================================================================= */
+          /* SETTINGS & THEMES TAB                                                     */
+          /* ========================================================================= */
+          <div className="space-y-8 animate-fadeIn">
+            {/* Theme Selector */}
+            <div className="p-6 sm:p-8 rounded-3xl bg-stone-900 border border-stone-800 shadow-xl space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center">
+                  <Palette className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base sm:text-lg font-black text-white">
+                    Personalized Visual Themes
+                  </h3>
+                  <p className="text-xs text-stone-400">
+                    Select your preferred accent colors and visual atmosphere across DAV Dictionary.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { id: 'gold', name: '🌟 Vedic Amber Gold', desc: 'Official DAV Classic', color: 'from-amber-500 to-orange-600', border: 'border-amber-400' },
+                  { id: 'navy', name: '🌌 Deep Slate Navy', desc: 'Midnight Scholastic', color: 'from-blue-600 to-indigo-800', border: 'border-blue-400' },
+                  { id: 'emerald', name: '🌲 Emerald Forest', desc: 'Calm Vedic Herbal', color: 'from-emerald-500 to-teal-700', border: 'border-emerald-400' },
+                  { id: 'purple', name: '👑 Royal Purple', desc: 'Executive Academic', color: 'from-purple-600 to-pink-600', border: 'border-purple-400' }
+                ].map((th) => (
+                  <button
+                    key={th.id}
+                    type="button"
+                    onClick={() => handleSelectTheme(th.id)}
+                    className={`p-4 rounded-2xl text-left border-2 transition cursor-pointer flex flex-col justify-between h-32 relative overflow-hidden ${
+                      selectedTheme === th.id
+                        ? `${th.border} bg-stone-800 shadow-lg ring-2 ring-amber-400/30`
+                        : 'border-stone-800 bg-stone-950/60 hover:border-stone-700 text-stone-300'
+                    }`}
+                  >
+                    <div className={`w-8 h-8 rounded-xl bg-gradient-to-r ${th.color} shadow-md`} />
+                    <div>
+                      <div className="text-xs font-black text-white flex items-center justify-between">
+                        <span>{th.name}</span>
+                        {selectedTheme === th.id && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
+                      </div>
+                      <div className="text-[10px] text-stone-400 mt-0.5">{th.desc}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Audio & Haptic Controls */}
+            <div className="p-6 sm:p-8 rounded-3xl bg-stone-900 border border-stone-800 shadow-xl space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-purple-500/20 text-purple-300 flex items-center justify-center">
+                    <Volume2 className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm sm:text-base font-black text-white">
+                      Audio Effects &amp; Chimes
+                    </h3>
+                    <p className="text-xs text-stone-400">
+                      Play audio cues during quiz streaks, ad completion, and section transitions.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleToggleSound}
+                  className={`w-12 h-7 rounded-full transition-colors relative cursor-pointer ${
+                    soundEnabled ? 'bg-emerald-500' : 'bg-stone-700'
+                  }`}
+                >
+                  <span
+                    className={`block w-5 h-5 rounded-full bg-white shadow-md transform transition-transform ${
+                      soundEnabled ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
+
+            {/* Change Password Card */}
+            <div className="p-6 sm:p-8 rounded-3xl bg-stone-900 border border-stone-800 shadow-xl space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center">
+                  <Key className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm sm:text-base font-black text-white">
+                    Update Account Password
+                  </h3>
+                  <p className="text-xs text-stone-400">
+                    Synchronizes your new password across cloud database and local device.
+                  </p>
+                </div>
+              </div>
+
+              <form onSubmit={handleChangePassword} className="flex flex-col sm:flex-row gap-3 pt-2">
+                <input
+                  type="password"
+                  placeholder="Enter new account password (min 6 chars)..."
+                  value={newPasswordInput}
+                  onChange={(e) => setNewPasswordInput(e.target.value)}
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-stone-950 border border-stone-700 text-white text-xs focus:outline-none focus:border-amber-400"
+                />
+                <button
+                  type="submit"
+                  disabled={isChangingPass}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 text-stone-950 font-black text-xs transition cursor-pointer shrink-0 disabled:opacity-50"
+                >
+                  {isChangingPass ? 'Updating...' : 'Update Password'}
+                </button>
+              </form>
+
+              {passwordChangeStatus && (
+                <div className="text-xs font-bold text-amber-300 mt-2">
+                  {passwordChangeStatus}
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+        /* Two Column Grid: ID Card Preview (Left) & Form Inputs (Right) */
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* ========================================================================= */}
@@ -787,6 +972,7 @@ export function StudentProfileSection({ user, onLogout }) {
           </div>
 
         </div>
+        )}
 
       </div>
     </div>

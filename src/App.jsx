@@ -165,6 +165,39 @@ export function App() {
     return 'home';
   });
 
+  // Castle App-Inspired 12-Hour Ad-Watch Pass Resolver
+  const [adPassUpdated, setAdPassUpdated] = useState(0);
+
+  useEffect(() => {
+    const handleTierUpgraded = () => setAdPassUpdated(prev => prev + 1);
+    window.addEventListener('dav_tier_upgraded', handleTierUpgraded);
+    return () => window.removeEventListener('dav_tier_upgraded', handleTierUpgraded);
+  }, []);
+
+  const activeUser = React.useMemo(() => {
+    if (!user) return null;
+    const isMaster = user.id === 'rishibhai' || user.dimension === 4 || user.role === 'developer';
+    if (isMaster) return user;
+
+    try {
+      const savedPass = localStorage.getItem('dav_ad_unlocked_tier');
+      if (savedPass) {
+        const parsed = JSON.parse(savedPass);
+        if (parsed?.expiresAt && Date.now() < parsed.expiresAt) {
+          const dimNumber = parsed.tier === 'vvip' ? 4 : parsed.tier === 'vip' ? 3 : 2;
+          return {
+            ...user,
+            plan: parsed.tier,
+            dimension: dimNumber,
+            dimensionName: parsed.name || (dimNumber === 4 ? 'Double VIP (12h Pass)' : dimNumber === 3 ? 'VIP (12h Pass)' : 'Normal (12h Pass)'),
+            isPaid: true
+          };
+        }
+      }
+    } catch (e) {}
+    return user;
+  }, [user, adPassUpdated]);
+
   const isTeacher = Boolean(
     user?.dimension === 6 ||
     user?.dimension === 5 ||
@@ -323,6 +356,13 @@ export function App() {
     if (userIsTeacher) {
       setActiveSection(5);
     }
+    try {
+      const guidePending = localStorage.getItem('dav_new_user_guide_pending_' + loggedInUser.id) === 'true';
+      const guideCompleted = localStorage.getItem('dav_user_guide_completed_' + loggedInUser.id) === 'true';
+      if (loggedInUser?.isNewlyRegistered || guidePending || !guideCompleted) {
+        setShowNewUserGuide(true);
+      }
+    } catch (e) {}
   };
 
   // Automatic Google OAuth redirect detection & account resolver (ONLY on explicit OAuth callback)
@@ -379,7 +419,7 @@ export function App() {
         'DAV School Master Curriculum & Digital Library'
       );
     }
-    if (secId === 11 && activeSection !== 11) {
+    if (secId === 12 && activeSection !== 12) {
       setIsCycloneOpen(true);
       return;
     }
@@ -570,7 +610,7 @@ export function App() {
         onClose={() => setIsSidebarOpen(false)}
         activeSection={activeSection}
         onSelectSection={handleSelectSection}
-        user={user}
+        user={activeUser || user}
         isTeacher={isTeacher}
         teacherSubDimension={teacherSubDimension}
         onToggleSubDimension={handleToggleTeacherSubDimension}
@@ -588,7 +628,7 @@ export function App() {
         activeSection={activeSection}
         onSelectSection={handleSelectSection}
         onToggleSidebar={() => setIsSidebarOpen(prev => !prev)}
-        user={user}
+        user={activeUser || user}
         isTeacher={isTeacher}
         teacherSubDimension={teacherSubDimension}
         onToggleSubDimension={handleToggleTeacherSubDimension}
@@ -614,7 +654,7 @@ export function App() {
         >
         {(isTeacher && teacherSubDimension === 'teacher_only') ? (
           <TeachersSection 
-            user={user} 
+            user={activeUser || user} 
             isTeacherOS={true}
             initialSubSection={teacherSubSection}
             onSubSectionChange={(sub) => setTeacherSubSection(sub)}
@@ -622,7 +662,7 @@ export function App() {
             onToggleSubDimension={handleToggleTeacherSubDimension}
           />
         ) : activeSection === 1 ? (
-          <SectionOverview currentUser={user} onSelectSection={handleSelectSection} onOpenPurchaseModal={() => setIsPricingOpen(true)} />
+          <SectionOverview currentUser={activeUser || user} onSelectSection={handleSelectSection} onOpenPurchaseModal={() => setIsPricingOpen(true)} />
         ) : activeSection === 2 ? (
           <div className="relative min-h-[100dvh] bg-[#030712] text-white">
             {/* Section 2 Cosmic Solar System Canvas (The Sun, 9 Planets, Rocket, Spaceship, Starfield) */}
@@ -638,7 +678,7 @@ export function App() {
                 onOpenCinematic={() => setIsCinematicOpen(true)}
               />
               <BookLibrary
-                currentUser={user}
+                currentUser={activeUser || user}
                 onOpenPdfReader={handleOpenPdfReader}
                 onOpenUploadModal={() => setIsUploadOpen(true)}
                 onOpenAIWithQuestion={handleOpenAIWithQuestion}
@@ -649,7 +689,7 @@ export function App() {
           </div>
         ) : activeSection === 3 ? (
           <QuestionsAnswersSection 
-            currentUser={user} 
+            currentUser={activeUser || user} 
             onOpenUpgradeModal={() => setIsPricingOpen(true)}
             onOpenAIWithQuestion={handleOpenAIWithQuestion}
             onRequireLogin={handleRequireLogin}
@@ -657,12 +697,12 @@ export function App() {
         ) : activeSection === 4 ? (
           <RishiAI 
             isSectionView={true} 
-            user={user} 
+            user={activeUser || user} 
             onRequireLogin={handleRequireLogin}
           />
         ) : activeSection === 5 ? (
           <TeachersSection 
-            user={user} 
+            user={activeUser || user} 
             isTeacherOS={isTeacher}
             initialSubSection={teacherSubSection}
             onSubSectionChange={(sub) => setTeacherSubSection(sub)}
@@ -672,26 +712,26 @@ export function App() {
           />
         ) : activeSection === 6 ? (
           <ChapterExplanationsSection 
-            user={user} 
+            user={activeUser || user} 
             onOpenAIWithQuestion={handleOpenAIWithQuestion}
             onOpenPdfReader={handleOpenPdfReader}
             onRequireLogin={handleRequireLogin}
           />
         ) : activeSection === 7 ? (
           <KidsFunNavigatorSection 
-            user={user} 
+            user={activeUser || user} 
             onRequireLogin={handleRequireLogin}
           />
         ) : activeSection === 8 ? (
           <ExamPracticeSection
-            currentUser={user}
+            currentUser={activeUser || user}
             onRequireLogin={handleRequireLogin}
             onOpenUpgradeModal={() => setIsPricingOpen(true)}
             onOpenAIWithQuestion={handleOpenAIWithQuestion}
           />
         ) : activeSection === 9 ? (
           <StudyLeaderboardSection 
-            user={user} 
+            user={activeUser || user} 
             onRequireLogin={handleRequireLogin}
           />
         ) : activeSection === 10 ? (
@@ -732,24 +772,24 @@ export function App() {
               </div>
             </div>
           ) : (
-            <StudentProfileSection user={user} onLogout={handleLogout} />
+            <StudentProfileSection user={activeUser || user} onLogout={handleLogout} />
           )
         ) : activeSection === 11 ? (
           <DonationSection 
-            currentUser={user} 
+            currentUser={activeUser || user} 
             onRequireLogin={handleRequireLogin}
           />
         ) : activeSection === 12 ? (
+          <AboutCreatorSection />
+        ) : activeSection === 13 ? (
           (user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai' || user?.role === 'developer') ? (
             <DeveloperReviewsSection 
-              currentUser={user} 
+              currentUser={activeUser || user} 
               onGoToSection={handleSelectSection} 
             />
           ) : (
-            <SectionOverview currentUser={user} onSelectSection={handleSelectSection} />
+            <SectionOverview currentUser={activeUser || user} onSelectSection={handleSelectSection} />
           )
-        ) : activeSection === 13 ? (
-          <AboutCreatorSection />
         ) : (
           <UntitledSection sectionNumber={activeSection} />
         )}
@@ -758,8 +798,8 @@ export function App() {
       </main>
 
       {/* Official Purple Footer displayed on Section 9, 10, 11 & (12 for Dimension 4) */}
-      {(activeSection === 10 || activeSection === 11 || activeSection === 13 || (activeSection === 12 && (user?.dimension === 4 || user?.id === 'rishibhai'))) && (
-        <PurpleFooter currentUser={user} onSelectSection={(secId) => setActiveSection(secId)} />
+      {(activeSection === 10 || activeSection === 11 || activeSection === 12 || (activeSection === 13 && (user?.dimension === 4 || user?.id === 'rishibhai'))) && (
+        <PurpleFooter currentUser={activeUser || user} onSelectSection={(secId) => setActiveSection(secId)} />
       )}
 
       {/* Section First Visit Coachmark */}
@@ -768,7 +808,7 @@ export function App() {
       {/* New User Onboarding Guide */}
       {showNewUserGuide && (
         <NewUserOnboardingGuide
-          currentUser={user}
+          currentUser={activeUser || user}
           onClose={() => setShowNewUserGuide(false)}
           onSelectHub={(hubId) => {}}
         />
@@ -779,7 +819,7 @@ export function App() {
       <AdminPanelModal
         isOpen={isAdminProgramOpen}
         onClose={() => setIsAdminProgramOpen(false)}
-        currentUser={user}
+        currentUser={activeUser || user}
       />
 
       {/* Rishi AI Engine Component */}
@@ -787,26 +827,26 @@ export function App() {
         isOpen={isAIOpen}
         onClose={() => setIsAIOpen(false)}
         initialPrompt={aiPrompt}
-        user={user}
+        user={activeUser || user}
       />
 
       <PdfReaderModal
         isOpen={isPdfReaderOpen}
         onClose={handleClosePdfReader}
         book={readerBook}
-        currentUser={user}
+        currentUser={activeUser || user}
         onOpenAIWithQuestion={handleOpenAIWithQuestion}
       />
 
       {/* Global VFX Engine (Click Ripples, Constellation Net, Confetti Cannon) */}
       <VfxGlobalSuite />
 
-      {/* 3-Second Cyclone Vortex VFX for About Creator Profile */}
+      {/* 3-Second Cyclone Vortex VFX for About Creator Profile (Section 12) */}
       <VfxCycloneVortex
         isOpen={isCycloneOpen}
         onComplete={() => {
           setIsCycloneOpen(false);
-          setActiveSection(11);
+          setActiveSection(12);
         }}
       />
 
@@ -824,7 +864,7 @@ export function App() {
       <CustomPurchaseModal
         isOpen={isPricingOpen}
         onClose={() => setIsPricingOpen(false)}
-        user={user}
+        user={activeUser || user}
         onPurchaseSubmitted={() => {
           setIsPricingOpen(false);
         }}
@@ -833,7 +873,7 @@ export function App() {
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
-        user={user}
+        user={activeUser || user}
         onLogin={(u) => setUser(u)}
         onLogout={handleLogout}
         onGoToSection={(sec) => {

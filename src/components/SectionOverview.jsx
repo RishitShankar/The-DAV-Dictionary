@@ -306,11 +306,11 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
               </button>
 
               <button
-                onClick={() => onSelectSection(10)}
+                onClick={() => onSelectSection(11)}
                 className="px-6 py-3 rounded-2xl bg-rose-900/80 hover:bg-rose-800 text-white border border-rose-400/40 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition btn-interactive"
               >
                 <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" />
-                <span>Support Developer on Section 10</span>
+                <span>Support Developer on Section 11</span>
               </button>
             </div>
 
@@ -448,10 +448,10 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
             <span>Official Creator: <strong>Rishit Shankar</strong></span>
             <span>DAV Public School • Digital India 🇮🇳</span>
             <button
-              onClick={() => onSelectSection(10)}
+              onClick={() => onSelectSection(12)}
               className="text-red-800 hover:text-red-950 font-bold flex items-center gap-1 cursor-pointer"
             >
-              <span>Read Full Head Boy Profile in Section 10 →</span>
+              <span>Read Full Head Boy Profile in Section 12 →</span>
             </button>
           </div>
         </div>
