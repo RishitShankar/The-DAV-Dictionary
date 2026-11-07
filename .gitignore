@@ -55,6 +55,7 @@ scripts/*
 
 # Android build artifacts and big binaries
 *.apk
+!public/DAV_Smart_Portal.apk
 *.idsig
 android_build/
 mobile ui images/
