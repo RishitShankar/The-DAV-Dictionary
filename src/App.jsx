@@ -97,7 +97,10 @@ export function App() {
   const [user, setUser] = useState(() => {
     try {
       const saved = localStorage.getItem('dav_user');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && !parsed.isDemo && parsed.id !== 'guest_student') return parsed;
+      }
     } catch (e) {}
     return null;
   });
@@ -105,7 +108,10 @@ export function App() {
   const [viewMode, setViewMode] = useState(() => {
     try {
       const saved = localStorage.getItem('dav_user');
-      if (saved) return 'app';
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && !parsed.isDemo && parsed.id !== 'guest_student') return 'app';
+      }
     } catch (e) {}
     return 'home';
   });
@@ -252,8 +258,17 @@ export function App() {
     }
   };
 
-  // Automatic Google OAuth redirect detection & account resolver
+  // Automatic Google OAuth redirect detection & account resolver (ONLY on explicit OAuth callback)
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const isOAuthRedirect = 
+      window.location.hash.includes('access_token=') || 
+      window.location.search.includes('code=') ||
+      window.location.hash.includes('type=recovery');
+
+    // Do NOT auto-login unless returning from explicit Google OAuth redirect
+    if (!isOAuthRedirect) return;
+
     const client = getSupabaseClient();
     if (!client) return;
 
@@ -269,6 +284,11 @@ export function App() {
           matched = res.user;
         }
         if (matched) {
+          try {
+            if (window.history && window.history.replaceState) {
+              window.history.replaceState(null, '', window.location.pathname);
+            }
+          } catch (e) {}
           handleLoginSuccess(matched);
         }
       }
@@ -308,7 +328,15 @@ export function App() {
     }
     setUser(null);
     setViewMode('home');
-    localStorage.removeItem('dav_user');
+    try {
+      localStorage.removeItem('dav_user');
+      localStorage.removeItem('dav_active_device_session');
+      sessionStorage.clear();
+      const client = getSupabaseClient();
+      if (client) {
+        await client.auth.signOut();
+      }
+    } catch (e) {}
     try {
       if (window.history && window.history.pushState) {
         window.history.pushState(null, '', '/');

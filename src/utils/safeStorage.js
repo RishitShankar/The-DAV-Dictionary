@@ -74,7 +74,7 @@ export function sanitizeUserForStorage(user) {
  * Will NEVER throw an uncaught exception to the ErrorBoundary.
  */
 export function safeSetUser(user) {
-  if (!user || user.plan === 'guest') {
+  if (!user || user.plan === 'guest' || user.isDemo || user.id === 'guest_student') {
     try {
       localStorage.removeItem('dav_user');
     } catch (e) {}
