@@ -3,6 +3,13 @@ import crypto from 'crypto';
 
 const AUTH_SECRET = 'DAV_PORTAL_SECURE_AUTH_KEY_2026_HEADBOY_RISHIT';
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Content-Type': 'application/json'
+};
+
 export function sendGmailTls({ toEmail, otpCode }) {
   return new Promise((resolve, reject) => {
     const from = 'rishitshankar@gmail.com';
@@ -116,9 +123,22 @@ export function sendGmailTls({ toEmail, otpCode }) {
 }
 
 export default async function handler(req, res) {
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    if (res && res.setHeader) {
+      Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
+      return res.status(200).end();
+    }
+    return new Response(null, { status: 200, headers: CORS_HEADERS });
+  }
+
   if (req.method !== 'POST') {
-    if (res && res.status) return res.status(405).json({ error: 'Method Not Allowed' });
-    return new Response(JSON.stringify({ error: 'Method Not Allowed' }), { status: 405 });
+    const err = { error: 'Method Not Allowed' };
+    if (res && res.status) {
+      Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
+      return res.status(405).json(err);
+    }
+    return new Response(JSON.stringify(err), { status: 405, headers: CORS_HEADERS });
   }
 
   let body = {};
@@ -131,8 +151,11 @@ export default async function handler(req, res) {
   const cleanEmail = String(body.email || '').trim().toLowerCase();
   if (!cleanEmail || !cleanEmail.includes('@')) {
     const err = { error: 'Please enter a valid Google email address.' };
-    if (res && res.status) return res.status(400).json(err);
-    return new Response(JSON.stringify(err), { status: 400 });
+    if (res && res.status) {
+      Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
+      return res.status(400).json(err);
+    }
+    return new Response(JSON.stringify(err), { status: 400, headers: CORS_HEADERS });
   }
 
   // Generate real cryptographic 6-digit OTP
@@ -157,10 +180,13 @@ export default async function handler(req, res) {
       message: `Real 6-digit security OTP sent to ${cleanEmail}. Check your Gmail inbox.`
     };
 
-    if (res && res.status) return res.status(200).json(responseData);
+    if (res && res.status) {
+      Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
+      return res.status(200).json(responseData);
+    }
     return new Response(JSON.stringify(responseData), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' }
+      headers: CORS_HEADERS
     });
   } catch (error) {
     console.error('Failed to dispatch Gmail OTP:', error);
@@ -168,7 +194,10 @@ export default async function handler(req, res) {
       success: false,
       error: error.message || 'Failed to dispatch email. Please check the address.'
     };
-    if (res && res.status) return res.status(500).json(errData);
-    return new Response(JSON.stringify(errData), { status: 500 });
+    if (res && res.status) {
+      Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
+      return res.status(500).json(errData);
+    }
+    return new Response(JSON.stringify(errData), { status: 500, headers: CORS_HEADERS });
   }
 }

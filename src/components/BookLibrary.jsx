@@ -199,8 +199,11 @@ export function BookLibrary({
         }
       })();
 
-  const classUploadedPdfs = allUploaded.filter(p => String(p.classNum) === String(selectedClass));
-  const subjects = DAV_SUBJECTS[selectedClass] || [];
+  const isTeacherPdfsMode = selectedClass === 'TEACHER_PDFS';
+  const classUploadedPdfs = isTeacherPdfsMode
+    ? allUploaded
+    : allUploaded.filter(p => String(p.classNum) === String(selectedClass));
+  const subjects = isTeacherPdfsMode ? [] : (DAV_SUBJECTS[selectedClass] || []);
 
   const filteredSubjects = subjects.filter(s => {
     const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -316,7 +319,38 @@ export function BookLibrary({
             </button>
           );
         })}
+        {/* View PDFs Uploaded by Teacher Button right next to LKG */}
+        <button
+          type="button"
+          onClick={() => {
+            setSelectedClass('TEACHER_PDFS');
+            setActiveFilter('ALL');
+          }}
+          className={`flex-1 min-w-[130px] sm:min-w-[160px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all text-center relative cursor-pointer border ${
+            selectedClass === 'TEACHER_PDFS'
+              ? 'bg-gradient-to-r from-purple-700 via-indigo-700 to-purple-800 text-white border-purple-400 shadow-md ring-2 ring-purple-400/40'
+              : 'bg-purple-50 text-purple-900 border-purple-200 hover:bg-purple-100'
+          }`}
+        >
+          <span className="flex items-center justify-center gap-1.5">
+            <GraduationCap className="w-4 h-4 text-amber-400 shrink-0" />
+            <span className="truncate">View Teacher PDFs</span>
+          </span>
+        </button>
       </div>
+
+      {/* Teacher PDFs Empty State when none uploaded */}
+      {isTeacherPdfsMode && classUploadedPdfs.length === 0 && (
+        <div className="mb-8 p-8 rounded-3xl bg-purple-50 border-2 border-dashed border-purple-300 text-center space-y-3 animate-fadeIn">
+          <div className="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center mx-auto shadow-xs">
+            <GraduationCap className="w-6 h-6" />
+          </div>
+          <h3 className="text-base font-black text-purple-950">No Teacher PDFs Uploaded Yet</h3>
+          <p className="text-xs text-purple-700 max-w-md mx-auto leading-relaxed">
+            DAV Faculty members (Dimension 5) and developers (Dimension 4) can upload chapter notes, reference books, and curriculum materials using the "Upload Custom PDF" button.
+          </p>
+        </div>
+      )}
 
       {/* Uploaded Custom School PDFs for this class */}
       {classUploadedPdfs.length > 0 && (

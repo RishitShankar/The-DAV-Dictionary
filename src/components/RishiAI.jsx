@@ -709,8 +709,8 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
         {/* INTERACTIVE TEST LAUNCHER / QUESTION RANGE MODAL                         */}
         {/* ========================================================================= */}
         {showTestConfigModal && (
-          <div className="absolute inset-0 z-40 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
-            <div className="w-full max-w-lg bg-stone-900 border-2 border-amber-500/60 rounded-3xl p-6 sm:p-7 text-white shadow-2xl relative overflow-hidden animate-scaleUp">
+          <div className="absolute inset-0 z-40 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn">
+            <div className="w-full max-w-lg bg-stone-900 border-2 border-amber-500/60 rounded-3xl p-4 sm:p-7 text-white shadow-2xl relative my-auto max-h-[92vh] overflow-y-auto animate-scaleUp">
               {/* Decorative Glow */}
               <div className="absolute -top-16 -right-16 w-36 h-36 bg-amber-500/20 rounded-full blur-2xl pointer-events-none" />
               
@@ -1061,8 +1061,8 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
         {/* STEPPED INTERACTIVE WIZARD POP-UP OVERLAY                                  */}
         {/* ========================================================================= */}
         {wizardStep && (
-          <div className="absolute inset-0 z-50 bg-slate-950/90 flex items-center justify-center p-4 sm:p-6 animate-fadeIn">
-            <div className="w-full max-w-2xl bg-stone-900 rounded-3xl border-2 border-orange-500/50 shadow-2xl p-6 sm:p-8 text-white relative">
+          <div className="absolute inset-0 z-50 bg-slate-950/90 flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-fadeIn">
+            <div className="w-full max-w-2xl bg-stone-900 rounded-3xl border-2 border-orange-500/50 shadow-2xl p-4 sm:p-8 text-white relative my-auto max-h-[92vh] overflow-y-auto">
               
               {/* Close / Skip Wizard */}
               <button

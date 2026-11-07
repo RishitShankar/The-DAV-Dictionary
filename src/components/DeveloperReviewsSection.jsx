@@ -31,6 +31,52 @@ export function DeveloperReviewsSection({ currentUser, onGoToSection }) {
   // Audio playback state inside detailed preview or cards
   const [playingAudioId, setPlayingAudioId] = useState(null);
   const [audioElements, setAudioElements] = useState({});
+  const [pendingTeacherPdfs, setPendingTeacherPdfs] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('dav_pending_teacher_pdfs') || '[]');
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const loadTeacherPdfs = () => {
+    try {
+      setPendingTeacherPdfs(JSON.parse(localStorage.getItem('dav_pending_teacher_pdfs') || '[]'));
+    } catch (e) {}
+  };
+
+  const handleApproveTeacherPdf = (pdfId) => {
+    try {
+      const pending = JSON.parse(localStorage.getItem('dav_pending_teacher_pdfs') || '[]');
+      const target = pending.find(p => p.id === pdfId);
+      if (!target) return;
+
+      const remainingPending = pending.filter(p => p.id !== pdfId);
+      localStorage.setItem('dav_pending_teacher_pdfs', JSON.stringify(remainingPending));
+      setPendingTeacherPdfs(remainingPending);
+
+      const existingUploaded = JSON.parse(localStorage.getItem('dav_uploaded_pdfs') || '[]');
+      const approvedRecord = { ...target, status: 'approved' };
+      existingUploaded.unshift(approvedRecord);
+      localStorage.setItem('dav_uploaded_pdfs', JSON.stringify(existingUploaded));
+
+      window.dispatchEvent(new CustomEvent('dav_developer_reviews_updated'));
+      alert(`Approved: "${target.name}" is now live in Section 2 Digital Library!`);
+    } catch (e) {
+      alert('Error approving PDF');
+    }
+  };
+
+  const handleRejectTeacherPdf = (pdfId) => {
+    if (!window.confirm('Reject and delete this teacher PDF submission?')) return;
+    try {
+      const pending = JSON.parse(localStorage.getItem('dav_pending_teacher_pdfs') || '[]');
+      const remainingPending = pending.filter(p => p.id !== pdfId);
+      localStorage.setItem('dav_pending_teacher_pdfs', JSON.stringify(remainingPending));
+      setPendingTeacherPdfs(remainingPending);
+    } catch (e) {}
+  };
+
 
   const loadReviews = async () => {
     setIsLoading(true);

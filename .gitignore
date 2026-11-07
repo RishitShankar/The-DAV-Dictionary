@@ -50,3 +50,11 @@ scripts/*
 !scripts/generate_grounded_chapter_notes.js
 !scripts/notes_generation_ledger.json
 !scripts/grounded_notes_ledger.json
+!scripts/build_android_apk.js
+
+# Android build artifacts and big binaries
+*.apk
+*.idsig
+android_build/
+mobile ui images/
+FIRST Page.jpeg

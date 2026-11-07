@@ -5,6 +5,7 @@ import { fetchCloudStudents } from '../services/supabaseClient';
 import { checkDeviceSession, registerDeviceSession, getDeviceMetadata } from '../services/deviceAuthManager';
 import { GoogleIcon } from './GoogleIcon';
 import { GoogleAuthModal } from './GoogleAuthModal';
+import { StudentRegisterModal } from './StudentRegisterModal';
 
 export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
   const [userId, setUserId] = useState('');
@@ -17,7 +18,8 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [deviceConflict, setDeviceConflict] = useState(null);
   const [isSwitchingDevice, setIsSwitchingDevice] = useState(false);
-  const [googleModalMode, setGoogleModalMode] = useState(null); // 'login' | 'create' | null
+  const [googleModalMode, setGoogleModalMode] = useState(null);
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false); // 'login' | 'create' | null
 
   // Sync with Supabase Cloud on mount
   useEffect(() => {
@@ -248,128 +250,235 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
               <span>← Back to Homepage</span>
             </button>
           )}
-          <div className="text-right hidden sm:block">
-            <div className="text-xs font-mono text-slate-300">5 Dimensions • Class 1–8</div>
-            <div className="text-[10px] text-emerald-400 font-semibold">● Portal Database Online</div>
+          <div className="text-right flex flex-col items-end gap-1">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/25 text-amber-300 border border-amber-400/40 font-bold whitespace-nowrap">
+              ⚡ Ultra Dim 2: Mobile Active
+            </span>
+            <div className="text-[10px] text-emerald-400 font-semibold hidden sm:block">● 5 Dimensions Online</div>
           </div>
         </div>
       </div>
 
       <main className="w-full max-w-5xl mx-auto">
-        {/* Responsive container locked to the image aspect ratio so the form always stays inside the blackboard */}
-        <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-700/60 bg-stone-900">
-          
-          {/* Authentic Classroom Blackboard Desk Image */}
+
+        {/* ========================================================================= */}
+        {/* MOBILE DEDICATED CLASSROOM CHALKBOARD (CENTERED, CLEAN, ZERO OVERLAP)     */}
+        {/* ========================================================================= */}
+        <div className="sm:hidden w-full max-w-md mx-auto rounded-3xl bg-[#13231a] border-4 border-[#8B5A2B] shadow-2xl p-5 text-white relative my-2">
+          <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/15">
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full bg-amber-400" />
+              <span className="chalk-text font-black text-sm tracking-widest uppercase">Classroom Slate</span>
+            </div>
+            <span className="text-[10px] font-mono text-yellow-200/80 px-2 py-0.5 rounded bg-black/30 border border-white/10">DAV Portal Gate</span>
+          </div>
+
+          {!isSuccess ? (
+            <form onSubmit={handleLoginSubmit} className="space-y-3.5">
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="userIdInputMobile" className="chalk-text font-bold text-xs uppercase tracking-wider">Student ID</label>
+                  <span className="text-[10px] text-slate-300/80">{showId ? "Visible" : "Hidden"}</span>
+                </div>
+                <div className="relative flex items-center">
+                  <input
+                    id="userIdInputMobile"
+                    name="userIdMobile"
+                    type={showId ? "text" : "password"}
+                    placeholder="Enter your Student ID (e.g. XYZ)"
+                    value={userId}
+                    onChange={(e) => {
+                      setUserId(e.target.value);
+                      if (feedback) setFeedback("");
+                    }}
+                    className="chalk-input w-full rounded-xl pl-3 pr-16 py-2.5 text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowId(!showId)}
+                    className="absolute right-2 px-2.5 py-1 rounded bg-stone-800/90 text-[10px] font-bold text-slate-100 hover:text-yellow-200 border border-slate-200/50"
+                  >
+                    {showId ? "Hide" : "Show"}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="passwordInputMobile" className="chalk-text font-bold text-xs uppercase tracking-wider">Password</label>
+                  <span className="text-[10px] text-slate-300/80">{showPassword ? "Visible" : "Hidden"}</span>
+                </div>
+                <div className="relative flex items-center">
+                  <input
+                    id="passwordInputMobile"
+                    name="passwordMobile"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password (e.g. 123)"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (feedback) setFeedback("");
+                    }}
+                    className="chalk-input w-full rounded-xl pl-3 pr-16 py-2.5 text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-2 px-2.5 py-1 rounded bg-stone-800/90 text-[10px] font-bold text-slate-100 hover:text-yellow-200 border border-slate-200/50"
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
+              </div>
+
+              {feedback && (
+                <div className="p-2.5 rounded-xl bg-rose-950/80 border border-rose-500/50 text-xs text-rose-200 text-center font-bold">
+                  {feedback}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isAuthenticating}
+                className="chalk-btn w-full rounded-xl py-2.5 px-4 font-black text-sm tracking-widest uppercase cursor-pointer flex items-center justify-center gap-2 mt-2"
+              >
+                {isAuthenticating ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-yellow-300" />
+                    <span>Verifying...</span>
+                  </>
+                ) : (
+                  <span>Sign In to Portal →</span>
+                )}
+              </button>
+
+              <div className="flex items-center gap-2 pt-1">
+                <div className="flex-1 h-px bg-white/20" />
+                <span className="text-[10px] text-yellow-200/80 uppercase font-bold tracking-wider">or Register / Google</span>
+                <div className="flex-1 h-px bg-white/20" />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setGoogleModalMode("login")}
+                  className="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-slate-100 text-stone-900 font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-sm transition cursor-pointer"
+                >
+                  <GoogleIcon className="w-4 h-4 shrink-0" />
+                  <span>Login Google</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsRegisterOpen(true)}
+                  className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-300 text-stone-950 font-black text-xs flex items-center justify-center gap-1.5 shadow-md transition cursor-pointer"
+                >
+                  <GraduationCap className="w-4 h-4 shrink-0 text-stone-950" />
+                  <span>Create Account</span>
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div className="flex flex-col items-center justify-center text-center gap-3 py-4">
+              <div className="w-12 h-12 rounded-full border-2 border-dashed border-emerald-300 text-emerald-300 font-black text-xl flex items-center justify-center">✓</div>
+              <h2 className="chalk-text font-black text-xl">Welcome, <span className="text-yellow-200">{loggedInUser?.name}</span>!</h2>
+              <div className="px-3 py-1 rounded-full bg-yellow-400/20 text-yellow-200 border border-yellow-300/60 text-xs font-bold">{loggedInUser?.dimensionName || "● Verified DAV Student"}</div>
+              <button
+                type="button"
+                onClick={handleEnterPortal}
+                className="chalk-btn rounded-xl py-2.5 px-8 font-black text-xs uppercase tracking-wider cursor-pointer bg-yellow-300/30 text-yellow-200 border-yellow-200 mt-2"
+              >
+                Enter Portal →
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* ========================================================================= */}
+        {/* DESKTOP BLACKBOARD DESK VIEW (LARGE SCREENS)                              */}
+        {/* ========================================================================= */}
+        <div className="hidden sm:block relative w-full rounded-2xl overflow-hidden shadow-2xl border border-stone-700/60 bg-stone-900">
           <img
             src="/blackboard_desk.jpg"
             onError={(e) => {
-              e.target.style.minHeight = '480px';
-              e.target.style.backgroundColor = '#1c1613';
+              e.target.style.minHeight = "480px";
+              e.target.style.backgroundColor = "#1c1613";
             }}
             alt="Classroom desk with blackboard"
             className="w-full h-auto block max-w-full"
           />
 
-          {/* In-between blackboard portal area */}
           <section
             aria-label="Blackboard Login Portal"
-            className="blackboard-overlay flex flex-col items-center justify-center px-3 py-1 sm:px-6 sm:py-3"
+            className="blackboard-overlay flex flex-col items-center justify-center px-4 py-2 sm:px-6 sm:py-3"
           >
             {!isSuccess ? (
-              /* LOGIN FORM VIEW */
               <form
                 onSubmit={handleLoginSubmit}
                 className="w-full max-w-[360px] flex flex-col justify-between gap-1.5 sm:gap-3"
                 noValidate
               >
-                {/* Upper section: ID */}
                 <div className="flex flex-col gap-0.5 sm:gap-1">
                   <div className="flex items-center justify-between">
-                    <label
-                      htmlFor="userIdInput"
-                      className="chalk-text font-bold text-xs sm:text-base md:text-lg tracking-wider uppercase"
-                    >
-                      ID
-                    </label>
-                    <span className="text-[10px] sm:text-xs text-slate-300/80">
-                      {showId ? 'Visible' : 'Hidden'}
-                    </span>
+                    <label htmlFor="userIdInput" className="chalk-text font-bold text-xs sm:text-base md:text-lg tracking-wider uppercase">ID</label>
+                    <span className="text-[10px] sm:text-xs text-slate-300/80">{showId ? "Visible" : "Hidden"}</span>
                   </div>
                   <div className="relative flex items-center w-full">
                     <input
                       id="userIdInput"
                       name="userId"
-                      type={showId ? 'text' : 'password'}
+                      type={showId ? "text" : "password"}
                       autoComplete="username"
                       placeholder="Enter your ID (e.g. XYZ)"
                       value={userId}
                       onChange={(e) => {
                         setUserId(e.target.value);
-                        if (feedback) setFeedback('');
+                        if (feedback) setFeedback("");
                       }}
                       className="chalk-input w-full rounded-lg pl-2.5 pr-16 py-1 sm:pl-3.5 sm:pr-20 sm:py-2 text-xs sm:text-sm md:text-base"
                     />
                     <button
                       type="button"
                       onClick={() => setShowId(!showId)}
-                      aria-label="Show or hide ID"
                       className="absolute right-1.5 sm:right-2 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded border border-slate-200/70 bg-stone-800/90 hover:bg-yellow-200/25 hover:border-yellow-200 text-[10px] sm:text-xs font-semibold text-slate-100 hover:text-yellow-200 transition-colors cursor-pointer z-20"
                     >
-                      {showId ? 'Hide' : 'Show'}
+                      {showId ? "Hide" : "Show"}
                     </button>
                   </div>
                 </div>
 
-                {/* Middle section (below ID): Password */}
                 <div className="flex flex-col gap-0.5 sm:gap-1">
                   <div className="flex items-center justify-between">
-                    <label
-                      htmlFor="passwordInput"
-                      className="chalk-text font-bold text-xs sm:text-base md:text-lg tracking-wider uppercase"
-                    >
-                      Password
-                    </label>
-                    <span className="text-[10px] sm:text-xs text-slate-300/80">
-                      {showPassword ? 'Visible' : 'Hidden'}
-                    </span>
+                    <label htmlFor="passwordInput" className="chalk-text font-bold text-xs sm:text-base md:text-lg tracking-wider uppercase">Password</label>
+                    <span className="text-[10px] sm:text-xs text-slate-300/80">{showPassword ? "Visible" : "Hidden"}</span>
                   </div>
                   <div className="relative flex items-center w-full">
                     <input
                       id="passwordInput"
                       name="password"
-                      type={showPassword ? 'text' : 'password'}
+                      type={showPassword ? "text" : "password"}
                       autoComplete="current-password"
                       placeholder="Enter your password (e.g. 123)"
                       value={password}
                       onChange={(e) => {
                         setPassword(e.target.value);
-                        if (feedback) setFeedback('');
+                        if (feedback) setFeedback("");
                       }}
                       className="chalk-input w-full rounded-lg pl-2.5 pr-16 py-1 sm:pl-3.5 sm:pr-20 sm:py-2 text-xs sm:text-sm md:text-base"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      aria-label="Show or hide password"
                       className="absolute right-1.5 sm:right-2 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded border border-slate-200/70 bg-stone-800/90 hover:bg-yellow-200/25 hover:border-yellow-200 text-[10px] sm:text-xs font-semibold text-slate-100 hover:text-yellow-200 transition-colors cursor-pointer z-20"
                     >
-                      {showPassword ? 'Hide' : 'Show'}
+                      {showPassword ? "Hide" : "Show"}
                     </button>
                   </div>
                 </div>
 
-                {/* Status / validation feedback */}
                 {feedback && (
-                  <p
-                    role="status"
-                    aria-live="polite"
-                    className="text-[11px] sm:text-xs text-yellow-200 text-center font-medium leading-tight"
-                  >
-                    {feedback}
-                  </p>
+                  <p className="text-[11px] sm:text-xs text-yellow-200 text-center font-medium leading-tight">{feedback}</p>
                 )}
 
-                {/* Bottom section (below Password): Login Button */}
                 <div className="pt-0.5 sm:pt-1 flex flex-col items-center gap-1.5 sm:gap-2">
                   <button
                     type="submit"
@@ -378,19 +487,16 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
                     Login
                   </button>
 
-                  {/* Google 2-Option Direct Bar on Blackboard */}
                   <div className="w-full flex items-center gap-1.5 pt-0.5">
                     <div className="flex-1 h-px bg-white/20" />
-                    <span className="text-[9px] sm:text-[10px] text-yellow-200/80 uppercase tracking-wider font-bold">
-                      or Google Auth
-                    </span>
+                    <span className="text-[9px] sm:text-[10px] text-yellow-200/80 uppercase tracking-wider font-bold">or Registration & Google</span>
                     <div className="flex-1 h-px bg-white/20" />
                   </div>
 
                   <div className="w-full grid grid-cols-2 gap-1.5 sm:gap-2">
                     <button
                       type="button"
-                      onClick={() => setGoogleModalMode('login')}
+                      onClick={() => setGoogleModalMode("login")}
                       className="w-full py-1 sm:py-1.5 px-2 rounded-lg bg-white/95 hover:bg-white text-stone-900 font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 shadow-sm transition cursor-pointer"
                     >
                       <GoogleIcon className="w-3.5 h-3.5 shrink-0" />
@@ -398,31 +504,20 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setGoogleModalMode('create')}
+                      onClick={() => setIsRegisterOpen(true)}
                       className="w-full py-1 sm:py-1.5 px-2 rounded-lg bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-300 hover:to-orange-300 text-stone-950 font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 shadow-sm transition cursor-pointer"
                     >
-                      <GoogleIcon className="w-3.5 h-3.5 shrink-0" />
-                      <span className="truncate">Create with Google</span>
+                      <GraduationCap className="w-3.5 h-3.5 shrink-0 text-stone-950" />
+                      <span className="truncate">Create Account</span>
                     </button>
                   </div>
                 </div>
               </form>
             ) : (
-              /* LOGGED IN VIEW (shown after valid Login click) */
               <div className="w-full max-w-[360px] flex flex-col items-center justify-center text-center gap-2 sm:gap-3">
-                <div className="inline-flex items-center justify-center w-7 h-7 sm:w-10 sm:h-10 rounded-full border-2 border-dashed border-emerald-300/90 text-emerald-300 font-bold text-sm sm:text-lg">
-                  ✓
-                </div>
-                <h2 className="chalk-text font-bold text-sm sm:text-xl md:text-2xl">
-                  Welcome, <span className="text-yellow-200">{loggedInUser?.name}</span>!
-                </h2>
-                <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-yellow-400/20 text-yellow-200 border border-yellow-300/60 text-[10px] sm:text-xs font-bold">
-                  {loggedInUser?.dimensionName || (loggedInUser?.isAdmin ? '★ Dimension 4: Master Developer' : '● Verified DAV Student')}
-                </div>
-                <p className="text-slate-200/80 text-[11px] sm:text-sm">
-                  Authentication successful. Ready to enter DAV Dictionary.
-                </p>
-
+                <div className="inline-flex items-center justify-center w-7 h-7 sm:w-10 sm:h-10 rounded-full border-2 border-dashed border-emerald-300/90 text-emerald-300 font-bold text-sm sm:text-lg">✓</div>
+                <h2 className="chalk-text font-bold text-sm sm:text-xl md:text-2xl">Welcome, <span className="text-yellow-200">{loggedInUser?.name}</span>!</h2>
+                <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-yellow-400/20 text-yellow-200 border border-yellow-300/60 text-[10px] sm:text-xs font-bold">{loggedInUser?.dimensionName || "● Verified DAV Student"}</div>
                 <div className="flex gap-2 w-full justify-center pt-1">
                   <button
                     type="button"
@@ -436,7 +531,7 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
                     onClick={() => {
                       setIsSuccess(false);
                       setLoggedInUser(null);
-                      setPassword('');
+                      setPassword("");
                     }}
                     className="chalk-btn rounded-lg py-1.5 sm:py-2 px-4 font-semibold text-xs sm:text-sm uppercase tracking-wider cursor-pointer"
                   >
@@ -448,7 +543,7 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
           </section>
         </div>
 
-        {/* Google Authentication Feature Strip */}
+      {/* Google Authentication Feature Strip */}
         <div className="mt-3 p-3 sm:p-3.5 rounded-xl bg-gradient-to-r from-stone-900 via-stone-850 to-stone-900 border border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center shadow-md shrink-0">
@@ -729,6 +824,16 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
       )}
 
       {/* Google Authentication Modal */}
+      <StudentRegisterModal
+        isOpen={isRegisterOpen}
+        onClose={() => setIsRegisterOpen(false)}
+        onRegisterSuccess={(newUser) => {
+          setIsRegisterOpen(false);
+          setLoggedInUser(newUser);
+          setIsSuccess(true);
+          onLoginSuccess(newUser);
+        }}
+      />
       <GoogleAuthModal
         isOpen={Boolean(googleModalMode)}
         initialMode={googleModalMode || 'login'}

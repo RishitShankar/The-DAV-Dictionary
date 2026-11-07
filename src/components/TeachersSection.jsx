@@ -4111,7 +4111,7 @@ export function TeachersSection({
 
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-b from-stone-950 via-slate-950 to-stone-900 text-white font-sans selection:bg-amber-400 selection:text-stone-950 pb-16 relative overflow-hidden">
+    <div className="w-full max-w-full min-h-screen bg-gradient-to-b from-stone-950 via-slate-950 to-stone-900 text-white font-sans selection:bg-amber-400 selection:text-stone-950 pb-16 relative overflow-x-hidden">
       {/* Dynamic Animated Ambient Orbs */}
       <div className="absolute top-10 right-10 w-96 h-96 bg-purple-600/15 rounded-full pointer-events-none animate-float-orb" />
       <div className="absolute bottom-10 left-10 w-96 h-96 bg-teal-500/15 rounded-full pointer-events-none animate-float-orb" style={{ animationDelay: '-5s' }} />

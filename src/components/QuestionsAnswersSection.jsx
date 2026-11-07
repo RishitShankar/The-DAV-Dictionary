@@ -479,7 +479,7 @@ export function QuestionsAnswersSection({
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0c051e] via-[#1a0a38] to-[#250b44] text-white py-10 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden select-none">
+    <div className="w-full max-w-full min-h-screen bg-gradient-to-br from-[#0c051e] via-[#1a0a38] to-[#250b44] text-white py-10 px-4 sm:px-6 lg:px-8 font-sans relative overflow-x-hidden select-none">
       
       {/* Playful Floating Glowing Arcade Orbs */}
       <div className="absolute top-10 left-10 w-96 h-96 bg-purple-600/25 rounded-full pointer-events-none animate-float-orb" />

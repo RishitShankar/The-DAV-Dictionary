@@ -56,6 +56,27 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     return encodeURI(cleanPath);
   };
 
+  
+  const isMobileOrApk = typeof window !== 'undefined' && (
+    window.innerWidth <= 768 ||
+    (navigator.userAgent && navigator.userAgent.includes('DAVSmartPortalApp')) ||
+    (window.location.host && window.location.host.includes('appassets'))
+  );
+
+  const getEmbeddedViewerUrl = (pdfUrl) => {
+    if (!pdfUrl) return '';
+    if (pdfUrl.startsWith('data:') || pdfUrl.startsWith('blob:')) return pdfUrl;
+
+    let absoluteUrl = pdfUrl;
+    if (pdfUrl.startsWith('/')) {
+      absoluteUrl = `https://thedavdictionary.vercel.app${pdfUrl}`;
+    }
+    if (isMobileOrApk && (absoluteUrl.startsWith('http://') || absoluteUrl.startsWith('https://'))) {
+      return `https://docs.google.com/viewer?embedded=true&url=${encodeURIComponent(absoluteUrl)}`;
+    }
+    return absoluteUrl;
+  };
+
   const rawSource = book.pdfUrl || book.fileData || '';
   const resolvedPdfUrl = resolvePdfUrl(rawSource);
   const hasRealPdf = Boolean(rawSource);
@@ -279,33 +300,14 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
         
         {/* Stream & Scroll Container (Continuous Vertical Scroll) */}
         <div className="flex-1 h-full w-full bg-stone-900 overflow-hidden flex flex-col relative">
-          <object
-            data={resolvedPdfUrl}
-            type="application/pdf"
+          <iframe
+            key={`stream-${resolvedPdfUrl}`}
+            src={getEmbeddedViewerUrl(resolvedPdfUrl)}
+            title={`${book.title} - Textbook Cloud Reader`}
             className="w-full h-full min-h-full flex-1 border-none bg-stone-900 block"
             style={{ width: '100%', height: '100%', minHeight: '100%' }}
-          >
-            <iframe
-              key={`stream-${resolvedPdfUrl}`}
-              src={`${resolvedPdfUrl}#toolbar=1`}
-              title={`${book.title} - Textbook Continuous Stream`}
-              className="w-full h-full min-h-full flex-1 border-none bg-stone-900 block"
-              style={{ width: '100%', height: '100%', minHeight: '100%' }}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            >
-              <div className="p-8 text-center text-white flex flex-col items-center justify-center h-full">
-                <p className="text-sm font-bold text-amber-300 mb-3">Direct PDF Stream</p>
-                <a
-                  href={resolvedPdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 rounded-xl bg-amber-500 text-stone-950 font-black text-xs"
-                >
-                  Click here to Open Fullscreen PDF
-                </a>
-              </div>
-            </iframe>
-          </object>
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          />
         </div>
 
         {/* Right: Collapsible Rishi AI Guide Sidebar */}

@@ -180,9 +180,32 @@ export function Navbar({
               </button>
             )}
 
-                        
+            {/* Viewport Switcher: Ultra Super Dimension 1 (PC) vs Ultra Super Dimension 2 (Mobile) */}
+            {onToggleDevice && (
+              <button
+                onClick={() => onToggleDevice(deviceDimension === 'pc' ? 'mobile' : 'pc')}
+                className={`py-1.5 px-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition border cursor-pointer ${
+                  deviceDimension === 'mobile'
+                    ? 'bg-amber-500/20 text-amber-700 border-amber-400'
+                    : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                }`}
+                title={deviceDimension === 'mobile' ? 'Switch to Ultra Super Dimension 1 (PC)' : 'Switch to Ultra Super Dimension 2 (Mobile)'}
+              >
+                {deviceDimension === 'mobile' ? (
+                  <>
+                    <Smartphone className="w-3.5 h-3.5 text-amber-600" />
+                    <span className="hidden md:inline text-[11px]">Ultra Dim 2 (Mobile)</span>
+                  </>
+                ) : (
+                  <>
+                    <Monitor className="w-3.5 h-3.5 text-slate-600" />
+                    <span className="hidden md:inline text-[11px]">Ultra Dim 1 (PC)</span>
+                  </>
+                )}
+              </button>
+            )}
 
-{/* Launch Rishi AI Button */}
+            {/* Launch Rishi AI Button */}
             {onOpenAI && (
               <button
                 onClick={onOpenAI}

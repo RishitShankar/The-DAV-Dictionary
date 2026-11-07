@@ -273,30 +273,32 @@ export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLogi
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Class</label>
-                  <select
-                    value={classNum}
-                    onChange={(e) => setClassNum(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white font-medium"
-                  >
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map(c => (
-                      <option key={c} value={c}>Class {c}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Section</label>
-                  <select
-                    value={section}
-                    onChange={(e) => setSection(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white font-medium"
-                  >
-                    {['A', 'B', 'C', 'D'].map(s => (
-                      <option key={s} value={s}>Section {s}</option>
-                    ))}
-                  </select>
+              <div className="space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Class</label>
+                    <select
+                      value={classNum}
+                      onChange={(e) => setClassNum(e.target.value)}
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    >
+                      {["LKG", "UKG", "1", "2", "3", "4", "5", "6", "7", "8", "Other"].map(c => (
+                        <option key={c} value={c}>{c === "LKG" || c === "UKG" || c === "Other" ? c : `Class ${c}`}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Section (A–Z)</label>
+                    <select
+                      value={section}
+                      onChange={(e) => setSection(e.target.value)}
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    >
+                      {Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i)).map(s => (
+                        <option key={s} value={s}>Section {s}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
 
