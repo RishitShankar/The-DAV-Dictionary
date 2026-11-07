@@ -50,12 +50,13 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion, onOpenP
   const [uploadedNotes, setUploadedNotes] = useState(() => {
     const official = Array.isArray(OFFICIAL_CHAPTER_NOTES) ? OFFICIAL_CHAPTER_NOTES : [];
     try {
-      const saved = localStorage.getItem('dav_official_chapter_notes_v2');
+      const saved = localStorage.getItem('dav_official_chapter_notes_v3') || localStorage.getItem('dav_official_chapter_notes_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
         const map = new Map();
-        official.forEach(n => map.set(n.id, n));
+        // User uploads are preserved, while official Drive notes take precedence
         parsed.forEach(n => map.set(n.id, n));
+        official.forEach(n => map.set(n.id, n));
         return Array.from(map.values());
       }
     } catch (e) {}
@@ -64,11 +65,13 @@ export function ChapterExplanationsSection({ user, onOpenAIWithQuestion, onOpenP
   const [isUploadingNote, setIsUploadingNote] = useState(false);
   const [noteTitle, setNoteTitle] = useState('');
   const [noteChapter, setNoteChapter] = useState(1);
+  const [noteTier, setNoteTier] = useState('vip'); // 'normal' (1-Page) | 'vip' (5-Page) | 'vvip' (10-Page)
   const [noteFileData, setNoteFileData] = useState(null);
   const [noteFileName, setNoteFileName] = useState('');
   const [noteFileSize, setNoteFileSize] = useState('');
   const [uploadNoteError, setUploadNoteError] = useState('');
   const [selectedNotesChapterFilter, setSelectedNotesChapterFilter] = useState('all');
+  const [selectedNotesTierFilter, setSelectedNotesTierFilter] = useState('all'); // 'all' | 'normal' | 'vip' | 'vvip'
 
   // =========================================================================
   // SUB-SECTION 3: PYQ MODAL & WORKSPACE STATE (Curated from VKPDT IT GURU DAV)
@@ -404,6 +407,13 @@ Please write each question clearly and show all steps, formulas, and reasoning s
     }
     const chNum = Number(noteChapter);
     const matchedCh = availableChapters.find(c => Number(c.num) === chNum);
+    const pagesCount = noteTier === 'vvip' ? 10 : noteTier === 'vip' ? 5 : 1;
+    const planLabel = noteTier === 'vvip' 
+      ? 'Double VIP Plan (10-Page Master Notes)' 
+      : noteTier === 'vip' 
+        ? 'VIP Plan (5-Page Notes)' 
+        : 'Normal Plan (1-Page Notes)';
+
     const newNote = {
       id: `note_${Date.now()}`,
       title: noteTitle.trim(),
@@ -412,8 +422,11 @@ Please write each question clearly and show all steps, formulas, and reasoning s
       subjectName: currentSubjectObj.name,
       chapterNum: chNum,
       chapterTitle: matchedCh ? matchedCh.title : `Chapter ${chNum}`,
+      planTier: noteTier,
+      planLabel: planLabel,
+      pagesPerChapter: pagesCount,
       fileName: noteFileName,
-      fileSize: noteFileSize,
+      fileSize: noteFileSize || `${pagesCount}-Page PDF`,
       pdfUrl: noteFileData,
       uploadedAt: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
       uploadedBy: user?.name || 'Rishit Shankar (Head Boy)'
@@ -421,7 +434,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
     const next = [newNote, ...uploadedNotes];
     setUploadedNotes(next);
     try {
-      localStorage.setItem('dav_official_chapter_notes_v2', JSON.stringify(next));
+      localStorage.setItem('dav_official_chapter_notes_v3', JSON.stringify(next));
     } catch (e) {}
     setIsUploadingNote(false);
     setNoteTitle('');
@@ -435,11 +448,79 @@ Please write each question clearly and show all steps, formulas, and reasoning s
     const next = uploadedNotes.filter(n => n.id !== noteId);
     setUploadedNotes(next);
     try {
-      localStorage.setItem('dav_official_chapter_notes_v2', JSON.stringify(next));
+      localStorage.setItem('dav_official_chapter_notes_v3', JSON.stringify(next));
     } catch (e) {}
   };
 
+  // ACCESS RULE FOR TIERED NOTES:
+  // - Dimension 4 (Master Developer / Founder / Admin): 100% full access to all tiers
+  // - Dimension 5 (Faculty OS / Teacher): 100% full access to all tiers
+  // - Sanskrit: Special rule - Unified 1-page notes available to ALL students in all plans!
+  // - Normal Plan: 1-Page per chapter quick revision notes (Accessible to all Dimension 1+)
+  // - VIP Plan: 5-Page per chapter in-depth notes (Dimension 2+ or VIP Plan)
+  // - Double VIP Plan: 10-Page per chapter master notes (Dimension 3+ or VVIP Plan)
+  const checkNoteAccess = (note) => {
+    // 1. Master Developer / Admin / Rishit Shankar
+    if (user?.id === 'rishibhai' || user?.isAdmin || user?.dimension === 4 || user?.plan === 'developer') {
+      return { isUnlocked: true, tier: 'developer', requiredPlan: null };
+    }
+    // 2. Teacher OS
+    if (user?.dimension === 5 || user?.plan === 'teacher') {
+      return { isUnlocked: true, tier: 'teacher', requiredPlan: null };
+    }
+    // 3. Sanskrit Special Rule: Unified single notes, unlocked across all plans
+    const isSanskrit = note.subjectId === 'sanskrit' || note.title?.toLowerCase().includes('sanskrit');
+    if (isSanskrit) {
+      return { isUnlocked: true, tier: 'sanskrit_free', requiredPlan: null };
+    }
+
+    const noteTier = note.planTier || (note.pagesPerChapter === 10 ? 'vvip' : note.pagesPerChapter === 5 ? 'vip' : 'normal');
+    const userDim = Number(user?.dimension) || (user?.plan === 'vvip' ? 3 : user?.plan === 'vip' ? 2 : user?.isPaid ? 2 : 1);
+
+    if (noteTier === 'vvip') {
+      const isUnlocked = userDim >= 3 || user?.plan === 'vvip';
+      return {
+        isUnlocked,
+        tier: 'vvip',
+        requiredPlan: 'Double VIP Plan',
+        planCode: 'vvip',
+        pages: 10
+      };
+    }
+
+    if (noteTier === 'vip') {
+      const isUnlocked = userDim >= 2 || user?.plan === 'vip' || user?.plan === 'vvip';
+      return {
+        isUnlocked,
+        tier: 'vip',
+        requiredPlan: 'VIP Plan',
+        planCode: 'vip',
+        pages: 5
+      };
+    }
+
+    return {
+      isUnlocked: true,
+      tier: 'normal',
+      requiredPlan: null,
+      pages: 1
+    };
+  };
+
   const handleOpenNotePdf = (note) => {
+    const access = checkNoteAccess(note);
+    if (!access.isUnlocked) {
+      if (onRequireLogin) {
+        onRequireLogin(
+          `Unlock ${access.requiredPlan} Notes`,
+          `"${note.title}" is an exclusive ${access.requiredPlan} resource (${note.pagesPerChapter || 10} pages per chapter). Please upgrade your account to ${access.requiredPlan} to unlock full access.`
+        );
+      } else {
+        alert(`This document requires the ${access.requiredPlan}. Please upgrade your plan.`);
+      }
+      return;
+    }
+
     if (onOpenPdfReader) {
       onOpenPdfReader({
         title: note.title,
@@ -449,6 +530,8 @@ Please write each question clearly and show all steps, formulas, and reasoning s
         fileData: note.pdfUrl,
         summary: `Official DAV Chapter Notes: ${note.title} (Class ${note.classNum})`
       });
+    } else if (note.pdfUrl) {
+      window.open(note.pdfUrl, '_blank');
     }
   };
 
@@ -580,15 +663,46 @@ Please write each question clearly and show all steps, formulas, and reasoning s
     } catch (e) {}
   };
 
-  // Filtered Notes for Subsection 2
+  // Filtered Notes for Subsection 2 (with 3-Tier Plan Filters & Multi-Chapter/Curriculum Matching)
   const filteredNotes = useMemo(() => {
     return uploadedNotes.filter(n => {
+      // 1. Class matching
       const matchClass = String(n.classNum) === String(selectedClass);
-      const matchSubj = n.subjectId === currentSubjectObj.id;
-      const matchChapter = selectedNotesChapterFilter === 'all' || Number(n.chapterNum) === Number(selectedNotesChapterFilter);
-      return matchClass && matchSubj && matchChapter;
+
+      // 2. Subject matching (supports aliases e.g. hindi <-> hindi_gyan, english <-> english_lit)
+      const currentSubj = currentSubjectObj?.id || '';
+      const noteSubj = n.subjectId || '';
+      const matchSubj = noteSubj === currentSubj ||
+        (noteSubj === 'hindi' && currentSubj.startsWith('hindi')) ||
+        (noteSubj.startsWith('hindi') && currentSubj === 'hindi') ||
+        (noteSubj.startsWith('hindi') && currentSubj.startsWith('hindi')) ||
+        (noteSubj === 'english' && currentSubj.startsWith('english')) ||
+        (noteSubj.startsWith('english') && currentSubj === 'english') ||
+        (noteSubj.startsWith('english') && currentSubj.startsWith('english'));
+
+      // 3. Chapter matching: Notes covering the full curriculum remain visible when filtering chapters
+      const isMultiChapter = Boolean(
+        (n.totalPages && n.totalPages > 10) || 
+        (n.chapterTitle && n.chapterTitle.toLowerCase().includes('all')) ||
+        (n.title && n.title.toLowerCase().includes('all'))
+      );
+      const matchChapter = selectedNotesChapterFilter === 'all' || 
+        Number(n.chapterNum) === Number(selectedNotesChapterFilter) || 
+        isMultiChapter;
+
+      // 4. Plan Tier matching
+      let matchTier = true;
+      if (selectedNotesTierFilter === 'normal') {
+        matchTier = n.planTier === 'normal' || n.pagesPerChapter === 1 || noteSubj === 'sanskrit';
+      } else if (selectedNotesTierFilter === 'vip') {
+        matchTier = n.planTier === 'vip' || n.pagesPerChapter === 5;
+      } else if (selectedNotesTierFilter === 'vvip') {
+        matchTier = n.planTier === 'vvip' || n.pagesPerChapter === 10;
+      }
+
+      return matchClass && matchSubj && matchChapter && matchTier;
     });
-  }, [uploadedNotes, selectedClass, currentSubjectObj, selectedNotesChapterFilter]);
+  }, [uploadedNotes, selectedClass, currentSubjectObj, selectedNotesChapterFilter, selectedNotesTierFilter]);
 
   return (
     <div className="min-h-screen bg-stone-900 text-stone-100 font-sans pb-24 selection:bg-amber-500 selection:text-stone-950 relative overflow-hidden">
@@ -1536,7 +1650,111 @@ Please write each question clearly and show all steps, formulas, and reasoning s
               </div>
             </div>
 
-            {/* Step 3: Chapter Filter */}
+            {/* Step 3: Tiered Plan Selection (Normal: 1-Page • VIP: 5-Page • Double VIP: 10-Page • Sanskrit: Unified) */}
+            <div className="pt-4 mt-3 border-t border-stone-800/60">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Select Notes Tier Plan:</span>
+                  </span>
+                  <span className="text-[11px] text-stone-400 hidden sm:inline">
+                    (More premium plan = more in-depth pages per chapter)
+                  </span>
+                </div>
+                {/* Active user status badge */}
+                <div className="px-3 py-1 rounded-full bg-stone-900 border border-stone-700 text-[11px] font-bold text-stone-300 flex items-center gap-1.5">
+                  <User className="w-3 h-3 text-purple-400" />
+                  <span>
+                    Your Access: <strong className="text-amber-300">
+                      {(user?.dimension === 4 || user?.id === 'rishibhai') ? 'Founder / All Tiers Unlocked 👑' :
+                       user?.dimension === 5 ? 'Faculty OS (Full Access)' :
+                       user?.dimension === 3 || user?.plan === 'vvip' ? 'Double VIP Pass (10-Page Master)' :
+                       user?.dimension === 2 || user?.plan === 'vip' ? 'VIP Pass (5-Page In-Depth)' :
+                       'Normal Plan (1-Page Revision)'}
+                    </strong>
+                  </span>
+                </div>
+              </div>
+
+              {/* 4 Filter Pills for Plans */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <button
+                  onClick={() => setSelectedNotesTierFilter('all')}
+                  className={`px-3 py-2.5 rounded-xl text-xs font-black transition cursor-pointer flex flex-col items-center justify-center border text-center ${
+                    selectedNotesTierFilter === 'all'
+                      ? 'bg-purple-600 text-white border-purple-400 shadow-lg scale-[1.02]'
+                      : 'bg-stone-900 text-stone-300 hover:bg-stone-800 border-stone-800'
+                  }`}
+                >
+                  <span className="text-xs font-black">All Plan Tiers</span>
+                  <span className="text-[10px] opacity-80 mt-0.5">Show All Notes</span>
+                </button>
+
+                <button
+                  onClick={() => setSelectedNotesTierFilter('normal')}
+                  className={`px-3 py-2.5 rounded-xl text-xs font-black transition cursor-pointer flex flex-col items-center justify-center border text-center ${
+                    selectedNotesTierFilter === 'normal'
+                      ? 'bg-amber-600 text-white border-amber-400 shadow-lg scale-[1.02]'
+                      : 'bg-stone-900 text-stone-300 hover:bg-stone-800 border-stone-800'
+                  }`}
+                >
+                  <span className="text-xs font-black flex items-center gap-1">
+                    <span>🥉 Normal Plan</span>
+                  </span>
+                  <span className="text-[10px] text-amber-300 mt-0.5 font-bold">1-Page Notes / Ch</span>
+                </button>
+
+                <button
+                  onClick={() => setSelectedNotesTierFilter('vip')}
+                  className={`px-3 py-2.5 rounded-xl text-xs font-black transition cursor-pointer flex flex-col items-center justify-center border text-center ${
+                    selectedNotesTierFilter === 'vip'
+                      ? 'bg-blue-600 text-white border-blue-400 shadow-lg scale-[1.02]'
+                      : 'bg-stone-900 text-stone-300 hover:bg-stone-800 border-stone-800'
+                  }`}
+                >
+                  <span className="text-xs font-black flex items-center gap-1">
+                    <span>🥈 VIP Plan</span>
+                  </span>
+                  <span className="text-[10px] text-cyan-300 mt-0.5 font-bold">5-Page Notes / Ch</span>
+                </button>
+
+                <button
+                  onClick={() => setSelectedNotesTierFilter('vvip')}
+                  className={`px-3 py-2.5 rounded-xl text-xs font-black transition cursor-pointer flex flex-col items-center justify-center border text-center ${
+                    selectedNotesTierFilter === 'vvip'
+                      ? 'bg-gradient-to-r from-purple-600 to-amber-600 text-white border-amber-400 shadow-lg scale-[1.02]'
+                      : 'bg-stone-900 text-stone-300 hover:bg-stone-800 border-stone-800'
+                  }`}
+                >
+                  <span className="text-xs font-black flex items-center gap-1">
+                    <span>🥇 Double VIP</span>
+                  </span>
+                  <span className="text-[10px] text-yellow-300 mt-0.5 font-bold">10-Page Master / Ch</span>
+                </button>
+              </div>
+
+              {/* Informative Rule Box */}
+              <div className="mt-3 p-3 rounded-2xl bg-stone-950 border border-stone-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+                <div className="flex items-center gap-2 text-stone-300">
+                  <span className="px-2 py-0.5 rounded-lg bg-orange-500/20 text-orange-300 border border-orange-500/30 text-[10px] font-black uppercase tracking-wider">
+                    Sanskrit Rule
+                  </span>
+                  <span className="text-[11px] text-stone-300">
+                    Sanskrit features <strong>Single Unified 1-Page Notes</strong> accessible across all tiers without restriction.
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 text-[11px] font-bold text-stone-400">
+                  <span>🥉 Normal: 1 Page</span>
+                  <span>•</span>
+                  <span>🥈 VIP: 5 Pages</span>
+                  <span>•</span>
+                  <span className="text-amber-400">🥇 Double VIP: 10 Pages</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 4: Chapter Filter */}
             <div className="pt-4 mt-3 border-t border-stone-800/60 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-stone-400">Filter Chapter:</span>
@@ -1555,7 +1773,7 @@ Please write each question clearly and show all steps, formulas, and reasoning s
               </div>
 
               <div className="text-xs text-stone-400 font-mono">
-                Total Notes in Vault: <strong className="text-purple-400">{filteredNotes.length}</strong>
+                Notes matching filters: <strong className="text-purple-400">{filteredNotes.length}</strong>
               </div>
             </div>
           </div>
@@ -1582,14 +1800,14 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                 </div>
               )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="text-xs font-bold text-stone-300 block mb-1">
                     Notes Title:
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Chapter 1: Living World Complete Formula & Notes"
+                    placeholder="e.g. Living World 10-Page Master Notes"
                     value={noteTitle}
                     onChange={(e) => setNoteTitle(e.target.value)}
                     className="w-full px-3.5 py-2.5 bg-stone-900 border border-stone-700 rounded-xl text-xs text-white placeholder-stone-500 focus:outline-none focus:border-purple-400"
@@ -1610,6 +1828,21 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                         Ch {ch.num}: {ch.title}
                       </option>
                     ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-stone-300 block mb-1">
+                    Plan Tier:
+                  </label>
+                  <select
+                    value={noteTier}
+                    onChange={(e) => setNoteTier(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-stone-900 border border-stone-700 rounded-xl text-xs text-white focus:outline-none focus:border-purple-400"
+                  >
+                    <option value="normal">Normal Plan (1-Page Notes / Ch)</option>
+                    <option value="vip">VIP Plan (5-Page Notes / Ch)</option>
+                    <option value="vvip">Double VIP Plan (10-Page Master / Ch)</option>
                   </select>
                 </div>
               </div>
@@ -1651,68 +1884,132 @@ Please write each question clearly and show all steps, formulas, and reasoning s
             </div>
           )}
 
-          {/* Notes Cards Display */}
+          {/* Notes Cards Display with 3-Tier Badges & Access Gating */}
           {filteredNotes.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredNotes.map((note) => (
-                <div
-                  key={note.id}
-                  className="bg-stone-950 p-6 rounded-3xl border border-stone-800 shadow-xl flex flex-col justify-between hover:border-purple-500/50 transition group"
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-black">
-                        DAV Chapter Note
-                      </span>
-                      <span className="text-xs font-mono text-stone-400 font-bold">
-                        Ch {note.chapterNum}
-                      </span>
-                    </div>
+              {filteredNotes.map((note) => {
+                const access = checkNoteAccess(note);
+                const isSanskrit = note.subjectId === 'sanskrit' || note.title?.toLowerCase().includes('sanskrit');
+                const isDoubleVip = note.planTier === 'vvip' || note.pagesPerChapter === 10;
+                const isVip = note.planTier === 'vip' || note.pagesPerChapter === 5;
 
-                    <h3 className="text-base font-black text-white leading-snug group-hover:text-purple-300 transition-colors">
-                      {note.title}
-                    </h3>
-                    <div className="text-xs text-amber-400 font-semibold mt-1">
-                      {note.chapterTitle}
-                    </div>
-
-                    <div className="mt-4 pt-3 border-t border-stone-800 text-[11px] text-stone-400 space-y-1">
-                      <div>Class: <strong className="text-white">Class {note.classNum} • {note.subjectName}</strong></div>
-                      <div>File: <strong className="text-stone-300">{note.fileName || 'Notes.pdf'} ({note.fileSize || 'PDF'})</strong></div>
-                      <div>Uploaded: <strong className="text-stone-300">{note.uploadedAt}</strong> by {note.uploadedBy}</div>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 pt-4 border-t border-stone-800 flex items-center justify-between gap-2">
-                    <button
-                      onClick={() => handleOpenNotePdf(note)}
-                      className="flex-1 py-2 px-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black flex items-center justify-center gap-1.5 transition cursor-pointer shadow-md"
-                    >
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>Open Notes PDF</span>
-                    </button>
-
-                    {note.pdfUrl && (
-                      <a
-                        href={note.pdfUrl}
-                        download={`${note.title}.pdf`}
-                        className="p-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-stone-300 hover:text-white border border-stone-700 cursor-pointer"
-                        title="Download PDF"
-                      >
-                        <Download className="w-3.5 h-3.5 text-emerald-400" />
-                      </a>
+                return (
+                  <div
+                    key={note.id}
+                    className={`bg-stone-950 p-6 rounded-3xl border shadow-xl flex flex-col justify-between transition group relative overflow-hidden ${
+                      isDoubleVip
+                        ? 'border-amber-500/40 hover:border-amber-400 shadow-amber-950/20'
+                        : isVip
+                          ? 'border-blue-500/40 hover:border-blue-400 shadow-blue-950/20'
+                          : isSanskrit
+                            ? 'border-orange-500/40 hover:border-orange-400'
+                            : 'border-stone-800 hover:border-purple-500/50'
+                    }`}
+                  >
+                    {/* Background subtle glow for premium notes */}
+                    {isDoubleVip && (
+                      <div className="absolute top-0 right-0 w-36 h-36 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
                     )}
 
-                    <button
-                      onClick={() => handleDeleteNote(note.id)}
-                      className="p-2 rounded-xl bg-stone-900 hover:bg-rose-950 text-stone-400 hover:text-rose-400 border border-stone-700 cursor-pointer"
-                      title="Delete Note"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                    <div>
+                      {/* Top Badges */}
+                      <div className="flex items-center justify-between mb-3 gap-2">
+                        {isSanskrit ? (
+                          <span className="px-3 py-1 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-400 text-[11px] font-black flex items-center gap-1">
+                            <span>🕉️ Sanskrit Unified (All Plans)</span>
+                          </span>
+                        ) : isDoubleVip ? (
+                          <span className="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[11px] font-black flex items-center gap-1 shadow-sm">
+                            <Sparkles className="w-3 h-3 text-amber-400" />
+                            <span>🥇 Double VIP • 10-Page Master</span>
+                          </span>
+                        ) : isVip ? (
+                          <span className="px-3 py-1 rounded-full bg-blue-500/15 border border-blue-500/30 text-cyan-300 text-[11px] font-black flex items-center gap-1">
+                            <span>🥈 VIP Plan • 5-Page In-Depth</span>
+                          </span>
+                        ) : (
+                          <span className="px-3 py-1 rounded-full bg-stone-800 border border-stone-700 text-stone-300 text-[11px] font-black flex items-center gap-1">
+                            <span>🥉 Normal Plan • 1-Page Revision</span>
+                          </span>
+                        )}
+
+                        <span className="text-xs font-mono text-stone-400 font-bold shrink-0">
+                          {note.pagesPerChapter ? `${note.pagesPerChapter} Pg/Ch` : `Ch ${note.chapterNum}`}
+                        </span>
+                      </div>
+
+                      <h3 className="text-base font-black text-white leading-snug group-hover:text-purple-300 transition-colors">
+                        {note.title}
+                      </h3>
+                      <div className="text-xs text-amber-400 font-semibold mt-1">
+                        {note.chapterTitle}
+                      </div>
+
+                      <div className="mt-4 pt-3 border-t border-stone-800 text-[11px] text-stone-400 space-y-1">
+                        <div>Class: <strong className="text-white">Class {note.classNum} • {note.subjectName}</strong></div>
+                        <div>Pages: <strong className="text-stone-300">{note.fileSize || `${note.totalPages || 'Full'} Pages`}</strong> ({note.pagesPerChapter || (isDoubleVip ? 10 : isVip ? 5 : 1)} Pages / Chapter)</div>
+                        <div>Official Vault: <strong className="text-stone-300">{note.uploadedAt}</strong> by {note.uploadedBy}</div>
+                      </div>
+                    </div>
+
+                    {/* Action Bar / Lock Gating */}
+                    <div className="mt-6 pt-4 border-t border-stone-800 flex flex-col gap-2">
+                      {access.isUnlocked ? (
+                        <div className="flex items-center justify-between gap-2">
+                          <button
+                            onClick={() => handleOpenNotePdf(note)}
+                            className={`flex-1 py-2 px-3 rounded-xl text-white text-xs font-black flex items-center justify-center gap-1.5 transition cursor-pointer shadow-md ${
+                              isDoubleVip
+                                ? 'bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 shadow-amber-950/40'
+                                : isVip
+                                  ? 'bg-blue-600 hover:bg-blue-500 shadow-blue-950/40'
+                                  : 'bg-purple-600 hover:bg-purple-500 shadow-purple-950/40'
+                            }`}
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>Open Notes PDF</span>
+                          </button>
+
+                          {note.pdfUrl && (
+                            <a
+                              href={note.pdfUrl}
+                              download={`${note.title}.pdf`}
+                              className="p-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-stone-300 hover:text-white border border-stone-700 cursor-pointer"
+                              title="Download PDF"
+                            >
+                              <Download className="w-3.5 h-3.5 text-emerald-400" />
+                            </a>
+                          )}
+
+                          {(user?.id === 'rishibhai' || user?.isAdmin || user?.dimension === 4) && (
+                            <button
+                              onClick={() => handleDeleteNote(note.id)}
+                              className="p-2 rounded-xl bg-stone-900 hover:bg-rose-950 text-stone-400 hover:text-rose-400 border border-stone-700 cursor-pointer"
+                              title="Delete Note (Admin)"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <div className="p-2 rounded-xl bg-amber-950/40 border border-amber-500/30 text-amber-300 text-[11px] font-bold flex items-center justify-center gap-1.5">
+                            <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                            <span>Locked • Requires {access.requiredPlan}</span>
+                          </div>
+                          <button
+                            onClick={() => handleOpenNotePdf(note)}
+                            className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-stone-950 font-black text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-md"
+                          >
+                            <Sparkles className="w-3.5 h-3.5" />
+                            <span>Upgrade to {access.requiredPlan} to Unlock</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div className="bg-stone-950 rounded-3xl border border-stone-800 p-8 sm:p-12 text-center max-w-2xl mx-auto shadow-2xl">
