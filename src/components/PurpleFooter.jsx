@@ -209,11 +209,12 @@ export function PurpleFooter({ currentUser, onSelectSection }) {
                 { id: 3, name: 'Section 3: Question Answers' },
                 { id: 6, name: 'Section 6: Videos & Exams' },
                 { id: 7, name: 'Section 7: Kids Fun Navigator' },
-                { id: 8, name: 'Section 8: Study Leaderboard' },
-                { id: 9, name: 'Section 9: Student Profile' },
-                { id: 10, name: 'Section 10: Donate & Reviews' },
-                { id: 11, name: 'Section 11: About Creator' },
-                ...(isDimension4 ? [{ id: 12, name: 'Section 12: Review Vault' }] : [])
+                { id: 8, name: 'Section 8: Examination & Practice' },
+                { id: 9, name: 'Section 9: Study Leaderboard' },
+                { id: 10, name: 'Section 10: Student Profile' },
+                { id: 11, name: 'Section 11: Donate & Reviews' },
+                ...(isDimension4 ? [{ id: 12, name: 'Section 12: Review Vault' }] : []),
+                { id: 13, name: 'Section 13: About Creator' }
               ].map(sec => (
                 <button
                   key={sec.id}

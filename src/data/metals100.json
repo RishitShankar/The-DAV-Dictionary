@@ -1,0 +1,1502 @@
+[
+  {
+    "id": 1,
+    "q": "Materials that are made up of the same kind of particles are known as:",
+    "options": [
+      "Pure substances",
+      "Mixtures",
+      "Alloys",
+      "Solutions"
+    ],
+    "correctIndex": 0,
+    "correctText": "Pure substances",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 2,
+    "q": "Which is the most abundant metal in the earth's crust?",
+    "options": [
+      "Aluminium",
+      "Iron",
+      "Sodium",
+      "Gold"
+    ],
+    "correctIndex": 0,
+    "correctText": "Aluminium",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 3,
+    "q": "Which metal is the second most abundant in the earth's crust?",
+    "options": [
+      "Iron",
+      "Aluminium",
+      "Copper",
+      "Zinc"
+    ],
+    "correctIndex": 0,
+    "correctText": "Iron",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 4,
+    "q": "Highly reactive metals like sodium, potassium, and magnesium generally occur in nature as:",
+    "options": [
+      "Compounds (oxides, sulphides, carbonates)",
+      "Native elements",
+      "Gaseous substances",
+      "Free alloys"
+    ],
+    "correctIndex": 0,
+    "correctText": "Compounds (oxides, sulphides, carbonates)",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 5,
+    "q": "Less reactive metals like gold, silver, and platinum occur in nature in their:",
+    "options": [
+      "Elemental or native state",
+      "Oxidised state",
+      "Carbonate form",
+      "Sulphide form"
+    ],
+    "correctIndex": 0,
+    "correctText": "Elemental or native state",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 6,
+    "q": "Which two non-metals are well-known to be found in their free state in the atmosphere?",
+    "options": [
+      "Oxygen and nitrogen",
+      "Sulphur and carbon",
+      "Chlorine and fluorine",
+      "Hydrogen and helium"
+    ],
+    "correctIndex": 0,
+    "correctText": "Oxygen and nitrogen",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 7,
+    "q": "Sulphur exists in nature in which state?",
+    "options": [
+      "Both free and combined state",
+      "Only free state",
+      "Only as sulphates",
+      "Only in liquid form"
+    ],
+    "correctIndex": 0,
+    "correctText": "Both free and combined state",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 8,
+    "q": "Which of the following is considered a native state of carbon?",
+    "options": [
+      "Diamond",
+      "Carbon dioxide",
+      "Bicarbonate",
+      "Carbonate"
+    ],
+    "correctIndex": 0,
+    "correctText": "Diamond",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 9,
+    "q": "A naturally occurring inorganic substance found deep under the surface of the earth is called:",
+    "options": [
+      "A mineral",
+      "An ore",
+      "An alloy",
+      "A pure substance"
+    ],
+    "correctIndex": 0,
+    "correctText": "A mineral",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 10,
+    "q": "A mineral from which one or more metals can be extracted profitably is known as:",
+    "options": [
+      "An ore",
+      "A compound",
+      "An element",
+      "A metalloid"
+    ],
+    "correctIndex": 0,
+    "correctText": "An ore",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 11,
+    "q": "Aluminium is profitably extracted from which of its ores?",
+    "options": [
+      "Bauxite",
+      "Haematite",
+      "Magnetite",
+      "Cinnabar"
+    ],
+    "correctIndex": 0,
+    "correctText": "Bauxite",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 12,
+    "q": "Iron is extracted from which of its ores?",
+    "options": [
+      "Haematite",
+      "Bauxite",
+      "Galena",
+      "Zinc blende"
+    ],
+    "correctIndex": 0,
+    "correctText": "Haematite",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 13,
+    "q": "The sequence of processes used to extract a metal in its pure form from its ore is called:",
+    "options": [
+      "Metallurgy",
+      "Refining",
+      "Reduction",
+      "Calcination"
+    ],
+    "correctIndex": 0,
+    "correctText": "Metallurgy",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 14,
+    "q": "The process of removing impurities from an ore is called:",
+    "options": [
+      "Concentration of ore",
+      "Refining of metal",
+      "Reduction",
+      "Roasting"
+    ],
+    "correctIndex": 0,
+    "correctText": "Concentration of ore",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 15,
+    "q": "The process of treating a metal ore to get the metal in its free state is called:",
+    "options": [
+      "Reduction",
+      "Concentration",
+      "Refining",
+      "Alloying"
+    ],
+    "correctIndex": 0,
+    "correctText": "Reduction",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 16,
+    "q": "The process of purification of an impure metal obtained after reduction is known as:",
+    "options": [
+      "Refining",
+      "Reduction",
+      "Concentration",
+      "Metallurgy"
+    ],
+    "correctIndex": 0,
+    "correctText": "Refining",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 17,
+    "q": "Which of the following metals exists as a liquid at room temperature?",
+    "options": [
+      "Mercury",
+      "Gallium",
+      "Sodium",
+      "Caesium"
+    ],
+    "correctIndex": 0,
+    "correctText": "Mercury",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 18,
+    "q": "Bromine is a non-metal that exists at room temperature in which state?",
+    "options": [
+      "Liquid",
+      "Solid",
+      "Gaseous",
+      "Plasma"
+    ],
+    "correctIndex": 0,
+    "correctText": "Liquid",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 19,
+    "q": "Which of the following non-metals exists in the gaseous state at room temperature?",
+    "options": [
+      "Chlorine",
+      "Carbon",
+      "Iodine",
+      "Sulphur"
+    ],
+    "correctIndex": 0,
+    "correctText": "Chlorine",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 20,
+    "q": "What is the melting point of iron?",
+    "options": [
+      "1536°C",
+      "3000°C",
+      "3723°C",
+      "119°C"
+    ],
+    "correctIndex": 0,
+    "correctText": "1536°C",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 21,
+    "q": "What is the boiling point of iron?",
+    "options": [
+      "3000°C",
+      "1536°C",
+      "3723°C",
+      "1000°C"
+    ],
+    "correctIndex": 0,
+    "correctText": "3000°C",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 22,
+    "q": "Which metal has an exceptionally low melting point of only 28.7°C?",
+    "options": [
+      "Caesium",
+      "Sodium",
+      "Potassium",
+      "Silver"
+    ],
+    "correctIndex": 0,
+    "correctText": "Caesium",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 23,
+    "q": "What is the melting point of the non-metal sulphur?",
+    "options": [
+      "119°C",
+      "28.7°C",
+      "1536°C",
+      "3723°C"
+    ],
+    "correctIndex": 0,
+    "correctText": "119°C",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 24,
+    "q": "Which non-metal has an exceptionally high melting point of 3723°C?",
+    "options": [
+      "Diamond",
+      "Graphite",
+      "Sulphur",
+      "Phosphorus"
+    ],
+    "correctIndex": 0,
+    "correctText": "Diamond",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 25,
+    "q": "Which two metals have a density lower than that of water?",
+    "options": [
+      "Sodium and potassium",
+      "Iron and copper",
+      "Gold and silver",
+      "Aluminium and magnesium"
+    ],
+    "correctIndex": 0,
+    "correctText": "Sodium and potassium",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 26,
+    "q": "Are most metals considered hard or soft?",
+    "options": [
+      "Very hard and can withstand high pressures",
+      "Soft and brittle",
+      "Liquid and flowing",
+      "Powdery and fragile"
+    ],
+    "correctIndex": 0,
+    "correctText": "Very hard and can withstand high pressures",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 27,
+    "q": "Non-metals easily break into pieces when hammered because they are:",
+    "options": [
+      "Brittle",
+      "Malleable",
+      "Ductile",
+      "Sonorous"
+    ],
+    "correctIndex": 0,
+    "correctText": "Brittle",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 28,
+    "q": "Which two metals are so soft that they can be easily cut with a knife?",
+    "options": [
+      "Sodium and potassium",
+      "Iron and steel",
+      "Zinc and copper",
+      "Gold and platinum"
+    ],
+    "correctIndex": 0,
+    "correctText": "Sodium and potassium",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 29,
+    "q": "What is the hardest substance known?",
+    "options": [
+      "Diamond",
+      "Iron",
+      "Titanium",
+      "Graphite"
+    ],
+    "correctIndex": 0,
+    "correctText": "Diamond",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 30,
+    "q": "What happens when iodine crystals are beaten with a duster?",
+    "options": [
+      "They easily break into small pieces",
+      "They flatten into a thin sheet",
+      "They stretch into a thin wire",
+      "They produce a ringing sound"
+    ],
+    "correctIndex": 0,
+    "correctText": "They easily break into small pieces",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 31,
+    "q": "The natural shining surface of metals is known as:",
+    "options": [
+      "Metallic lustre",
+      "Malleability",
+      "Sonorosity",
+      "Ductility"
+    ],
+    "correctIndex": 0,
+    "correctText": "Metallic lustre",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 32,
+    "q": "Which is the ONLY non-metal that has a natural lustre?",
+    "options": [
+      "Iodine",
+      "Sulphur",
+      "Phosphorus",
+      "Carbon"
+    ],
+    "correctIndex": 0,
+    "correctText": "Iodine",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 33,
+    "q": "Why do metals lose their shine on exposure to air?",
+    "options": [
+      "They react with gases to form a layer of oxide, carbonate, or sulphide",
+      "They evaporate slowly over time",
+      "They absorb moisture and dissolve",
+      "They turn into non-metals"
+    ],
+    "correctIndex": 0,
+    "correctText": "They react with gases to form a layer of oxide, carbonate, or sulphide",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 34,
+    "q": "The property by which metals can be hammered into thin sheets without breaking is called:",
+    "options": [
+      "Malleability",
+      "Ductility",
+      "Sonorosity",
+      "Tensile strength"
+    ],
+    "correctIndex": 0,
+    "correctText": "Malleability",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 35,
+    "q": "What happens when a zinc granule is gently struck with a hammer?",
+    "options": [
+      "It spreads a little and becomes thinner",
+      "It shatters into a powder",
+      "It catches fire",
+      "It bounces off the hammer"
+    ],
+    "correctIndex": 0,
+    "correctText": "It spreads a little and becomes thinner",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 36,
+    "q": "The property by which metals can be drawn into thin wires is known as:",
+    "options": [
+      "Ductility",
+      "Malleability",
+      "Conductivity",
+      "Sonorosity"
+    ],
+    "correctIndex": 0,
+    "correctText": "Ductility",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 37,
+    "q": "Which metal is considered the most ductile?",
+    "options": [
+      "Gold",
+      "Silver",
+      "Copper",
+      "Aluminium"
+    ],
+    "correctIndex": 0,
+    "correctText": "Gold",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 38,
+    "q": "A two-kilometer long wire can be drawn from how much gold?",
+    "options": [
+      "One gram",
+      "One kilogram",
+      "Ten grams",
+      "One hundred grams"
+    ],
+    "correctIndex": 0,
+    "correctText": "One gram",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 39,
+    "q": "What is the thickness of the extremely thin foil that gold can be converted into?",
+    "options": [
+      "2.0 x 10^-4 mm",
+      "2.0 mm",
+      "0.2 mm",
+      "10^-6 mm"
+    ],
+    "correctIndex": 0,
+    "correctText": "2.0 x 10^-4 mm",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 40,
+    "q": "The property due to which a substance can bear a lot of strain without breaking is called:",
+    "options": [
+      "Tensile strength",
+      "Ductility",
+      "Malleability",
+      "Sonorosity"
+    ],
+    "correctIndex": 0,
+    "correctText": "Tensile strength",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 41,
+    "q": "Which non-metal exhibits an exceptionally high tensile strength?",
+    "options": [
+      "Carbon-fibre",
+      "Sulphur",
+      "Phosphorus",
+      "Iodine"
+    ],
+    "correctIndex": 0,
+    "correctText": "Carbon-fibre",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 42,
+    "q": "The measure of the ease with which heat energy can flow through a material is called:",
+    "options": [
+      "Thermal conductivity",
+      "Electrical conductivity",
+      "Tensile strength",
+      "Malleability"
+    ],
+    "correctIndex": 0,
+    "correctText": "Thermal conductivity",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 43,
+    "q": "Why are copper and iron used for making cooking utensils?",
+    "options": [
+      "They are good thermal conductors",
+      "They are highly sonorous",
+      "They have low melting points",
+      "They are poor conductors of heat"
+    ],
+    "correctIndex": 0,
+    "correctText": "They are good thermal conductors",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 44,
+    "q": "Which metal is considered the best conductor of heat and electricity?",
+    "options": [
+      "Silver",
+      "Copper",
+      "Aluminium",
+      "Gold"
+    ],
+    "correctIndex": 0,
+    "correctText": "Silver",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 45,
+    "q": "Which metal is the poorest conductor of heat and electricity?",
+    "options": [
+      "Mercury",
+      "Sodium",
+      "Lead",
+      "Iron"
+    ],
+    "correctIndex": 0,
+    "correctText": "Mercury",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 46,
+    "q": "Which non-metal is an exception and acts as a good conductor of electricity?",
+    "options": [
+      "Graphite",
+      "Diamond",
+      "Sulphur",
+      "Phosphorus"
+    ],
+    "correctIndex": 0,
+    "correctText": "Graphite",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 47,
+    "q": "The property of metals to produce a ringing sound when struck is known as:",
+    "options": [
+      "Sonorosity",
+      "Conductivity",
+      "Malleability",
+      "Lustre"
+    ],
+    "correctIndex": 0,
+    "correctText": "Sonorosity",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 48,
+    "q": "Elements that show some properties of both metals and non-metals are called:",
+    "options": [
+      "Metalloids",
+      "Alloys",
+      "Minerals",
+      "Ores"
+    ],
+    "correctIndex": 0,
+    "correctText": "Metalloids",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 49,
+    "q": "Which of the following is an example of a metalloid?",
+    "options": [
+      "Silicon",
+      "Sulphur",
+      "Silver",
+      "Sodium"
+    ],
+    "correctIndex": 0,
+    "correctText": "Silicon",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 50,
+    "q": "Germanium and arsenic are known examples of:",
+    "options": [
+      "Metalloids",
+      "Metals",
+      "Non-metals",
+      "Noble gases"
+    ],
+    "correctIndex": 0,
+    "correctText": "Metalloids",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 51,
+    "q": "When magnesium ribbon burns in air, it forms a bright white powder called:",
+    "options": [
+      "Magnesium oxide",
+      "Magnesium hydroxide",
+      "Magnesium carbonate",
+      "Magnesium sulphate"
+    ],
+    "correctIndex": 0,
+    "correctText": "Magnesium oxide",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 52,
+    "q": "Metallic oxides are generally:",
+    "options": [
+      "Basic in nature",
+      "Acidic in nature",
+      "Neutral",
+      "Amphoteric"
+    ],
+    "correctIndex": 0,
+    "correctText": "Basic in nature",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 53,
+    "q": "When magnesium oxide dissolves in water, it forms magnesium hydroxide, which turns:",
+    "options": [
+      "Red litmus blue",
+      "Blue litmus red",
+      "Red litmus yellow",
+      "Blue litmus green"
+    ],
+    "correctIndex": 0,
+    "correctText": "Red litmus blue",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 54,
+    "q": "Which of the following metals react with oxygen even at room temperature?",
+    "options": [
+      "Potassium and sodium",
+      "Iron and copper",
+      "Gold and silver",
+      "Zinc and aluminium"
+    ],
+    "correctIndex": 0,
+    "correctText": "Potassium and sodium",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 55,
+    "q": "When charcoal (carbon) burns in oxygen, it forms carbon dioxide, which dissolves in water to form:",
+    "options": [
+      "Carbonic acid",
+      "Sulphuric acid",
+      "Nitric acid",
+      "Hydrochloric acid"
+    ],
+    "correctIndex": 0,
+    "correctText": "Carbonic acid",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 56,
+    "q": "Non-metallic oxides are generally:",
+    "options": [
+      "Acidic in nature",
+      "Basic in nature",
+      "Neutral",
+      "Highly alkaline"
+    ],
+    "correctIndex": 0,
+    "correctText": "Acidic in nature",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 57,
+    "q": "When testing carbonic acid with litmus paper, what happens?",
+    "options": [
+      "Blue litmus turns red",
+      "Red litmus turns blue",
+      "Blue litmus turns white",
+      "There is no color change"
+    ],
+    "correctIndex": 0,
+    "correctText": "Blue litmus turns red",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 58,
+    "q": "Why are aluminium cookers anodised from the inside?",
+    "options": [
+      "To form a protective layer of Al2O3 that prevents further oxidation",
+      "To make them look shinier and more attractive",
+      "To increase their melting point infinitely",
+      "To prevent them from conducting heat"
+    ],
+    "correctIndex": 0,
+    "correctText": "To form a protective layer of Al2O3 that prevents further oxidation",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 59,
+    "q": "When reactive metals react with water, which gas is liberated?",
+    "options": [
+      "Hydrogen",
+      "Oxygen",
+      "Carbon dioxide",
+      "Nitrogen"
+    ],
+    "correctIndex": 0,
+    "correctText": "Hydrogen",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 60,
+    "q": "How can you test for the presence of hydrogen gas?",
+    "options": [
+      "It burns with a popping or crackling sound",
+      "It turns lime water milky",
+      "It extinguishes a burning splinter silently",
+      "It turns red litmus paper blue"
+    ],
+    "correctIndex": 0,
+    "correctText": "It burns with a popping or crackling sound",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 61,
+    "q": "Why are sodium and potassium stored under kerosene or paraffin wax?",
+    "options": [
+      "They react very vigorously with water and catch fire",
+      "They evaporate completely in open air",
+      "They are highly poisonous to humans",
+      "They lose their metallic lustre permanently"
+    ],
+    "correctIndex": 0,
+    "correctText": "They react very vigorously with water and catch fire",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 62,
+    "q": "Magnesium does not react with cold water, but it reacts with:",
+    "options": [
+      "Hot water (on heating)",
+      "Ice cold water only",
+      "Kerosene",
+      "Pure nitrogen gas"
+    ],
+    "correctIndex": 0,
+    "correctText": "Hot water (on heating)",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 63,
+    "q": "Iron does not react vigorously with cold or boiling water, but it reacts with:",
+    "options": [
+      "Steam",
+      "Ice",
+      "Kerosene",
+      "Hot oil"
+    ],
+    "correctIndex": 0,
+    "correctText": "Steam",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 64,
+    "q": "Which of the following metals does NOT react with water at all?",
+    "options": [
+      "Gold",
+      "Sodium",
+      "Potassium",
+      "Calcium"
+    ],
+    "correctIndex": 0,
+    "correctText": "Gold",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 65,
+    "q": "Why is phosphorus kept stored in water?",
+    "options": [
+      "To prevent its contact with air, as it catches fire",
+      "Because it dissolves easily to form an acid",
+      "Because it is highly reactive with kerosene",
+      "To increase its tensile strength"
+    ],
+    "correctIndex": 0,
+    "correctText": "To prevent its contact with air, as it catches fire",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 66,
+    "q": "Most metals react with dilute acids to form metal salts and liberate:",
+    "options": [
+      "Hydrogen gas",
+      "Oxygen gas",
+      "Carbon dioxide",
+      "Nitrogen gas"
+    ],
+    "correctIndex": 0,
+    "correctText": "Hydrogen gas",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 67,
+    "q": "Which of the following metals do NOT liberate hydrogen gas when reacting with sulphuric or nitric acid?",
+    "options": [
+      "Copper and mercury",
+      "Zinc and iron",
+      "Magnesium and aluminium",
+      "Sodium and potassium"
+    ],
+    "correctIndex": 0,
+    "correctText": "Copper and mercury",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 68,
+    "q": "Which of the following metals does not react with dilute acids at all?",
+    "options": [
+      "Platinum",
+      "Iron",
+      "Zinc",
+      "Magnesium"
+    ],
+    "correctIndex": 0,
+    "correctText": "Platinum",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 69,
+    "q": "Do non-metals generally react with dilute acids to liberate hydrogen gas?",
+    "options": [
+      "No, they generally do not react",
+      "Yes, they react violently",
+      "Only when mixed with alkalis",
+      "Yes, forming basic salts"
+    ],
+    "correctIndex": 0,
+    "correctText": "No, they generally do not react",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 70,
+    "q": "Why should citrus fruits and curd not be stored in iron, copper, or aluminium utensils?",
+    "options": [
+      "The acid reacts with the metal to form toxic compounds",
+      "The metal will rust immediately",
+      "The food will lose all its nutritional value",
+      "The utensils will melt from the acid"
+    ],
+    "correctIndex": 0,
+    "correctText": "The acid reacts with the metal to form toxic compounds",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 71,
+    "q": "Which metals can react with sodium hydroxide or potassium hydroxide to liberate hydrogen gas?",
+    "options": [
+      "Aluminium and zinc",
+      "Iron and copper",
+      "Gold and silver",
+      "Mercury and platinum"
+    ],
+    "correctIndex": 0,
+    "correctText": "Aluminium and zinc",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 72,
+    "q": "The tendency of an element to react with other substances to form compounds is an indicator of its:",
+    "options": [
+      "Reactivity",
+      "Conductivity",
+      "Sonorosity",
+      "Malleability"
+    ],
+    "correctIndex": 0,
+    "correctText": "Reactivity",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 73,
+    "q": "The series of metals arranged in the order of their decreasing reactivity is called the:",
+    "options": [
+      "Reactivity series",
+      "Conductivity series",
+      "Malleability index",
+      "Metallurgy sequence"
+    ],
+    "correctIndex": 0,
+    "correctText": "Reactivity series",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 74,
+    "q": "According to the reactivity series, which is the most reactive metal?",
+    "options": [
+      "Potassium",
+      "Sodium",
+      "Calcium",
+      "Magnesium"
+    ],
+    "correctIndex": 0,
+    "correctText": "Potassium",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 75,
+    "q": "According to the reactivity series, which is the least reactive metal?",
+    "options": [
+      "Platinum",
+      "Gold",
+      "Silver",
+      "Mercury"
+    ],
+    "correctIndex": 0,
+    "correctText": "Platinum",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 76,
+    "q": "A reaction in which a more reactive metal displaces a lesser reactive metal from its aqueous salt solution is called a:",
+    "options": [
+      "Displacement reaction",
+      "Reduction reaction",
+      "Concentration reaction",
+      "Refining reaction"
+    ],
+    "correctIndex": 0,
+    "correctText": "Displacement reaction",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 77,
+    "q": "When a magnesium ribbon is dipped in copper sulphate solution, the blue colour fades and the solution becomes:",
+    "options": [
+      "Colourless",
+      "Red",
+      "Green",
+      "Black"
+    ],
+    "correctIndex": 0,
+    "correctText": "Colourless",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 78,
+    "q": "In the reaction between magnesium and copper sulphate, what is the brown coating deposited on the ribbon?",
+    "options": [
+      "Copper",
+      "Magnesium oxide",
+      "Copper sulphate",
+      "Sulphur"
+    ],
+    "correctIndex": 0,
+    "correctText": "Copper",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 79,
+    "q": "Gold and platinum do not react with air, water, acids, and bases. They are known as:",
+    "options": [
+      "Noble metals",
+      "Metalloids",
+      "Alkali metals",
+      "Reactive non-metals"
+    ],
+    "correctIndex": 0,
+    "correctText": "Noble metals",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 80,
+    "q": "Why do noble metals retain their lustre for a very long time?",
+    "options": [
+      "They are least reactive and do not get tarnished",
+      "They are covered in a permanent oxide layer",
+      "They constantly shed their outer skin",
+      "They reflect 100% of the light that hits them"
+    ],
+    "correctIndex": 0,
+    "correctText": "They are least reactive and do not get tarnished",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 81,
+    "q": "Which noble metal is highly used in dentistry and in making scientific instruments?",
+    "options": [
+      "Platinum",
+      "Gold",
+      "Silver",
+      "Copper"
+    ],
+    "correctIndex": 0,
+    "correctText": "Platinum",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 82,
+    "q": "The purity of gold is expressed in terms of:",
+    "options": [
+      "Carats",
+      "Grams",
+      "Ounces",
+      "Lustre points"
+    ],
+    "correctIndex": 0,
+    "correctText": "Carats",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 83,
+    "q": "Pure gold is officially rated as:",
+    "options": [
+      "24 carat",
+      "22 carat",
+      "18 carat",
+      "100 carat"
+    ],
+    "correctIndex": 0,
+    "correctText": "24 carat",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 84,
+    "q": "What does 22 carat gold mean?",
+    "options": [
+      "22 parts of pure gold mixed with 2 parts of copper or silver",
+      "22 parts of copper mixed with 2 parts of gold",
+      "Gold that weighs exactly 22 grams",
+      "Gold that melts at 22 degrees"
+    ],
+    "correctIndex": 0,
+    "correctText": "22 parts of pure gold mixed with 2 parts of copper or silver",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 85,
+    "q": "Why is pure (24 carat) gold not used for making jewellery?",
+    "options": [
+      "It is very soft",
+      "It is too expensive",
+      "It is not lustrous enough",
+      "It reacts with skin sweat"
+    ],
+    "correctIndex": 0,
+    "correctText": "It is very soft",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 86,
+    "q": "Which metal is the most widely used metal overall (e.g., for pipes, tools, and electromagnets)?",
+    "options": [
+      "Iron",
+      "Copper",
+      "Aluminium",
+      "Silver"
+    ],
+    "correctIndex": 0,
+    "correctText": "Iron",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 87,
+    "q": "Why is aluminium specifically used for making aircraft bodies?",
+    "options": [
+      "It is a very light metal",
+      "It is the hardest metal known",
+      "It has the highest melting point",
+      "It is completely transparent"
+    ],
+    "correctIndex": 0,
+    "correctText": "It is a very light metal",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 88,
+    "q": "Which metal is most widely used for making electrical cables and other electrical goods?",
+    "options": [
+      "Copper",
+      "Silver",
+      "Gold",
+      "Iron"
+    ],
+    "correctIndex": 0,
+    "correctText": "Copper",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 89,
+    "q": "Why is silver not commonly used for household electrical fittings despite being the best conductor?",
+    "options": [
+      "It is very expensive",
+      "It is too brittle to bend",
+      "It rusts very quickly",
+      "It melts at room temperature"
+    ],
+    "correctIndex": 0,
+    "correctText": "It is very expensive",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 90,
+    "q": "Silver and gold wires are specifically used for high precision electrical contacts in:",
+    "options": [
+      "Computers",
+      "Household fans",
+      "Street lamps",
+      "Cooking heaters"
+    ],
+    "correctIndex": 0,
+    "correctText": "Computers",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 91,
+    "q": "A homogenous mixture of two or more metals, or a metal and a non-metal, is called an:",
+    "options": [
+      "Alloy",
+      "Ore",
+      "Isotope",
+      "Element"
+    ],
+    "correctIndex": 0,
+    "correctText": "Alloy",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 92,
+    "q": "Steel is an alloy made from:",
+    "options": [
+      "Iron and carbon",
+      "Iron and copper",
+      "Copper and zinc",
+      "Iron and tin"
+    ],
+    "correctIndex": 0,
+    "correctText": "Iron and carbon",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 93,
+    "q": "Stainless steel is an alloy made from:",
+    "options": [
+      "Iron, chromium, and nickel",
+      "Iron and carbon only",
+      "Copper and zinc",
+      "Aluminium and magnesium"
+    ],
+    "correctIndex": 0,
+    "correctText": "Iron, chromium, and nickel",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 94,
+    "q": "Brass is an alloy commonly made from:",
+    "options": [
+      "Copper and zinc",
+      "Copper and tin",
+      "Iron and carbon",
+      "Aluminium and nickel"
+    ],
+    "correctIndex": 0,
+    "correctText": "Copper and zinc",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 95,
+    "q": "Bronze is an alloy commonly made from:",
+    "options": [
+      "Copper and tin",
+      "Copper and zinc",
+      "Iron and chromium",
+      "Copper, zinc, and nickel"
+    ],
+    "correctIndex": 0,
+    "correctText": "Copper and tin",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 96,
+    "q": "Which alloy is used for making aircraft bodies and undersea vessels?",
+    "options": [
+      "Duralumin",
+      "Alnico",
+      "Gun metal",
+      "Brass"
+    ],
+    "correctIndex": 0,
+    "correctText": "Duralumin",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 97,
+    "q": "Alnico, an alloy used for making magnets, is made of:",
+    "options": [
+      "Aluminium, nickel, and cobalt",
+      "Iron, chromium, and nickel",
+      "Copper, tin, and zinc",
+      "Aluminium, copper, and magnesium"
+    ],
+    "correctIndex": 0,
+    "correctText": "Aluminium, nickel, and cobalt",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 98,
+    "q": "Which non-metal is commonly used as an antiseptic?",
+    "options": [
+      "Iodine",
+      "Sulphur",
+      "Phosphorus",
+      "Nitrogen"
+    ],
+    "correctIndex": 0,
+    "correctText": "Iodine",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 99,
+    "q": "Which non-metal is used for making firecrackers, gun powder, and sulphuric acid?",
+    "options": [
+      "Sulphur",
+      "Iodine",
+      "Graphite",
+      "Nitrogen"
+    ],
+    "correctIndex": 0,
+    "correctText": "Sulphur",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  },
+  {
+    "id": 100,
+    "q": "Which metal is an essential component of haemoglobin in the human body?",
+    "options": [
+      "Iron",
+      "Sodium",
+      "Calcium",
+      "Zinc"
+    ],
+    "correctIndex": 0,
+    "correctText": "Iron",
+    "chapter": "Metals & Non-Metals",
+    "subject": "Science",
+    "class": "Class 8"
+  }
+]

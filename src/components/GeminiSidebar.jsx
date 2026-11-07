@@ -35,15 +35,16 @@ export function GeminiSidebar({
     { id: 3, name: 'Section 3: Question Answers', icon: HelpCircle, status: 'Q&A Bank' },
     { id: 4, name: 'Section 4: Rishi AI', icon: Sparkles, status: 'AI Workspace' },
     { id: 5, name: 'Section 5: Faculty Portal', icon: Award, status: 'Faculty OS' },
-    { id: 6, name: 'Section 6: Videos & Exams', icon: Video, status: 'Lectures & Exams' },
+    { id: 6, name: 'Section 6: Videos & Explanations', icon: Video, status: 'Lectures & Notes' },
     { id: 7, name: 'Section 7: Kids Fun Navigator', icon: Bus, status: 'Kids Portal' },
-    { id: 8, name: 'Section 8: Study Leaderboard', icon: Trophy, status: 'Leaderboard' },
-    { id: 9, name: 'Section 9: Student Profile', icon: User, status: 'Student ID' },
-    { id: 10, name: 'Section 10: Donate & Reviews', icon: Heart, status: 'Donate & Reviews' },
-    { id: 11, name: 'Section 11: About Creator', icon: Award, status: 'About Creator' },
+    { id: 8, name: 'Section 8: Examination & Practice', icon: CheckSquare, status: 'Exam & VVI Suite' },
+    { id: 9, name: 'Section 9: Study Leaderboard', icon: Trophy, status: 'Leaderboard' },
+    { id: 10, name: 'Section 10: Student Profile', icon: User, status: 'Student ID' },
+    { id: 11, name: 'Section 11: Donate & Reviews', icon: Heart, status: 'Donate & Reviews' },
     ...(isDimension4 ? [
-      { id: 12, name: 'Section 12: Review Vault', icon: Star, status: 'Review Vault' }
+      { id: 12, name: 'Section 12: Review Vault', icon: Star, status: 'Developer Only' }
     ] : []),
+    { id: 13, name: 'Section 13: About Creator', icon: Award, status: 'About Creator' },
   ];
 
   const teacherSubSections = [

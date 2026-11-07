@@ -3,7 +3,7 @@ import {
   BookOpen, Sparkles, Layers, Trophy, Award, 
   Home, ClipboardList, Video, Compass, User as UserIcon, 
   Heart, Star, Atom, Globe, Crown, X, ArrowRight, 
-  ChevronUp, CheckCircle2, Zap
+  ChevronUp, CheckCircle2, Zap, CheckSquare
 } from 'lucide-react';
 import { BlackDogLogo } from './BlackDogLogo';
 
@@ -76,7 +76,7 @@ export const MASTER_HUBS = [
     id: 3,
     hubNumber: 'Third Master Section',
     title: 'Master Hub 3',
-    subtitle: 'Growth & ID Vault',
+    subtitle: 'Practice & Growth',
     badge: 'Sec 7 – 9',
     icon: Trophy,
     accentColor: 'from-emerald-500 to-teal-600',
@@ -90,17 +90,17 @@ export const MASTER_HUBS = [
       },
       {
         number: 8,
-        title: 'Section 8: Study Leaderboard',
-        desc: 'Track classroom ranks, study streaks, quiz badges, and academic honors.',
-        icon: Trophy,
-        color: 'text-amber-700 bg-amber-50 border-amber-200'
+        title: 'Section 8: Examination & Practice',
+        desc: 'Timed 25/50/100-Q MCQ exams, 20 VVI long-answer questions, and interactive SST map skills.',
+        icon: CheckSquare,
+        color: 'text-emerald-700 bg-emerald-50 border-emerald-200'
       },
       {
         number: 9,
-        title: 'Section 9: Student ID Vault',
-        desc: 'Encrypted personal identity card, school marks records, roll number, and dossier.',
-        icon: UserIcon,
-        color: 'text-purple-700 bg-purple-50 border-purple-200'
+        title: 'Section 9: Study Leaderboard',
+        desc: 'Track classroom ranks, study streaks, quiz badges, and academic honors.',
+        icon: Trophy,
+        color: 'text-amber-700 bg-amber-50 border-amber-200'
       }
     ]
   },
@@ -108,31 +108,38 @@ export const MASTER_HUBS = [
     id: 4,
     hubNumber: 'Fourth Master Section',
     title: 'Master Hub 4',
-    subtitle: 'Heritage & Dev',
-    badge: 'Sec 10 – 12',
+    subtitle: 'Vault & Dev HQ',
+    badge: 'Sec 10 – 13',
     icon: Award,
     accentColor: 'from-purple-600 to-indigo-600',
     sections: [
       {
         number: 10,
-        title: 'Section 10: School Donation Hub',
+        title: 'Section 10: Student ID Vault',
+        desc: 'Encrypted personal identity card, school marks records, roll number, and dossier.',
+        icon: UserIcon,
+        color: 'text-purple-700 bg-purple-50 border-purple-200'
+      },
+      {
+        number: 11,
+        title: 'Section 11: School Donation Hub',
         desc: 'Support DAV digital infrastructure and smart classroom equipment expansion.',
         icon: Heart,
         color: 'text-rose-700 bg-rose-50 border-rose-200'
       },
       {
-        number: 11,
-        title: 'Section 11: About Creator',
+        number: 12,
+        title: 'Section 12: Developer Reviews',
+        desc: 'Reserved exclusively for Developer Rishit Shankar. Review vault and ratings.',
+        icon: Award,
+        color: 'text-yellow-700 bg-yellow-50 border-yellow-200'
+      },
+      {
+        number: 13,
+        title: 'Section 13: About Creator',
         desc: 'Dedicated by Head Boy Rishit Shankar. Developer vision and Digital India tribute.',
         icon: Star,
         color: 'text-amber-700 bg-amber-50 border-amber-200'
-      },
-      {
-        number: 12,
-        title: 'Section 12: Developer Reviews',
-        desc: 'Dimension 4 developer review vault, VIP approvals, and student ratings center.',
-        icon: Award,
-        color: 'text-yellow-700 bg-yellow-50 border-yellow-200'
       }
     ]
   },
@@ -141,27 +148,27 @@ export const MASTER_HUBS = [
     hubNumber: 'Fifth Master Section',
     title: 'Master Hub 5',
     subtitle: 'Upcoming Demo',
-    badge: 'Sec 13 – 15',
+    badge: 'Sec 14 – 16',
     icon: Zap,
     accentColor: 'from-cyan-500 to-blue-600',
     sections: [
       {
-        number: 13,
-        title: 'Section 13: DAV Next-Gen VR Lab',
+        number: 14,
+        title: 'Section 14: DAV Next-Gen VR Lab',
         desc: 'Upcoming 3D virtual science lab experiments and interactive molecule simulation.',
         icon: Atom,
         color: 'text-indigo-700 bg-indigo-50 border-indigo-200'
       },
       {
-        number: 14,
-        title: 'Section 14: 3D Digital Campus',
+        number: 15,
+        title: 'Section 15: 3D Digital Campus',
         desc: 'Upcoming virtual walkthrough of DAV Khabra campus and sports grounds.',
         icon: Globe,
         color: 'text-teal-700 bg-teal-50 border-teal-200'
       },
       {
-        number: 15,
-        title: 'Section 15: National Olympiad',
+        number: 16,
+        title: 'Section 16: National Olympiad',
         desc: 'Upcoming all-India DAV inter-school Olympiad and competitive test arena.',
         icon: Crown,
         color: 'text-amber-700 bg-amber-50 border-amber-200'

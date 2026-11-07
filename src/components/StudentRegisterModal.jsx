@@ -229,8 +229,11 @@ export function StudentRegisterModal({isOpen, onClose, onRegisterSuccess }) {
 
       if (regResult.success && regResult.user) {
         setSuccessMsg('Account created successfully! Redirecting to Overview Hub...');
+        try {
+          localStorage.setItem('dav_new_user_guide_pending_' + regResult.user.id, 'true');
+        } catch (e) {}
         setTimeout(() => {
-          onRegisterSuccess(regResult.user);
+          onRegisterSuccess({ ...regResult.user, isNewlyRegistered: true });
           onClose();
         }, 800);
       } else {

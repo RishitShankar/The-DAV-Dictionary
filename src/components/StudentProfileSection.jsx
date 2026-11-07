@@ -270,6 +270,16 @@ export function StudentProfileSection({ user, onLogout }) {
             >
               <Printer className="w-4 h-4" />
             </button>
+
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('dav_launch_onboarding_guide'))}
+              className="px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 text-white font-black text-xs transition cursor-pointer flex items-center gap-1.5 shadow-md"
+              title="Replay Onboarding Guide Manual"
+            >
+              <Sparkles className="w-4 h-4 text-amber-300" />
+              <span>Launch App Guide 🚀</span>
+            </button>
           </div>
         </div>
 

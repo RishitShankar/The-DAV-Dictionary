@@ -3,7 +3,7 @@ import {
   BookOpen, Brain, Award, FileText, User, 
   HelpCircle, Bell, Compass, ArrowRight, Sparkles, 
   Layers, School, Heart, CheckCircle2, Star, Zap, Flame,
-  BookmarkCheck, MessageCircle, ShieldCheck, Video, Bus, Navigation, MapPin, Trophy, Play
+  BookmarkCheck, MessageCircle, ShieldCheck, Video, Bus, Navigation, CheckSquare, MapPin, Trophy, Play
 } from 'lucide-react';
 
 export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseModal }) {
@@ -114,7 +114,20 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
     },
     {
       id: 8,
-      title: 'Section 8: Study Leaderboard',
+      title: 'Section 8: Examination & Practice',
+      shortTitle: 'Exam & VVI Suite',
+      icon: CheckSquare,
+      emoji: '📝',
+      color: 'from-emerald-500 to-teal-600',
+      cardBg: 'from-emerald-500/10 via-teal-50/80 to-white',
+      borderHover: 'hover:border-emerald-500',
+      tag: '25/50/100 Qs • 20 VVI',
+      tagColor: 'bg-emerald-100 text-emerald-950 border-emerald-300 font-black',
+      description: 'Advanced JEE-Style Examination & Board Practice Suite for Classes 3 to 8! Features timed 25, 50 & 100-question MCQ tests with anti-cheat, 20 high-yield VVI long-answer questions, and interactive SST map skills.'
+    },
+    {
+      id: 9,
+      title: 'Section 9: Study Leaderboard',
       shortTitle: 'Study Leaderboard',
       icon: Trophy,
       emoji: '🏆',
@@ -126,8 +139,8 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
       description: 'Campus Leaderboard and Deep Study Focus Mode will be officially available when we launch the app with system-level YouTube & Instagram blocking and verified campus rankings.'
     },
     {
-      id: 9,
-      title: 'Section 9: Student Profile',
+      id: 10,
+      title: 'Section 10: Student Profile',
       shortTitle: 'Student Profile',
       icon: User,
       emoji: '👤',
@@ -139,8 +152,8 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
       description: 'Each student manages their own personal profile, uploads their photo, specifies their parent details, roll number, hobbies, and saves securely with real-time Navbar avatar synchronization.'
     },
     {
-      id: 10,
-      title: 'Section 10: Donate & Reviews',
+      id: 11,
+      title: 'Section 11: Donate & Reviews',
       shortTitle: 'Donate & Reviews',
       icon: Heart,
       emoji: '❤️',
@@ -150,19 +163,6 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
       tag: 'Donate & Review Hub',
       tagColor: 'bg-rose-100 text-rose-900 border-rose-300',
       description: 'Divided into 2 pages: Page 1 lets supporters contribute with instant official receipts. Page 2 offers a full Review & Voice Feedback Hub with 677-word detection, voice writing, audio recording, media uploads, and 5-star ratings!'
-    },
-    {
-      id: 11,
-      title: 'Section 11: About Creator',
-      shortTitle: 'About Creator',
-      icon: Sparkles,
-      emoji: '🌟',
-      color: 'from-amber-600 to-yellow-500',
-      cardBg: 'from-amber-500/10 via-yellow-50/80 to-white',
-      borderHover: 'hover:border-yellow-500',
-      tag: 'Head Boy Profile',
-      tagColor: 'bg-yellow-100 text-yellow-900 border-yellow-300',
-      description: 'Meet Rishit Shankar (Head Boy, Class 8 DAV School, 95% scholar, 80/80 in Sanskrit, DAV Cluster 3 Gold Medalist). Contact directly via WhatsApp (+91 94700 33984), Call (+91 80922 61750), Snapchat (@dav_dictionary), and social profiles.'
     },
     {
       id: 12,
@@ -176,6 +176,19 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
       tag: 'Developer Vault Only',
       tagColor: 'bg-red-100 text-red-900 border-red-300',
       description: 'Reserved exclusively for Developer Rishit Shankar. Click "Check the Reviews" in the center to view student names, review messages, voice recordings, video attachments, and 5-star ratings (or "nothing" if unrated).'
+    },
+    {
+      id: 13,
+      title: 'Section 13: About Creator',
+      shortTitle: 'About Creator',
+      icon: Sparkles,
+      emoji: '🌟',
+      color: 'from-amber-600 to-yellow-500',
+      cardBg: 'from-amber-500/10 via-yellow-50/80 to-white',
+      borderHover: 'hover:border-yellow-500',
+      tag: 'Head Boy Profile',
+      tagColor: 'bg-yellow-100 text-yellow-900 border-yellow-300',
+      description: 'Meet Rishit Shankar (Head Boy, Class 8 DAV School, 95% scholar, 80/80 in Sanskrit, DAV Cluster 3 Gold Medalist). Contact directly via WhatsApp (+91 94700 33984), Call (+91 80922 61750), Snapchat (@dav_dictionary), and social profiles.'
     }
   ];
 

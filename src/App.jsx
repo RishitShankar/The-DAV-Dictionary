@@ -37,6 +37,8 @@ import { safeSetUser, safeSetItem, validateUserIntegrity } from './utils/safeSto
 const TeachersSection = lazy(() => import('./components/TeachersSection').then(m => ({ default: m.TeachersSection })));
 const ChapterExplanationsSection = lazy(() => import('./components/ChapterExplanationsSection').then(m => ({ default: m.ChapterExplanationsSection })));
 const KidsFunNavigatorSection = lazy(() => import('./components/KidsFunNavigatorSection').then(m => ({ default: m.KidsFunNavigatorSection })));
+const ExamPracticeSection = lazy(() => import('./components/ExamPracticeSection').then(m => ({ default: m.ExamPracticeSection })));
+import { NewUserOnboardingGuide, SectionFirstVisitCoachmark } from './components/NewUserOnboardingGuide';
 const StudyLeaderboardSection = lazy(() => import('./components/StudyLeaderboardSection').then(m => ({ default: m.StudyLeaderboardSection })));
 const DonationSection = lazy(() => import('./components/DonationSection').then(m => ({ default: m.DonationSection })));
 const AboutCreatorSection = lazy(() => import('./components/AboutCreatorSection').then(m => ({ default: m.AboutCreatorSection })));
@@ -208,6 +210,24 @@ export function App() {
 
   // Modals state
   const [isAdminProgramOpen, setIsAdminProgramOpen] = useState(false);
+  const [showNewUserGuide, setShowNewUserGuide] = useState(() => {
+    try {
+      const saved = localStorage.getItem('dav_user');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.id && parsed.id !== 'guest_student') {
+          return localStorage.getItem('dav_new_user_guide_pending_' + parsed.id) === 'true';
+        }
+      }
+    } catch (e) {}
+    return false;
+  });
+
+  useEffect(() => {
+    const handleLaunchGuide = () => setShowNewUserGuide(true);
+    window.addEventListener('dav_launch_onboarding_guide', handleLaunchGuide);
+    return () => window.removeEventListener('dav_launch_onboarding_guide', handleLaunchGuide);
+  }, []);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isPricingOpen, setIsPricingOpen] = useState(false);
   const [isAIOpen, setIsAIOpen] = useState(false);
@@ -663,11 +683,18 @@ export function App() {
             onRequireLogin={handleRequireLogin}
           />
         ) : activeSection === 8 ? (
+          <ExamPracticeSection
+            currentUser={user}
+            onRequireLogin={handleRequireLogin}
+            onOpenUpgradeModal={() => setIsPricingOpen(true)}
+            onOpenAIWithQuestion={handleOpenAIWithQuestion}
+          />
+        ) : activeSection === 9 ? (
           <StudyLeaderboardSection 
             user={user} 
             onRequireLogin={handleRequireLogin}
           />
-        ) : activeSection === 9 ? (
+        ) : activeSection === 10 ? (
           isGuest ? (
             <div className="max-w-3xl mx-auto px-4 py-20 text-center animate-fadeIn">
               <div className="bg-stone-900 border-2 border-amber-500/50 rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden">
@@ -676,7 +703,7 @@ export function App() {
                   <Lock className="w-10 h-10 text-amber-400 animate-bounce" />
                 </div>
                 <span className="px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-400 text-stone-950 inline-block mb-3">
-                  Dimension 9 • Student Personal Vault Locked
+                  Dimension 10 • Student Personal Vault Locked
                 </span>
                 <h2 className="text-2xl sm:text-3xl font-black text-white mb-3">
                   Login to Access Your Secure Vault
@@ -707,15 +734,13 @@ export function App() {
           ) : (
             <StudentProfileSection user={user} onLogout={handleLogout} />
           )
-        ) : activeSection === 10 ? (
+        ) : activeSection === 11 ? (
           <DonationSection 
             currentUser={user} 
             onRequireLogin={handleRequireLogin}
           />
-        ) : activeSection === 11 ? (
-          <AboutCreatorSection />
         ) : activeSection === 12 ? (
-          (user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai') ? (
+          (user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai' || user?.role === 'developer') ? (
             <DeveloperReviewsSection 
               currentUser={user} 
               onGoToSection={handleSelectSection} 
@@ -723,6 +748,8 @@ export function App() {
           ) : (
             <SectionOverview currentUser={user} onSelectSection={handleSelectSection} />
           )
+        ) : activeSection === 13 ? (
+          <AboutCreatorSection />
         ) : (
           <UntitledSection sectionNumber={activeSection} />
         )}
@@ -731,8 +758,20 @@ export function App() {
       </main>
 
       {/* Official Purple Footer displayed on Section 9, 10, 11 & (12 for Dimension 4) */}
-      {(activeSection === 9 || activeSection === 10 || activeSection === 11 || (activeSection === 12 && (user?.dimension === 4 || user?.id === 'rishibhai'))) && (
+      {(activeSection === 10 || activeSection === 11 || activeSection === 13 || (activeSection === 12 && (user?.dimension === 4 || user?.id === 'rishibhai'))) && (
         <PurpleFooter currentUser={user} onSelectSection={(secId) => setActiveSection(secId)} />
+      )}
+
+      {/* Section First Visit Coachmark */}
+      <SectionFirstVisitCoachmark sectionNumber={activeSection} userId={user?.id} />
+
+      {/* New User Onboarding Guide */}
+      {showNewUserGuide && (
+        <NewUserOnboardingGuide
+          currentUser={user}
+          onClose={() => setShowNewUserGuide(false)}
+          onSelectHub={(hubId) => {}}
+        />
       )}
 
       {/* Modals */}
