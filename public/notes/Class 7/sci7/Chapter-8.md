@@ -1,0 +1,3 @@
+• **Chapter Overview**: **Transportation in Plants and Animals** is a fundamental chapter in the Class 7 Science curriculum of The DAV Dictionary (Dayanand Anglo-Vedic Public School Board), focusing on how living organisms transport essential substances.
+• **Definition of Transportation**: **Transportation** is the vital life process by which essential substances like food, water, oxygen, and waste products are absorbed, synthesized, and carried from one part of the body to another.
+• **Need for Transport in Simple Organisms**: Unicellular and very simple multicellular organisms do not require

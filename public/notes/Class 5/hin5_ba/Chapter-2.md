@@ -1,0 +1,2 @@
+• **Chapter Title and Context:** Welcome to the DAV Dictionary Academic Notes for Class 5 Hindi - भाषा अभ्यास, Chapter 2, titled "लौह पुरुष" (The Iron Man), dedicated to the life, values, and iron-willed determination of Sardar Vallabhbhai Patel.
+• **Academic Objective

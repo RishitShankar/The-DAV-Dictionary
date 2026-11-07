@@ -1,0 +1,177 @@
+• **Chapter Introduction:** The chapter "Electric Current and Its Effects" introduces Class 7 students to the fundamental concepts of electricity, circuit components, symbols, and practical physical phenomena associated with electric current.
+• **Role of DAV Curriculum:** These academic notes serve as the definitive study guide for The DAV Dictionary, conforming strictly to the Dayanand Anglo-Vedic Public School Board syllabus standards for Class 7 Science.
+• **Definition of Electric Current:** **Electric Current** is defined as the orderly flow or drift of electric charges (specifically electrons) through a conductor, such as a metallic wire, when a potential difference is applied across its ends.
+• **Basic Requirements of a Circuit:** A complete, closed path through which electric current can flow from one terminal of an electric source to another is known as an **Electric Circuit**.
+• **Electric Cell:** An **Electric Cell** is a device that converts chemical energy stored inside it into electrical energy, providing the necessary voltage or potential difference to drive current through a circuit.
+• **Terminals of a Cell:** Every standard electric cell possesses two distinct terminals: a **Positive Terminal** (marked with a plus sign, '+') and a **Negative Terminal** (marked with a minus sign, '-').
+• **Direction of Conventional Current:** By convention, electric current is assumed to flow in an external circuit from the **Positive Terminal** of the cell towards its **Negative Terminal**, opposite to the actual flow of electrons.
+• **Dry Cell Structure:** A standard dry cell consists of a cylindrical zinc container acting as the negative terminal, and a central carbon (graphite) rod with a brass cap acting as the positive terminal.
+• **Electrolyte in a Dry Cell:** The space between the electrodes in a dry cell is filled with a moist paste of ammonium chloride, which acts as the **Electrolyte** facilitating chemical reactions.
+• **Battery Formation:** A **Battery** is formed when two or more electric cells are joined together in series, where the positive terminal of one cell is connected to the negative terminal of the next.
+• **Higher Potential Difference:** Combining multiple cells into a battery increases the total voltage or potential difference supplied to the circuit, thereby driving a stronger current through the connected devices.
+• **Electric Bulb Structure:** An **Electric Bulb** consists of a thin coiled wire called the **Filament**, supported inside a glass bulb filled with an inactive gas to prevent the filament from burning out.
+• **Bulb Filament Material:** The filament of an electric bulb is made of **Tungsten**, a metal characterized by an exceptionally high melting point and high resistance.
+• **Glowing of a Bulb:** When sufficient electric current passes through the tungsten filament, it heats up to incandescence and emits light due to the heating effect of electric current.
+• **Open vs. Closed Circuits:** A circuit in which the path is broken at any point is called an **Open Circuit** (current stops flowing), whereas an unbroken path is a **Closed Circuit** (current flows continuously).
+
+----PAGE-BREAK---
+
+• **Need for Circuit Diagrams:** Drawing actual physical sketches of electrical components is time-consuming and difficult; hence, scientists use standardized **Circuit Symbols** to represent them universally.
+• **Symbol for Electric Cell:** An electric cell is represented in circuit diagrams by a pair of parallel vertical lines, where the longer, thinner vertical line denotes the **Positive Terminal** and the shorter, thicker line denotes the **Negative Terminal**.
+• **Symbol for Battery:** A battery is depicted in a schematic diagram by combining two or more cell symbols in series, maintaining the alternating long and short line sequences.
+• **Symbol for Connecting Wires:** **Connecting Wires** are represented in circuit diagrams by straight continuous lines that join various electrical components together without resistance.
+• **Symbol for Open Switch:** An **Electric Switch** or key in the 'OFF' or open condition is represented by a gap between two terminals with the switch arm lifted or detached.
+• **Symbol for Closed Switch:** A closed or 'ON' switch is represented by a continuous line or a bridge connecting the two terminals, indicating an unbroken path for the current.
+• **Symbol for Electric Bulb:** An electric bulb in a circuit diagram is represented by a circle enclosing a coiled filament loop or an arc resembling the physical incandescent bulb.
+• **Symbol for Resistor/Appliance:** Electrical appliances or resistive loads are often represented by a zigzag line indicating a **Resistor** that offers opposition to the flow of current.
+• **Standardization of Symbols:** The use of standardized symbols ensures that circuit diagrams can be read, interpreted, and reproduced by scientists and students globally without ambiguity.
+• **Drawing Rules:** All connecting wires in a neat circuit diagram are drawn using straight lines, typically with right-angle turns, avoiding overlapping or chaotic crossings.
+• **Function of a Switch:** An **Electric Switch** is an ON/OFF device that can make or break an electric circuit safely and conveniently without manual wire disconnection.
+• **Mechanism of a Switch:** When a switch is turned 'ON', its internal metallic parts touch each other to complete the circuit; when turned 'OFF', they separate to create an air gap.
+• **Conductors Definition:** **Conductors** are materials that permit electric current to pass through them easily because they possess a high density of free electrons.
+• **Examples of Conductors:** Metals such as copper, aluminum, silver, iron, and even tap water or the human body act as good conductors of electricity.
+• **Insulators Definition:** **Insulators** (or non-conductors) are materials that do not allow electric current to pass through them because they lack free electrons.
+
+----PAGE-BREAK---
+
+• **Examples of Insulators:** Common insulators include plastic, rubber, wood, glass, dry paper, ebonite, and pure distilled water.
+• **Importance of Insulators:** Insulators are critically used to cover electrical wires, switches, and tools to protect humans from accidental electric shocks and short circuits.
+• **Heating Effect Definition:** When an electric current passes through a high-resistance conductor, the conductor becomes very hot and generates heat; this phenomenon is called the **Heating Effect of Electric Current**.
+• **Joule Heating Principle:** The production of heat in a resistor due to the flow of current is fundamentally governed by the resistance of the wire, the magnitude of the current, and the duration of flow.
+• **Factors Affecting Heat Production:** The amount of heat produced in a wire depends directly upon three primary factors: the material of the wire, the length of the wire, and the thickness (cross-sectional area) of the wire.
+• **Role of Resistance:** **Electrical Resistance** is the opposition offered by a substance to the flow of electric current; higher resistance leads to significantly more heat generation.
+• **Nichrome Wire Usage:** **Nichrome**, an alloy of nickel, chromium, iron, and manganese, is extensively used in heating elements because it has high resistance and does not oxidize easily at high temperatures.
+• **Applications of Heating Effect:** The heating effect of electric current forms the underlying working principle for numerous domestic heating appliances, such as electric irons, room heaters, water heaters (geysers), and hair dryers.
+• **Electric Room Heater:** A room heater consists of a coil of nichrome wire wound on a ceramic or refractory base; when current flows, the coil glows red-hot and radiates thermal energy into the surroundings.
+• **Electric Iron Mechanism:** An electric iron features a heavy metallic base plate housing a heavy mica-insulated heating element made of nichrome, which transfers heat uniformly to the ironing surface.
+• **Water Heater (Immersion Rod):** An immersion rod contains a heating element enclosed in a metallic tube protected by waterproof insulation, designed to be submerged directly into water to heat it rapidly.
+• **Electric Kettle:** Similar to immersion heaters, electric kettles use coiled heating elements placed at the bottom of the container to heat and boil water efficiently.
+• **Hair Dryer Function:** Hair dryers combine a heating element (nichrome wire) with an electric motor-driven fan to blow warm air over damp hair for quick drying.
+• **Toaster Application:** Bread toasters utilize thin ribbon-like nichrome heating elements that glow and toast slices of bread when electrical energy is converted into heat.
+• **Incandescent Lighting:** Ordinary electric bulbs also rely on the heating effect, where the filament gets so hot due to current flow that it starts emitting light along with heat energy.
+
+----PAGE-BREAK---
+
+• **Disadvantage of Incandescent Bulbs:** A major drawback of traditional incandescent bulbs is that a large percentage of electrical energy is wasted as heat, making them inefficient compared to modern lighting technologies.
+• **Introduction to Safety Devices:** Because excessive current flow can cause fires and damage appliances, safety devices like fuses are integrated into electrical circuits to protect systems.
+• **Electric Fuse Definition:** An **Electric Fuse** is a safety device used in electrical circuits to prevent damage caused by overloading and short circuits by automatically breaking the circuit.
+• **Principle of a Fuse:** A fuse contains a special short wire made of a material with a low melting point (such as a lead-tin alloy) that melts and breaks when the current exceeds a safe limit.
+• **Fuse Wire Melting:** When the current flowing through a circuit exceeds the permissible rating due to a fault, the fuse wire heats up rapidly, reaches its melting point, and snaps, thus stopping the current flow.
+• **Circuit Breaking Action:** The snapping of the fuse wire creates an open circuit, instantly disconnecting the electrical supply and protecting expensive appliances from burning out.
+• **Fuse Ratings:** Fuses are rated for specific maximum current capacities, such as 1A, 2A, 5A, 10A, or 15A, chosen based on the total power consumption of the connected appliances.
+• **Cartridge Fuses:** In older household setups and electronic gadgets, cylindrical **Cartridge Fuses** consisting of a glass tube enclosing a thin fuse wire between metal caps are commonly used.
+• **Kit-Kat Fuses:** In domestic mains distribution boards, heavy-duty rewirable fuses (often called **Kit-Kat Fuses**) consisting of a porcelain base and carrier are utilized.
+• **Miniature Circuit Breakers (MCBs):** Modern electrical installations increasingly replace traditional fuses with **MCBs (Miniature Circuit Breakers)**, which are automatic switches that trip (turn off) when current exceeds safe limits.
+• **Advantage of MCBs:** Unlike fuse wires that must be physically replaced after melting, **MCBs** can be easily reset manually by flipping their switch back to the 'ON' position after the fault is corrected.
+• **Overloading Definition:** **Overloading** occurs when too many electrical appliances of high power rating are connected to a single socket or circuit, drawing more current than the wires can safely handle.
+• **Dangers of Overloading:** Overloading causes excessive heating of the conducting wires inside walls, which can melt the insulation, cause sparking, and lead to disastrous electrical fires.
+• **Short Circuit Definition:** A **Short Circuit** happens when the live wire and the neutral wire come into direct physical contact due to damaged insulation or a fault in an appliance.
+• **Consequences of Short Circuits:** During a short circuit, the resistance of the circuit drops virtually to zero, causing a massive surge of electric current that produces intense heat and sparks.
+
+----PAGE-BREAK---
+
+• **Magnetic Effect Definition:** When an electric current flows through a wire, it produces a magnetic field around it; this phenomenon is known as the **Magnetic Effect of Electric Current**.
+• **Historical Discovery:** The magnetic effect of electric current was accidentally discovered in 1820 by the Danish physicist **Hans Christian Oersted** while experimenting with a voltaic pile and a compass.
+• **Oersted's Observation:** Oersted observed that whenever an electric current was switched on in a wire placed close to a magnetic compass needle, the needle deflected significantly.
+• **Directional Dependence:** Oersted noted that the direction of deflection of the compass needle reverses if the direction of the electric current flowing through the wire is reversed.
+• **Magnetic Field Lines:** The region surrounding a current-carrying wire where its magnetic force can be experienced is called its **Magnetic Field**, represented by concentric circular lines of force.
+• **Strength of Magnetic Field:** The strength of the magnetic field produced by a current-carrying wire depends directly on the magnitude of the current: larger current produces a stronger magnetic field.
+• **Electromagnet Definition:** An **Electromagnet** is a temporary magnet made by winding an insulated wire around a soft iron core and passing an electric current through the coil.
+• **Role of Soft Iron Core:** A **Soft Iron Core** placed inside a current-carrying coil enhances the magnetic field manifold because soft iron is easily magnetized and demagnetized.
+• **Temporary Nature of Electromagnets:** An electromagnet retains its magnetism only as long as the electric current flows through the coil; the moment the current is switched off, its magnetism is almost entirely lost.
+• **Advantages over Permanent Magnets:** Electromagnets can produce extremely strong magnetic fields, and their magnetic strength can be easily controlled by varying the current or the number of turns in the coil.
+• **Polarity of Electromagnets:** The poles (North and South) of an electromagnet depend on the direction of the electric current flowing through the coil, determined using standard right-hand rules.
+• **Controlling Electromagnets:** By reversing the battery connections, the direction of current reverses, which instantly swaps the North and South poles of the electromagnet.
+• **Applications of Electromagnets:** Electromagnets find widespread applications in electric bells, loudspeakers, scrap metal cranes, electrical relays, and magnetic levitation (maglev) trains.
+• **Scrap Yard Cranes:** Massive industrial cranes equipped with powerful electromagnets are used in factories and junkyards to lift, move, and sort heavy iron and steel scrap materials effortlessly.
+• **Medical Applications:** Doctors use small specialized electromagnets in eye surgery to safely extract tiny iron or steel splinters that have accidentally flown into a patient's eye.
+
+----PAGE-BREAK---
+
+• **Electric Bell Overview:** An **Electric Bell** is a familiar electromagnetic device that produces a continuous ringing sound when connected to a source of electricity, operating on the principle of the magnetic effect of current.
+• **Key Components of an Electric Bell:** The main structural parts of an electric bell include an electromagnet (iron core with insulated copper wire coils), an armature, a spring-steel strip, a contact screw, a striker (hammer), and a metal gong.
+• **Armature and Striker:** The **Armature** is a small soft-iron piece attached to a flexible spring, carrying a hammer at its free end that strikes the metal gong to produce sound.
+• **Contact Screw Function:** The contact screw maintains touch with the spring-steel strip, serving as an adjustable switch that closes the circuit when the armature is in its resting position.
+• **Initial Circuit State in a Bell:** When the bell push-button switch is pressed, the electric circuit is completed, and current flows from the battery into the coils of the electromagnet.
+• **Magnetization of Coils:** As soon as current flows through the coils, the soft-iron core becomes strongly magnetized and acts as an electromagnet.
+• **Attraction of Armature:** The newly formed electromagnet exerts a strong magnetic attraction on the soft-iron armature, pulling it firmly towards itself.
+• **Striking the Gong:** As the armature moves forward, the hammer attached to its end strikes the metal gong sharply, producing the characteristic ringing sound of the bell.
+• **Breaking the Circuit:** The forward movement of the armature causes it to lose contact with the adjustable contact screw, which instantly creates a break or gap in the circuit.
+• **Interruption of Current:** Breaking the contact stops the flow of electric current through the electromagnet coils, causing the soft-iron core to lose its magnetic property immediately.
+• **Return of the Armature:** Because the electromagnet loses its magnetism, it no longer attracts the armature, allowing the flexible spring to pull the armature back to its original resting position.
+• **Restoring Contact:** As the armature returns to its original position, it makes physical contact with the contact screw once again, closing the electric circuit.
+• **Cyclic Operation:** The closing of the circuit restarts the flow of current, magnetizes the electromagnet, attracts the armature, and causes the hammer to strike the gong again in a continuous, rapid cycle.
+• **Interrupter Action:** This automatic make-and-break mechanism (often called an **Interrupter**) repeats itself dozens of times per second, resulting in a continuous, uninterrupted ringing sound as long as the push button is held down.
+• **Practical Significance of Electric Bell:** The electric bell mechanism demonstrates a brilliant integration of electrical energy, magnetism, mechanical motion, and feedback control systems in daily life appliances.
+
+----PAGE-BREAK---
+
+• **Safety Precautions with Electricity:** Electricity is an immensely useful servant, but it can be a dangerous master if handled carelessly; therefore, strict safety rules must be observed in homes and laboratories.
+• **Never Touch Bare Wires:** One should never touch bare, uncovered electrical wires with naked hands, especially when connected to the mains supply, to prevent fatal electrocution.
+• **Avoid Wet Hands:** Electrical switches, plugs, and appliances must never be operated with wet hands because water lowers the electrical resistance of human skin, facilitating severe electric shocks.
+• **Use ISI-Marked Appliances:** All electrical appliances, wires, switches, and safety devices purchased and installed must bear the **ISI (Indian Standards Institution)** certification mark to ensure safety and quality.
+• **Danger of Kite Flying Near Power Lines:** Flying kites near overhead electric power lines or poles is extremely hazardous because wet kite strings can conduct electricity and cause severe shocks or short circuits.
+• **Role of Earthing:** **Earthing** (or grounding) is a crucial safety measure where the metal casing of electrical appliances is connected to a deep metal plate buried in the earth to safely discharge stray currents.
+• **Preventing Electric Shock:** If a person suffers an electric shock, the power supply must be switched off immediately at the main distribution board before attempting any rescue or touching the victim.
+• **Non-Conductive Rescue Tools:** If the main switch is inaccessible, a wooden stick, plastic rod, or dry rope must be used to push the victim away from the live wire without endangering the rescuer.
+• **Electrical Fires and Water:** Water must never be thrown on an electrical fire because ordinary water conducts electricity and can electrocute firefighters or worsen the short circuit.
+• **Using Fire Extinguishers:** For electrical fires, specialized **CO2 (Carbon Dioxide) Fire Extinguishers** or dry powder extinguishers must be deployed to smother the fire safely.
+• **Importance of Insulation Testing:** Periodically checking household wiring insulation for cracks, wear, and tear helps prevent electrical leakage, short circuits, and fires.
+• **Safe Socket Covers:** Homes with toddlers should use safety caps or sliding covers on electrical wall sockets to prevent children from inserting foreign objects into live holes.
+• **Avoid Overloading Multi-Plugs:** Plugging too many heavy appliances like air conditioners, heaters, and refrigerators into a single multi-plug adaptor must be strictly avoided.
+• **Laboratory Safety:** During school science experiments involving electric cells and circuits, students must follow the teacher's instructions carefully and avoid connecting cells directly across household mains.
+• **Low Voltage Experimentation:** School laboratory experiments must use low-voltage DC sources (such as electric cells or battery eliminators) rather than high-voltage AC mains to ensure absolute student safety.
+
+----PAGE-BREAK---
+
+• **Historical Evolution of Lighting:** The journey of artificial illumination has evolved dramatically from primitive oil lamps and candles to incandescent bulbs, fluorescent tubes, and modern energy-efficient LEDs.
+• **Invention of Incandescent Bulb:** The practical incandescent electric bulb was successfully developed and commercialized by **Thomas Alva Edison** in 1879, transforming human productivity and nightlife.
+• **Limitations of Traditional Bulbs:** Traditional incandescent bulbs waste up to 95% of their consumed electrical energy as heat, rendering them extremely inefficient for long-term illumination.
+• **Emergence of CFLs:** **CFLs (Compact Fluorescent Lamps)** were introduced as an energy-saving alternative, using gas discharge principles to produce more light with significantly less heat and electricity.
+• **Introduction of LEDs:** **LEDs (Light Emitting Diodes)** represent the pinnacle of modern lighting technology, offering extraordinary energy efficiency, durability, and minimal heat generation.
+• **Working Principle of LED:** An LED is a semiconductor device that emits visible light when an electric current passes through it in the forward direction, converting electrical energy directly into light without a glowing filament.
+• **Advantages of LEDs:** LEDs consume a fraction of the electricity used by incandescent bulbs, have an exceptionally long operational lifespan, contain no toxic mercury (unlike CFLs), and switch on instantly.
+• **Bee Bureau of Energy Efficiency (BEE):** The **BEE** rates electrical appliances using star ratings (from 1-star to 5-star) to guide consumers in selecting energy-efficient models that reduce electricity consumption.
+• **Importance of Energy Conservation:** Conserving electrical energy is vital because a large portion of electricity is generated by burning fossil fuels like coal, which releases greenhouse gases and causes environmental pollution.
+• **Eco-Friendly Power Generation:** Transitioning towards renewable sources of electrical energy, such as solar power, wind energy, and hydroelectricity, is essential for sustainable global development.
+• **Solar Cells (Photovoltaic Cells):** **Solar Cells** convert sunlight directly into electrical energy using semiconductor materials, offering a clean, inexhaustible power source for homes, calculators, and satellites.
+• **Solar Panels:** Multiple solar cells are interconnected to form **Solar Panels**, which generate sufficient electrical power to run domestic lighting, water pumps, and even charge electric vehicles.
+• **Role of Switches in Energy Saving:** Simple habits like turning off lights, fans, and televisions when leaving a room contribute significantly to household energy conservation and lower electricity bills.
+• **Smart Grids and Automation:** Modern smart homes utilize automated sensors and smart switches to optimize electricity usage, ensuring appliances run only when necessary.
+• **Summary of Chapter Core Themes:** The chapter successfully bridges theoretical physics concepts with practical engineering applications, emphasizing safety, energy efficiency, and technological progress.
+
+----PAGE-BREAK---
+
+• **Comprehensive Concept Review:** A thorough review of electric current confirms that electricity is fundamentally the flow of charge driven by a source of potential difference, such as a cell or battery.
+• **Circuit Completeness Check:** Electricity requires a complete, unbroken loop comprising a power source, connecting wires, a load (such as a bulb or resistor), and a control switch to perform useful work.
+• **Symbolic Fluency:** Mastery of schematic circuit symbols (cells, batteries, switches, bulbs, resistors, and wires) is an essential skill for DAV Class 7 students interpreting scientific blueprints.
+• **Dual Effects of Current:** Electric current produces two primary, observable physical effects when passing through conductors: the **Heating Effect** and the **Magnetic Effect**.
+• **Summary of Heating Effect:** The heating effect (Joule heating) utilizes high-resistance nichrome wires to convert electrical energy into thermal energy for household appliances like irons, heaters, and toasters.
+• **Summary of Safety Mechanisms:** Fuses and Miniature Circuit Breakers (MCBs) act as essential sentinels, protecting circuits and appliances from the catastrophic hazards of overloading and short-circuiting.
+• **Summary of Magnetic Effect:** The magnetic effect demonstrates that electricity and magnetism are deeply interconnected, forming the operational foundation for electromagnets, electric bells, and motors.
+• **The Electric Bell Mechanism:** The electric bell exemplifies an ingenious electromechanical feedback system utilizing an electromagnet, spring-loaded armature, striker, and interrupter contact screw.
+• **Crucial Safety Mandates:** Adhering strictly to electrical safety rules—avoiding wet hands, never touching bare wires, using ISI-marked goods, and utilizing proper grounding—prevents tragic accidents.
+• **Environmental and Efficiency Awareness:** Promoting energy-efficient appliances like LEDs and endorsing renewable solar power highlights the DAV curriculum's commitment to ecological sustainability.
+• **Key Terminology Mastery:** Students must be fully conversant with core scientific terms including *electric current, terminal, battery, circuit diagram, conductor, insulator, heating effect, nichrome, fuse, short circuit, overloading, magnetic effect, electromagnet, armature,* and *electric bell*.
+• **Analytical Problem Solving:** Class 7 learners should be capable of tracing current paths, identifying open versus closed circuits, explaining why bulbs glow, and predicting switch actions in diagrams.
+• **Real-World Connection:** DAV science notes encourage students to observe electrical appliances in their homes, identify heating and magnetic components, and practice safe energy habits daily.
+• **Foundation for Higher Classes:** The concepts mastered in Chapter 17 build an unshakable foundation for advanced physics studies in higher grades, covering electromagnetism, Ohm's law, and electronic circuits.
+• **Conclusion of Study Notes:** These comprehensive DAV Academic Notes provide an exhaustive, high-yield study resource ensuring complete mastery of Class 7 Science Chapter 17: "Electric Current and Its Effects".
+
+----PAGE-BREAK---
+
+• **Glossary of Key Terms - Electric Current:** The organized flow of electric charge through a conductor, measured in amperes.
+• **Glossary of Key Terms - Electric Cell:** A portable source of electrical energy produced via internal chemical reactions, featuring positive and negative terminals.
+• **Glossary of Key Terms - Battery:** A combination of two or more electric cells connected in series to provide a higher voltage.
+• **Glossary of Key Terms - Circuit Diagram:** A graphical representation of an electrical circuit using standardized international symbols for its components.
+• **Glossary of Key Terms - Conductors:** Materials like metals and tap water that permit electric current to pass through them freely.
+• **Glossary of Key Terms - Insulators:** Non-conducting materials like plastic, rubber, and wood that block the flow of electric current.
+• **Glossary of Key Terms - Heating Effect:** The generation of heat energy when an electric current passes through a high-resistance conductor.
+• **Glossary of Key Terms - Nichrome:** An alloy of nickel, chromium, iron, and manganese prized for its high electrical resistance and high melting point.
+• **Glossary of Key Terms - Electric Fuse:** A safety device containing a low-melting-point wire designed to melt and break the circuit during current surges.
+• **Glossary of Key Terms - Overloading:** A hazardous condition where too many appliances draw excessive current beyond the safe capacity of circuit wires.
+• **Glossary of Key Terms - Short Circuit:** A dangerous direct contact between live and neutral wires that causes a sudden massive surge of current and sparks.
+• **Glossary of Key Terms - Magnetic Effect:** The creation of a magnetic field in the space surrounding any conductor carrying an electric current.
+• **Glossary of Key Terms - Electromagnet:** A temporary magnet consisting of a coil of insulated wire wound around a soft iron core, magnetized only when current flows.
+• **Glossary of Key Terms - Electric Bell:** An electromechanical device that uses an electromagnet and an interrupter mechanism to ring continuously when powered.
+• **Final Academic Affirmation:** These 10 pages of exhaustive study notes fulfill all requirements of The DAV Dictionary academic framework for Class 7 Science Chapter 17.

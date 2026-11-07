@@ -1,0 +1,89 @@
+• **Chapter Identification**: Chapter 10 of Class 7 Kid Wiz (General Knowledge STD 7) published under the DAV Dictionary (Dayanand Anglo-Vedic Public School Board) is titled "झंडा ऊँचा रहे हमारा".
+• **Core Theme**: The chapter is dedicated to the National Flag of India, exploring its history, symbolism, design evolution, protocols, and the profound patriotism associated with it.
+• **Significance of the National Flag**: Also known as the *Tiranga* (Tricolour), the Indian National Flag represents the pride, sovereignty, unity, and secular fabric of the nation.
+• **Historical Background**: The chapter traces the journey of India’s national flag from the pre-independence movement to its final adoption by the Constituent Assembly.
+• **First National Flag (1906)**: The precursor to the modern flag was hoisted on August 7, 1906, in Parsee Bagan Square, Calcutta, featuring horizontal stripes of green, yellow, and red.
+• **Design of the 1906 Flag**: The top green stripe had eight white lotuses, the middle yellow stripe had 'Vande Mataram' written in Devanagari, and the bottom red stripe had a sun and a crescent moon.
+• **Berlin Committee Flag (1907)**: Madam Bhikaji Cama hoisted a modified version in Berlin in 1907, which was similar to the 1906 flag except the top stripe had seven stars representing the Saptarishi.
+• **Home Rule Movement Flag (1917)**: Dr. Annie Besant and Lokmanya Tilak adopted a new flag during the Home Rule Movement, featuring five alternate red and four green horizontal strips with seven stars and the Union Jack in the upper left quadrant.
+---PAGE-BREAK---
+• **The Gandhian Flag (1921)**: Mahatma Gandhi proposed a flag at the Bezwada session of the Indian National Congress in 1921, symbolizing the nation and its economic self-reliance through the Charkha (spinning wheel).
+• **Design of the 1921 Flag**: It consisted of two primary bands—red for Hindus and green for Muslims—to which Gandhi later added a white band in the middle for other communities, along with a traditional spinning wheel.
+• **Resolution of 1931**: A historic landmark in flag evolution occurred in 1931 when a resolution was passed adopting a tri-colour flag as our national flag, laying the groundwork for the modern design.
+• **Colours of the 1931 Flag**: The 1931 flag featured three horizontal bands: Saffron at the top, White in the middle, and Green at the bottom, with Mahatma Gandhi's spinning wheel right in the center.
+• **Adoption Date**: The current design of the Indian National Flag was officially adopted during the meeting of the Constituent Assembly held on July 22, 1947.
+• **Constitutional Transition**: The 1947 adoption made the flag free from communal interpretations, giving its colours new, secular, and inspiring philosophical meanings.
+• **Replacement of the Charkha**: The spinning wheel (*Charkha*) from the 1931 flag was replaced by the Ashoka Chakra (Wheel of Law) on the white band of the final official flag.
+• **Primary Designer**: The design of the present Indian National Flag is largely attributed to Pingali Venkayya, who presented the initial concept to Mahatma Gandhi.
+---PAGE-BREAK---
+• **Structure of the Tiranga**: The National Flag is a rectangular horizontal tricolour of deep saffron at the top, white in the middle, and dark green at the bottom in equal proportions.
+• **Ratio Specifications**: The flag must always maintain a strict length-to-height (width) ratio of 3:2, ensuring uniformity and aesthetic proportion across all official displays.
+• **Top Band (Saffron)**: The saffron colour represents strength, courage, sacrifice, and the spirit of renunciation required for the welfare of the country.
+• **Middle Band (White)**: The white band stands for peace, purity, honesty, truth, and light, guiding the nation's spiritual and moral path.
+• **Bottom Band (Green)**: The green band symbolizes fertility, growth, prosperity, agriculture, and the abundant plant life of the Indian subcontinent.
+• **The Central Emblem**: Positioned at the exact center of the white band is the Ashoka Chakra, navy blue in colour, representing the eternal wheel of law and progress.
+• **Origin of the Chakra**: The emblem is a rendering of the Dharma Chakra depicted on the Lion Capital of Ashoka at Sarnath, symbolizing righteous action and motion.
+• **Spokes of the Chakra**: The Ashoka Chakra features exactly 24 evenly spaced spokes, each representing the 24 hours of the day and philosophical concepts of progress.
+---PAGE-BREAK---
+• **Fabric Specifications**: According to the Bureau of Indian Standards (BIS), the National Flag must be made exclusively of hand-spun and hand-woven cotton, silk, or wool khadi.
+• **Khadi Significance**: Khadi is not merely a fabric; it is a symbol of self-reliance, the freedom struggle, and the dignity of manual labour championed by Mahatma Gandhi.
+• **Manufacturing Standard**: The manufacture of the Indian National Flag is strictly regulated; unauthorized production or usage is a punishable offense under national law.
+• **Karnataka Khadi Gramodyoga Samyukta Sangha**: Located in Hubballi, Karnataka, it is the only licensed manufacturing unit authorized to produce the official national flags conforming to BIS standards.
+• **Flag Code of India**: The Flag Code of India, brought into effect on January 26, 2002, brings together all laws, conventions, practices, and instructions for the display of the national flag.
+• **Right to Fly the Flag**: Following a landmark Supreme Court directive in 2004, every citizen of India has the fundamental right to fly the National Flag with respect and dignity on all days, not just national holidays.
+• **Respectful Treatment**: The National Flag must never be allowed to touch the ground or floor, nor should it be dipped as a salute to any person or foreign standard.
+• **Prohibition of Misuse**: The flag must not be used as drapery, costume, bunting, or clothing, and it cannot be printed on handkerchiefs, napkins, or undergarments.
+---PAGE-BREAK---
+• **Damage Policy**: A damaged, soiled, or torn National Flag must not be displayed or discarded carelessly; it must be destroyed as a whole in private, preferably by burning or burying with dignity.
+• **Hoisting Protocol**: The flag should always be hoisted briskly and lowered slowly with ceremony, reflecting the gravity and reverence associated with national sovereignty.
+• **Sunrise to Sunset Rule**: Traditionally, the flag was permitted to be flown only from sunrise to sunset, regardless of weather conditions, though modern amendments allow night hoisting under specific illumination conditions.
+• **Placement Guidelines**: When displayed on a flat surface against a wall, the saffron band must be at the top; when hung vertically, saffron must be to the viewer's left.
+• **Crossing Flags**: When the National Flag is displayed with another flag, the Indian flag must be placed on the right (the observer's left) or at the position of highest honor.
+• **Parade Protocol**: During a parade, if the National Flag is carried, it must be on the marching right or in the center if there is a line of flags.
+• **Half-Mast Display**: The flag is flown at half-mast only on occasions of official national mourning directed by the President of India, signifying grief and solemnity.
+• **Procedure for Half-Mast**: When lowered to half-mast, the flag is first hoisted to the peak for an instant and then lowered to the half-mast position.
+---PAGE-BREAK---
+• **National Anthem Connection**: The hoisting of the National Flag is accompanied by the singing of the National Anthem (*Jana Gana Mana*) or the National Song (*Vande Mataram*), fostering deep national integration.
+• **Pledge of Allegiance**: Students and citizens often take the national pledge and sing patriotic songs like "झंडा ऊँचा रहे हमारा" to reaffirm their loyalty and devotion to the flag.
+• **Author of the Flag Song**: The famous patriotic song "Vijay Vishwa Tiranga Pyara" (often referred to by its opening line "झंडा ऊँचा रहे हमारा") was composed by Shyamlal Kanal 'Parshad'.
+• **Significance of the Flag Song**: Written in 1924, the song became the war cry of freedom fighters, inspiring millions during processions and protests against British colonial rule.
+• **Commemoration Days**: National flags are displayed in massive numbers on national festivals: Republic Day (January 26), Independence Day (August 15), and Gandhi Jayanti (October 2 October).
+• **Independence Day Protocol**: On August 15, the Prime Minister hoists the National Flag at the historic Red Fort in Delhi, followed by an address to the nation.
+• **Republic Day Protocol**: On January 26, the President of India unfurls the National Flag at Kartavya Path (formerly Rajpath) during the grand Republic Day parade.
+• **Monumental Flags**: The government has installed "Monumental Flags" (extra-large national flags on giant masts) across various cities to inspire civic pride and a sense of awe among citizens.
+---PAGE-BREAK---
+• **Connaught Place Monumental Flag**: One of India's tallest monumental flags is located at Central Park, Connaught Place, New Delhi, standing at a towering height of 207 feet.
+• **International Representation**: The National Flag represents India in international forums, diplomatic missions, global sports events, and scientific expeditions like space missions.
+• **Chandrayaan Missions**: The Indian tricolour was successfully placed on the lunar surface during India's historic lunar exploration missions, marking technological triumph and national pride.
+• **Olympic Pride**: Indian athletes proudly carry and wrap themselves in the Tiranga upon winning medals at international sports competitions such as the Olympic Games and Asian Games.
+• **Educational Importance**: Teaching students about the flag through textbooks like *Kid Wiz* instills values of patriotism, discipline, and historical awareness from a young age.
+• **Civic Responsibility**: Understanding flag protocols teaches children responsibility, respect for state symbols, and the duties of being an enlightened Indian citizen.
+• **Historical Sacrifice**: The chapter reminds students that the freedom to fly our national flag was earned through the supreme sacrifices of countless freedom fighters.
+• **Unity in Diversity**: The tricolour unites India's diverse populations across religions, languages, and cultures under one single symbol of national identity.
+---PAGE-BREAK---
+• **Symbolism of the Wheel**: The 24 spokes of the Ashoka Chakra remind citizens of continuous movement, progress, dynamism, and the avoidance of stagnation as a nation.
+• **Dharma Concept**: The Chakra represents *Dharma* (righteousness, duty, and moral order), which forms the bedrock of Indian philosophy and constitutional ethics.
+• **Color Psychology**: The specific hues of the flag—deep saffron, white, and India green—were chosen with precision to evoke psychological feelings of courage, purity, and vitality.
+• **Standardization by BIS**: The Bureau of Indian Standards lays down rigorous parameters for dye shades, thread count, strength, and fastness of the flag fabric to maintain top quality.
+• **Legal Protections**: The Prevention of Insults to National Honour Act, 1971, penalizes desecration, burning, mutilation, or disrespect of the National Flag with imprisonment or fines.
+• **Global Standing**: The Indian flag flying high signifies a democratic, peace-loving, yet strong and progressive nation making its mark on the global stage.
+• **Youth Empowerment**: The chapter emphasizes that the future generation holds the responsibility of keeping the flag flying high through education, integrity, and hard work.
+• **Cultural Integration**: Schools across the country observe flag-hoisting ceremonies with drill displays, scout and guide rallies, and cultural programs centered around the Tiranga.
+---PAGE-BREAK---
+• **Evolutionary Milestone Summary**: From the 1906 Calcutta flag to the 1947 Constituent Assembly adoption, each stage of flag evolution reflected the changing aspirations of the freedom movement.
+• **Role of Women**: Freedom fighters like Madam Bhikaji Cama and Annie Besant played pivotal roles in designing and promoting early versions of the Indian flag internationally.
+• **Contribution of Pingali Venkayya**: The vision of an independent flag found concrete shape through the tireless research and design proposals of freedom fighter Pingali Venkayya.
+• ** Mahatma Gandhi's Vision**: Gandhi's emphasis on the Charkha transformed the flag into a powerful instrument of social equality, self-reliance, and mass mobilization.
+• **Respect for Other Flags**: International diplomatic protocol requires that when foreign flags are displayed alongside the Indian flag, they must be of equal size and flown in alphabetical order.
+• **Naval Ensign**: The Indian Navy utilizes specialized naval ensigns that incorporate the National Flag, showcasing maritime heritage and defense sovereignty.
+• **Air Force and Army Standards**: Military regiments carry their own regimental colors alongside the National Flag, symbolizing valor, tradition, and supreme allegiance to the country.
+• **Environmental Consciousness**: Modern manufacturing guidelines encourage eco-friendly dyes and sustainable production methods in crafting national flags to protect the environment.
+---PAGE-BREAK---
+• **Core Takeaway of Chapter 10**: "झंडा ऊँचा रहे हमारा" serves as an ultimate reminder that the Tiranga is not merely a piece of cloth, but the living soul and collective heartbeat of India.
+• **Patriotic Oath**: Students concluding this chapter take an internal pledge to uphold the honor, dignity, and glory of the national flag throughout their lives.
+• **Summary of Dimensions**: Memorization of the 3:2 ratio, the 24 spokes of the Ashoka Chakra, and the precise order of saffron, white, and green is crucial for GK assessments.
+• **Chronological Mastery**: Students must retain the sequence of flag adoption dates: 1906 (Calcutta), 1907 (Berlin), 1917 (Home Rule), 1921 (Gandhian), 1931 (Resolution), and 1947 (Final).
+• **Constitutional Awareness**: Awareness of the Flag Code of India ensures that every student grows up as a law-abiding citizen who respects national symbols.
+• **The Spirit of Freedom**: The chapter instills deep gratitude for the sacrifices of freedom fighters who marched under the shadow of the tricolour.
+• **Inspirational Legacy**: The chapter concludes with the inspiring message that wherever an Indian goes, the raising of the flag is a moment of supreme national pride.
+• **DAV Educational Objective**: Fulfilling the DAV ethos, this chapter bridges ancient cultural heritage with modern national identity, fostering proud, enlightened, and responsible citizens of India.

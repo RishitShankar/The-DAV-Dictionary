@@ -1,0 +1,172 @@
+• **Chapter Introduction: Symmetry in Mathematics** - Symmetry is a fundamental geometric concept describing a balanced and harmonious correspondence of arrangement of parts on opposite sides of a dividing line, point, or plane.
+• **Role in DAV Class 7 Curriculum** - The DAV Secondary Mathematics Class 7 syllabus introduces symmetry to help students recognize structural patterns, geometric harmony, and spatial invariants in 2D and 3D figures.
+• **Real-World Manifestations** - Symmetry is extensively observed in nature (petals of flowers, butterfly wings, leaves), architecture, art, and engineering, serving both aesthetic and structural stability functions.
+• **Historical and Scientific Significance** - Study of symmetry aids physicists, chemists, and biologists in classifying molecules, crystals, and biological organisms based on their invariant transformations.
+• **Core Definition of Geometric Symmetry** - A geometric figure is said to be symmetrical if it can be divided into identical halves that match up perfectly when folded, reflected, or rotated.
+• **Types of Symmetry Explored in Class 7** - The DAV curriculum primarily focuses on two foundational types of symmetry: Line Symmetry (Reflection Symmetry) and Rotational Symmetry.
+• **Line Symmetry Overview** - Line symmetry occurs when a geometric shape can be mapped onto itself by reflection across a specific straight line, dividing the shape into two mirror-image halves.
+• **Axis of Symmetry Definition** - The dividing straight line across which a figure is reflected to achieve exact superimposition is called the axis of symmetry or line of symmetry.
+• **Test for Line Symmetry** - A practical test for line symmetry involves physically paper-folding a shape along a candidate line; if both halves coincide seamlessly without overlapping edges, the line is a valid axis of symmetry.
+• **Unique Properties of Reflection** - Reflection preserves distances, angles, and shapes, meaning the image produced across an axis of symmetry is congruent to the original pre-image.
+• **Number of Lines of Symmetry** - Different geometric figures possess varying numbers of symmetry lines, ranging from zero lines for asymmetric shapes to infinitely many lines for circles.
+• **Asymmetry in Geometry** - An asymmetrical figure is one that possesses zero lines of symmetry and cannot be mapped onto itself via reflection or simple rotation.
+• **Prerequisite Vocabulary** - Mastery of basic geometric terms such as line segments, midpoints, perpendicular bisectors, congruent figures, and polygons is essential for analyzing symmetry.
+• **Analytical Approach to Symmetry** - Students are encouraged to develop both visual intuition and analytical reasoning to identify axes of symmetry without relying solely on physical paper-folding.
+• **Bridge to Higher Mathematics** - Understanding symmetry in Class 7 sets the groundwork for advanced topics in transformations, coordinate geometry, group theory, and matrix transformations in higher grades.
+
+----PAGE-BREAK---
+
+• **Line Symmetry in Detail** - Line symmetry, also known as bilateral symmetry, mirror symmetry, or reflection symmetry, is the property where one half of a figure is the exact mirror image of the other half.
+• **Anatomy of an Axis of Symmetry** - An axis of symmetry is an imaginary line that splits a shape into two symmetrical components such that every point on one side has a corresponding point directly opposite on the other side.
+• **Perpendicular Distance Property** - For any point on a symmetrical figure, its perpendicular distance to the axis of symmetry is equal to the perpendicular distance of its corresponding mirror point.
+• **Single Line of Symmetry** - Figures like an isosceles triangle, a kite, and the English uppercase letters 'A', 'M', 'T', 'U', 'V', 'W', 'Y' possess exactly one vertical or horizontal line of symmetry.
+• **Two Lines of Symmetry** - Geometric shapes such as a rectangle and a rhombus possess exactly two perpendicular lines of symmetry intersecting at the geometric center of the figure.
+• **Three Lines of Symmetry** - An equilateral triangle has exactly three lines of symmetry, each passing through a vertex and bisecting the opposite side.
+• **Four Lines of Symmetry** - A square is a highly regular polygon possessing four lines of symmetry: two passing through opposite vertices (diagonals) and two passing through the midpoints of opposite sides.
+• **Infinite Lines of Symmetry** - A circle possesses an infinite number of lines of symmetry, because every single straight line passing through its center forms a valid line of symmetry.
+• **Symmetry in Scalene Triangles** - A scalene triangle has all sides of different lengths and all angles of different measures, resulting in zero lines of symmetry.
+• **Symmetry in Parallelograms** - A standard parallelogram (that is neither a rectangle nor a rhombus) has zero lines of symmetry, despite having opposite sides equal and parallel.
+• **Symmetry in Regular Polygons** - A regular polygon with $n$ sides always possesses exactly $n$ lines of symmetry, intersecting at a common center point.
+• **Symmetry in Regular Pentagons** - A regular pentagon features five distinct lines of symmetry, each originating from a vertex and bisecting the base opposite to it.
+• **Symmetry in Regular Hexagons** - A regular hexagon possesses six lines of symmetry: three connecting opposite vertices and three connecting the midpoints of opposite parallel sides.
+• **Horizontal versus Vertical Axes** - Lines of symmetry can be oriented vertically, horizontally, or diagonally depending on the geometric orientation of the given figure.
+• **Identifying Non-Symmetrical Orientations** - Changing the orientation of a symmetrical letter or shape can alter or eliminate its lines of symmetry, emphasizing the need for precise alignment.
+
+----PAGE-BREAK---
+
+• **Alphabetical Symmetry: Uppercase Letters** - Analyzing the English alphabet for symmetry reveals specific structural properties that are frequently tested in DAV examinations.
+• **Letters with Vertical Line Symmetry** - Uppercase letters possessing a vertical line of symmetry include A, H, I, M, O, T, U, V, W, X, and Y, where the left and right halves mirror each other.
+• **Letters with Horizontal Line Symmetry** - Uppercase letters possessing a horizontal line of symmetry include B, C, D, E, H, I, K, O, and X, where the top and bottom halves mirror each other.
+• **Letters with Both Horizontal and Vertical Symmetry** - Uppercase letters H, I, O, and X are unique because they possess both a vertical and a horizontal line of symmetry simultaneously.
+• **Letters with Zero Line Symmetry** - Uppercase letters F, G, J, L, N, P, Q, R, S, and Z possess no lines of symmetry in their standard block-letter printing formats.
+• **Word Symmetry (Palindromic Visuals)** - Certain words written in capital letters exhibit vertical line symmetry as a whole when their constituent letters and letter spacing are arranged symmetrically.
+• **Symmetry in Digits (0 to 9)** - Numerical digits also display varying degrees of line symmetry; for instance, the digits '0' and '8' possess both horizontal and vertical lines of symmetry.
+• **Digit '3' Symmetry** - The digit '3' possesses a single horizontal line of symmetry running through its vertical midpoint.
+• **Digit '1' Symmetry** - The standard block digit '1' typically possesses a vertical line of symmetry down its central shaft.
+• **Digits with Zero Symmetry** - Digits such as '2', '4', '5', '6', '7', and '9' generally possess zero lines of symmetry in standard mathematical typography.
+• **Significance of Typography in Symmetry** - DAV textbook problems often require students to pay strict attention to font styles, ensuring standard geometric block letters are assumed unless specified otherwise.
+• **Reflective Property of Alphabetical Symmetry** - Placing a plane mirror along the axis of symmetry of a symmetrical letter reconstructs the complete letter from its half-reflection.
+• **Constructing Symmetrical Alphabets** - Students practice drawing the missing half of a letter or geometric figure given its axis of symmetry and one complete half.
+• **Grid-Based Symmetry Drawing** - Using square grid paper (graph paper) assists students in accurately plotting corresponding mirror points at equal distances across the axis of symmetry.
+• **Real-Life Signage Applications** - Recognizing symmetry in alphabets and symbols is crucial for designing balanced logos, road signs, and warning placards.
+
+----PAGE-BREAK---
+
+• **Introduction to Rotational Symmetry** - Beyond static reflection, shapes can exhibit rotational symmetry, which describes how a figure looks the same after being rotated by a specific angle around a fixed center point.
+• **Center of Rotation Definition** - The fixed point around which a geometric figure is rotated during a symmetry test is called the center of rotation (frequently the geometric centroid or center of mass).
+• **Angle of Rotation** - The minimum angle of turn required for a figure to map onto itself for the first time is termed the angle of rotation.
+• **Formula for Angle of Rotation** - For figures with rotational symmetry, the fundamental angle of rotation can be calculated using the formula: $\text{Angle of Rotation} = \frac{360^\circ}{n}$, where $n$ is the order of rotational symmetry.
+• **Order of Rotational Symmetry Definition** - The order of rotational symmetry is the total number of times a figure coincides with its original position during one complete $360^\circ$ revolution around its center.
+• **One Complete Revolution** - A full rotation corresponds to turning a figure through an angle of $360^\circ$ about its fixed center of rotation.
+• **Minimum Order of Symmetry** - Every geometric figure has a trivial rotational symmetry of order 1 at a full turn of $360^\circ$, but figures are only said to have rotational symmetry if their order is 2 or greater.
+• **Rotational Symmetry of a Square** - A square has a rotational symmetry of order 4, because it coincides with its original position at $90^\circ$, $180^\circ$, $270^\circ$, and $360^\circ$.
+• **Angle of Rotation for a Square** - The angle of rotation for a square is $\frac{360^\circ}{4} = 90^\circ$.
+• **Rotational Symmetry of an Equilateral Triangle** - An equilateral triangle has a rotational symmetry of order 3, rotating into itself at $120^\circ$, $240^\circ$, and $360^\circ$.
+• **Angle of Rotation for an Equilateral Triangle** - The angle of rotation for an equilateral triangle is $\frac{360^\circ}{3} = 120^\circ$.
+• **Rotational Symmetry of a Regular Hexagon** - A regular hexagon possesses a rotational symmetry of order 6, with a fundamental angle of rotation equal to $\frac{360^\circ}{6} = 60^\circ$.
+• **Rotational Symmetry of a Circle** - A circle possesses an infinite order of rotational symmetry because it maps onto itself at every conceivable angle of rotation around its center.
+• **Rotational Symmetry of a Scalene Triangle** - A scalene triangle has a rotational symmetry of order 1 (meaning it only matches its position at a full $360^\circ$ turn), hence it has no non-trivial rotational symmetry.
+• **Distinction Between Line and Rotational Symmetry** - While line symmetry involves flipping a figure across a line, rotational symmetry involves turning a figure around a point without leaving the 2D plane.
+
+----PAGE-BREAK---
+
+• **Relationship Between Line Symmetry and Rotational Symmetry** - Many geometric figures possess both line symmetry and rotational symmetry simultaneously, though the two properties are mathematically independent.
+• **Regular Polygons as Symmetry Paradigms** - Regular polygons serve as the gold standard in symmetry studies because the number of lines of symmetry always equals the order of rotational symmetry.
+• **Square Symmetry Profile** - A square possesses exactly 4 lines of symmetry and an order of rotational symmetry equal to 4, demonstrating perfect symmetry harmony.
+• **Equilateral Triangle Symmetry Profile** - An equilateral triangle possesses exactly 3 lines of symmetry and an order of rotational symmetry equal to 3.
+• **Regular Pentagon Symmetry Profile** - A regular pentagon possesses 5 lines of symmetry and an order of rotational symmetry equal to 5, with a fundamental angle of rotation of $72^\circ$.
+• **Regular Octagon Symmetry Profile** - A regular octagon possesses 8 lines of symmetry and an order of rotational symmetry equal to 8, with an angle of rotation of $45^\circ$.
+• **Figures with Line Symmetry but No Rotational Symmetry** - Certain shapes like a scalene kite or an isosceles triangle possess 1 line of symmetry but have an order of rotational symmetry of only 1 (no rotational symmetry).
+• **Figures with Rotational Symmetry but No Line Symmetry** - A parallelogram (that is not a rhombus or rectangle) and a standard pinwheel shape possess rotational symmetry of order 2 but have zero lines of symmetry.
+• **Order 2 Rotational Symmetry in Parallelograms** - A parallelogram matches its original orientation after being rotated by $180^\circ$ and $360^\circ$, giving it a rotational order of 2, yet folding it yields no matching halves.
+• **Point Symmetry Concept** - Rotational symmetry of order 2 with an angle of rotation of $180^\circ$ is also referred to in geometry as point symmetry or central symmetry about the center point.
+• **Centrally Symmetrical Shapes** - In a shape with point symmetry, for every point on the figure, there exists a corresponding point at an equal distance on the opposite side of the center.
+• **Rectangle Symmetry Profile** - A non-square rectangle possesses 2 lines of symmetry (horizontal and vertical) and a rotational symmetry of order 2 (angle of rotation $180^\circ$).
+• **Rhombus Symmetry Profile** - A rhombus possesses 2 lines of symmetry (along its two diagonals) and a rotational symmetry of order 2 (angle of rotation $180^\circ$).
+• **Symmetry Checklists for Students** - When analyzing any geometric figure in DAV assessments, students must systematically test both axes of reflection and centers of rotation.
+• **Invariance Under Transformation** - Both line and rotational symmetries describe the invariance of a geometric figure under specific rigid transformations (reflection and rotation respectively).
+
+----PAGE-BREAK---
+
+• **Symmetry in Quadrilaterals** - Quadrilaterals exhibit diverse symmetry properties depending on the equality of their side lengths, interior angles, and diagonal relationships.
+• **Square Symmetry Summary** - The square is the most symmetrical quadrilateral, featuring 4 lines of symmetry, rotational symmetry of order 4, and point symmetry.
+• **Rectangle Symmetry Summary** - A rectangle features 2 lines of symmetry (perpendicular bisectors of opposite sides), rotational symmetry of order 2, and point symmetry about its intersection of diagonals.
+• **Rhombus Symmetry Summary** - A rhombus features 2 lines of symmetry (along its two diagonals), rotational symmetry of order 2, and point symmetry, despite having oblique interior angles.
+• **Parallelogram Symmetry Summary** - A general parallelogram has 0 lines of symmetry, rotational symmetry of order 2 ($180^\circ$ rotation), and point symmetry about its diagonal intersection.
+• **Isosceles Trapezoid Symmetry Summary** - An isosceles trapezoid has exactly 1 line of symmetry passing through the midpoints of its parallel bases, but has zero rotational symmetry (order 1).
+• **Scalene Trapezoid Symmetry Summary** - A scalene trapezoid has both 0 lines of symmetry and 0 rotational symmetry, representing complete asymmetry among standard trapezoids.
+• **Kite Symmetry Summary** - A standard geometric kite possesses 1 line of symmetry along its main diagonal, but has 0 rotational symmetry (order 1).
+• **Symmetry in Triangles** - Triangles exhibit varying symmetry based strictly on side-length classification (scalene, isosceles, equilateral).
+• **Equilateral Triangle Deep Dive** - Equilateral triangles have 3 lines of symmetry, rotational symmetry of order 3, and all interior angles measuring equal at $60^\circ$.
+• **Isosceles Triangle Deep Dive** - Isosceles triangles have exactly 1 line of symmetry (from the vertex angle between equal sides to the midpoint of the base) and order 1 rotational symmetry.
+• **Scalene Triangle Deep Dive** - Scalene triangles have 0 lines of symmetry and order 1 rotational symmetry, lacking any regular structural balance.
+• **Right-Angled Isosceles Triangle** - A right-angled isosceles triangle has 1 line of symmetry running from the $90^\circ$ vertex to the midpoint of its hypotenuse, and order 1 rotational symmetry.
+• **Scalene Right-Angled Triangle** - A standard right-angled triangle with unequal legs has 0 lines of symmetry and order 1 rotational symmetry.
+• **Systematic DAV Classification Table** - DAV mathematics modules emphasize memorizing and deriving these precise symmetry counts for quick retrieval in objective and subjective examination formats.
+
+----PAGE-BREAK---
+
+• **Symmetry in Regular Polygons** - A regular polygon is defined as a polygon that is equiangular (all angles equal) and equilateral (all side lengths equal).
+• **General Rule for $n$-Sided Regular Polygons** - For any regular polygon with $n$ sides (an $n$-gon), the number of lines of symmetry is exactly equal to $n$.
+• **General Rule for Rotational Order** - For any regular polygon with $n$ sides, the order of rotational symmetry is also exactly equal to $n$.
+• **General Formula for Polygon Angle of Rotation** - The angle of rotation for any regular $n$-gon is universally given by the mathematical expression $\frac{360^\circ}{n}$.
+• **Equilateral Triangle ($n = 3$) Metrics** - 3 lines of symmetry, rotational order of 3, and an angle of rotation of $\frac{360^\circ}{3} = 120^\circ$.
+• **Square ($n = 4$) Metrics** - 4 lines of symmetry, rotational order of 4, and an angle of rotation of $\frac{360^\circ}{4} = 90^\circ$.
+• **Regular Pentagon ($n = 5$) Metrics** - 5 lines of symmetry, rotational order of 5, and an angle of rotation of $\frac{360^\circ}{5} = 72^\circ$.
+• **Regular Hexagon ($n = 6$) Metrics** - 6 lines of symmetry, rotational order of 6, and an angle of rotation of $\frac{360^\circ}{6} = 60^\circ$.
+• **Regular Heptagon ($n = 7$) Metrics** - 7 lines of symmetry, rotational order of 7, and an angle of rotation of $\frac{360^\circ}{7} \approx 51.43^\circ$.
+• **Regular Octagon ($n = 8$) Metrics** - 8 lines of symmetry, rotational order of 8, and an angle of rotation of $\frac{360^\circ}{8} = 45^\circ$.
+• **Limit as $n$ Approaches Infinity** - As the number of sides $n$ increases towards infinity, a regular polygon approaches the shape of a circle, possessing infinite lines of symmetry and infinite rotational order.
+• **Exterior Angles and Symmetry** - The angle of rotation for a regular polygon is numerically identical to the measure of its exterior angle ($\frac{360^\circ}{n}$).
+• **Interior Angles and Axes of Symmetry** - The lines of symmetry in odd-valued regular polygons bisect both an interior vertex angle and the opposite side.
+• **Diagonals as Symmetry Axes** - In even-valued regular polygons, half of the lines of symmetry pass through pairs of opposite vertices (diagonals), while the other half pass through midpoints of opposite sides.
+• **Pedagogical Value in Class 7** - Studying regular polygon symmetry reinforces multiplication, division, fraction simplification, and angle measurement concepts simultaneously.
+
+----PAGE-BREAK---
+
+• **Practical Applications of Symmetry in Daily Life** - Symmetry is not merely an abstract mathematical concept but a practical design principle used across human civilization.
+• **Architectural Marvels** - Historical monuments such as the Taj Mahal, the Parthenon, and modern skyscrapers utilize bilateral and rotational symmetry for visual equilibrium and load distribution.
+• **Art, Rangoli, and Kolam Patterns** - Traditional Indian art forms like Rangoli, Alpana, and Kolam rely heavily on complex lines of symmetry and rotational geometry to create intricate geometric designs.
+• **Engineering and Manufacturing** - Mechanical components such as gears, turbine blades, steering wheels, and propellers require precise rotational symmetry to function without vibration or imbalance.
+• **Nature and Biological Symmetry** - Bilateral symmetry is prevalent in the human body, mammals, birds, and insects, aiding in directional movement and balanced muscular coordination.
+• **Radial Symmetry in Nature** - Organisms such as starfish, jellyfish, and sea anemones exhibit radial symmetry, allowing them to interact with their environment from all 360-degree directions equally.
+• **Floral Symmetry** - Flowers display diverse symmetry types; for example, petunias show radial symmetry, while orchids often exhibit strict bilateral symmetry.
+• **Cartography and Flag Design** - National flags frequently incorporate symmetry; for instance, the flags of Switzerland, Japan, and Canada feature prominent lines of symmetry.
+• **Symmetry in Cryptography and Data** - Advanced mathematical symmetry underpins coding theory, data encryption algorithms, and error-detection schemes in computer science.
+• **Symmetry in Chemistry** - Molecular symmetry dictates physical and chemical properties, such as polarity, optical activity, and spectroscopic behavior in chemical compounds.
+• **Symmetry Breaking** - In advanced physics, the concept of symmetry breaking explains fundamental phenomena ranging from phase transitions to the origin of mass in elementary particles.
+• **Graphic Design and Branding** - Corporate logos (such as Toyota, Mercedes, and Target) use rotational and line symmetry to project balance, reliability, and visual memorability.
+• **Textile and Fabric Patterns** - Symmetrical motifs in weaving, knitting, and block printing create repetitive, aesthetically pleasing textile designs.
+• **Landscaping and Garden Design** - Formal gardens (such as Mughal gardens and French formal gardens) use mirror symmetry along central pathways to create structured vistas.
+• **Educational Toys and Puzzles** - Tangrams, kaleidoscope toys, and symmetry mirrors are classic educational tools used to teach spatial reasoning to middle school students.
+
+----PAGE-BREAK---
+
+• **Problem-Solving Strategies for Symmetry Exams** - Success in DAV mathematics examinations requires mastering specific problem-solving techniques for symmetry questions.
+• **Identifying Lines of Symmetry in Complex Figures** - Students should inspect figures for vertical, horizontal, and diagonal dividing lines, verifying that folding along the line yields perfect coincidence.
+• **Counting Rotational Order Methodically** - To find the order of rotational symmetry, students should trace a prominent feature of the figure and count how many times it returns to its starting position during a full $360^\circ$ turn.
+• **Avoiding Common Optical Illusions** - DAV test questions often feature slightly skewed drawings; students must rely on geometric properties (like right angles and equal side markings) rather than visual estimation alone.
+• **Completing Symmetrical Figures on Grid Paper** - When asked to complete a figure given an axis of symmetry, count the grid units perpendicular to the axis and plot corresponding mirror points precisely.
+• **Constructing Rotational Images** - Use tracing paper to copy a shape, pin the center of rotation with a pencil tip, and rotate the paper by given angles ($90^\circ$, $180^\circ$, etc.) to plot rotated images.
+• **Differentiating Reflection from Rotation** - Always remember that reflection creates a reversed mirror image (left becomes right), whereas rotation preserves the handedness of the figure in the 2D plane.
+• **Handling Composite Figures** - For composite shapes made of multiple geometric units, analyze the symmetry of each component before evaluating the overall combined structure.
+• **Checking Alphabetical and Numerical Items** - When evaluating letters or digits, always visualize standard uppercase block fonts unless the question specifies handwritten or cursive styles.
+• **Units in Angle of Rotation** - Always express angles of rotation with the degree symbol ($^\circ$) and ensure calculations match the fundamental formula $\frac{360^\circ}{n}$.
+• **Justifying Zero Symmetry** - When a figure has neither line nor rotational symmetry, explicitly state "Order 1 rotational symmetry" or "Zero lines of symmetry" rather than leaving answer blanks empty.
+• **Time Management in DAV Tests** - Allocate time efficiently between objective multiple-choice symmetry identification and subjective drawing/calculation problems.
+• **Verifying Answers via Reverse Checks** - Cross-verify counted lines of symmetry by attempting to mentally fold the figure along each identified axis in opposite directions.
+• **Precision in Drawing Axes** - Always draw lines of symmetry using a sharp pencil, a ruler, and dashed/dotted lines as per standard geometric convention.
+• **Comprehensive Revision Habit** - Regularly review summary tables of triangles, quadrilaterals, and regular polygons to ensure instant recall of symmetry metrics during examinations.
+
+----PAGE-BREAK---
+
+• **Chapter Summary and Core Takeaways** - Symmetry is a unifying mathematical theme bridging geometry, arithmetic, art, and the physical sciences within the DAV Class 7 curriculum.
+• **Recap of Line Symmetry** - Line symmetry occurs when a figure maps onto itself across a reflection axis, with counts varying from zero for scalene shapes to infinity for circles.
+• **Recap of Rotational Symmetry** - Rotational symmetry occurs when a figure maps onto itself upon turning about a central point, defined by its order $n$ and angle of rotation $\frac{360^\circ}{n}$.
+• **The Regular Polygon Principle** - Regular $n$-sided polygons consistently demonstrate both $n$ lines of symmetry and an $n$-order rotational symmetry profile.
+• **Asymmetry Recognition** - Recognizing shapes with zero symmetry is just as critical as identifying highly symmetrical figures in comprehensive geometric analysis.
+• **Symmetry Transformations as Rigid Motions** - Both reflection and rotation are classified as rigid transformations (isometries) because they preserve lengths, angles, and areas without distortion.
+• **Interdisciplinary Relevance** - The study nurtures spatial visualization, artistic expression, and logical deduction skills essential for higher mathematical studies.
+• **DAV Curriculum Mastery** - Mastery of Chapter 13 ensures students achieve top performance in school-level formative and summative assessments.
+• **Final Encouragement for Students** - Continued practice with diverse geometric figures, real-world object scouting, and graph-paper drawing will solidify permanent mastery of symmetry concepts.
+• **End of Chapter Study Notes** - These exhaustive study notes provide the complete theoretical and practical framework required for DAV Class 7 Secondary Mathematics Chapter 13: Symmetry.

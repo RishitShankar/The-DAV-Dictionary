@@ -1,0 +1,4 @@
+• **Chapter Overview**: Introduction to the Gupta Empire, widely recognized in Indian history as the "Golden Age of Ancient India" due to remarkable achievements in art, science, literature, and governance.
+• **Timeframe**: The Gupta Empire flourished from the early 4th century CE to the late 6th century CE, marking a period of stability and prosperity in the Indian subcontinent.
+• **Geographical Extent**: The empire originated in the region of Magadha (modern-day Bihar and eastern Uttar Pradesh) and eventually expanded to cover a vast expanse of Northern, Central, and parts of Southern India.
+• **De

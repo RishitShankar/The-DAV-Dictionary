@@ -1,0 +1,187 @@
+• **Atmosphere Definition**: The Earth is enveloped by a thick, protective blanket of air known as the **atmosphere**, which extends hundreds of kilometers above the surface.
+• **Gravitational Hold**: The atmosphere does not float away into outer space because it is held firmly in place by the powerful **gravitational pull** of the Earth.
+• **Essential for Life**: Air is an absolute necessity for the survival of all known forms of life, including humans, animals, plants, and microscopic organisms.
+• **Invisible Nature**: Air is completely **invisible, odorless, and tasteless**, making its presence noticeable only through its movement, effects, and physical properties.
+• **State of Matter**: Air is classified as a mixture of various gases, meaning its components are physically combined and retain their individual chemical properties.
+• **Composition Overview**: Atmospheric air is not a single substance; rather, it is composed of a complex blend of **nitrogen, oxygen, argon, carbon dioxide**, and trace gases.
+• **Nitrogen Dominance**: **Nitrogen** is the most abundant gas in the atmosphere, making up approximately **78 percent** of the total volume of dry air.
+• **Oxygen Proportion**: **Oxygen**, the life-supporting gas, constitutes roughly **21 percent** of the atmosphere and is vital for cellular respiration in living organisms.
+• **Remaining Percentage**: The remaining **1 percent** of atmospheric air is comprised of **argon (0.93%)**, **carbon dioxide (0.038%)**, water vapor, and minute traces of noble gases.
+• **Water Vapor Presence**: The amount of **water vapor** in the air is highly variable, depending heavily on weather conditions, geographic location, and local temperature.
+• **Dust and Smoke**: Air contains suspended solid particles, including **dust, smoke, pollen, and soot**, which originate from natural sources and human activities.
+• **Layered Structure**: The atmosphere is divided into distinct layers—the **troposphere, stratosphere, mesosphere, thermosphere, and exosphere**—based on temperature and altitude changes.
+• **Troposphere Importance**: The **troposphere** is the lowest layer of the atmosphere, where weather phenomena occur and where all living organisms, including humans, reside.
+• **Stratosphere Features**: The **stratosphere** lies above the troposphere and contains the critical **ozone layer**, which absorbs harmful ultraviolet radiation from the sun.
+• **Greenhouse Effect Basis**: Naturally occurring gases in the atmosphere trap outgoing heat from the Earth's surface, creating a phenomenon known as the **natural greenhouse effect**.
+• **Temperature Regulation**: Without the insulating properties of the atmospheric blanket, the Earth's surface would experience extreme temperature fluctuations, freezing at night and scorching by day.
+
+----PAGE-BREAK---
+
+• **Oxygen and Respiration**: All aerobic living organisms require **oxygen** to break down digested food inside their cells and release chemical energy for metabolic activities.
+• **Inhalation Process**: During inhalation, humans and land animals draw atmospheric air rich in oxygen into their lungs through the respiratory tract.
+• **Gas Exchange Mechanism**: Inside the microscopic **alveoli** of the lungs, oxygen diffuses across thin membranes into the bloodstream while carbon dioxide passes out of the blood.
+• **Cellular Transportation**: Oxygen molecules bind to **hemoglobin**, a red pigment found inside red blood cells, which transports the oxygen efficiently to every tissue in the body.
+• **Cellular Respiration Equation**: Inside the cells, oxygen reacts with glucose to produce **carbon dioxide, water vapor, and usable energy** (ATP) required for daily survival.
+• **Aquatic Respiration**: Aquatic organisms, such as fish, crabs, and frogs, do not breathe atmospheric air directly; instead, they utilize **dissolved oxygen** present in water.
+• **Gill Function**: Fish possess specialized respiratory organs called **gills**, which are richly supplied with blood vessels designed to extract dissolved oxygen from water flowing over them.
+• **Amphibian Adaptation**: Amphibians, like frogs, exhibit dual respiration: they use **lungs** on land and respire through their moist, permeable **skin** when submerged in water.
+• **Plant Respiration**: Plants respire continuously day and night, taking in oxygen and releasing carbon dioxide through microscopic pore structures called **stomata**.
+• **Photosynthesis Contrast**: While plant respiration consumes oxygen and releases carbon dioxide, the process of **photosynthesis** operates in reverse during daylight hours.
+• **Photosynthesis Gas Exchange**: During photosynthesis, green plants absorb **carbon dioxide** from the air, combine it with water and sunlight, and release fresh **oxygen** as a byproduct.
+• **Carbon Dioxide Balance**: The dual processes of plant photosynthesis and animal/plant respiration maintain a delicate, life-sustaining balance of **oxygen and carbon dioxide** in the atmosphere.
+• **Fossil Fuel Impact**: Burning fossil fuels like coal, petroleum, and natural gas consumes vast quantities of atmospheric oxygen and releases large amounts of **carbon dioxide**.
+• **Carbon Sink Role**: Oceans and vast forests act as major **carbon sinks**, absorbing immense volumes of carbon dioxide to help mitigate global climate warming trends.
+• **Stomatal Mechanism**: The opening and closing of **stomata** on plant leaves are regulated by specialized guard cells that control the entry and exit of respiratory gases.
+• **Root Respiration**: Plants also require oxygen for their underground roots; waterlogged soil suffocates roots by cutting off the supply of air pockets between soil particles.
+
+----PAGE-BREAK---
+
+• **Physical Properties of Air**: Air is a physical substance that possesses **mass, weight, and volume**, despite being invisible to the naked eye.
+• **Air Has Weight Demonstrations**: Simple experiments, such as weighing an uninflated rubber balloon against a fully inflated one, prove conclusively that air has measurable **weight**.
+• **Air Occupies Space**: Whenever a seemingly empty glass is inverted and pushed vertically down into a basin of water, the water fails to fill the glass because **air occupies the internal space**.
+• **Air Exerts Pressure**: Because air has weight and is pulled downward by gravity, it exerts a constant, multidirectional force on all objects on Earth, known as **atmospheric pressure**.
+• **Pressure Definition**: **Air pressure** is formally defined as the force exerted by the weight of tiny air molecules pressing down against a given surface area.
+• **Decreasing Pressure with Altitude**: As one travels to higher altitudes, such as climbing a high mountain, the density of the air decreases, resulting in lower **atmospheric pressure**.
+• **Altitude Sickness**: Lower atmospheric pressure and reduced oxygen availability at high altitudes can cause physical discomfort and conditions like **altitude sickness** in unacclimatized humans.
+• **Everyday Air Pressure Applications**: Numerous common devices rely entirely on air pressure to function, including **drinking straws, syringes, rubber suction cups, and bicycle pumps**.
+• **Syringe Mechanism**: Pulling the plunger of a **medical syringe** upward creates a partial vacuum inside the barrel, allowing external atmospheric pressure to push liquid inward.
+• **Straw Function**: Drinking through a **straw** involves sucking out the air inside the tube, reducing internal pressure so that outside air pressure pushes the liquid upward.
+• **Suction Cup Principle**: Pressing a **rubber suction cup** against a smooth surface forces out the trapped air, creating a low-pressure zone that allows external atmospheric pressure to hold it firmly.
+• **Wind Definition**: Moving air is referred to as **wind**, which is generated by differences in atmospheric pressure resulting from uneven heating of the Earth's surface by the sun.
+• **Convection Current Mechanism**: When air is heated by the sun, it expands, becomes lighter, and rises upward, while cooler, denser air rushes in to take its place, creating **convection currents**.
+• **Breezes**: Localized wind systems, such as **land breezes and sea breezes**, form near large bodies of water due to the differential heating rates of land and water masses.
+• **High Pressure to Low Pressure**: Air molecules naturally flow horizontally from regions of **high atmospheric pressure** to regions of **low atmospheric pressure**, generating winds of varying speeds.
+• **Wind Power**: Fast-moving wind possesses kinetic energy that can be harnessed using modern **wind turbines** to generate clean, renewable electricity.
+
+----PAGE-BREAK---
+
+• **Air Pollution Definition**: **Air pollution** refers to the introduction of harmful substances, including gases, particulates, and biological molecules, into the Earth's atmosphere, causing detrimental effects.
+• **Pollutants**: The specific chemical agents and particulate matter that contaminate clean air are collectively known as **air pollutants**.
+• **Natural Sources of Pollution**: Air pollution is not solely man-made; natural events such as **volcanic eruptions, forest fires, dust storms, and decaying organic matter** release pollutants.
+• **Human-Made Sources**: Anthropogenic air pollution stems primarily from **industrial factories, vehicular emissions, thermal power plants, and agricultural burning**.
+• **Vehicular Exhaust**: Automobiles running on petrol and diesel emit toxic gases like **carbon monoxide, nitrogen oxides, unburnt hydrocarbons, and lead particles**.
+• **Carbon Monoxide Dangers**: **Carbon monoxide (CO)** is a colorless, odorless, and poisonous gas produced by the incomplete combustion of fuels; it binds to hemoglobin and starves the body of oxygen.
+• **Sulfur Dioxide Effects**: Industrial combustion of sulfur-bearing coal and petroleum releases **sulfur dioxide ($SO_2$)**, a pungent gas that causes severe respiratory irritation and plant damage.
+• **Nitrogen Oxides**: High-temperature combustion processes inside engines generate **nitrogen oxides ($NO_x$)**, which contribute significantly to smog formation and acid deposition.
+• **Particulate Matter (PM)**: Tiny solid or liquid particles suspended in the air, known as **Particulate Matter ($PM_{2.5}$ and $PM_{10}$)**, penetrate deep into human lungs and bloodstream.
+• **Smog Formation**: The dangerous atmospheric condition known as **smog** forms when smoke and industrial pollutants mix with natural fog, severely reducing visibility and air quality.
+• **Indoor Air Pollution**: Pollution is not restricted outdoors; indoor air can be heavily contaminated by **tobacco smoke, burning biomass fuels, paint fumes, and chemical cleaning agents**.
+• **Respirable Health Impacts**: Chronic exposure to air pollution leads to debilitating respiratory illnesses, including **asthma, chronic bronchitis, emphysema, and lung cancer**.
+• **Cardiovascular Damage**: Beyond the lungs, fine particulate air pollution enters the cardiovascular system, increasing the risk of **heart attacks, strokes, and high blood pressure**.
+• **Vulnerable Populations**: **Children and the elderly** are particularly susceptible to the toxic effects of air pollution because their respiratory and immune systems are less resilient.
+• **Ozone Depletion**: Chlorofluorocarbons (CFCs) and other ozone-depleting substances release chlorine atoms into the stratosphere, breaking down the protective **ozone layer**.
+• **Ultraviolet Radiation Risks**: Thinning of the ozone layer allows harmful **ultraviolet (UV) radiation** to reach the Earth's surface, increasing the incidence of skin cancer and cataracts in humans.
+
+----PAGE-BREAK---
+
+• **Acid Rain Phenomenon**: When industrial emissions of sulfur dioxide and nitrogen oxides react with water vapor in the atmosphere, they form sulfuric and nitric acids, falling as **acid rain**.
+• **Acid Deposition pH**: Normal rainwater is slightly acidic due to dissolved carbon dioxide, but acid rain possesses a significantly lower **pH level (often between 4.2 and 4.4)**.
+• **Aquatic Life Damage**: Acid rain lowers the pH of lakes, streams, and rivers, making the water acidic and causing widespread death among **fish, amphibians, and aquatic microorganisms**.
+• **Forest Destruction**: Acid precipitation leaches vital nutrient minerals like calcium and magnesium from the soil and damages leaves, leading to the decline and death of entire **forest ecosystems**.
+• **Architectural Corrosion**: Acid rain reacts chemically with carbonate minerals in building materials, dissolving and eroding famous stone monuments, statues, and structures like the **Taj Mahal**.
+• **Global Warming Definition**: **Global warming** is the long-term heating of Earth's climate system observed since the pre-industrial period due to human activities, primarily fossil fuel burning.
+• **Greenhouse Gases**: Gases that trap heat in the atmosphere—such as **carbon dioxide, methane, nitrous oxide, and water vapor**—are known as **greenhouse gases**.
+• **Methane Emissions**: **Methane ($CH_4$)** is a potent greenhouse gas released during agricultural activities like rice cultivation, livestock enteric fermentation, and from decomposing landfill waste.
+• **Enhanced Greenhouse Effect**: Human activities have artificially thickened the greenhouse gas blanket, trapping excess solar heat and intensifying the natural warming process, known as the **enhanced greenhouse effect**.
+• **Melting Glaciers**: Rising global temperatures cause polar ice caps, alpine glaciers, and permafrost to melt at alarming rates, threatening polar ecosystems and global freshwater supplies.
+• **Sea Level Rise**: The melting of land-based ice and the thermal expansion of warming ocean waters lead to a steady rise in global **sea levels**, threatening low-lying coastal cities.
+• **Extreme Weather Events**: Climate change driven by atmospheric warming increases the frequency and severity of **extreme weather events**, including hurricanes, droughts, heatwaves, and floods.
+• **Agricultural Disruption**: Shifts in rainfall patterns and rising temperatures disrupt traditional agricultural calendars, posing severe threats to global **food security and crop yields**.
+• **Habitat Loss**: Changing climatic conditions force numerous plant and animal species out of their natural habitats, accelerating extinction rates and threatening global **biodiversity**.
+• **Ozone Hole**: The significant seasonal thinning of the stratospheric ozone layer, particularly over the Antarctic region, is commonly referred to as the **ozone hole**.
+• **Montreal Protocol**: The **Montreal Protocol** is a landmark international environmental treaty successfully established to phase out the production and consumption of ozone-depleting substances.
+
+----PAGE-BREAK---
+
+• **Air Pollution Control**: Mitigating air pollution requires a combination of technological innovations, regulatory policies, and conscious daily behavioral changes by all citizens.
+• **Cleaner Technologies**: Industries must adopt advanced **pollution control devices**, such as electrostatic precipitators, scrubbers, and catalytic converters, to filter toxic emissions.
+• **Alternative Energy Sources**: Transitioning away from coal and oil toward clean, renewable energy sources—such as **solar power, wind energy, hydroelectricity, and geothermal power**—is vital.
+• **Public Transportation**: Encouraging the use of **public mass transit systems, carpooling, and electric vehicles** drastically reduces the volume of vehicular exhaust emissions.
+• **Afforestation Programs**: Planting trees on a massive scale through **afforestation and reforestation** initiatives helps absorb excess carbon dioxide and naturally purifies the air.
+• **Ban on Stubble Burning**: Strict governmental prohibitions and alternative agricultural machinery must be utilized to stop the harmful practice of **crop stubble burning** in farming regions.
+• **Eco-Friendly Fuels**: Promoting cleaner-burning fuels, such as **Compressed Natural Gas (CNG)** and liquefied petroleum gas (LPG), helps minimize vehicular pollution in urban areas.
+• **Waste Management**: Proper municipal waste management practices prevent the open burning of garbage, which is a major source of toxic dioxins and particulate air pollution.
+• **Energy Conservation**: Conserving electricity in homes and offices indirectly reduces the burning of fossil fuels at thermal power plants, thereby lowering atmospheric **carbon footprints**.
+• **Environmental Legislation**: Governments must enact and rigorously enforce strict **environmental laws and emission standards** for factories, vehicles, and construction sites.
+• **Mass Awareness Campaigns**: Educating the general public about the severe dangers of air pollution through **community workshops, school curricula, and media campaigns** is indispensable.
+• **World Environment Day**: Observing global events like **World Environment Day** serves as a vital reminder for humanity to unite in protecting the Earth's atmosphere.
+• **Air Quality Index (AQI)**: Governments monitor daily atmospheric health using the **Air Quality Index (AQI)**, a standardized numerical scale that communicates pollution levels to citizens.
+• **AQI Color Coding**: The AQI utilizes color-coded categories, ranging from **Good (Green)** to **Severe/Hazardous (Maroon)**, to advise people on when to avoid outdoor physical exertion.
+• **Personal Protective Measures**: During days with severely poor air quality, individuals may need to wear specialized **respirator masks (such as N95 masks)** to filter out dangerous particulate matter.
+• **Individual Responsibility**: Every human being shares a moral obligation to adopt **sustainable living practices** that minimize waste and preserve clean air for future generations.
+
+----PAGE-BREAK---
+
+• **Properties of Air Investigations**: Practical science experiments demonstrate that air exerts upward pressure, occupies space, and expands when subjected to thermal energy.
+• **Inversion Experiment**: Filling a glass completely with water, placing a stiff piece of cardboard over the rim, and carefully turning it upside down demonstrates that **air pressure** pushes upward to hold the water.
+• **Air Expansion Principle**: When a balloon fitted over the neck of an empty glass bottle is gently heated in a warm water bath, the air inside expands and **inflates the balloon**.
+• **Air Contraction**: Conversely, placing a heated bottle in cold water causes the internal air to cool, contract, and draw the attached balloon inward, demonstrating **thermal contraction**.
+• **Combustion Support**: Experiments prove that **oxygen** is the active gas required for combustion; a burning candle placed under a sealed glass jar extinguishes once its internal oxygen is depleted.
+• **Carbon Dioxide Test**: Passing exhaled breath or the gas produced by a chemical reaction through **limewater (calcium hydroxide solution)** turns the clear liquid milky, confirming the presence of carbon dioxide.
+• **Lime Water Reaction**: The milky appearance during the carbon dioxide test is caused by the formation of an insoluble white precipitate known as **calcium carbonate**.
+• **Air Purity Indicators**: Certain biological organisms, such as **lichens**, act as natural bioindicators because they refuse to grow in environments with high levels of sulfur dioxide air pollution.
+• **Dust Particle Demonstration**: Shining a bright beam of light through a dark room reveals dancing specks of dust suspended in the air, illustrating that air is laden with **particulate matter**.
+• **Wind Vane Instrument**: A **wind vane** (or weather vane) is a classic meteorological instrument used to determine the precise direction from which the wind is blowing.
+• **Anemometer Tool**: An **anemometer** is a specialized scientific device featuring rotating cups that measures and records the current **wind speed**.
+• **Barometer Device**: Atmospheric pressure is measured accurately using a scientific instrument known as a **barometer**, which can be mercury-based or aneroid.
+• **Rain Gauge Usage**: Although measuring precipitation rather than air directly, a **rain gauge** helps meteorologists track weather patterns associated with atmospheric moisture levels.
+• **Weather Balloons**: **Weather balloons** carrying radiosondes are launched high into the troposphere and stratosphere to collect critical data on temperature, humidity, and air pressure.
+• **Satellite Monitoring**: Modern environmental science relies heavily on advanced **earth observation satellites** to track global air pollution plumes, ozone layer status, and cloud formations.
+• **Scientific Observation Habit**: Cultivating the scientific habit of observing local weather changes fosters a deeper appreciation for the complex dynamics of Earth's **atmospheric envelope**.
+
+----PAGE-BREAK---
+
+• **Historical Discoveries**: The scientific understanding of air evolved significantly during the late 18th century through the pioneering experiments of brilliant chemists and natural philosophers.
+• **Joseph Priestley's Contribution**: In 1774, the English chemist **Joseph Priestley** discovered "dephlogisticated air" (which we now know as oxygen) by heating mercuric calx using a concentrated sunlight beam.
+• **Lavoisier's Naming of Oxygen**: The renowned French chemist **Antoine Lavoisier** repeated Priestley's experiments, recognized the gas as a distinct chemical element, and officially named it **oxygen**.
+• **Discovery of Nitrogen**: Antoine Lavoisier and Scottish chemist Daniel Rutherford independently identified the unreactive portion of air, initially called "azot," which is today known as **nitrogen**.
+• **Cavendish and Trace Gases**: In 1785, **Henry Cavendish** conducted meticulous experiments on air and noted a tiny, highly unreactive residual gas bubble, which decades later led to the discovery of **argon**.
+• **Historical Significance of Discoveries**: These groundbreaking discoveries shattered the ancient Greek belief that air was a single, indivisible **fundamental element** of the natural universe.
+• **Element versus Mixture**: Scientific analysis proved definitively that air is a **mechanical mixture** of various gases rather than a unified chemical compound with a single chemical formula.
+• **Constant Proportions**: Despite the numerous human activities releasing pollutants, the primary proportions of nitrogen and oxygen in the lower atmosphere remain remarkably **constant worldwide**.
+• **Photosynthetic Equilibrium**: The remarkable stability of atmospheric oxygen levels is maintained globally through the immense photosynthetic activity of **terrestrial forests and marine phytoplankton**.
+• **Phytoplankton Role**: Microscopic floating marine plants known as **phytoplankton** produce a staggering percentage of the Earth's total atmospheric oxygen through oceanic photosynthesis.
+• **Atmospheric Mass**: The total mass of the Earth's atmosphere is estimated to be approximately **$5.15 \times 10^{15}$ tonnes**, an immense weight held in place by gravity.
+• **Karman Line**: The boundary separating the Earth's atmosphere from outer space is internationally defined as the **Kármán line**, located at an altitude of 100 kilometers above sea level.
+• **Exosphere Boundary**: The outermost layer of the atmosphere, the **exosphere**, gradually thins out until individual gas molecules escape entirely into the vacuum of outer space.
+• **Aurora Borealis**: Energetic solar wind particles colliding with atmospheric gases in the thermosphere produce breathtaking natural light displays known as the **aurora borealis and aurora australis**.
+• **Radio Wave Reflection**: The **ionosphere** (part of the thermosphere) contains electrically charged ions that reflect radio waves back toward the Earth's surface, enabling long-distance wireless communication.
+• **Meteor Incineration**: Small rocks and debris from space entering the atmosphere burn up due to intense frictional heat in the **mesosphere**, producing bright streaks of light known as shooting stars.
+
+----PAGE-BREAK---
+
+• **Interdependence of Life**: Every physiological process on Earth highlights the deep **interdependence** between living organisms and the atmospheric air that surrounds them.
+• **Carbon Cycle Integration**: Atmospheric carbon dioxide is absorbed by plants during photosynthesis, incorporated into organic plant tissues, consumed by animals, and returned via respiration and decay in the **carbon cycle**.
+• **Nitrogen Cycle Mechanics**: Although nitrogen makes up 78% of air, animals and plants cannot use it directly; it must be fixed into nitrates by **nitrogen-fixing bacteria** or lightning in the **nitrogen cycle**.
+• **Root Nodule Symbiosis**: Rhizobium bacteria residing in the root nodules of leguminous plants convert atmospheric nitrogen into usable nitrogen compounds, enriching agricultural soil naturally.
+• **Ozone Shield Protection**: The stratospheric **ozone shield** absorbs lethal UV-C and dangerous UV-B solar radiation, safeguarding animal and plant DNA from severe mutations and damage.
+• **Weather and Climate Control**: Atmospheric moisture and wind circulation patterns drive the **water cycle**, dictating global rainfall distribution, agriculture, and freshwater availability.
+• **Temperature Moderation**: The greenhouse gases in the air prevent the planet from freezing during the dark nighttime hours, maintaining an average global temperature suitable for **liquid water and life**.
+• **Acoustic Wave Transmission**: Air serves as the necessary **physical medium** for sound propagation; without air molecules to vibrate, the Earth would be a completely silent place.
+• **Flight Principles**: Birds, insects, and human-engineered airplanes achieve **aerodynamic flight** by interacting with the physical properties, density, and pressure of surrounding air.
+• **Lift Generation**: Airplanes utilize specially shaped wings called **airfoils** to create pressure differentials (Bernoulli's principle) that generate the upward **lift** required to fly.
+• **Combustion and Energy**: Controlled combustion of fuels in air provides the thermal and mechanical energy that powers modern **global industry, transportation, and electricity generation**.
+• **Environmental Stewardship**: Recognizing the vital role of air in sustaining existence mandates responsible **environmental stewardship** and active protection of our atmospheric resources.
+• **Interdisciplinary Science**: The study of air bridges multiple scientific disciplines, including **chemistry, biology, meteorology, physics, and environmental science**.
+• **Future Challenges**: Addressing atmospheric challenges like climate change requires international cooperation, scientific innovation, and a fundamental shift toward sustainable human lifestyles.
+• **Holistic Understanding**: A comprehensive mastery of Chapter 10 "Air" empowers students to appreciate the delicate balance that sustains all living systems on our home planet.
+• **Conclusion of Study Notes**: These comprehensive study notes provide Class 5 students with an exhaustive, high-yield foundation for academic excellence in DAV Science.
+
+----PAGE-BREAK---
+
+• **Key Term Glossary (Atmosphere)**: The multi-layered gaseous envelope held around the Earth by gravity, protecting life from solar radiation and extreme temperatures.
+• **Key Term Glossary (Nitrogen)**: The most abundant gas in the atmosphere (78%), serving as a diluent for oxygen and a vital nutrient when fixed into soil compounds.
+• **Key Term Glossary (Oxygen)**: The essential life-supporting gas (21%) required by aerobic organisms for cellular respiration and energy production.
+• **Key Term Glossary (Carbon Dioxide)**: A minor trace gas (0.038%) critical for plant photosynthesis and acting as a natural greenhouse heat-trapping agent.
+• **Key Term Glossary (Air Pressure)**: The downward force exerted by the weight of atmospheric air molecules acting upon a specific unit of surface area.
+• **Key Term Glossary (Wind)**: Atmospheric air moving horizontally across the Earth's surface, driven by differences in atmospheric pressure and solar heating.
+• **Key Term Glossary (Air Pollution)**: The contamination of the atmosphere by harmful chemical gases, toxic particulates, and biological agents from natural or human sources.
+• **Key Term Glossary (Smog)**: A hazardous atmospheric condition resulting from the mixture of industrial smoke, vehicular exhaust, and natural fog.
+• **Key Term Glossary (Acid Rain)**: Precipitation rendered acidic by dissolved sulfur dioxide and nitrogen oxides, causing widespread ecological and architectural damage.
+• **Key Term Glossary (Global Warming)**: The long-term rise in average global temperatures driven by the human-enhanced greenhouse effect and fossil fuel combustion.
+• **Key Term Glossary (Greenhouse Gases)**: Atmospheric gases such as carbon dioxide and methane that absorb and trap infrared thermal radiation near the Earth's surface.
+• **Key Term Glossary (Ozone Layer)**: A protective region of stratospheric gas that absorbs harmful ultraviolet radiation emitted by the sun.
+• **Key Term Glossary (Stomata)**: Microscopic pores located primarily on the underside of plant leaves that facilitate the exchange of respiratory and photosynthetic gases.
+• **Key Term Glossary (Respiration)**: The biochemical process by which living cells consume oxygen to break down nutrients and release metabolic energy.
+• **Key Term Glossary (Photosynthesis)**: The biological process by which green plants utilize sunlight, water, and carbon dioxide to synthesize glucose and release oxygen.
+• **Key Term Glossary (Air Quality Index)**: A numerical and color-coded scale utilized by meteorological authorities to communicate daily pollution levels and health risks to the public.

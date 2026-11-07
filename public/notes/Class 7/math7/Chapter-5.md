@@ -1,0 +1,156 @@
+• **Chapter Title**: Application of Percentage, as prescribed in the DAV Public School Board Class 7 Mathematics curriculum.
+• **Fundamental Concept**: Percentage is defined as a fraction with a denominator of 100, represented by the symbol '%', meaning 'per hundred' or 'out of a hundred'.
+• **Historical and Practical Relevance**: Percentages provide a standardized, universal method for comparing quantities of different sizes by reducing them to a common base of 100.
+• **Conversion of Fraction to Percentage**: To convert any given fraction into a percentage, multiply the fraction by 100% and simplify the resulting expression to its lowest terms.
+• **Conversion of Percentage to Fraction**: To convert a percentage into a fraction, remove the percentage sign and divide the numerical value by 100, subsequently reducing it to its simplest form.
+• **Conversion of Decimal to Percentage**: To convert a decimal number to a percentage, multiply the decimal by 100 and affix the percentage symbol, which is equivalent to shifting the decimal point two places to the right.
+• **Conversion of Percentage to Decimal**: To convert a percentage into a decimal, remove the percentage symbol and divide the number by 100, shifting the decimal point two places to the left.
+• **Core Formula for Finding Percentage of a Quantity**: To find $x\%$ of a given quantity $Q$, compute the mathematical expression $\frac{x}{100} \times Q$, ensuring both quantities share consistent units.
+• **Inverse Percentage Relationship**: Calculating what percentage one quantity ($a$) is of another quantity ($b$) involves the formula $\left(\frac{a}{b} \times 100\right)\%$, provided both $a$ and $b$ are expressed in identical units.
+• **Unit Consistency Rule**: All computations involving percentages require that the quantities being compared, added, or subtracted must first be converted into the same unit of measurement.
+• **Part-Whole Relationship**: Percentages fundamentally express a part-to-whole relationship where the 'whole' represents the base value of 100 percent and the 'part' represents the calculated percentage share.
+• **Increasing a Quantity by a Given Percentage**: To increase a number by $p\%$, calculate $p\%$ of the original number and add this calculated value to the original number.
+• **Decreasing a Quantity by a Given Percentage**: To decrease a number by $p\%$, calculate $p\%$ of the original number and subtract this calculated value from the original number.
+• **Alternative Increase Factor Method**: Increasing a quantity by $r\%$ can be executed in a single step by multiplying the original quantity by the decimal factor $\left(1 + \frac{r}{100}\right)$.
+• **Alternative Decrease Factor Method**: Decreasing a quantity by $r\%$ can be executed in a single step by multiplying the original quantity by the decimal factor $\left(1 - \frac{r}{100}\right)$.
+• **Interchangeability of Percentages**: The expression '$a\%$ of $b$' is mathematically identical and yields the exact same numerical result as '$b\%$ of $a$', a property useful for mental calculations.
+
+----PAGE-BREAK---
+
+• **Introduction to Commercial Mathematics**: The application of percentages extends extensively into commercial transactions, forming the foundational bedrock for trade, banking, and commerce.
+• **Cost Price (CP)**: Cost Price is strictly defined as the total financial amount paid by a merchant or buyer to purchase an article, inclusive of any additional overhead expenses like transportation or local taxes.
+• **Selling Price (SP)**: Selling Price is the final monetary amount at which an article is sold to the end consumer by the merchant or shopkeeper.
+• **Profit Condition**: Profit or Gain occurs exclusively when the Selling Price of an article is strictly greater than its Cost Price ($\text{SP} > \text{CP}$).
+• **Loss Condition**: Loss occurs exclusively when the Cost Price of an article is strictly greater than its Selling Price ($\text{CP} > \text{SP}$).
+• **Zero Profit, Zero Loss**: When the Selling Price equals the Cost Price ($\text{SP} = \text{CP}$), the transaction yields neither profit nor loss, representing a break-even scenario.
+• **Absolute Profit Formula**: Profit is calculated using the strict algebraic equation $\text{Profit} = \text{SP} - \text{CP}$, representing the net monetary gain on a transaction.
+• **Absolute Loss Formula**: Loss is calculated using the strict algebraic equation $\text{Loss} = \text{CP} - \text{SP}$, representing the net monetary deficit on a transaction.
+• **Base Reference for Commercial Calculations**: Both profit and loss are never calculated on the Selling Price under standard commercial conventions; they are always computed as a percentage of the Cost Price.
+• **Profit Percentage Formula**: Profit percentage ($\text{Profit}\%$) is mathematically formulated as $\left(\frac{\text{Profit}}{\text{CP}} \times 100\right)\%$.
+• **Loss Percentage Formula**: Loss percentage ($\text{Loss}\%$) is mathematically formulated as $\left(\frac{\text{Loss}}{\text{CP}} \times 100\right)\%$.
+• **Deriving SP from CP and Profit%**: When Cost Price and Profit percentage are known, the Selling Price is derived using the formula $\text{SP} = \text{CP} \times \left(1 + \frac{\text{Profit}\%}{100}\right)$.
+• **Deriving SP from CP and Loss%**: When Cost Price and Loss percentage are known, the Selling Price is derived using the formula $\text{SP} = \text{CP} \times \left(1 - \frac{\text{Loss}\%}{100}\right)$.
+• **Deriving CP from SP and Profit%**: When Selling Price and Profit percentage are given, the original Cost Price is calculated via the formula $\text{CP} = \frac{\text{SP}}{1 + \frac{\text{Profit}\%}{100}}$.
+• **Deriving CP from SP and Loss%**: When Selling Price and Loss percentage are given, the original Cost Price is calculated via the formula $\text{CP} = \frac{\text{SP}}{1 - \frac{\text{Loss}\%}{100}}$.
+• **Overhead Expenses Handling**: Any secondary costs incurred on repairs, transport, labor, or octroi after purchasing an item must be added directly to the initial purchase price to establish the net Cost Price.
+
+----PAGE-BREAK---
+
+• **Introduction to Financial Discounts**: In commercial retail, discounting is a standard sales promotion strategy where a reduction is offered on the listed price of an item.
+• **Marked Price (MP) Definition**: Marked Price, also widely known as List Price or Tag Price, is the official price printed, tagged, or labeled on an article by the manufacturer or seller.
+• **Rationale for Marking Up**: Merchants typically mark up prices above the actual Cost Price to accommodate potential customer bargaining, seasonal discounts, and still secure a net profit.
+• **Discount Definition**: Discount is the specific monetary reduction or rebate allowed by a shopkeeper or merchant on the Marked Price of an article.
+• **Base Reference for Discount**: Unlike profit and loss (which reference Cost Price), discount is always calculated as a percentage or absolute value of the Marked Price.
+• **Absolute Discount Formula**: Discount is calculated using the formula $\text{Discount} = \text{Marked Price (MP)} - \text{Selling Price (SP)}$.
+• **Discount Percentage Formula**: Discount percentage ($\text{Discount}\%$) is mathematically defined as $\left(\frac{\text{Discount}}{\text{MP}} \times 100\right)\%$.
+• **Relating SP, MP, and Discount**: The Selling Price of a discounted article can be determined directly by subtracting the absolute discount from the Marked Price: $\text{SP} = \text{MP} - \text{Discount}$.
+• **Alternative SP Formula using Discount%**: When Marked Price and Discount percentage are provided, Selling Price is computed as $\text{SP} = \text{MP} \times \left(1 - \frac{\text{Discount}\%}{100}\right)$.
+• **Finding Marked Price from SP and Discount%**: The Marked Price can be isolated and calculated when Selling Price and Discount percentage are known using $\text{MP} = \frac{\text{SP}}{1 - \frac{\text{Discount}\%}{100}}$.
+• **Sequential Discount Mechanics**: Successive or multiple discounts occur when a series of percentage reductions are applied one after another on the diminishing price of an article.
+• **Net Price After Successive Discounts**: For successive discounts of $a\%$ and $b\%$ on an item with Marked Price $\text{MP}$, the final Selling Price is calculated as $\text{SP} = \text{MP} \times \left(1 - \frac{a}{100}\right) \times \left(1 - \frac{b}{100}\right)$.
+• **Fallacy of Adding Successive Discounts**: Successive discounts of $10\%$ and $20\%$ are mathematically not equal to a single flat discount of $30\%$; their cumulative effect is always lesser than their direct sum.
+• **Equivalent Single Discount**: The net single discount equivalent to two successive discounts $a\%$ and $b\%$ is given by the formula $\left(a + b - \frac{ab}{100}\right)\%$.
+• **Interplay Between CP, MP, SP, and Profit**: A comprehensive retail problem often requires linking Cost Price to Marked Price via profit margins, and subsequently linking Marked Price to Selling Price via discount percentages.
+• **Role of Taxes (GST introduction context)**: In modern applications, indirect taxes like GST are typically calculated on the final discounted Selling Price, increasing the total amount payable by the consumer.
+
+----PAGE-BREAK---
+
+• **Introduction to Simple Interest**: Financial transactions involving borrowing or lending money introduce the concept of interest, which is the rental cost paid by a borrower to a lender for using their capital.
+• **Principal (P) Definition**: Principal is the original sum of money borrowed, lent, or invested at the beginning of a financial period, excluding any accumulated interest.
+• **Interest (I) Definition**: Interest is the extra monetary compensation paid by the borrower to the lender over and above the principal amount for the privilege of using the funds.
+• **Time Period (T) Definition**: Time is the duration for which the principal amount is borrowed, lent, or invested, typically measured in years, months, or days.
+• **Rate of Interest (R) Definition**: Rate of Interest is the percentage charged on the principal amount, usually expressed as a percentage per annum (% p.a.), meaning per year.
+• **Simple Interest (SI) Characteristic**: Simple Interest is defined as interest calculated uniformly and exclusively on the original principal amount throughout the entire duration of the loan or investment.
+• **Core Simple Interest Formula**: The mathematical formula for computing Simple Interest is $\text{SI} = \frac{P \times R \times T}{100}$, where $P$ is Principal, $R$ is Rate percent per annum, and $T$ is Time in years.
+• **Amount (A) Definition**: Amount is the total cumulative sum returned to the lender at the end of the time period, comprising the original principal plus the accumulated simple interest.
+• **Core Amount Formula**: The total Amount is calculated using the fundamental algebraic equation $\text{Amount} (A) = \text{Principal} (P) + \text{Simple Interest} (SI)$.
+• **Alternative Amount Formula**: By substituting the Simple Interest formula, Amount can also be expressed directly as $A = P \left(1 + \frac{R \times T}{100}\right)$.
+• **Isolating Principal from SI**: When Simple Interest, Rate, and Time are known, the original Principal can be derived using the transposition formula $P = \frac{\text{SI} \times 100}{R \times T}$.
+• **Isolating Rate from SI**: When Simple Interest, Principal, and Time are provided, the annual Rate of Interest is calculated using $R = \frac{\text{SI} \times 100}{P \times T}$.
+• **Isolating Time from SI**: When Simple Interest, Principal, and Rate are provided, the Time period in years is calculated using $T = \frac{\text{SI} \times 100}{P \times R}$.
+• **Time Conversion Rule - Months**: If the time period $T$ is given in months, it must be converted into years by dividing the number of months by 12 before applying the SI formula ($T = \frac{\text{Months}}{12}$).
+• **Time Conversion Rule - Days**: If the time period $T$ is given in days, it must be converted into years by dividing the number of days by 365 (or 366 for leap years), i.e., $T = \frac{\text{Days}}{365}$.
+• **Currency and Unit Uniformity**: All monetary values in interest calculations must be expressed in the same currency units, and the time unit must strictly align with the annual specification of the interest rate.
+
+----PAGE-BREAK---
+
+• **Introduction to Compound Interest**: While simple interest calculates returns only on the initial principal, compound interest reinvests earned interest, causing interest to earn interest over time.
+• **Compounding Period Concept**: Compounding refers to the frequency at which accumulated interest is added to the principal to form a new, larger base for calculating subsequent interest.
+• **Growth Trajectory of Compound Interest**: Compound interest exhibits exponential growth, making it exceptionally advantageous for long-term investments and detrimental for compounding unsecured debts.
+• **Distinction Between SI and CI for Year 1**: For the very first compounding period or first year, Simple Interest and Compound Interest computed on the same principal, rate, and time are identically equal.
+• **Mechanism of Year-by-Year Compound Calculation**: To calculate compound interest manually year by year, compute the simple interest for year one, add it to the principal to get the amount, which then becomes the principal for year two.
+• **Derivation of Compound Amount Formula**: Let initial principal be $P$, annual interest rate be $R\%$. Amount after 1 year is $P\left(1 + \frac{R}{100}\right)$, and after 2 years is $P\left(1 + \frac{R}{100}\right)^2$.
+• **General Compound Amount Formula**: The total Amount ($A$) accrued under annual compounding after $n$ years is given by the standard algebraic formula $A = P \left(1 + \frac{R}{100}\right)^n$.
+• **General Compound Interest Formula**: Compound Interest ($\text{CI}$) is calculated by subtracting the original principal from the final compound amount: $\text{CI} = A - P = P \left[\left(1 + \frac{R}{100}\right)^n - 1\right]$.
+• **Semi-Annual Compounding**: When interest is compounded half-yearly, the annual rate $R$ is halved to $\frac{R}{2}\%$ per half-year, and the time period $n$ in years is doubled to $2n$ half-years.
+• **Quarterly Compounding**: When interest is compounded quarterly, the annual rate $R$ is divided by 4 to $\frac{R}{4}\%$ per quarter, and the time period $n$ in years is multiplied by 4 to $4n$ quarters.
+• **Fractional Years in Compound Interest**: If time is given as a mixed fraction like $2\frac{1}{2}$ years, the amount formula is structured as $A = P \left(1 + \frac{R}{100}\right)^2 \left(1 + \frac{\frac{1}{2}R}{100}\right)$.
+• **Comparison of Returns (SI vs CI)**: Over time periods greater than one year, Compound Interest consistently yields a significantly higher return than Simple Interest for the same principal and rate.
+• **Principal Isolation in CI**: If the final compound amount $A$, rate $R$, and time $n$ are known, the original principal $P$ is isolated using the formula $P = \frac{A}{\left(1 + \frac{R}{100}\right)^n}$.
+• **Growth and Decay Applications**: The compound interest mathematical structure serves as the underlying model for population growth, bacterial proliferation, and asset depreciation calculations.
+• **Depreciation Concept**: Depreciation is the gradual, permanent reduction in the monetary value of fixed assets (like machinery, vehicles, or buildings) due to wear, tear, and obsolescence over time.
+• **Depreciation Formula**: The depreciated value ($V$) of an asset after $n$ years with an initial value $V_0$ and annual depreciation rate $r\%$ is calculated as $V = V_0 \left(1 - \frac{r}{100}\right)^n$.
+
+----PAGE-BREAK---
+
+• **Population Growth Applications**: Percentage increase models are extensively utilized in demographics to project population growth, urban expansion, and census analytics over consecutive years.
+• **Population Growth Formula**: If a city's initial population is $P_0$ and it grows at a constant annual percentage rate of $r\%$, the population $P_n$ after $n$ years is expressed as $P_n = P_0 \left(1 + \frac{r}{100}\right)^n$.
+• **Population Decline Modeling**: In scenarios involving rural-to-urban migration or disease outbreaks, population decrease is modeled using the decay formula $P_n = P_0 \left(1 - \frac{r}{100}\right)^n$.
+• **Inverse Population Problems**: Problems requiring the determination of past population counts ($n$ years ago) utilize the division model: Past Population = $\frac{\text{Present Population}}{\left(1 + \frac{r}{100}\right)^n}$.
+• **Mixture and Alloy Percentages**: Percentages govern metallurgical problems involving alloys, where the proportion of various metallic elements (such as copper, zinc, or gold) is expressed as a percentage of the total mass.
+• **Mass Conservation in Mixtures**: When mixing two solutions or alloys of differing purity percentages, the total mass of pure substance before mixing equals the sum of pure substances in the components.
+• **Solution Concentration Percentages**: Chemical and commercial solutions express concentration as weight-by-weight percentage or volume-by-volume percentage, dictating the ratio of solute to total solution.
+• **Dilution Calculations**: Adding pure solvent to a solution alters its total volume while keeping the absolute mass of the solute constant, a principle solved using percentage balance equations.
+• **Voting and Election Percentages**: Election mathematics utilizes percentages to calculate voter turnout, valid versus invalid votes, winning margins, and absolute majorities required for victory.
+• **Total Electorate Breakdown**: The total electorate is partitioned into votes cast (turnout) and votes abstained, where votes cast further subdivide into valid votes and rejected/invalid votes.
+• **Candidate Vote Share**: A winning candidate's vote percentage is calculated relative to the total number of valid votes polled, or sometimes relative to the entire electoral roll as specified.
+• **Examination and Grading Percentages**: Academic performance evaluations rely on percentages to standardize scores, compute aggregate marks, and determine grade thresholds across diverse subjects.
+• **Percentage Marks Formula**: A student's percentage in an examination is computed as $\left(\frac{\text{Obtained Marks}}{\text{Maximum Marks}} \times 100\right)\%$.
+• **Passing Mark Thresholds**: Competitive and school examinations establish mandatory minimum percentage criteria, such as $33\%$ or $40\%$, required to successfully pass a test.
+• **Income Tax and Salary Deductions**: Employment mathematics applies percentages to compute gross salary deductions, provident fund contributions, and progressive income tax liabilities.
+• **Net Take-Home Pay**: Net Take-Home Salary is derived by subtracting all statutory percentage-based deductions and taxes from the employee's total Gross Monthly Income.
+
+----PAGE-BREAK---
+
+• **Advanced Profit and Loss Scenarios**: Complex word problems often involve transactions where an article changes hands multiple times through a chain of a manufacturer, wholesaler, retailer, and consumer.
+• **Multiple Profit/Loss Chain Formula**: When an article is sold at a profit of $a\%$ by $A$ to $B$, and at a loss of $b\%$ by $B$ to $C$, the final Selling Price is $SP_C = CP_A \times \left(1 + \frac{a}{100}\right) \times \left(1 - \frac{b}{100}\right)$.
+• **False Weights and Measures**: Dishonest trade practices involving false weighing scales alter effective cost and selling prices, requiring careful percentage analysis of actual versus stated quantities.
+• **Effective Profit from False Weights**: If a dishonest merchant uses a weight of $900\text{g}$ instead of $1\text{kg}$ while selling goods at cost price, the effective profit percentage is calculated on the actual quantity dispensed: $\left(\frac{100}{900} \times 100\right)\%$.
+• **Simultaneous Same Profit/Loss Percentage**: When two distinct articles are sold at the same Selling Price—one at a profit of $x\%$ and the other at a loss of $x\%$—the transaction invariably results in a net loss.
+• **Net Loss Percentage Formula for Equal SP**: The specific net loss percentage incurred when two items are sold at identical prices with equal profit and loss percentages ($x$) is always given by $\left(\frac{x}{10}\right)^2\%$.
+• **Cost Price Relationship for Equal SP**: In the scenario where two items yield equal selling prices with matching profit/loss rates, their respective cost prices can be isolated to evaluate absolute monetary loss.
+• **Partnership Profit Distribution**: Business partnerships utilize percentages or fractional shares to distribute net annual profits among partners proportional to their invested capital and duration.
+• **Commission and Brokerage**: Real estate agents, sales representatives, and stockbrokers earn remuneration calculated as a specific percentage (commission rate) of the total transaction value they facilitate.
+• **Commission Formula**: Absolute Commission earned is computed as $\text{Commission} = \text{Total Transaction Value} \times \left(\frac{\text{Commission Rate}}{100}\right)$.
+• **Net Proceeds After Commission**: The net amount received by a principal seller after paying a broker's commission is calculated as $\text{Net Proceeds} = \text{Total Value} \times \left(1 - \frac{\text{Commission Rate}}{100}\right)$.
+• **Insurance Premium Calculations**: Insurance companies determine annual premium amounts by charging a specific percentage (premium rate) of the total insured value or sum assured of an asset.
+• **Municipal Taxes and Property Rates**: Local government bodies levy property taxes calculated as a fixed percentage of the annual rental value or assessed capital value of urban real estate.
+• **Stock Market and Dividend Yields**: Financial mathematics applies percentages to share face values to compute annual dividends earned by investors in corporate equity.
+• **Discount Series Optimization**: Retailers analyze different successive discount combinations to determine which structure offers the highest promotional appeal while maintaining minimum target profit margins.
+• **Error Analysis in Percentage Calculations**: Word problems frequently test conceptual clarity by examining errors made when a student calculates a percentage of a number using an incorrect base or operator.
+
+----PAGE-BREAK---
+
+• **Problem-Solving Strategies - Algebraic Formulation**: Translating percentage word problems into precise linear equations in one variable is the most robust method for isolating unknown quantities.
+• **Let-X Methodology**: Assigning the variable $x$ to represent an unknown base quantity (such as original Cost Price or initial Population) simplifies the establishment of mathematical equality.
+• **Fractional Equivalents for Mental Math**: Memorizing standard fraction-to-percentage equivalents (e.g., $\frac{1}{2} = 50\%$, $\frac{1}{4} = 25\%$, $\frac{1}{5} = 20\%$, $\frac{1}{8} = 12.5\%$) accelerates computational speed.
+• **Proportion Method for Percentages**: Setting up direct proportions in the format $\frac{\text{Part}}{\text{Whole}} = \frac{x}{100}$ provides an alternative visual framework for solving missing-value percentage problems.
+• **Handling Percentage Points**: A percentage point is the arithmetic difference between two percentage values (e.g., an increase from $5\%$ to $8\%$ represents an increase of $3$ percentage points, not $60\%$).
+• **Percentage Change Formula**: The relative change between an initial value ($V_1$) and a final value ($V_2$) is calculated using the standard percentage change formula: $\left(\frac{V_2 - V_1}{V_1} \times 100\right)\%$.
+• **Positive vs Negative Percentage Change**: A positive percentage change indicates growth or an increase, whereas a negative percentage change indicates reduction, shrinkage, or depreciation.
+• **Base Sensitivity in Percentage Change**: The magnitude of a percentage change is highly sensitive to the chosen base; a change from 100 to 200 is a $100\%$ increase, whereas a change from 200 to 100 is only a $50\%$ decrease.
+• **Successive Percentage Net Effect**: Two successive percentage changes of $+a\%$ and $+b\%$ do not result in $(a+b)\%$; the net cumulative percentage change is given by $\left(a + b + \frac{ab}{100}\right)\%$.
+• **Net Effect with Mixed Increases and Decreases**: If a quantity increases by $a\%$ and then decreases by $b\%$, the net percentage change is evaluated using the algebraic formula $\left(a - b - \frac{ab}{100}\right)\%$.
+• **Symmetry in Percentage Adjustments**: To restore a quantity that has been increased by $r\%$ back to its original value, the required decrease is less than $r\%$, calculated as $\left(\frac{r}{100 + r} \times 100\right)\%$.
+• **Restoring Decreased Quantities**: Conversely, to restore a quantity that has been decreased by $r\%$ back to its original value, the required increase is $\left(\frac{r}{100 - r} \times 100\right)\%$.
+• **Dimensional Scaling in Geometry**: When the side length of a square or radius of a circle is increased by $x\%$, its perimeter scales by $x\%$, but its area scales by a nonlinear factor of $\left(2x + \frac{x^2}{100}\right)\%$.
+• **Volume Scaling in 3D Geometry**: When the linear dimensions of a cube or sphere are increased by $x\%$, its surface area scales nonlinearly, and its volume scales according to cubic binomial expansion terms.
+• **Interpretation of "Percent More Than"**: Saying "A's income is $25\%$ more than B's" means $A = B + 0.25B = 1.25B$, establishing an asymmetric inverse relationship for B relative to A.
+• **Verification and Cross-Checking Techniques**: Standard verification involves working backward from the calculated answer (e.g., applying the derived profit percentage back to the cost price to verify the selling price).
+
+----PAGE-BREAK---
+
+• **Comprehensive Review of Formulas - Part 1**: 
+  - Percentage of a quantity: $\frac{x}{100} \times Q$
+  - Percentage form: $\frac{\text{Part}}{\text{Whole}} \times 100\%$
+  - Profit: $\text{

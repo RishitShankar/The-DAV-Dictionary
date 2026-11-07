@@ -1,0 +1,2 @@
+• **Chapter Overview: Temperature** as introduced in DAV Primary Mathematics Class 5 establishes the foundational concepts of measuring hotness and coldness in our daily environment.
+• **Definition of Temperature**: **Temperature** is a physical quantity that numerically expresses the degree or intensity of hotness

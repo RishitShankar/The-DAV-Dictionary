@@ -1,0 +1,5 @@
+• **Academic Introduction to Fractions**: Welcome to Class 5 Primary Mathematics Chapter 4 of the DAV Dictionary, focusing entirely on the comprehensive study of Fractional Numbers.
+• **Core Definition of a Fraction**: A fraction is mathematically defined as a numerical quantity that is not a whole number, representing a part or parts of a whole object or a whole collection.
+• **Etymology and Origin**: The word fraction originates from the Latin word "fractus," which literally translates to "broken," indicating the division of a complete entity into smaller, equal segments.
+• **Visualizing the Whole**: In primary mathematics, a "whole" can be represented by a single geometric shape (like a circle or rectangle), a single tangible object (like an apple), or a group of distinct objects (like a collection of marbles).
+• **Equal Partition
