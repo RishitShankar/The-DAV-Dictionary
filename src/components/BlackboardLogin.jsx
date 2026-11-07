@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Sparkles, Check, Key, UserCheck, Eye, EyeOff, Lock, Crown, Award, ExternalLink, Loader2, ShieldAlert, ShieldCheck, Smartphone, Monitor, AlertTriangle, LogOut, X } from 'lucide-react';
+import { Shield, Sparkles, Check, Key, UserCheck, Eye, EyeOff, Lock, Crown, Award, ExternalLink, Loader2, ShieldAlert, ShieldCheck, Smartphone, Monitor, AlertTriangle, LogOut, X, GraduationCap } from 'lucide-react';
 import { PRELOADED_DATABASE_USERS, getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
 import { fetchCloudStudents } from '../services/supabaseClient';
 import { checkDeviceSession, registerDeviceSession, getDeviceMetadata } from '../services/deviceAuthManager';
