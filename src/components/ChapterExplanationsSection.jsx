@@ -3216,30 +3216,61 @@ Please write each question clearly and show all steps, formulas, and reasoning s
                   </div>
                 </div>
 
-                {/* Actions */}
-                <div className="mt-6 pt-4 border-t border-stone-800 flex items-center justify-between gap-3">
-                  <button
-                    onClick={() => {
-                      alert(`Downloading official DAVCAE sample blueprint for ${sp.title}... This PDF is prepared in compliance with the DAV Board curriculum.`);
-                    }}
-                    className="px-4 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-stone-200 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer border border-stone-700"
-                  >
-                    <Download className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Download PDF</span>
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      if (onOpenAIWithQuestion) {
-                        onOpenAIWithQuestion(`Generate a full model practice test paper for DAV Class ${sp.classId} ${sp.subject} based on the official 80-mark blueprint with questions and step-by-step answer key.`);
-                      }
-                    }}
-                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1.5 shadow-md transition cursor-pointer"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>Start Test</span>
-                  </button>
-                </div>
+                {/* Actions */}
+                <div className="mt-6 pt-4 border-t border-stone-800 flex flex-wrap items-center justify-between gap-2.5">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        const targetUrl = sp.pdfUrl || (sp.driveId ? `https://drive.google.com/file/d/${sp.driveId}/preview` : null);
+                        if (onOpenPdfReader && targetUrl) {
+                          onOpenPdfReader({
+                            id: sp.id,
+                            title: sp.title,
+                            class: sp.classId,
+                            subject: sp.subject,
+                            pdfUrl: targetUrl,
+                            downloadUrl: sp.downloadPdf
+                          });
+                        } else if (targetUrl) {
+                          window.open(targetUrl, '_blank');
+                        } else {
+                          alert(`Opening official DAVCAE sample blueprint for ${sp.title}...`);
+                        }
+                      }}
+                      className="px-3.5 py-2 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                    >
+                      <BookOpen className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Read Online</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        const downloadTarget = sp.downloadPdf || (sp.driveId ? `https://drive.google.com/uc?export=download&id=${sp.driveId}` : null);
+                        if (downloadTarget && (downloadTarget.startsWith('http://') || downloadTarget.startsWith('https://'))) {
+                          window.open(downloadTarget, '_blank');
+                        } else {
+                          alert(`Downloading official DAVCAE sample blueprint for ${sp.title}... This PDF is prepared in compliance with the DAV Board curriculum.`);
+                        }
+                      }}
+                      className="px-3.5 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-stone-200 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer border border-stone-700"
+                    >
+                      <Download className="w-3.5 h-3.5 text-stone-400" />
+                      <span>Download PDF</span>
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      if (onOpenAIWithQuestion) {
+                        onOpenAIWithQuestion(`Generate a full model practice test paper for DAV Class ${sp.classId} ${sp.subject} based on the official 80-mark blueprint with questions and step-by-step answer key.`);
+                      }
+                    }}
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-white text-xs font-black flex items-center gap-1.5 shadow-md transition cursor-pointer"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Practice AI</span>
+                  </button>
+                </div>
               </div>
             ))}
           </div>

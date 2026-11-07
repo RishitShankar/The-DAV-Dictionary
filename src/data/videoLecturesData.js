@@ -3537,6 +3537,139 @@ export const DAV_PYQ_ARCHIVE = [
  */
 export const DAV_SAMPLE_PAPERS = [
   {
+    id: 'davcae_class8_sample_2025_26',
+    classId: '8',
+    subject: 'All Subjects (Complete Board Book)',
+    title: 'DAVCAE Official Class 8 Sample Question Papers & Marking Scheme (2025-26)',
+    blueprint: '80 Marks Annual Board Blueprint • All Core Subjects • 480 Pages',
+    badge: 'Latest 2025-26 Pattern',
+    rating: '5.0 ★ Complete DAV Board Book',
+    driveId: '1H-nl2k7HaJXYVV-nyeIt6KeJL66jV-Hy',
+    pdfUrl: 'https://drive.google.com/file/d/1H-nl2k7HaJXYVV-nyeIt6KeJL66jV-Hy/preview',
+    downloadPdf: 'https://drive.google.com/uc?export=download&id=1H-nl2k7HaJXYVV-nyeIt6KeJL66jV-Hy',
+    pages: 480,
+    session: '2025 - 2026',
+    instructions: [
+      'Official DAV Centre for Academic Excellence (DAVCAE, New Delhi) publication.',
+      'Includes English Course A, Hindi (Higher/Lower), Sanskrit, Science & Technology, Mathematics, Social Science, Naitik Shiksha, Punjabi.',
+      'Contains complete 80-mark blueprints, marking schemes, and step-by-step evaluator guidelines.'
+    ]
+  },
+  {
+    id: 'davcae_class8_sample_2024_25',
+    classId: '8',
+    subject: 'All Subjects (Complete Board Book)',
+    title: 'DAVCAE Official Class 8 Sample Question Papers & Marking Scheme (2024-25)',
+    blueprint: '80 Marks Board Exam Series • All Subjects • 480 Pages',
+    badge: 'Annual Board Edition',
+    rating: '5.0 ★ Highly Recommended',
+    driveId: '14cTD4ifJrQjI9-0dTHgkPm5cVT474xbc',
+    pdfUrl: 'https://drive.google.com/file/d/14cTD4ifJrQjI9-0dTHgkPm5cVT474xbc/preview',
+    downloadPdf: 'https://drive.google.com/uc?export=download&id=14cTD4ifJrQjI9-0dTHgkPm5cVT474xbc',
+    pages: 480,
+    session: '2024 - 2025',
+    instructions: [
+      'Official DAVCAE 80-mark model papers for Class VIII.',
+      'All 6 core academic subjects plus regional languages and Dharam Shiksha.',
+      'Detailed marks distribution, answer keys, and grading rubrics.'
+    ]
+  },
+  {
+    id: 'davcae_class8_sample_2023_24_term2',
+    classId: '8',
+    subject: 'All Subjects (Complete Board Book)',
+    title: 'DAVCAE Official Class 8 Sample Question Papers & Marking Scheme (2023-24 Term II)',
+    blueprint: '80 Marks Term II Blueprint • All 6 Subjects • 464 Pages',
+    badge: 'Term II Board Edition',
+    rating: '4.9 ★ Complete Blueprint',
+    driveId: '1aGxCUoBEsdaaLPR5LMZVWlWtbmSKh4MJ',
+    pdfUrl: 'https://drive.google.com/file/d/1aGxCUoBEsdaaLPR5LMZVWlWtbmSKh4MJ/preview',
+    downloadPdf: 'https://drive.google.com/uc?export=download&id=1aGxCUoBEsdaaLPR5LMZVWlWtbmSKh4MJ',
+    pages: 464,
+    session: '2023 - 2024 Term II',
+    instructions: [
+      'Official second-term board examination model test papers.',
+      'Includes map skills for SST and high-order thinking skills (HOTS) questions.',
+      'DAVCAE examiner scoring guidelines included.'
+    ]
+  },
+  {
+    id: 'davcae_class8_sample_2023_24_annual',
+    classId: '8',
+    subject: 'All Subjects (Complete Board Book)',
+    title: 'DAVCAE Official Class 8 Sample Question Papers & Marking Scheme (2023-24 Annual)',
+    blueprint: '80 Marks Annual Blueprint • High-Res Official Book • 356 Pages',
+    badge: 'Annual Board Edition',
+    rating: '4.9 ★ Official Print',
+    driveId: '1rUl4wq-KPITJ13t1DsSkSn-yIjeZnRmt',
+    pdfUrl: 'https://drive.google.com/file/d/1rUl4wq-KPITJ13t1DsSkSn-yIjeZnRmt/preview',
+    downloadPdf: 'https://drive.google.com/uc?export=download&id=1rUl4wq-KPITJ13t1DsSkSn-yIjeZnRmt',
+    pages: 356,
+    session: '2023 - 2024',
+    instructions: [
+      'Published by DAV Centre for Academic Excellence, Chitra Gupta Road, New Delhi.',
+      'Covers English, Hindi, Sanskrit, Science, Mathematics, and Social Science.',
+      'Step-by-step solutions for all questions.'
+    ]
+  },
+  {
+    id: 'davcae_class8_sample_2022_23',
+    classId: '8',
+    subject: 'All Subjects (Complete Board Book)',
+    title: 'DAVCAE Official Class 8 Sample Question Papers & Marking Scheme (2022-23)',
+    blueprint: '80 Marks Board Examination Papers • All Subjects • 432 Pages',
+    badge: 'Complete Board Series',
+    rating: '4.9 ★ Verified CAE Archive',
+    driveId: '1xlXZg9UpPxaUSzCFO3QIo-LNMufqdrKf',
+    pdfUrl: 'https://drive.google.com/file/d/1xlXZg9UpPxaUSzCFO3QIo-LNMufqdrKf/preview',
+    downloadPdf: 'https://drive.google.com/uc?export=download&id=1xlXZg9UpPxaUSzCFO3QIo-LNMufqdrKf',
+    pages: 432,
+    session: '2022 - 2023',
+    instructions: [
+      'Official DAV Board Class 8 sample question papers archive.',
+      'Includes complete marking schemes for evaluation.',
+      'Covers both objective MCQs and subjective descriptive questions.'
+    ]
+  },
+  {
+    id: 'davcae_class8_sample_2021_22',
+    classId: '8',
+    subject: 'All Subjects (Complete Board Book)',
+    title: 'DAVCAE Official Class 8 Sample Question Papers & Marking Scheme (2021-22)',
+    blueprint: '80 Marks Board Examination Papers • All Subjects • 473 Pages',
+    badge: 'DAV CAE Master Archive',
+    rating: '4.8 ★ Official Archive',
+    driveId: '1oT09oNbTCHFXtCY-TRDTtjWaOHm06F5I',
+    pdfUrl: 'https://drive.google.com/file/d/1oT09oNbTCHFXtCY-TRDTtjWaOHm06F5I/preview',
+    downloadPdf: 'https://drive.google.com/uc?export=download&id=1oT09oNbTCHFXtCY-TRDTtjWaOHm06F5I',
+    pages: 473,
+    session: '2021 - 2022',
+    instructions: [
+      'Official annual question papers collection with DAVCAE solutions.',
+      'Complete answer key and marks distribution for every subject.',
+      'Essential for long-term board pattern revision.'
+    ]
+  },
+  {
+    id: 'davcae_class8_sample_2020_21',
+    classId: '8',
+    subject: 'All Subjects (Complete Board Book)',
+    title: 'DAVCAE Official Class 8 Sample Question Papers & Marking Scheme (2020-21)',
+    blueprint: '80 Marks Board Examination Papers • All Subjects • 406 Pages',
+    badge: 'DAV CAE Foundation Archive',
+    rating: '4.8 ★ Historical Board Archive',
+    driveId: '1tQ-Var8W0YJEGU5T7r7zeX6UEv1bNVzH',
+    pdfUrl: 'https://drive.google.com/file/d/1tQ-Var8W0YJEGU5T7r7zeX6UEv1bNVzH/preview',
+    downloadPdf: 'https://drive.google.com/uc?export=download&id=1tQ-Var8W0YJEGU5T7r7zeX6UEv1bNVzH',
+    pages: 406,
+    session: '2020 - 2021',
+    instructions: [
+      'Official DAV Centre for Academic Excellence 2020-21 edition.',
+      'Full question papers and marking schemes for all Class VIII subjects.',
+      'Over 400 pages of solved questions and guidelines.'
+    ]
+  },
+  {
     id: 'sp_8_sci_2025',
     classId: '8',
     subject: 'Science',
