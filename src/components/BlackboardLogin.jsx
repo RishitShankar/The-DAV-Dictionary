@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, Sparkles, Check, Key, UserCheck, Eye, EyeOff, Lock, Crown, Award, ExternalLink, Loader2, ShieldAlert, ShieldCheck, Smartphone, Monitor, AlertTriangle, LogOut, X, GraduationCap } from 'lucide-react';
-import { PRELOADED_DATABASE_USERS, getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
+import { PRELOADED_DATABASE_USERS, getRegisteredUsers, saveRegisteredUsers, isMasterAdminId, isMasterPasswordValid } from '../data/preloadedUsers';
 import { fetchCloudStudents } from '../services/supabaseClient';
 import { checkDeviceSession, registerDeviceSession, getDeviceMetadata } from '../services/deviceAuthManager';
 import { GoogleIcon } from './GoogleIcon';
@@ -31,7 +31,9 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
         local.forEach(u => mergedMap.set(u.id.toLowerCase(), u));
         cloudUsers.forEach(u => {
           const key = u.id.toLowerCase();
-          mergedMap.set(key, { ...(mergedMap.get(key) || {}), ...u });
+          const existing = mergedMap.get(key) || {};
+          const resolvedPass = (u.password && u.password !== '••••••••') ? u.password : (existing.password || u.password);
+          mergedMap.set(key, { ...existing, ...u, password: resolvedPass });
         });
         saveRegisteredUsers(Array.from(mergedMap.values()));
       }
@@ -75,7 +77,11 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
     setIsAuthenticating(true);
 
     // 1. Check Master Developer & Administrator Credentials (Dimension 4)
-    if (idVal === 'rishibhai' && passVal === '123456789@aA') {
+    const normalizedId = idVal.toLowerCase();
+    const isAdminId = isMasterAdminId(idVal);
+    const isAdminPass = isMasterPasswordValid(passVal);
+
+    if (isAdminId && isAdminPass) {
       const adminUser = {
         id: 'rishibhai',
         name: 'Rishit Shankar',
@@ -110,20 +116,36 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
 
     // 2. Check Database Accounts (Local cache first)
     const storedUsers = getRegisteredUsers();
-    let matched = storedUsers.find(
-      (u) => (u.id.toLowerCase() === idVal.toLowerCase() || (u.admissionNumber && u.admissionNumber.toLowerCase() === idVal.toLowerCase()) || (u.name && u.name.toLowerCase() === idVal.toLowerCase())) && u.password === passVal
-    );
+    let matched = storedUsers.find((u) => {
+      const idMatch = (
+        (u.id && u.id.toLowerCase() === normalizedId) ||
+        (u.studentId && u.studentId.toLowerCase() === normalizedId) ||
+        (u.admissionNumber && u.admissionNumber.toLowerCase() === normalizedId) ||
+        (u.name && u.name.toLowerCase() === normalizedId)
+      );
+      if (!idMatch) return false;
+      if (isMasterAdminId(u.id) && isAdminPass) return true;
+      return u.password === passVal;
+    });
 
     // If not found in local cache, query live Supabase Cloud Database!
     if (!matched) {
       try {
         const cloudUsers = await fetchCloudStudents();
-        if (cloudUsers) {
-          matched = cloudUsers.find(
-            (u) => (u.id.toLowerCase() === idVal.toLowerCase() || (u.admissionNumber && u.admissionNumber.toLowerCase() === idVal.toLowerCase()) || (u.name && u.name.toLowerCase() === idVal.toLowerCase())) && u.password === passVal
-          );
+        if (cloudUsers && Array.isArray(cloudUsers)) {
+          matched = cloudUsers.find((u) => {
+            const idMatch = (
+              (u.id && u.id.toLowerCase() === normalizedId) ||
+              (u.studentId && u.studentId.toLowerCase() === normalizedId) ||
+              (u.admissionNumber && u.admissionNumber.toLowerCase() === normalizedId) ||
+              (u.name && u.name.toLowerCase() === normalizedId)
+            );
+            if (!idMatch) return false;
+            if (isMasterAdminId(u.id) && isAdminPass) return true;
+            return u.password === passVal;
+          });
           if (matched) {
-            const updated = [matched, ...storedUsers.filter(u => u.id.toLowerCase() !== matched.id.toLowerCase())];
+            const updated = [matched, ...storedUsers.filter(u => u.id?.toLowerCase() !== matched.id?.toLowerCase())];
             saveRegisteredUsers(updated);
           }
         }
@@ -285,6 +307,9 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
                     id="userIdInputMobile"
                     name="userIdMobile"
                     type={showId ? "text" : "password"}
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck="false"
                     placeholder="Enter your Student ID (e.g. XYZ)"
                     value={userId}
                     onChange={(e) => {
@@ -428,6 +453,9 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
                       name="userId"
                       type={showId ? "text" : "password"}
                       autoComplete="username"
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      spellCheck="false"
                       placeholder="Enter your ID (e.g. XYZ)"
                       value={userId}
                       onChange={(e) => {

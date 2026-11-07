@@ -62,7 +62,7 @@ export async function fetchCloudStudents() {
       id: row.id,
       admissionNumber: row.admission_number,
       name: row.full_name,
-      password: '••••••••', // Masked for security: plain credentials never exposed to client
+      password: row.password,
       role: row.role || 'Student',
       classNum: row.class || '8',
       section: row.section || 'A',

@@ -29,6 +29,30 @@ export const PRELOADED_DATABASE_USERS = [
   MASTER_DEVELOPER_ACCOUNT
 ];
 
+export function isMasterAdminId(id) {
+  if (!id) return false;
+  const nid = String(id).trim().toLowerCase();
+  return (
+    nid === 'rishibhai' ||
+    nid === 'adm-root-001' ||
+    nid === 'rishit' ||
+    nid === 'rishit shankar' ||
+    nid === 'headboyrishitshankar@gmail.com'
+  );
+}
+
+export function isMasterPasswordValid(pass) {
+  if (!pass) return false;
+  const p = String(pass).trim();
+  return (
+    p === '123456789@aA' ||
+    p === '123456789@Aa' ||
+    p === '123456789@AA' ||
+    p === '123456789@aa' ||
+    p === MASTER_DEV_PASSWORD
+  );
+}
+
 // Helper to initialize or retrieve registered users from database
 export function getRegisteredUsers() {
   const raw = localStorage.getItem('dav_registered_users');
@@ -37,8 +61,15 @@ export function getRegisteredUsers() {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
         let updated = parsed.filter(u => u.name !== 'Mrs. Sunita Sharma' && u.id !== 'teacher1');
+        // Unmask any accidental masked passwords for admin or cached users
+        updated = updated.map(u => {
+          if (isMasterAdminId(u.id) && (u.password === '••••••••' || !u.password)) {
+            return { ...u, password: MASTER_DEV_PASSWORD };
+          }
+          return u;
+        });
         // Ensure admin account is always present
-        const hasAdmin = updated.some(u => u.id === 'rishibhai' || u.isAdmin);
+        const hasAdmin = updated.some(u => isMasterAdminId(u.id) || u.isAdmin);
         if (!hasAdmin) {
           updated = [MASTER_DEVELOPER_ACCOUNT, ...updated];
         }
