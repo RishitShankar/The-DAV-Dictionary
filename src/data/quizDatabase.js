@@ -771,12 +771,17 @@ export function getQuizForChapter(classNum, subjectId, chapterNum) {
     return CHAPTER_QUIZZES[directKey];
   }
 
-  // 2. Fallback to closest subject quiz in that class or flagship Class 8
+  // 2. Fallback to closest subject quiz in that class
   const fallbackKey = `${cNum}_${sKey}_1`;
   if (CHAPTER_QUIZZES[fallbackKey]) {
     return CHAPTER_QUIZZES[fallbackKey];
   }
 
-  // 3. Flagship Standard Quiz
+  // 3. Subject-Specific Curated Fallbacks
+  if (sKey === 'sci' && CHAPTER_QUIZZES['8_sci_1']) return CHAPTER_QUIZZES['8_sci_1'];
+  if (sKey === 'math' && CHAPTER_QUIZZES['8_math_1']) return CHAPTER_QUIZZES['8_math_1'];
+  if (sKey === 'sst' && CHAPTER_QUIZZES['8_sst_16']) return CHAPTER_QUIZZES['8_sst_16'];
+  if (CHAPTER_QUIZZES[`${cNum}_sci_1`]) return CHAPTER_QUIZZES[`${cNum}_sci_1`];
+
   return CHAPTER_QUIZZES['8_sst_16'];
 }

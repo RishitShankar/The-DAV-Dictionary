@@ -559,7 +559,7 @@ export function DonationSection({ currentUser, onRequireLogin }) {
                 </div>
 
                 <a
-                  href={paytmUrl}
+                  href={paytmUrl && (paytmUrl.startsWith('https://paytm.me/') || paytmUrl.startsWith('https://p.paytm.me/')) ? paytmUrl : 'https://paytm.me/'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full py-3 px-4 rounded-xl bg-[#002e6e] hover:bg-[#001d47] text-white font-extrabold text-xs flex items-center justify-center gap-2 transition shadow-md cursor-pointer block text-center"

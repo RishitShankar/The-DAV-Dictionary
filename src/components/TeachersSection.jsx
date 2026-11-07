@@ -1703,6 +1703,19 @@ export function TeachersSection({
   const queuedCandidatesRef = useRef([]);
   const speechRecogRef = useRef(null);
 
+  // Global Section Unmount Resource Cleanup (Prevents audio leaks and background CPU drain)
+  useEffect(() => {
+    return () => {
+      try {
+        if (ringtonePlayerRef.current?.stop) ringtonePlayerRef.current.stop();
+        if (callTimerRef.current) clearInterval(callTimerRef.current);
+        if (callAnimFrameRef.current) cancelAnimationFrame(callAnimFrameRef.current);
+        if (speechRecogRef.current) speechRecogRef.current.stop();
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      } catch (e) {}
+    };
+  }, []);
+
   // Synthesized 5-Ringtone Master Audio Engine (Web Audio API)
   const createWhatsAppRingtonePlayer = (mode = 'incoming', toneId = null) => {
     try {

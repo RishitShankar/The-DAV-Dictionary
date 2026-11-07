@@ -19,6 +19,26 @@ export default async function handler(req) {
     return new Response('Missing target URL parameter', { status: 400 });
   }
 
+  // Security: Restrict streaming proxy strictly to trusted DAV textbook repositories
+  try {
+    const parsedTarget = new URL(targetUrl);
+    const hostname = parsedTarget.hostname.toLowerCase();
+    const isAllowedHost = (
+      hostname === 'media.githubusercontent.com' ||
+      hostname === 'raw.githubusercontent.com' ||
+      hostname === 'github.com' ||
+      hostname.endsWith('.githubusercontent.com') ||
+      hostname.endsWith('.supabase.co') ||
+      hostname === 'thedavdictionary.vercel.app' ||
+      hostname === 'localhost'
+    );
+    if (!isAllowedHost) {
+      return new Response('Forbidden: Target domain is not permitted for PDF streaming.', { status: 403 });
+    }
+  } catch (urlErr) {
+    return new Response('Invalid target URL format.', { status: 400 });
+  }
+
   const range = req.headers.get('range');
   const headers = new Headers();
   if (range) {

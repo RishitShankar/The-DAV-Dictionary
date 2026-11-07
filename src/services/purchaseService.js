@@ -1,5 +1,5 @@
 import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
-import { saveCloudStudent } from './supabaseClient';
+import { saveCloudStudent, getSupabaseClient } from './supabaseClient';
 import { safeSetUser } from '../utils/safeStorage';
 
 const PURCHASES_STORAGE_KEY = 'dav_pending_purchases';
@@ -111,6 +111,27 @@ export function submitPurchaseRequest({
 
   const updated = [newPurchase, ...current];
   savePurchases(updated);
+
+  // Sync purchase request to Supabase Cloud so Administrator Rishit can verify it from any device
+  try {
+    const client = getSupabaseClient();
+    if (client) {
+      client.from('dav_purchases').upsert({
+        id: newPurchase.id,
+        student_id: newPurchase.studentId,
+        student_name: newPurchase.studentName,
+        student_email: newPurchase.studentEmail,
+        plan: newPurchase.plan,
+        amount: newPurchase.amount,
+        payment_method: newPurchase.paymentMethod,
+        reference_note: newPurchase.referenceNote,
+        status: 'pending',
+        created_at: newPurchase.createdAt
+      }).catch(() => {});
+    }
+  } catch (cloudErr) {
+    console.warn('Could not sync purchase to cloud:', cloudErr);
+  }
 
   window.dispatchEvent(new CustomEvent('dav_purchase_submitted', { detail: newPurchase }));
   return { success: true, purchase: newPurchase };

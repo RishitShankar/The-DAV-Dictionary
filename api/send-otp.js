@@ -1,7 +1,7 @@
 import tls from 'tls';
 import crypto from 'crypto';
 
-const AUTH_SECRET = 'DAV_PORTAL_SECURE_AUTH_KEY_2026_HEADBOY_RISHIT';
+const AUTH_SECRET = process.env.DAV_AUTH_SECRET || 'DAV_PORTAL_SECURE_AUTH_KEY_2026_HEADBOY_RISHIT';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -12,8 +12,8 @@ const CORS_HEADERS = {
 
 export function sendGmailTls({ toEmail, otpCode }) {
   return new Promise((resolve, reject) => {
-    const from = 'rishitshankar@gmail.com';
-    const pass = 'rjpwzpozoxnvyqfq';
+    const from = process.env.GMAIL_USER || 'rishitshankar@gmail.com';
+    const pass = process.env.GMAIL_APP_PASSWORD || 'rjpwzpozoxnvyqfq';
     const socket = tls.connect(465, 'smtp.gmail.com', () => {
       socket.write('EHLO localhost\r\n');
     });

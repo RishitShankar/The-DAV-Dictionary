@@ -46,11 +46,12 @@ export function RangoliCursorEffect() {
       return c;
     };
 
-    // Resize canvas
+    // Resize canvas safely with transform matrix reset to prevent exponential scale explosion
     const handleResize = () => {
       const dpr = window.devicePixelRatio || 1;
       canvas.width = window.innerWidth * dpr;
       canvas.height = window.innerHeight * dpr;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
     };
 

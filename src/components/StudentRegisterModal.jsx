@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { 
   sendRealEmailOtp, 
+  verifyRealEmailOtp,
   registerFullStudentAccount, 
   findUserByGoogleEmail 
 } from '../services/googleAuthService';
@@ -179,6 +180,18 @@ export function StudentRegisterModal({ isOpen, onClose, onRegisterSuccess }) {
     setErrorMsg('');
 
     try {
+      // 1. Strictly verify 6-digit OTP code before creating account
+      const verifyRes = await verifyRealEmailOtp({
+        email: email.trim().toLowerCase(),
+        otp: cleanOtp
+      });
+
+      if (!verifyRes.success) {
+        setLoading(false);
+        setErrorMsg(verifyRes.error || 'Invalid or expired 6-digit OTP code. Please enter the correct code.');
+        return;
+      }
+
       // Register account in preloaded database and Supabase
       const regResult = await registerFullStudentAccount({
         fullName: fullName.trim(),

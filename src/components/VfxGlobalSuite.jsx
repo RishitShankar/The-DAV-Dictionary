@@ -78,7 +78,21 @@ export function VfxGlobalSuite({ isDevMode = false, showConstellation = false })
       }
     };
 
-    window.addEventListener('dav_trigger_confetti', spawnConfetti);
+    let isRunning = false;
+
+    const startLoop = () => {
+      if (!isRunning) {
+        isRunning = true;
+        animationFrameId = requestAnimationFrame(render);
+      }
+    };
+
+    const handleConfettiTrigger = (e) => {
+      spawnConfetti(e);
+      startLoop();
+    };
+
+    window.addEventListener('dav_trigger_confetti', handleConfettiTrigger);
 
     const render = () => {
       if (particles.length > 0) {
@@ -113,18 +127,17 @@ export function VfxGlobalSuite({ isDevMode = false, showConstellation = false })
           }
           ctx.restore();
         }
+        animationFrameId = requestAnimationFrame(render);
       } else {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        isRunning = false; // Gracefully pause loop when no confetti is active (0% idle battery drain)
       }
-      animationFrameId = requestAnimationFrame(render);
     };
-
-    animationFrameId = requestAnimationFrame(render);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
-      window.removeEventListener('dav_trigger_confetti', spawnConfetti);
+      window.removeEventListener('dav_trigger_confetti', handleConfettiTrigger);
     };
   }, []);
 

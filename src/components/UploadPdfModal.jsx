@@ -50,13 +50,17 @@ export function UploadPdfModal({ isOpen, onClose, onAddPdf, currentUser }) {
 
       onAddPdf(newPdfRecord);
 
-      // Save to teacher submissions queue for developer review in Section 12
+      // Save metadata to teacher submissions queue (without massive binary payload to prevent 5MB localStorage quota crash)
       try {
         const existingSubmissions = JSON.parse(localStorage.getItem('dav_pending_teacher_pdfs') || '[]');
-        existingSubmissions.unshift(newPdfRecord);
-        localStorage.setItem('dav_pending_teacher_pdfs', JSON.stringify(existingSubmissions));
+        const safeMetadata = { ...newPdfRecord, fileData: null, hasInMemoryData: true };
+        existingSubmissions.unshift(safeMetadata);
+        // Keep max 20 recent submissions in metadata queue
+        localStorage.setItem('dav_pending_teacher_pdfs', JSON.stringify(existingSubmissions.slice(0, 20)));
         window.dispatchEvent(new CustomEvent('dav_developer_reviews_updated'));
-      } catch (e) {}
+      } catch (e) {
+        console.warn('Could not cache submission metadata to localStorage:', e);
+      }
 
       setIsSuccess(true);
       try {

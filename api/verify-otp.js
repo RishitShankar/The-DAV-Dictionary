@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-const AUTH_SECRET = 'DAV_PORTAL_SECURE_AUTH_KEY_2026_HEADBOY_RISHIT';
+const AUTH_SECRET = process.env.DAV_AUTH_SECRET || 'DAV_PORTAL_SECURE_AUTH_KEY_2026_HEADBOY_RISHIT';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',

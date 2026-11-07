@@ -1,10 +1,12 @@
 // Pre-configured Verified Database Accounts for DAV Dictionary
 // Dimension 4: Master Developer & Administrator (Rishit Shankar)
-// Paid students start at 0 until registered by the administrator in the Developer Panel.
+// Master password can be overridden via VITE_MASTER_DEVELOPER_PASSWORD environment variable
+
+const MASTER_DEV_PASSWORD = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_MASTER_DEVELOPER_PASSWORD) || '123456789@aA';
 
 export const MASTER_DEVELOPER_ACCOUNT = {
   id: 'rishibhai',
-  password: '123456789@aA',
+  password: MASTER_DEV_PASSWORD,
   name: 'Rishit Shankar',
   role: 'Administrator & Developer',
   classNum: '8',

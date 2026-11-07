@@ -379,12 +379,17 @@ export function QuestionsAnswersSection({
       window.speechSynthesis.cancel();
     }
     playSfx('launch');
+    let targetUrl = url;
+    if (!targetUrl || targetUrl.trim() === '') {
+      const q = encodeURIComponent(`DAV Class ${selectedClass} ${selectedSubject?.name || ''} Chapter ${selectedChapter?.number || ''} ${selectedChapter?.title || ''} solutions question answer`);
+      targetUrl = `https://www.google.com/search?q=${q}`;
+    }
     const label = sourceKey.toUpperCase().replace('-', ' ');
     setRedirectToast(`Launching ${label}...`);
     setTimeout(() => {
       setRedirectToast(null);
     }, 3000);
-    window.open(url, '_blank', 'noopener,noreferrer');
+    window.open(targetUrl, '_blank', 'noopener,noreferrer');
   };
 
   // Close modal back to arcade hub

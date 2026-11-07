@@ -4,7 +4,7 @@ import {
   Crown, Award, MapPin, Heart, BookOpen, Sparkles, Download, 
   Upload, Printer, GraduationCap, Phone, Home, Mail, Key, Lock
 } from 'lucide-react';
-import { updateCloudPassword } from '../services/supabaseClient';
+import { updateCloudPassword, saveCloudStudent } from '../services/supabaseClient';
 import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
 import { getDeviceMetadata } from '../services/deviceAuthManager';
 import { safeSetItem, compressImageFile } from '../utils/safeStorage';
@@ -168,9 +168,30 @@ export function StudentProfileSection({ user, onLogout }) {
     }
   };
 
-  const handleManualSave = (e) => {
+  const handleManualSave = async (e) => {
     e.preventDefault();
     const success = safeSetItem(storageKey, JSON.stringify(profile));
+
+    // Persist student profile changes to Supabase Cloud so details sync across devices
+    try {
+      if (profile.studentId || user?.id) {
+        saveCloudStudent({
+          id: profile.studentId || user?.id,
+          admissionNumber: profile.admissionNumber || '',
+          fullName: profile.fullName || profile.name || '',
+          classNum: profile.classNum || '8',
+          section: profile.section || 'A',
+          phone: profile.phoneNumber || '',
+          motherName: profile.motherName || '',
+          fatherName: profile.fatherName || '',
+          plan: user?.plan || 'normal',
+          dimension: user?.dimension || 1
+        }).catch(() => {});
+      }
+    } catch (cloudErr) {
+      console.warn('Could not sync profile to cloud:', cloudErr);
+    }
+
     if (success) {
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 2500);

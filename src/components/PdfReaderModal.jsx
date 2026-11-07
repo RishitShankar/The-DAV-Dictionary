@@ -71,9 +71,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     if (pdfUrl.startsWith('/')) {
       absoluteUrl = `https://thedavdictionary.vercel.app${pdfUrl}`;
     }
-    if (isMobileOrApk && (absoluteUrl.startsWith('http://') || absoluteUrl.startsWith('https://'))) {
-      return `https://docs.google.com/viewer?embedded=true&url=${encodeURIComponent(absoluteUrl)}`;
-    }
+    // Stream direct PDF without Google Docs Viewer 25MB limit or third-party iframe blocks
     return absoluteUrl;
   };
 

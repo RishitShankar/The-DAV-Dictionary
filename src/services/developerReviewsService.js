@@ -117,7 +117,13 @@ export async function getDeveloperReviews() {
  */
 export async function submitDeveloperReview(newReview) {
   const reviews = await getDeveloperReviews();
-  const updatedReviews = [newReview, ...reviews.filter(r => r.id !== newReview.id)];
+  // Strip oversized base64 blobs for storage stability
+  const safeReview = {
+    ...newReview,
+    voiceAudioUrl: (newReview.voiceAudioUrl && newReview.voiceAudioUrl.length > 500000) ? null : newReview.voiceAudioUrl,
+    videoUrl: (newReview.videoUrl && newReview.videoUrl.length > 500000) ? null : newReview.videoUrl
+  };
+  const updatedReviews = [safeReview, ...reviews.filter(r => r.id !== safeReview.id)];
 
   // 1. Save to LocalStorage immediately
   try {

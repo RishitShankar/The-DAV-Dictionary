@@ -80,21 +80,36 @@ class FocusSoundEngine {
       this.gainNode.gain.setValueAtTime(0.08, this.ctx.currentTime);
       this.gainNode.connect(this.ctx.destination);
 
-      // 200 Hz carrier left, 240 Hz carrier right -> 40 Hz Gamma Focus beat
+      // True Stereo Separation: 200 Hz in Left Ear, 240 Hz in Right Ear -> 40 Hz Binaural Beat in Brain
       this.binauralOsc1 = this.ctx.createOscillator();
       this.binauralOsc1.type = 'sine';
       this.binauralOsc1.frequency.setValueAtTime(200, this.ctx.currentTime);
-      this.binauralOsc1.connect(this.gainNode);
-      this.binauralOsc1.start();
 
       this.binauralOsc2 = this.ctx.createOscillator();
       this.binauralOsc2.type = 'sine';
       this.binauralOsc2.frequency.setValueAtTime(240, this.ctx.currentTime);
-      this.binauralOsc2.connect(this.gainNode);
-      this.binauralOsc2.start();
 
+      if (typeof this.ctx.createStereoPanner === 'function') {
+        const panLeft = this.ctx.createStereoPanner();
+        panLeft.pan.setValueAtTime(-1.0, this.ctx.currentTime);
+        this.binauralOsc1.connect(panLeft);
+        panLeft.connect(this.gainNode);
+
+        const panRight = this.ctx.createStereoPanner();
+        panRight.pan.setValueAtTime(1.0, this.ctx.currentTime);
+        this.binauralOsc2.connect(panRight);
+        panRight.connect(this.gainNode);
+      } else {
+        this.binauralOsc1.connect(this.gainNode);
+        this.binauralOsc2.connect(this.gainNode);
+      }
+
+      this.binauralOsc1.start();
+      this.binauralOsc2.start();
       this.currentTrack = 'binaural';
-    } catch (e) {}
+    } catch (e) {
+      console.warn('AudioContext binaural beat failed:', e);
+    }
   }
 
   playRain() {

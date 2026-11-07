@@ -187,7 +187,17 @@ export default defineConfig({
   base: './',
   plugins: [react(), devPdfStreamPlugin(), devOtpPlugin()],
   build: {
-    emptyOutDir: true
+    emptyOutDir: true,
+    chunkSizeWarningLimit: 1500,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-icons': ['lucide-react'],
+          'vendor-supabase': ['@supabase/supabase-js']
+        }
+      }
+    }
   },
   server: {
     host: true,

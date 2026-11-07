@@ -92,22 +92,31 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
     };
   }, []);
 
-  // Real-time reverse geocoding to human-readable street/area
+  // Real-time reverse geocoding to human-readable street/area with robust fallback
   const fetchAddressName = (lat, lng) => {
     try {
       fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=16`, {
         headers: { 'Accept': 'application/json' }
       })
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error('Nominatim status: ' + res.status);
+          return res.json();
+        })
         .then(data => {
           if (data && data.display_name) {
             const parts = data.display_name.split(',');
             const clean = parts.slice(0, 3).join(',').trim();
             setLiveAddress(clean);
+          } else {
+            setLiveAddress(`Near DAV Public School (${lat.toFixed(3)}°N, ${lng.toFixed(3)}°E)`);
           }
         })
-        .catch(() => {});
-    } catch (e) {}
+        .catch(() => {
+          setLiveAddress(`DAV Campus Vicinity (${lat.toFixed(3)}°N, ${lng.toFixed(3)}°E)`);
+        });
+    } catch (e) {
+      setLiveAddress(`DAV Campus Vicinity (${lat.toFixed(3)}°N, ${lng.toFixed(3)}°E)`);
+    }
   };
 
   // Primary Live Location Fetch & Continuous Tracking

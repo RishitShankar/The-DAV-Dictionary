@@ -158,13 +158,13 @@ You are the definitive authority on the official D.A.V. Public School curriculum
 /**
  * Query live Google Cloud Generative Language API
  */
-async function queryLiveGemini(apiKey, systemPrompt, userPrompt, targetModel = 'gemini-3.5-flash-lite', maxTokens = 3000) {
+async function queryLiveGemini(apiKey, systemPrompt, userPrompt, targetModel = 'gemini-1.5-flash', maxTokens = 3000) {
   const modelsToTry = [
     targetModel,
-    'gemini-3.5-flash-lite',
-    'gemini-3.5-flash',
-    'gemini-3.1-flash-lite',
-    'gemma-4-26b-a4b-it'
+    'gemini-1.5-flash',
+    'gemini-2.0-flash',
+    'gemini-1.5-pro',
+    'gemini-2.5-flash'
   ];
   const uniqueModels = [...new Set(modelsToTry)];
 
@@ -373,7 +373,7 @@ Do NOT include any markdown fences or extra prose. Return ONLY the raw JSON arra
 
   try {
     const maxTokens = count > 30 ? 8000 : count > 15 ? 5500 : 3500;
-    const res = await queryLiveGemini(apiKey, 'You are Rishi AI examination generator. Output strictly valid JSON.', prompt, 'gemini-3.5-flash-lite', maxTokens);
+    const res = await queryLiveGemini(apiKey, 'You are Rishi AI examination generator. Output strictly valid JSON.', prompt, 'gemini-1.5-flash', maxTokens);
     if (res.success && res.text) {
       let cleaned = res.text.trim();
       if (cleaned.startsWith('```json')) cleaned = cleaned.replace(/^```json\s*/, '').replace(/\s*```$/, '');
@@ -425,29 +425,29 @@ export async function askRishiAI(question, context = {}) {
 
   // 2. LIVE CLOUD GENERATION — Fully unrestricted, powerful AI like ChatGPT and Gemini
   if (apiKey) {
-    let targetModel = 'gemini-3.5-flash-lite';
+    let targetModel = 'gemini-1.5-flash';
     let maxTokens = 3500;
     let dimensionInstruction = '';
     let footerTag = '';
 
     if (dimension === 1) {
-      targetModel = 'gemini-3.5-flash-lite';
+      targetModel = 'gemini-1.5-flash';
       maxTokens = 3000;
       dimensionInstruction = `Provide clear, comprehensive, and helpful answers with clear structure and examples.`;
     } else if (dimension === 2) {
-      targetModel = 'gemini-3.5-flash-lite';
+      targetModel = 'gemini-1.5-flash';
       maxTokens = 3500;
       dimensionInstruction = `Provide in-depth, detailed explanations, exam tips, and key concepts.`;
     } else if (dimension === 3) {
-      targetModel = 'gemini-3.5-flash-lite';
+      targetModel = 'gemini-1.5-flash';
       maxTokens = 4096;
       dimensionInstruction = `Provide exhaustive, comprehensive model answers with step-by-step reasoning and deep syllabus mastery.`;
     } else if (dimension === 4) {
-      targetModel = 'gemini-3.5-flash-lite';
+      targetModel = 'gemini-1.5-flash';
       maxTokens = 4096;
       dimensionInstruction = `Provide maximum analytical depth, unconstrained intelligence, exact syllabus cross-referencing, and architectural precision.`;
     } else {
-      targetModel = 'gemini-3.5-flash-lite';
+      targetModel = 'gemini-1.5-flash';
       maxTokens = 2500;
       dimensionInstruction = `Provide helpful, direct, and complete answers.`;
     }
