@@ -51,7 +51,7 @@ function copyDir(src, dest) {
 }
 
 async function main() {
-  console.log('📱 STARTING AUTOMATED ANDROID APK BUILD FOR DAV SMART PORTAL');
+  console.log('📱 STARTING FEATHERWEIGHT ANDROID APK BUILD (1.2 MB - 1.8 MB TARGET)');
   console.log(`SDK: ${SDK}`);
   console.log(`Build Tools: ${BUILD_TOOLS_VER}`);
   console.log(`Target: ${FINAL_APK_PATH}`);
@@ -65,7 +65,10 @@ async function main() {
   if (!fs.existsSync(APKSIGNER)) throw new Error(`Missing apksigner at ${APKSIGNER}`);
   console.log('✅ Android build tools verified successfully!');
 
-  // 2. Build Vite Web App
+  // Remove any previously generated APK in public/ before Vite build so Vite does not package it into dist/
+  if (fs.existsSync(PUBLIC_APK_PATH)) fs.unlinkSync(PUBLIC_APK_PATH);
+
+  // 2. Build Fresh Production Web Bundle via Vite
   log(2, 'Building Fresh Production Web Bundle via Vite');
   const distDir = path.join(ROOT_DIR, 'dist');
   console.log('Running npm run build...');
@@ -90,24 +93,70 @@ async function main() {
   }
   ensureDir(assetsDir);
 
-  // 4. Populate Assets from dist/ (Exclude large scanned books to keep APK sleek; books stream via CDN)
-  log(4, 'Copying Web App Assets into APK Assets Directory');
-  const distEntries = fs.readdirSync(distDir);
-  for (const item of distEntries) {
-    if (item === 'books' || item === 'books_extracted') {
-      console.log(`⏩ Skipping ${item} (raw PDF scans stream dynamically from cloud CDN)`);
-      continue;
-    }
-    const sPath = path.join(distDir, item);
-    const dPath = path.join(assetsDir, item);
-    const stat = fs.statSync(sPath);
-    if (stat.isDirectory()) {
-      copyDir(sPath, dPath);
-    } else {
-      fs.copyFileSync(sPath, dPath);
+  // 4. Populate Assets from dist/ (Code-Only Architecture: 1.2 MB - 1.8 MB Target)
+  log(4, 'Copying Active Web App Assets (Pure Lines of Code + Cloud Streaming Fallback)');
+  
+  // Read dist/index.html to find the exact active production JS and CSS bundles
+  const indexHtmlPath = path.join(distDir, 'index.html');
+  const indexHtmlContent = fs.readFileSync(indexHtmlPath, 'utf8');
+  const jsMatch = indexHtmlContent.match(/src=["']\.\/assets\/(index-[^"']+\.js)["']/);
+  const cssMatch = indexHtmlContent.match(/href=["']\.\/assets\/(index-[^"']+\.css)["']/);
+
+  const activeJs = jsMatch ? jsMatch[1] : null;
+  const activeCss = cssMatch ? cssMatch[1] : null;
+
+  console.log(`Active Production JS: ${activeJs}`);
+  console.log(`Active Production CSS: ${activeCss}`);
+
+  // 1. Copy index.html
+  fs.copyFileSync(indexHtmlPath, path.join(assetsDir, 'index.html'));
+
+  // 2. Copy ONLY active JS and CSS bundles
+  const assetsSubDir = path.join(assetsDir, 'assets');
+  ensureDir(assetsSubDir);
+  if (activeJs) fs.copyFileSync(path.join(distDir, 'assets', activeJs), path.join(assetsSubDir, activeJs));
+  if (activeCss) fs.copyFileSync(path.join(distDir, 'assets', activeCss), path.join(assetsSubDir, activeCss));
+
+  // 3. Copy essential lightweight UI icons and graphics
+  const coreFiles = [
+    'favicon.ico',
+    'logo.png',
+    'logo-512.png',
+    'apple-touch-icon.png',
+    'blackboard_desk.jpg'
+  ];
+  for (const f of coreFiles) {
+    const s = path.join(distDir, f);
+    if (fs.existsSync(s)) {
+      fs.copyFileSync(s, path.join(assetsDir, f));
     }
   }
-  console.log('✅ Web app bundled into APK assets successfully!');
+
+  // 4. Copy vendor (pdf.min.js and pdf.worker.min.js)
+  const vendorDir = path.join(distDir, 'vendor');
+  if (fs.existsSync(vendorDir)) {
+    const destVendor = path.join(assetsDir, 'vendor');
+    ensureDir(destVendor);
+    for (const f of fs.readdirSync(vendorDir)) {
+      fs.copyFileSync(path.join(vendorDir, f), path.join(destVendor, f));
+    }
+  }
+
+  // Log asset sizes
+  let totalAssetBytes = 0;
+  function logWalk(dir) {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, e.name);
+      if (e.isDirectory()) logWalk(full);
+      else {
+        const sz = fs.statSync(full).size;
+        totalAssetBytes += sz;
+        console.log(`   📦 ${(sz / 1024).toFixed(1)} KB : ${path.relative(assetsDir, full)}`);
+      }
+    }
+  }
+  logWalk(assetsDir);
+  console.log(`✅ Pure Code Assets Staged: ${(totalAssetBytes / 1024 / 1024).toFixed(2)} MB uncompressed.`);
 
   // 5. Create Android Resources (strings, colors, styles, network_security_config, icons)
   log(5, 'Creating Android Manifest & Resources');
@@ -166,24 +215,18 @@ async function main() {
 </network-security-config>
 `);
 
-  // Icons (mipmap densities)
-  const densities = ['mdpi', 'hdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi'];
-  const srcLogo = path.join(ROOT_DIR, 'public', 'logo-512.png');
-  for (const d of densities) {
-    const mipDir = path.join(resDir, `mipmap-${d}`);
-    ensureDir(mipDir);
-    if (fs.existsSync(srcLogo)) {
-      fs.copyFileSync(srcLogo, path.join(mipDir, 'ic_launcher.png'));
-      fs.copyFileSync(srcLogo, path.join(mipDir, 'ic_launcher_round.png'));
-    }
-  }
+  // Icons (quantized mipmap densities: mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi)
+  const backupLogo = path.join(ROOT_DIR, 'scratch', 'logo_backup_original.png');
+  const iconSource = fs.existsSync(backupLogo) ? backupLogo : path.join(ROOT_DIR, 'public', 'logo.png');
+  console.log(`Generating optimized Android mipmap icons from: ${iconSource}`);
+  execSync(`python scripts/generate_density_icons.py "${iconSource}" "${resDir}"`, { stdio: 'inherit' });
 
   // AndroidManifest.xml
   const manifestContent = `<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.davsmartportal.app"
-    android:versionCode="2"
-    android:versionName="1.0.1">
+    android:versionCode="3"
+    android:versionName="1.0.2">
 
     <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="34" />
 
@@ -222,8 +265,8 @@ async function main() {
   fs.writeFileSync(path.join(BUILD_DIR, 'AndroidManifest.xml'), manifestContent);
   console.log('✅ AndroidManifest.xml & resources created.');
 
-  // 6. Create High-Performance Native MainActivity.java
-  log(6, 'Authoring High-Performance MainActivity.java with Direct Asset Interceptor');
+  // 6. Create High-Performance Native MainActivity.java with On-Demand Cloud Streaming
+  log(6, 'Authoring High-Performance MainActivity.java with On-Demand Cloud Streaming');
   const javaContent = `package com.davsmartportal.app;
 
 import android.app.Activity;
@@ -262,6 +305,8 @@ import android.widget.Toast;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -356,7 +401,7 @@ public class MainActivity extends Activity {
 
         // Custom User Agent to identify DAV Mobile App & Super Dimensions
         String originalUA = settings.getUserAgentString();
-        settings.setUserAgentString(originalUA + " DAVSmartPortalApp/1.0.0 (Android-APK; SuperDimension3; UltraSuperDimension2)");
+        settings.setUserAgentString(originalUA + " DAVSmartPortalApp/1.0.0 (Android-APK; SuperDimension3; UltraSuperDimension2; Featherweight)");
 
         mWebView.setWebViewClient(new LocalWebViewClient(this));
         mWebView.setWebChromeClient(new LocalChromeClient(this));
@@ -520,7 +565,31 @@ public class MainActivity extends Activity {
                             return response;
                         } catch (IOException ignored) {}
                     }
-                    Log.w(MainActivity.TAG, "Asset not found in APK assets: " + path);
+
+                    // On-Demand Cloud Streaming: If asset is not bundled in the lightweight APK,
+                    // stream it live from the official DAV Dictionary Cloud CDN!
+                    try {
+                        String cloudUrl = "https://thedavdictionary.vercel.app/" + path;
+                        Log.i(MainActivity.TAG, "On-Demand Cloud Stream: " + cloudUrl);
+                        URL url = new URL(cloudUrl);
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setRequestProperty("User-Agent", "DAVSmartPortalApp/1.0.0 (Android-APK; CloudStream)");
+                        conn.setConnectTimeout(8000);
+                        conn.setReadTimeout(20000);
+                        if (conn.getResponseCode() == 200) {
+                            InputStream cloudStream = conn.getInputStream();
+                            String mime = MainActivity.getMimeType(path);
+                            String enc = (mime.startsWith("text/") || mime.equals("application/javascript") || mime.equals("application/json")) ? "UTF-8" : null;
+                            WebResourceResponse cloudResp = new WebResourceResponse(mime, enc, cloudStream);
+                            Map<String, String> h = new HashMap<>();
+                            h.put("Access-Control-Allow-Origin", "*");
+                            cloudResp.setResponseHeaders(h);
+                            return cloudResp;
+                        }
+                    } catch (Exception cloudErr) {
+                        Log.w(MainActivity.TAG, "Cloud stream fallback notice: " + cloudErr.getMessage());
+                    }
+                    Log.w(MainActivity.TAG, "Asset not found in APK assets or Cloud CDN: " + path);
                 }
             }
             return super.shouldInterceptRequest(view, request);
@@ -677,12 +746,12 @@ public class MainActivity extends Activity {
   execSync(d8Cmd, { stdio: 'inherit' });
   console.log('✅ classes.dex generated successfully.');
 
-  // 11. Step E: Insert classes.dex AND assets/ into unaligned.apk via jar (guarantees pure POSIX forward slashes)
-  log(11, 'Injecting classes.dex and Web Assets into APK Archive');
+  // 11. Step E: Insert classes.dex AND sleek assets/ into unaligned.apk via jar
+  log(11, 'Injecting classes.dex and Featherweight Web Assets into APK Archive');
   const dexFile = path.join(dexDir, 'classes.dex');
   execSync(`jar uf "${unalignedApk}" -C "${dexDir}" classes.dex`, { stdio: 'inherit' });
   execSync(`jar uf "${unalignedApk}" -C "${BUILD_DIR}" assets`, { stdio: 'inherit' });
-  console.log('✅ classes.dex and web assets successfully injected into unaligned.apk with POSIX forward slashes.');
+  console.log('✅ classes.dex and sleek web assets injected with POSIX forward slashes.');
 
   // 12. Step F: Zipalign APK (4-byte alignment)
   log(12, 'Aligning APK on 4-byte Boundaries with zipalign');
@@ -734,10 +803,11 @@ public class MainActivity extends Activity {
 
   const apkStats = fs.statSync(FINAL_APK_PATH);
   const sizeMb = (apkStats.size / (1024 * 1024)).toFixed(2);
+  const sizeKb = (apkStats.size / 1024).toFixed(0);
 
-  console.log(`\n🎉🎉🎉 BUILD COMPLETE! 🎉🎉🎉`);
+  console.log(`\n🎉🎉🎉 FEATHERWEIGHT BUILD COMPLETE! 🎉🎉🎉`);
   console.log(`📦 APK File: ${FINAL_APK_NAME}`);
-  console.log(`📏 File Size: ${sizeMb} MB`);
+  console.log(`📏 File Size: ${sizeMb} MB (${sizeKb} KB)`);
   console.log(`📍 Local Path: ${FINAL_APK_PATH}`);
   console.log(`🌐 Public Web Path: ${PUBLIC_APK_PATH}`);
 }

@@ -187,7 +187,7 @@ export default defineConfig({
   base: './',
   plugins: [react(), devPdfStreamPlugin(), devOtpPlugin()],
   build: {
-    emptyOutDir: false
+    emptyOutDir: true
   },
   server: {
     host: true,

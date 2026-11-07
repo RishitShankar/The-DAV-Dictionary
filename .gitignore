@@ -51,6 +51,7 @@ scripts/*
 !scripts/notes_generation_ledger.json
 !scripts/grounded_notes_ledger.json
 !scripts/build_android_apk.js
+!scripts/generate_density_icons.py
 
 # Android build artifacts and big binaries
 *.apk
