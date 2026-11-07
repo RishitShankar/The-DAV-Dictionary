@@ -171,6 +171,8 @@ export const MASTER_HUBS = [
 ];
 
 export function MasterHubBottomNav({ activeSection, onSelectSection }) {
+  const [openHubId, setOpenHubId] = useState(null);
+
   // Lock background scroll and dismiss on Escape when drawer active
   useEffect(() => {
     if (!openHubId) return;
@@ -183,8 +185,6 @@ export function MasterHubBottomNav({ activeSection, onSelectSection }) {
       window.removeEventListener('keydown', onKey);
     };
   }, [openHubId]);
-
-  const [openHubId, setOpenHubId] = useState(null);
 
   // Find which hub currently holds the active section
   const currentHub = MASTER_HUBS.find(h => h.sections.some(s => s.number === activeSection)) || MASTER_HUBS[0];
