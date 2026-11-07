@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   X, Mail, User, Shield, CheckCircle, AlertCircle, 
   ArrowRight, Loader2, Sparkles, KeyRound, RefreshCw, 
@@ -13,6 +13,19 @@ import {
 import { CustomPurchaseModal } from './CustomPurchaseModal';
 
 export function GoogleAuthModal({ isOpen, onClose, initialMode = 'login', onLoginSuccess }) {
+  // Lock background scroll and dismiss on Escape
+  useEffect(() => {
+    if (!isOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e) => { if (e.key === 'Escape') onClose?.(); };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [isOpen, onClose]);
+
   // Authentication Steps: 'enter_email' -> 'enter_otp' -> 'success_offer'
   const [step, setStep] = useState('enter_email');
   const [authMethod, setAuthMethod] = useState('email');

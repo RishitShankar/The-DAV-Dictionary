@@ -37,7 +37,13 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
   const [activeSubSection, setActiveSubSection] = useState('go_to_khabra');
 
   // Sound FX Mute Toggle
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    try {
+      return localStorage.getItem('dav_navigator_muted') !== 'true';
+    } catch {
+      return true;
+    }
+  });
 
   // Player Gamer XP & Level
   const [playerXp, setPlayerXp] = useState(() => {
@@ -1037,6 +1043,9 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
               onClick={() => {
                 const next = !soundEnabled;
                 setSoundEnabled(next);
+                try {
+                  localStorage.setItem('dav_navigator_muted', next ? 'false' : 'true');
+                } catch {}
                 if (next) playFx('ding');
               }}
               className={`px-3 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 border transition cursor-pointer ${

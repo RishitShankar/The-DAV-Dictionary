@@ -1,7 +1,7 @@
 import { VfxNeuralBrainMatrix } from './vfx/VfxNeuralBrainMatrix';
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  Send, Sparkles, Key, User as UserIcon, RefreshCw, 
+  Send, Sparkles, Key, Copy, User as UserIcon, RefreshCw, 
   Check, X, BookOpen, MessageSquare, Maximize2, Minimize2, 
   Globe, Compass, CheckCircle2, ShieldCheck, Flame, Info,
   GraduationCap, FileText, CheckSquare, Layers, Award,
@@ -169,6 +169,20 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(true);
   const chatEndRef = useRef(null);
+  const [copiedMsgIdx, setCopiedMsgIdx] = useState(null);
+
+  const handleCopyAnswer = (idx, text) => {
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(text);
+      setCopiedMsgIdx(idx);
+      setTimeout(() => setCopiedMsgIdx(null), 2500);
+    }
+  };
+
+  // Auto-scroll on new messages and loading changes
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, loading]);
   const chatMessagesContainerRef = useRef(null);
 
   // Available subjects for currently selected class
@@ -901,6 +915,32 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
                     )}
 
                     {renderFormattedMessage(msg.text, isUser)}
+
+                    {!isUser && (
+                      <div className="mt-3 pt-2.5 border-t border-slate-200/90 flex items-center justify-between text-[11px] text-slate-500">
+                        <span className="font-semibold text-[10px] text-orange-900/70">
+                          DAV Academic Model Response
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopyAnswer(index, msg.text)}
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white hover:bg-orange-50 border border-slate-200 hover:border-orange-300 text-slate-700 hover:text-orange-950 font-bold transition shadow-xs cursor-pointer"
+                          title="Copy full answer text"
+                        >
+                          {copiedMsgIdx === index ? (
+                            <>
+                              <Check className="w-3.5 h-3.5 text-emerald-600" />
+                              <span className="text-emerald-700 font-black">Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3.5 h-3.5 text-slate-500" />
+                              <span>Copy Answer</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {isUser && (

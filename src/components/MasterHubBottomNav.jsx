@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   BookOpen, Sparkles, Layers, Trophy, Award, 
   Home, ClipboardList, Video, Compass, User as UserIcon, 
@@ -171,6 +171,19 @@ export const MASTER_HUBS = [
 ];
 
 export function MasterHubBottomNav({ activeSection, onSelectSection }) {
+  // Lock background scroll and dismiss on Escape when drawer active
+  useEffect(() => {
+    if (!openHubId) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e) => { if (e.key === 'Escape') setOpenHubId(null); };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [openHubId]);
+
   const [openHubId, setOpenHubId] = useState(null);
 
   // Find which hub currently holds the active section

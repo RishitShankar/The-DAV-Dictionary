@@ -15,6 +15,18 @@ export function InteractiveQuiz({
   onClose,
   onAskAI
 }) {
+  // Lock background scroll and dismiss on Escape
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e) => { if (e.key === 'Escape') onClose?.(); };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [onClose]);
+
   const [loadingQuiz, setLoadingQuiz] = useState(true);
   const [quizData, setQuizData] = useState(() => {
     const base = getQuizForChapter(classNum, subjectId, chapterNum);

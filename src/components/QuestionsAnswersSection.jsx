@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   HelpCircle, BookOpen, Sparkles, CheckCircle2, Lock, 
   ArrowRight, ExternalLink, ChevronRight, RotateCcw, 
@@ -400,6 +400,22 @@ export function QuestionsAnswersSection({
     playSfx('pop');
     setActiveModal(null);
   };
+
+  // Lock background scroll and dismiss modal on Escape
+  useEffect(() => {
+    if (!activeModal) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e) => {
+      if (e.key === 'Escape') handleCloseModal();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [activeModal]);
+
 
   // Get subjects for selected class (with universal multi-textbook grouping for English & Hindi across all classes)
   const clsStr = String(selectedClass);
@@ -835,8 +851,18 @@ export function QuestionsAnswersSection({
                   value={subjectSearch}
                   onChange={(e) => setSubjectSearch(e.target.value)}
                   placeholder={`Search Class ${selectedClass} subjects (e.g. Science, Maths, Hindi)...`}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-purple-950/60 border border-purple-700 text-white placeholder-purple-400/70 text-xs focus:outline-none focus:border-amber-400"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-purple-950/60 border border-purple-700 text-white placeholder-purple-400/70 text-xs focus:outline-none focus:border-amber-400"
                 />
+                {subjectSearch && (
+                  <button
+                    type="button"
+                    onClick={() => setSubjectSearch('')}
+                    className="absolute right-3 top-2.5 text-purple-400 hover:text-white p-0.5 cursor-pointer"
+                    title="Clear search"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
               </div>
             </div>
 
@@ -1106,8 +1132,18 @@ export function QuestionsAnswersSection({
                   value={chapterSearch}
                   onChange={(e) => setChapterSearch(e.target.value)}
                   placeholder="Search chapter number or title (e.g. 11, The Eye, Combustion, Force)..."
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-purple-950/60 border border-purple-700 text-white placeholder-purple-400/70 text-xs focus:outline-none focus:border-amber-400"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-purple-950/60 border border-purple-700 text-white placeholder-purple-400/70 text-xs focus:outline-none focus:border-amber-400"
                 />
+                {chapterSearch && (
+                  <button
+                    type="button"
+                    onClick={() => setChapterSearch('')}
+                    className="absolute right-3 top-2.5 text-purple-400 hover:text-white p-0.5 cursor-pointer"
+                    title="Clear search"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
               </div>
             </div>
 

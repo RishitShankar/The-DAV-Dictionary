@@ -1203,6 +1203,7 @@ export function TeachersSection({
 
   const [contactSearchQuery, setContactSearchQuery] = useState('');
   const [chatInputText, setChatInputText] = useState('');
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [isMessageDelivering, setIsMessageDelivering] = useState(false);
   const [isDoubtSessionResolved, setIsDoubtSessionResolved] = useState(false);
   const messagesEndRef = useRef(null);
@@ -2863,8 +2864,10 @@ export function TeachersSection({
 
   // Send Message Handler with Immediate Supabase Cloud Push
   const handleSendMessage = async () => {
+    if (isSendingMessage) return;
     if (!chatInputText.trim() && !pendingMedia) return;
     if (!activeContact) return;
+    setIsSendingMessage(true);
 
     const senderRole = isDimension5 ? 'teacher' : 'student';
     const senderName = user?.name || (isDimension5 ? 'DAV Faculty' : 'DAV Student');
@@ -2947,7 +2950,9 @@ export function TeachersSection({
 
     try {
       await saveCloudDoubtChats(updatedMap);
-    } catch (e) {}
+    } catch (e) {} finally {
+      setIsSendingMessage(false);
+    }
   };
 
   // Universal Media Upload via Single Pin Icon
@@ -6305,7 +6310,7 @@ export function TeachersSection({
                             {/* Send Button */}
                             <button
                               type="button"
-                              disabled={!chatInputText.trim() && !pendingMedia}
+                              disabled={(!chatInputText.trim() && !pendingMedia) || isSendingMessage}
                               onClick={handleSendMessage}
                               className="w-10 h-10 rounded-full bg-[#00a884] hover:bg-[#008f6f] text-white flex items-center justify-center shrink-0 shadow-md transition disabled:opacity-40 cursor-pointer"
                               title="Send Message"

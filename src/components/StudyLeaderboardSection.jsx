@@ -351,6 +351,13 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [isFocusActive, isPaused]);
 
+  // Ensure audio engine stops on unmount
+  useEffect(() => {
+    return () => {
+      soundEngine.stop();
+    };
+  }, []);
+
   // Focus Timer Countdown
   useEffect(() => {
     let interval = null;

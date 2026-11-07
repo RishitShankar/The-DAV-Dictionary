@@ -604,10 +604,15 @@ export function StudentProfileSection({ user, onLogout }) {
                 <div>
                   <label className="block text-stone-300 font-bold mb-1">Phone / Mobile Number:</label>
                   <input
-                    type="text"
+                    type="tel"
+                    inputMode="numeric"
+                    maxLength={10}
                     value={profile.phoneNumber || ''}
-                    onChange={(e) => handleChange('phoneNumber', e.target.value)}
-                    placeholder="e.g. 8092261750"
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                      handleChange('phoneNumber', val);
+                    }}
+                    placeholder="e.g. 8092261750 (10 digits)"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-stone-950 border border-stone-700 text-white focus:outline-none focus:border-amber-400 font-mono"
                   />
                 </div>

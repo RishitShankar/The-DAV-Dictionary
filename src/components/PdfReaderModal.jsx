@@ -9,7 +9,12 @@ import { askRishiAI } from '../services/geminiService';
 import { getChaptersForClassSubject } from '../data/curriculumData';
 import { getPrecomputedSummary } from '../data/davChapterSummaries.js';
 
-export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, currentUser }) {
+export function PdfReaderModal(props) {
+  if (!props.isOpen || !props.book) return null;
+  return <PdfReaderModalInner {...props} />;
+}
+
+function PdfReaderModalInner({ isOpen, onClose, book, onOpenAIWithQuestion, currentUser }) {
   // Prevent background scroll and allow Escape key dismissal
   useEffect(() => {
     if (!isOpen) return;
@@ -51,7 +56,7 @@ export function PdfReaderModal({ isOpen, onClose, book, onOpenAIWithQuestion, cu
     }
   }, [book?.title, isMobileScreen]);
 
-  if (!isOpen || !book) return null;
+  // Unconditional inner render guarantees constant hook order
 
   // GitHub Media CDN Fallback
   const GITHUB_MEDIA_BASE = 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public';

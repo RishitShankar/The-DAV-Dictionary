@@ -50,7 +50,12 @@ import {
   fetchCloudDonations
 } from '../services/supabaseClient';
 
-export function AdminPanelModal({isOpen, onClose, currentUser, onOpenDbGuide }) {
+export function AdminPanelModal(props) {
+  if (!props.isOpen) return null;
+  return <AdminPanelModalInner {...props} />;
+}
+
+function AdminPanelModalInner({ isOpen, onClose, currentUser, onOpenDbGuide }) {
   // Prevent background scroll and allow Escape key dismissal
   useEffect(() => {
     if (!isOpen) return;
@@ -66,33 +71,11 @@ export function AdminPanelModal({isOpen, onClose, currentUser, onOpenDbGuide }) 
     };
   }, [isOpen, onClose]);
  
-  if (!isOpen) return null;
+  // Unconditional inner render guarantees constant hook order
 
   const isAuthorizedAdmin = Boolean(
     currentUser && (currentUser.id === 'rishibhai' || currentUser.isAdmin || currentUser.dimension === 4)
   );
-
-  if (!isAuthorizedAdmin) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fadeIn">
-        <div className="max-w-md w-full bg-stone-900 border border-red-500/40 rounded-2xl p-6 text-white text-center shadow-2xl">
-          <div className="w-12 h-12 rounded-full bg-red-500/20 text-red-400 mx-auto flex items-center justify-center mb-3">
-            <Lock className="w-6 h-6" />
-          </div>
-          <h3 className="text-lg font-black text-white">Administrator Access Required</h3>
-          <p className="text-xs text-stone-400 mt-2">
-            This administration program is restricted exclusively to Master Developer Rishit Shankar. Please log in with your verified Administrator account.
-          </p>
-          <button
-            onClick={onClose}
-            className="mt-5 px-5 py-2.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold text-xs cursor-pointer"
-          >
-            Close Program
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   // 3-Tab Navigation State: 'students' | 'donations' | 'purchases'
   const [activeTab, setActiveTab] = useState('students');
@@ -663,6 +646,28 @@ _With heartfelt gratitude from the entire DAV student community!_`;
       (d.note && d.note.toLowerCase().includes(q))
     );
   });
+
+  if (!isAuthorizedAdmin) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fadeIn">
+        <div className="max-w-md w-full bg-stone-900 border border-red-500/40 rounded-2xl p-6 text-white text-center shadow-2xl">
+          <div className="w-12 h-12 rounded-full bg-red-500/20 text-red-400 mx-auto flex items-center justify-center mb-3">
+            <Lock className="w-6 h-6" />
+          </div>
+          <h3 className="text-lg font-black text-white">Administrator Access Required</h3>
+          <p className="text-xs text-stone-400 mt-2">
+            This administration program is restricted exclusively to Master Developer Rishit Shankar. Please log in with your verified Administrator account.
+          </p>
+          <button
+            onClick={onClose}
+            className="mt-5 px-5 py-2.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold text-xs cursor-pointer"
+          >
+            Close Program
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 w-screen h-screen bg-slate-950 text-slate-100 flex flex-col overflow-hidden animate-fadeIn select-none font-sans">

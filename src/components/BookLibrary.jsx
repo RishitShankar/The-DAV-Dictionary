@@ -4,7 +4,7 @@ import { DAV_SUBJECTS } from '../data/mockData';
 import { 
   BookOpen, Calculator, Languages, HeartHandshake, Globe, Sparkles, 
   Compass, Cpu, FileText, Download, Eye, Upload, ChevronRight, Lock, 
-  CheckCircle2, Search, ExternalLink, HelpCircle, BookMarked, Trash2,
+  CheckCircle2, Search, RotateCcw, ExternalLink, X, HelpCircle, BookMarked, Trash2,
   Award, Bookmark, ArrowRight, Layers, Flame, Check, Sparkle, GraduationCap
 } from 'lucide-react';
 
@@ -476,6 +476,32 @@ export function BookLibrary({
           ))}
         </div>
       </div>
+
+      {/* Empty State when no subjects or textbooks match search */}
+      {filteredSubjects.length === 0 && (
+        <div className="py-16 px-6 text-center bg-white rounded-3xl border-2 border-dashed border-amber-300 shadow-sm my-6 max-w-xl mx-auto">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center shadow-xs">
+            <Search className="w-8 h-8" />
+          </div>
+          <h3 className="text-base sm:text-lg font-black text-slate-900 mb-1">
+            No textbooks found matching &ldquo;{searchQuery}&rdquo;
+          </h3>
+          <p className="text-xs text-slate-500 max-w-sm mx-auto mb-5 leading-relaxed font-medium">
+            Try checking for typos, setting your subject filter to ALL, or browsing another class.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setSearchQuery('');
+              setActiveFilter('ALL');
+            }}
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-800 to-amber-600 hover:from-red-700 hover:to-amber-500 text-white font-black text-xs transition cursor-pointer shadow-md inline-flex items-center gap-2"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Reset Search &amp; Show All</span>
+          </button>
+        </div>
+      )}
 
       {/* ========================================================================= */}
       {/* SUBJECTS GRID: Interactive Animated 3D Book Graphics & Designs            */}

@@ -138,25 +138,25 @@ export function PurpleFooter({ currentUser, onSelectSection }) {
 
             {/* Social Channels Row */}
             <div className="pt-2 flex flex-wrap gap-1.5">
-              <a href="https://www.instagram.com/dav_dictionary?vrfl=MWcwYmRoMWVyeWNtOA==" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-pink-600/30 hover:bg-pink-600 text-white transition" title="Instagram (@dav_dictionary)">
+              <a href="https://www.instagram.com/dav_dictionary?vrfl=MWcwYmRoMWVyeWNtOA==" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-pink-600/30 hover:bg-pink-600 text-white transition" title="Instagram (@dav_dictionary)" aria-label="Instagram">
                 <InstagramLogo className="w-3.5 h-3.5 fill-current" />
               </a>
-              <a href="https://www.snapchat.com/add/dav_dictionary?share_id=PtOPLG5tAR8&locale=en-IN" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-yellow-400 text-black transition" title="Snapchat (dav_dictionary)">
+              <a href="https://www.snapchat.com/add/dav_dictionary?share_id=PtOPLG5tAR8&locale=en-IN" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-yellow-400 text-black transition" title="Snapchat (dav_dictionary)" aria-label="Snapchat">
                 <SnapchatLogo className="w-3.5 h-3.5" />
               </a>
-              <a href="https://www.facebook.com/share/1K3NutKTY6/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-indigo-600/30 hover:bg-indigo-600 text-white transition" title="Facebook (DAV Dictionary)">
+              <a href="https://www.facebook.com/share/1K3NutKTY6/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-indigo-600/30 hover:bg-indigo-600 text-white transition" title="Facebook (DAV Dictionary)" aria-label="Facebook">
                 <FacebookLogo className="w-3.5 h-3.5 fill-current" />
               </a>
-              <a href="https://x.com/Dav_Dictionary" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-black hover:bg-stone-800 text-white border border-stone-700 transition" title="X / Twitter (@Dav_Dictionary)">
+              <a href="https://x.com/Dav_Dictionary" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-black hover:bg-stone-800 text-white border border-stone-700 transition" title="X / Twitter (@Dav_Dictionary)" aria-label="X Twitter">
                 <XTwitterLogo className="w-3.5 h-3.5 fill-current" />
               </a>
-              <a href="https://youtube.com/@davdictionary?si=5FCxn4yecqP35l6O" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-red-600/30 hover:bg-red-600 text-white transition" title="YouTube (@davdictionary)">
+              <a href="https://youtube.com/@davdictionary?si=5FCxn4yecqP35l6O" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-red-600/30 hover:bg-red-600 text-white transition" title="YouTube (@davdictionary)" aria-label="YouTube">
                 <YouTubeLogo className="w-3.5 h-3.5 fill-current" />
               </a>
-              <a href="https://pin.it/7gVcr0dpk" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-red-700/30 hover:bg-red-700 text-white transition" title="Pinterest (DAV Dictionary)">
+              <a href="https://pin.it/7gVcr0dpk" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-red-700/30 hover:bg-red-700 text-white transition" title="Pinterest (DAV Dictionary)" aria-label="Pinterest">
                 <PinterestLogo className="w-3.5 h-3.5 fill-current" />
               </a>
-              <a href="https://t.me/Dav_Dictionary" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-[#229ed9]/30 hover:bg-[#229ed9] text-white transition" title="Telegram (@Dav_Dictionary)">
+              <a href="https://t.me/Dav_Dictionary" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-[#229ed9]/30 hover:bg-[#229ed9] text-white transition" title="Telegram (@Dav_Dictionary)" aria-label="Telegram">
                 <TelegramLogo className="w-3.5 h-3.5 fill-current" />
               </a>
               <a href="https://www.linkedin.com/in/rishit-shankar-05559b2bb" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-blue-600/30 hover:bg-blue-600 text-white transition" title="LinkedIn">
@@ -242,7 +242,7 @@ export function PurpleFooter({ currentUser, onSelectSection }) {
         {/* Bottommost Copyright Bar */}
         <div className="pt-8 border-t border-purple-500/20 flex flex-col sm:flex-row items-center justify-between text-[11px] text-purple-300/80 gap-3">
           <div>
-            © 2026 DAV Dictionary • Built with excellence by <strong>Rishit Shankar</strong> (Head Boy, DAV Public School).
+            © {new Date().getFullYear()} DAV Dictionary • Built with excellence by <strong>Rishit Shankar</strong> (Head Boy, DAV Public School).
           </div>
           <div className="flex items-center gap-2">
             <span>Class 8-D • 95% Scholar • 80/80 Sanskrit • Digital India 🇮🇳</span>

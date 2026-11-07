@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   X, Printer, Download, Share2, CheckCircle2, ShieldCheck, 
   Award, School, Calendar, IndianRupee, Heart, Copy, Check
@@ -11,6 +11,19 @@ export function DavInvoiceModal({
   onClose, 
   invoiceData 
 }) {
+  // Lock background scroll and dismiss on Escape
+  useEffect(() => {
+    if (!isOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e) => { if (e.key === 'Escape') onClose?.(); };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [isOpen, onClose]);
+
   const [copied, setCopied] = useState(false);
 
   if (!isOpen || !invoiceData) return null;

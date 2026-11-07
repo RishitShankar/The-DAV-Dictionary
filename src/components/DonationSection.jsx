@@ -431,7 +431,17 @@ export function DonationSection({ currentUser, onRequireLogin }) {
                   min="1"
                   max="100000"
                   value={donationAmount}
-                  onChange={(e) => setDonationAmount(e.target.value)}
+                  onChange={(e) => {
+                    const raw = e.target.value;
+                    if (raw === '') {
+                      setDonationAmount('');
+                    } else {
+                      const v = parseInt(raw, 10);
+                      if (!isNaN(v)) {
+                        setDonationAmount(String(Math.max(1, Math.min(100000, v))));
+                      }
+                    }
+                  }}
                   className="w-32 px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-amber-300 font-mono font-bold text-xs focus:outline-none focus:border-amber-400"
                   placeholder="e.g. 500"
                 />
