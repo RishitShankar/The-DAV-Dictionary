@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   BookOpen, Layers, X, Sparkles, User, ChevronRight, 
   PanelLeftClose, Award, CheckCircle2, LogOut, Lock, Compass, HelpCircle, Heart,
-  ClipboardList, MessageSquareMore, Video, CheckSquare, UserCheck, Bus, Trophy, Star
+  ClipboardList, MessageSquareMore, Video, CheckSquare, UserCheck, Bus, Trophy, Star, Settings, Key
 } from 'lucide-react';
 
 export function GeminiSidebar({ 
@@ -84,11 +84,12 @@ export function GeminiSidebar({
     { id: 7, name: 'Section 7: Kids Fun Navigator', icon: Bus, status: 'Kids Portal' },
     { id: 8, name: 'Section 8: Examination & Practice', icon: CheckSquare, status: 'Exam & VVI Suite' },
     { id: 9, name: 'Section 9: Study Leaderboard', icon: Trophy, status: 'Leaderboard' },
-    { id: 10, name: 'Section 10: Student Profile', icon: User, status: 'Student ID & Settings' },
+    { id: 10, name: 'Section 10: Settings Hub', icon: Settings, status: 'Settings & Student Hub' },
     { id: 11, name: 'Section 11: Donate & Reviews', icon: Heart, status: 'Donate, Reviews & Subscriptions' },
     { id: 12, name: 'Section 12: About Creator', icon: Award, status: 'Head Boy Profile' },
     ...(isDimension4 ? [
-      { id: 13, name: 'Section 13: Developer Settings', icon: Star, status: 'Developer Vault & Settings' }
+      { id: 13, name: 'Section 13: Developer Reviews', icon: Star, status: 'Reviews & Feedback' },
+      { id: 14, name: 'Section 14: Master ID Generator', icon: Key, status: 'Account Provisioning Desk' }
     ] : []),
   ];
 

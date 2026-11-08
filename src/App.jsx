@@ -16,6 +16,9 @@ import { VfxSolarSystemGalaxy } from './components/vfx/VfxSolarSystemGalaxy';
 import { VfxCycloneVortex } from './components/vfx/VfxCycloneVortex';
 import { VfxGlobalSuite } from './components/VfxGlobalSuite';
 import { VfxMasterDirector } from './components/vfx/VfxMasterDirector';
+import { SettingsHubSection } from './components/SettingsHubSection';
+import { ParentPortalSection } from './components/ParentPortalSection';
+import { DeveloperIdGeneratorSection } from './components/DeveloperIdGeneratorSection';
 import { AuthModal } from './components/AuthModal';
 import { SectionOverview } from './components/SectionOverview';
 import { QuestionsAnswersSection } from './components/QuestionsAnswersSection';
@@ -174,6 +177,23 @@ export function App() {
   }, [user]);
 
   // Castle App-Inspired 12-Hour Ad-Watch Pass Resolver
+  // Section Background Animation Map (Configured exclusively via Settings -> Animation Studio)
+  const [sectionVfxMap, setSectionVfxMap] = useState(() => {
+    try {
+      const saved = localStorage.getItem('dav_section_vfx_map');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return {};
+  });
+
+  useEffect(() => {
+    const handleVfxUpdate = (e) => {
+      if (e.detail) setSectionVfxMap(e.detail);
+    };
+    window.addEventListener('dav_vfx_map_updated', handleVfxUpdate);
+    return () => window.removeEventListener('dav_vfx_map_updated', handleVfxUpdate);
+  }, []);
+
   const [adPassUpdated, setAdPassUpdated] = useState(0);
 
   useEffect(() => {
@@ -671,7 +691,13 @@ export function App() {
           sectionName={`Section ${activeSection}`}
           onGoToOverview={() => setActiveSection(1)}
         >
-        {(isTeacher && teacherSubDimension === 'teacher_only') ? (
+        {(user?.dimension === 8 || user?.plan === 'parent') ? (
+          <ParentPortalSection 
+            user={activeUser || user} 
+            onLogout={handleLogout} 
+            onSelectSection={handleSelectSection} 
+          />
+        ) : (isTeacher && teacherSubDimension === 'teacher_only') ? (
           <TeachersSection 
             user={activeUser || user} 
             isTeacherOS={true}
@@ -754,45 +780,11 @@ export function App() {
             onRequireLogin={handleRequireLogin}
           />
         ) : activeSection === 10 ? (
-          isGuest ? (
-            <div className="max-w-3xl mx-auto px-4 py-20 text-center animate-fadeIn">
-              <div className="bg-stone-900 border-2 border-amber-500/50 rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full pointer-events-none" />
-                <div className="w-20 h-20 rounded-3xl bg-amber-500/20 text-amber-400 border border-amber-400/40 mx-auto flex items-center justify-center mb-6 shadow-xl shadow-amber-500/20">
-                  <Lock className="w-10 h-10 text-amber-400 animate-bounce" />
-                </div>
-                <span className="px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-400 text-stone-950 inline-block mb-3">
-                  Dimension 10 • Student Personal Vault Locked
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-black text-white mb-3">
-                  Login to Access Your Secure Vault
-                </h2>
-                <p className="text-sm text-stone-300 max-w-lg mx-auto leading-relaxed mb-8">
-                  The Student Personal Vault contains end-to-end encrypted school identity records, academic marks ledgers, exam passwords, and private student dossiers. Please sign in or register with your Student ID to open your vault.
-                </p>
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                  <button
-                    onClick={() => {
-                      setUser(null);
-                      setViewMode('login');
-                    }}
-                    className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 font-black text-sm shadow-xl shadow-orange-500/30 transition cursor-pointer flex items-center justify-center gap-2"
-                  >
-                    <Lock className="w-4 h-4 text-stone-950" />
-                    <span>Login to Continue</span>
-                  </button>
-                  <button
-                    onClick={() => setActiveSection(1)}
-                    className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-stone-800 hover:bg-stone-700 text-stone-300 text-sm font-bold transition cursor-pointer border border-stone-700"
-                  >
-                    ← Back to Overview Hub
-                  </button>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <StudentProfileSection user={activeUser || user} onLogout={handleLogout} />
-          )
+          <SettingsHubSection 
+            user={activeUser || user} 
+            onLogout={handleLogout} 
+            onSelectSection={handleSelectSection} 
+          />
         ) : activeSection === 11 ? (
           <DonationSection 
             currentUser={activeUser || user} 
@@ -810,7 +802,15 @@ export function App() {
             <SectionOverview currentUser={activeUser || user} onSelectSection={handleSelectSection} />
           )
         ) : (
+          activeSection === 14 ? (
+          (user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai' || user?.role === 'developer') ? (
+            <DeveloperIdGeneratorSection currentUser={activeUser || user} />
+          ) : (
+            <SectionOverview currentUser={activeUser || user} onSelectSection={handleSelectSection} />
+          )
+        ) : (
           <UntitledSection sectionNumber={activeSection} />
+        )
         )}
         </SectionErrorBoundary>
         </Suspense>
@@ -858,7 +858,7 @@ export function App() {
       />
 
       {/* 11 Curated Section 2-Caliber Background Animations Suite & Studio */}
-      <VfxMasterDirector activeSection={activeSection} />
+      <VfxMasterDirector activeSection={activeSection} sectionVfxMap={sectionVfxMap} />
 
       {/* Global VFX Engine (Click Ripples, Constellation Net, Confetti Cannon) */}
       <VfxGlobalSuite />

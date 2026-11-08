@@ -74,6 +74,9 @@ export function Navbar({
   if (isAdmin || user?.dimension === 6 || user?.plan === 'developer' || user?.role === 'developer') {
     tierBadgeBg = 'bg-gradient-to-r from-red-800 to-amber-700 text-white';
     tierLabel = 'Master Developer';
+  } else if (user?.dimension === 8 || user?.plan === 'parent' || user?.role === 'parent') {
+    tierBadgeBg = 'bg-cyan-900 text-cyan-200 border border-cyan-500';
+    tierLabel = 'Parent (Dim 8)';
   } else if (user?.dimension === 7 || user?.plan === 'bus_driver') {
     tierBadgeBg = 'bg-cyan-800 text-cyan-100';
     tierLabel = 'Bus Driver (Dim 7)';

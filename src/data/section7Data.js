@@ -1,3 +1,6 @@
+import { WORLD_195_COUNTRIES } from './world195Countries.js';
+import { VEDIC_FESTIVALS_2024_2047 } from './vedicFestivals2047.js';
+
 // Official Geographic, Weather, Academic & Fleet Data for Section 7: Kids Fun & Gadgets Suite
 // Principal: Shri Anil Kumar Singh • Head Boy: Rishit Shankar
 // Exact Destination: 492F+563, Khabra, Muzaffarpur, Bihar 843113
@@ -91,101 +94,20 @@ export const PRESET_STARTING_LOCATIONS = [
 ];
 
 // World Clock Popular Countries & Time Zones
-export const WORLD_COUNTRIES_TIMEZONES = [
-  {
-    id: 'india',
-    name: 'India',
-    flag: '🇮🇳',
-    timezones: [
-      { id: 'ist', name: 'Indian Standard Time (IST)', zone: 'Asia/Kolkata', offset: '+05:30' }
-    ]
-  },
-  {
-    id: 'australia',
-    name: 'Australia',
-    flag: '🇦🇺',
-    timezones: [
-      { id: 'sydney', name: 'Sydney / Melbourne (AEDT / AEST)', zone: 'Australia/Sydney', offset: '+11:00' },
-      { id: 'adelaide', name: 'Adelaide (ACDT / ACST)', zone: 'Australia/Adelaide', offset: '+10:30' },
-      { id: 'perth', name: 'Perth (AWST)', zone: 'Australia/Perth', offset: '+08:00' },
-      { id: 'brisbane', name: 'Brisbane (AEST)', zone: 'Australia/Brisbane', offset: '+10:00' },
-      { id: 'darwin', name: 'Darwin (ACST)', zone: 'Australia/Darwin', offset: '+09:30' }
-    ]
-  },
-  {
-    id: 'nepal',
-    name: 'Nepal',
-    flag: '🇳🇵',
-    timezones: [
-      { id: 'nepal_time', name: 'Nepal Time (Kathmandu, NPT)', zone: 'Asia/Kathmandu', offset: '+05:45' }
-    ]
-  },
-  {
-    id: 'usa',
-    name: 'USA',
-    flag: '🇺🇸',
-    timezones: [
-      { id: 'eastern', name: 'Eastern Time (New York, Washington DC)', zone: 'America/New_York', offset: '-05:00' },
-      { id: 'central', name: 'Central Time (Chicago, Dallas)', zone: 'America/Chicago', offset: '-06:00' },
-      { id: 'mountain', name: 'Mountain Time (Denver, Phoenix)', zone: 'America/Denver', offset: '-07:00' },
-      { id: 'pacific', name: 'Pacific Time (Los Angeles, San Francisco)', zone: 'America/Los_Angeles', offset: '-08:00' },
-      { id: 'alaska', name: 'Alaska Time (Anchorage)', zone: 'America/Anchorage', offset: '-09:00' },
-      { id: 'hawaii', name: 'Hawaii Time (Honolulu)', zone: 'Pacific/Honolulu', offset: '-10:00' }
-    ]
-  },
-  {
-    id: 'china',
-    name: 'China',
-    flag: '🇨🇳',
-    timezones: [
-      { id: 'beijing', name: 'China Standard Time (Beijing, Shanghai)', zone: 'Asia/Shanghai', offset: '+08:00' }
-    ]
-  },
-  {
-    id: 'pakistan',
-    name: 'Pakistan',
-    flag: '🇵🇰',
-    timezones: [
-      { id: 'pakistan_time', name: 'Pakistan Standard Time (PKT, Islamabad, Karachi)', zone: 'Asia/Karachi', offset: '+05:00' }
-    ]
-  },
-  {
-    id: 'srilanka',
-    name: 'Sri Lanka',
-    flag: '🇱🇰',
-    timezones: [
-      { id: 'srilanka_time', name: 'Sri Lanka Standard Time (SLST, Colombo)', zone: 'Asia/Colombo', offset: '+05:30' }
-    ]
-  },
-  {
-    id: 'bhutan',
-    name: 'Bhutan',
-    flag: '🇧🇹',
-    timezones: [
-      { id: 'bhutan_time', name: 'Bhutan Time (BTT, Thimphu)', zone: 'Asia/Thimphu', offset: '+06:00' }
-    ]
-  },
-  {
-    id: 'russia',
-    name: 'Russia (11 Time Zones)',
-    flag: '🇷🇺',
-    timezones: [
-      { id: 'moscow', name: 'Moscow / St. Petersburg (MSK)', zone: 'Europe/Moscow', offset: '+03:00' },
-      { id: 'kaliningrad', name: 'Kaliningrad Time (USZ1)', zone: 'Europe/Kaliningrad', offset: '+02:00' },
-      { id: 'samara', name: 'Samara Time (SAMT)', zone: 'Europe/Samara', offset: '+04:00' },
-      { id: 'yekaterinburg', name: 'Yekaterinburg Time (YEKT, Urals)', zone: 'Asia/Yekaterinburg', offset: '+05:00' },
-      { id: 'omsk', name: 'Omsk Time (OMST, Siberia)', zone: 'Asia/Omsk', offset: '+06:00' },
-      { id: 'krasnoyarsk', name: 'Krasnoyarsk Time (KRAT)', zone: 'Asia/Krasnoyarsk', offset: '+07:00' },
-      { id: 'irkutsk', name: 'Irkutsk Time (IRKT, Baikal)', zone: 'Asia/Irkutsk', offset: '+08:00' },
-      { id: 'yakutsk', name: 'Yakutsk Time (YAKT)', zone: 'Asia/Yakutsk', offset: '+09:00' },
-      { id: 'vladivostok', name: 'Vladivostok Time (VLAT, Far East)', zone: 'Asia/Vladivostok', offset: '+10:00' },
-      { id: 'magadan', name: 'Magadan / Sakhalin (MAGT)', zone: 'Asia/Magadan', offset: '+11:00' },
-      { id: 'kamchatka', name: 'Kamchatka Time (PETT, Pacific)', zone: 'Asia/Kamchatka', offset: '+12:00' }
-    ]
-  }
-];
+// Comprehensive 195 Sovereign Countries Dataset & Multi-Timezone Registry
+export const WORLD_COUNTRIES_TIMEZONES = WORLD_195_COUNTRIES.map(c => ({
+  id: c.name.toLowerCase().replace(/[^a-z0-9]/g, '_'),
+  name: c.name,
+  flag: c.flag,
+  capital: c.capital,
+  timezones: c.timezones.map((tz, idx) => ({
+    id: `${c.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${idx}`,
+    name: tz.label,
+    zone: tz.tz,
+    offset: tz.offset
+  }))
+}));
 
-// Principal Anil Kumar Singh's Official DAV Khabra Bus Fleet Database
 export const DAV_BUS_FLEET = [
   {
     busId: 'BUS-01',
@@ -369,24 +291,15 @@ export const DAV_BUS_FLEET = [
 ];
 
 // Official DAV School Events & Holidays Database for Calendar
-export const DAV_SCHOOL_CALENDAR_EVENTS = [
-  { date: '2026-01-26', title: 'Republic Day Celebration 🇮🇳', type: 'holiday', icon: '🇮🇳' },
-  { date: '2026-02-15', title: 'Maharshi Dayanand Saraswati Jayanti 🕉️', type: 'event', icon: '🕉️' },
-  { date: '2026-03-04', title: 'Holi Festival Celebration 🎨', type: 'holiday', icon: '🎨' },
-  { date: '2026-04-19', title: 'Mahatma Hansraj Birthday 🌟', type: 'event', icon: '🌟' },
-  { date: '2026-05-15', title: 'DAV Summer Vacation Begins ☀️', type: 'holiday', icon: '☀️' },
-  { date: '2026-06-18', title: 'School Reopens after Summer Break 🎒', type: 'event', icon: '🎒' },
-  { date: '2026-08-15', title: 'Independence Day & Flag Hoisting 🇮🇳', type: 'event', icon: '🇮🇳' },
-  { date: '2026-09-05', title: 'Teachers Day Celebration 👨‍🏫', type: 'event', icon: '👨‍🏫' },
-  { date: '2026-09-18', title: 'DAV Half-Yearly Term Exams 📝', type: 'exam', icon: '📝' },
-  { date: '2026-10-02', title: 'Gandhi Jayanti 🕊️', type: 'holiday', icon: '🕊️' },
-  { date: '2026-10-20', title: 'Durga Puja & Dussehra Vacation 🪔', type: 'holiday', icon: '🪔' },
-  { date: '2026-11-08', title: 'Diwali & Chhath Puja Holidays 🎆', type: 'holiday', icon: '🎆' },
-  { date: '2026-11-14', title: 'Childrens Day Sports Gala 🏆', type: 'event', icon: '🏆' },
-  { date: '2026-12-25', title: 'Christmas Holiday 🎄', type: 'holiday', icon: '🎄' }
-];
+// Official DAV School Events & Complete Vedic/Hindu Festivals Database through 2047
+export const DAV_SCHOOL_CALENDAR_EVENTS = VEDIC_FESTIVALS_2024_2047.map(f => ({
+  date: f.date,
+  title: `${f.name} (${f.type})`,
+  type: f.name.includes('Exam') ? 'exam' : f.name.includes('Birthday') || f.name.includes('Jayanti') ? 'event' : 'holiday',
+  icon: f.name.includes('Day') ? '🇮🇳' : f.name.includes('Diwali') ? '🎆' : f.name.includes('Holi') ? '🎨' : f.name.includes('Christmas') ? '🎄' : '🕉️',
+  desc: f.desc
+}));
 
-// Decode Open-Meteo Weather Codes
 export function decodeWeatherCode(code) {
   if (code === 0) return { label: 'Clear Sky / Sunny', icon: '☀️', mood: 'Perfect day for outdoor games!' };
   if (code === 1 || code === 2) return { label: 'Partly Cloudy', icon: '⛅', mood: 'Nice pleasant weather!' };
