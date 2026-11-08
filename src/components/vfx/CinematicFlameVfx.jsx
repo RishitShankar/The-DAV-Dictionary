@@ -64,12 +64,16 @@ export function CinematicFlameVfx({
     startTimeRef.current = performance.now();
     setTimeLeft(TOTAL_DURATION);
 
+    let completed = false;
     const tick = (now) => {
+      if (completed) return;
       const elapsed = (now - startTimeRef.current) / 1000;
       const remaining = Math.max(0, TOTAL_DURATION - elapsed);
       setTimeLeft(remaining);
 
       if (remaining <= 0) {
+        completed = true;
+        cancelAnimationFrame(animationFrameRef.current);
         if (onComplete) onComplete();
       } else {
         animationFrameRef.current = requestAnimationFrame(tick);

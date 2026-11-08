@@ -15,6 +15,7 @@ import { CinematicFlameVfx } from './components/vfx/CinematicFlameVfx';
 import { VfxSolarSystemGalaxy } from './components/vfx/VfxSolarSystemGalaxy';
 import { VfxCycloneVortex } from './components/vfx/VfxCycloneVortex';
 import { VfxGlobalSuite } from './components/VfxGlobalSuite';
+import { VfxMasterDirector } from './components/vfx/VfxMasterDirector';
 import { AuthModal } from './components/AuthModal';
 import { SectionOverview } from './components/SectionOverview';
 import { QuestionsAnswersSection } from './components/QuestionsAnswersSection';
@@ -437,12 +438,6 @@ export function App() {
       return;
     }
     // In 5B Teacher & Explorer mode, teacher can explore all sections freely!
-    if (secId === 2 && activeSection !== 2) {
-      trigger5sFlameVfx(
-        'Opening Digital Textbook Vault • Classes 1 to 8',
-        'DAV School Master Curriculum & Digital Library'
-      );
-    }
     if (secId === 12 && activeSection !== 12) {
       setIsCycloneOpen(true);
       return;
@@ -861,6 +856,9 @@ export function App() {
         currentUser={activeUser || user}
         onOpenAIWithQuestion={handleOpenAIWithQuestion}
       />
+
+      {/* 11 Curated Section 2-Caliber Background Animations Suite & Studio */}
+      <VfxMasterDirector activeSection={activeSection} />
 
       {/* Global VFX Engine (Click Ripples, Constellation Net, Confetti Cannon) */}
       <VfxGlobalSuite />

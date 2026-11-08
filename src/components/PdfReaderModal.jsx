@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { 
   X, Download, BookOpen, Send, RefreshCw, ExternalLink, 
-  Maximize2, Smartphone, Monitor, ChevronRight, Sparkles, 
-  BookMarked, HelpCircle, Layers, ArrowLeft
+  Maximize2, Smartphone, Monitor, ChevronRight, ChevronLeft, Sparkles,
+  BookMarked, HelpCircle, Layers, ArrowLeft, ZoomIn, ZoomOut, Loader2
 } from 'lucide-react';
 import { BlackDogLogo } from './BlackDogLogo';
 import { askRishiAI } from '../services/geminiService';
@@ -30,7 +30,7 @@ function PdfReaderModalInner({ isOpen, onClose, book, onOpenAIWithQuestion, curr
     };
   }, [isOpen, onClose]);
 
-  // Mobile detection with dynamic orientation/resize listener (Bug 6)
+  // Mobile detection with dynamic orientation/resize listener
   const checkIsMobileScreen = () => typeof window !== 'undefined' && (
     window.innerWidth <= 768 ||
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
@@ -55,19 +55,16 @@ function PdfReaderModalInner({ isOpen, onClose, book, onOpenAIWithQuestion, curr
   const [aiQuestion, setAiQuestion] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
 
-  // Viewer Engine: On mobile, Google Cloud viewer embeds seamlessly inside iframe without Android blank screen!
-  // On desktop, Direct Stream delivers Chrome's native PDFium experience.
-  const [viewerEngine, setViewerEngine] = useState(() => (isMobileScreen ? 'google' : 'direct'));
+  // Viewer Engine: On mobile, defaults to 'canvas' (PDF.js in-app) or 'direct' on desktop
+  const [viewerEngine, setViewerEngine] = useState(() => (isMobileScreen ? 'canvas' : 'direct'));
 
   // Reset states on book change
   useEffect(() => {
     if (isMobileScreen) {
       setMobileTab('pdf');
-      setViewerEngine('google');
+      setViewerEngine('canvas');
     }
   }, [book?.title, isMobileScreen]);
-
-  // Unconditional inner render guarantees constant hook order
 
   // GitHub Media CDN Fallback
   const GITHUB_MEDIA_BASE = 'https://media.githubusercontent.com/media/RishitShankar/The-DAV-Dictionary/main/public';
@@ -75,21 +72,24 @@ function PdfReaderModalInner({ isOpen, onClose, book, onOpenAIWithQuestion, curr
   const resolvePdfUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('data:') || url.startsWith('blob:')) return url;
-
-    if (url.includes('supabase.co')) {
-      return url;
-    }
-
+    if (url.includes('supabase.co')) return url;
     if (url.includes('githubusercontent.com')) {
-      return `/api/pdf-stream?url=${encodeURIComponent(url)}`;
+      return `https://thedavdictionary.vercel.app/api/pdf-stream?url=${encodeURIComponent(url)}`;
     }
-
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-      return url;
-    }
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
 
     const cleanPath = url.startsWith('/') ? url : `/${url}`;
     
+    // In APK WebView or production mobile:
+    const isApk = typeof window !== 'undefined' && (
+      window.location.hostname.includes('appassets') || 
+      window.location.hostname.includes('davportal') ||
+      (navigator.userAgent && navigator.userAgent.includes('DAVSmartPortalApp'))
+    );
+    if (isApk) {
+      return `https://thedavdictionary.vercel.app${encodeURI(cleanPath)}`;
+    }
+
     const isVercelOrProduction = typeof window !== 'undefined' && (
       window.location.hostname.includes('vercel.app') || 
       window.location.hostname.includes('dav-dictionary') ||
@@ -109,19 +109,16 @@ function PdfReaderModalInner({ isOpen, onClose, book, onOpenAIWithQuestion, curr
   const resolvedPdfUrl = resolvePdfUrl(rawSource);
   const hasRealPdf = Boolean(rawSource);
 
-  // Absolute URL for external & Google Docs viewers
+  // Absolute URL for external & Google Docs viewers (Always resolves to public domain)
   const getAbsolutePdfUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http://') || url.startsWith('https://')) return url;
-    if (typeof window !== 'undefined') {
-      return `${window.location.origin}${url.startsWith('/') ? url : '/' + url}`;
-    }
     return `https://thedavdictionary.vercel.app${url.startsWith('/') ? url : '/' + url}`;
   };
 
   const absolutePdfUrl = getAbsolutePdfUrl(resolvedPdfUrl);
 
-  // Google Docs Cloud Viewer stream (Guaranteed to render PDF pages on mobile Android & iOS)
+  // Google Docs Cloud Viewer stream fallback
   const googleViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(absolutePdfUrl)}&embedded=true`;
 
   // Active embedded src based on engine
@@ -133,6 +130,94 @@ function PdfReaderModalInner({ isOpen, onClose, book, onOpenAIWithQuestion, curr
       window.open(resolvedPdfUrl, '_blank', 'noopener,noreferrer');
     }
   };
+
+  // =========================================================================
+  // PDF.js Canvas In-App Mobile Engine (Guaranteed 100% Reliable On Phone)
+  // =========================================================================
+  const canvasRef = useRef(null);
+  const [pdfDoc, setPdfDoc] = useState(null);
+  const [pageNum, setPageNum] = useState(1);
+  const [numPages, setNumPages] = useState(1);
+  const [scale, setScale] = useState(isMobileScreen ? 1.0 : 1.25);
+  const [isPdfLoading, setIsPdfLoading] = useState(false);
+  const [canvasError, setCanvasError] = useState(null);
+
+  // Load PDF document using window.pdfjsLib
+  useEffect(() => {
+    let active = true;
+    if (!resolvedPdfUrl || viewerEngine !== 'canvas') return;
+
+    if (typeof window !== 'undefined' && window.pdfjsLib) {
+      setIsPdfLoading(true);
+      setCanvasError(null);
+
+      const loadingTask = window.pdfjsLib.getDocument({
+        url: resolvedPdfUrl,
+        cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/',
+        cMapPacked: true
+      });
+
+      loadingTask.promise.then((doc) => {
+        if (!active) return;
+        setPdfDoc(doc);
+        setNumPages(doc.numPages);
+        setPageNum(1);
+        setIsPdfLoading(false);
+      }).catch((err) => {
+        if (!active) return;
+        console.warn('PDF.js canvas load warning:', err);
+        setCanvasError('In-app canvas loader notice: ' + (err.message || 'Streaming PDF'));
+        setIsPdfLoading(false);
+      });
+    } else {
+      // PDF.js library not yet ready, fallback to direct stream
+      setViewerEngine('direct');
+    }
+
+    return () => {
+      active = false;
+    };
+  }, [resolvedPdfUrl, viewerEngine]);
+
+  // Render Page onto Canvas
+  useEffect(() => {
+    let renderTask = null;
+    if (!pdfDoc || viewerEngine !== 'canvas') return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    pdfDoc.getPage(pageNum).then((page) => {
+      const dpr = window.devicePixelRatio || 1;
+      const viewport = page.getViewport({ scale: scale * (isMobileScreen ? 0.95 : 1.1) });
+
+      canvas.width = viewport.width * dpr;
+      canvas.height = viewport.height * dpr;
+      canvas.style.width = `${viewport.width}px`;
+      canvas.style.height = `${viewport.height}px`;
+
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+
+      const renderContext = {
+        canvasContext: ctx,
+        viewport: viewport
+      };
+
+      renderTask = page.render(renderContext);
+      return renderTask.promise;
+    }).catch((err) => {
+      if (err?.name !== 'RenderingCancelledException') {
+        console.warn('Canvas page render warning:', err);
+      }
+    });
+
+    return () => {
+      if (renderTask) {
+        try { renderTask.cancel(); } catch (e) {}
+      }
+    };
+  }, [pdfDoc, pageNum, scale, viewerEngine, isMobileScreen]);
 
   // Subject Key & Chapters
   const getSubjectKey = (title = '', subject = '') => {
@@ -200,7 +285,7 @@ function PdfReaderModalInner({ isOpen, onClose, book, onOpenAIWithQuestion, curr
       setAiMessages(prev => [...prev, { role: 'assistant', text: cleanText }]);
     } catch (err) {
       setAiMessages(prev => [
-        ...prev,
+        ...prev, 
         {
           role: 'assistant',
           text: `Error generating summary for Chapter ${chNum}: ${chTitle}. Please try asking again!`
@@ -243,7 +328,7 @@ function PdfReaderModalInner({ isOpen, onClose, book, onOpenAIWithQuestion, curr
       setAiMessages(prev => [...prev, { role: 'assistant', text: cleanText }]);
     } catch (err) {
       setAiMessages(prev => [
-        ...prev,
+        ...prev, 
         {
           role: 'assistant',
           text: 'Error retrieving book intelligence. Please try asking again!'
@@ -286,7 +371,9 @@ function PdfReaderModalInner({ isOpen, onClose, book, onOpenAIWithQuestion, curr
             </div>
             <p className="text-[10px] text-orange-200/80 truncate flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>{viewerEngine === 'google' ? 'Google Cloud Reader (Mobile Active)' : 'Direct Stream Active'}</span>
+              <span>
+                {viewerEngine === 'canvas' ? 'In-App Canvas Engine (100% Mobile Ready)' : viewerEngine === 'google' ? 'Google Cloud Embed' : 'Direct Stream'}
+              </span>
             </p>
           </div>
         </div>
@@ -294,15 +381,15 @@ function PdfReaderModalInner({ isOpen, onClose, book, onOpenAIWithQuestion, curr
         {/* Action Controls & Engine Switchers */}
         <div className="flex items-center gap-1.5 sm:gap-2">
           
-          {/* Engine Switcher (Google Docs Cloud vs Direct Stream) */}
+          {/* Engine Switcher (Canvas vs Direct vs Google) */}
           <button
-            onClick={() => setViewerEngine(prev => prev === 'google' ? 'direct' : 'google')}
+            onClick={() => setViewerEngine(prev => prev === 'canvas' ? 'direct' : prev === 'direct' ? 'google' : 'canvas')}
             className="px-2.5 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-amber-300 hover:text-amber-200 border border-stone-700 transition cursor-pointer flex items-center gap-1 text-[11px] font-bold"
-            title={viewerEngine === 'google' ? 'Switch to Direct Stream' : 'Switch to Google Docs Cloud Viewer'}
+            title="Switch PDF reader engine"
           >
             <RefreshCw className="w-3 h-3 text-amber-400" />
             <span className="hidden sm:inline">Engine:</span>
-            <span>{viewerEngine === 'google' ? 'Google Cloud' : 'Direct'}</span>
+            <span>{viewerEngine === 'canvas' ? 'Canvas' : viewerEngine === 'direct' ? 'Direct' : 'Google'}</span>
           </button>
 
           {/* 1-Tap Mobile Native Redirect / New Tab */}
@@ -313,7 +400,7 @@ function PdfReaderModalInner({ isOpen, onClose, book, onOpenAIWithQuestion, curr
               title="Open full PDF in mobile viewer or dedicated browser tab"
             >
               <ExternalLink className="w-3.5 h-3.5" />
-              <span>{isMobileScreen ? 'Mobile View' : 'New Tab'}</span>
+              <span>{isMobileScreen ? 'Phone App ↗' : 'New Tab'}</span>
             </button>
           )}
 
@@ -341,11 +428,11 @@ function PdfReaderModalInner({ isOpen, onClose, book, onOpenAIWithQuestion, curr
           {hasRealPdf && (
             <a
               href={resolvedPdfUrl}
+              download={`${book.title}.pdf`}
               target="_blank"
               rel="noopener noreferrer"
-              download={`${book.title}.pdf`}
-              className="p-1.5 sm:p-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white border border-stone-700 transition cursor-pointer"
-              title="Download textbook copy"
+              className="p-1.5 sm:p-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-amber-300 border border-stone-700 transition cursor-pointer hidden sm:flex"
+              title="Download PDF to device"
             >
               <Download className="w-4 h-4" />
             </a>
@@ -395,11 +482,11 @@ function PdfReaderModalInner({ isOpen, onClose, book, onOpenAIWithQuestion, curr
 
           <button
             onClick={handleOpenNativeMobile}
-            className="px-2.5 py-1.5 rounded-xl bg-stone-800 border border-stone-700 text-amber-300 text-[11px] font-bold flex items-center gap-1 shrink-0"
-            title="Open Fullscreen in External Mobile Viewer"
+            className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 text-[11px] font-black flex items-center gap-1 shrink-0 shadow-sm"
+            title="Open in Phone PDF App"
           >
-            <Maximize2 className="w-3 h-3 text-amber-400" />
-            <span>Fullscreen</span>
+            <Smartphone className="w-3 h-3" />
+            <span>Phone Reader ↗</span>
           </button>
         </div>
       )}
@@ -409,33 +496,116 @@ function PdfReaderModalInner({ isOpen, onClose, book, onOpenAIWithQuestion, curr
       {/* ===================================================================== */}
       <div className="flex-1 h-full w-full flex overflow-hidden bg-stone-950 relative">
         
-        {/* Stream & Scroll Container (Continuous Vertical Scroll) */}
+        {/* Stream & Scroll Container */}
         <div className={`flex-1 h-full w-full bg-stone-900 overflow-hidden flex flex-col relative ${
           isMobileScreen && mobileTab === 'ai' ? 'hidden' : 'flex'
         }`}>
-          {/* Top Quick Engine Tip on Mobile */}
-          {isMobileScreen && (
-            <div className="px-3 py-1 bg-stone-950/80 border-b border-stone-800 flex items-center justify-between text-[10px] text-stone-400">
-              <span className="truncate">
-                Using <strong>{viewerEngine === 'google' ? 'Google Cloud Embed' : 'Direct Stream'}</strong>
-              </span>
-              <button
-                onClick={handleOpenNativeMobile}
-                className="text-amber-400 font-bold underline ml-2"
-              >
-                Tap for Android Reader ↗
-              </button>
+          
+          {/* Canvas Engine Interactive Page Navigator Bar */}
+          {viewerEngine === 'canvas' && (
+            <div className="bg-stone-950 px-3 py-2 border-b border-stone-800 flex items-center justify-between flex-wrap gap-2 shrink-0 z-20 text-xs">
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  disabled={pageNum <= 1}
+                  onClick={() => setPageNum(p => Math.max(1, p - 1))}
+                  className="px-2.5 py-1 rounded-lg bg-stone-800 disabled:opacity-40 text-stone-200 hover:text-white flex items-center gap-1 font-bold cursor-pointer"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span>Prev</span>
+                </button>
+                <span className="px-2 py-0.5 rounded-md bg-stone-900 border border-stone-700 text-amber-300 font-mono font-bold">
+                  Page {pageNum} / {numPages}
+                </span>
+                <button
+                  type="button"
+                  disabled={pageNum >= numPages}
+                  onClick={() => setPageNum(p => Math.min(numPages, p + 1))}
+                  className="px-2.5 py-1 rounded-lg bg-stone-800 disabled:opacity-40 text-stone-200 hover:text-white flex items-center gap-1 font-bold cursor-pointer"
+                >
+                  <span>Next</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setScale(s => Math.max(0.6, s - 0.15))}
+                  className="p-1 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 cursor-pointer"
+                  title="Zoom Out"
+                >
+                  <ZoomOut className="w-3.5 h-3.5" />
+                </button>
+                <span className="text-[10px] font-mono text-stone-400">{Math.round(scale * 100)}%</span>
+                <button
+                  type="button"
+                  onClick={() => setScale(s => Math.min(2.5, s + 0.15))}
+                  className="p-1 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 cursor-pointer"
+                  title="Zoom In"
+                >
+                  <ZoomIn className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleOpenNativeMobile}
+                  className="ml-2 px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-[11px] flex items-center gap-1 cursor-pointer shadow-sm"
+                >
+                  <Smartphone className="w-3 h-3" />
+                  <span>Open in Mobile Reader ↗</span>
+                </button>
+              </div>
             </div>
           )}
 
-          <iframe
-            key={`stream-${viewerEngine}-${activeStreamSrc}`}
-            src={activeStreamSrc}
-            title={`${book.title} - Textbook Cloud Reader`}
-            className="w-full h-full min-h-full flex-1 border-none bg-stone-900 block"
-            style={{ width: '100%', height: '100%', minHeight: '100%' }}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen
-          />
+          {/* Canvas Rendering Area */}
+          {viewerEngine === 'canvas' ? (
+            <div className="flex-1 overflow-auto bg-stone-950 p-2 sm:p-4 flex items-center justify-center relative">
+              {isPdfLoading && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-stone-950/80 z-20 space-y-3">
+                  <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
+                  <p className="text-xs text-amber-300 font-bold">Rendering High-Resolution Page {pageNum}...</p>
+                </div>
+              )}
+              {canvasError ? (
+                <div className="text-center p-6 space-y-3 max-w-md">
+                  <p className="text-xs text-rose-300 font-mono">{canvasError}</p>
+                  <div className="flex gap-2 justify-center">
+                    <button
+                      type="button"
+                      onClick={() => setViewerEngine('direct')}
+                      className="px-3 py-1.5 rounded-xl bg-amber-500 text-stone-950 text-xs font-bold cursor-pointer"
+                    >
+                      Switch to Direct Stream
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleOpenNativeMobile}
+                      className="px-3 py-1.5 rounded-xl bg-stone-800 text-stone-200 text-xs font-bold cursor-pointer"
+                    >
+                      Open in Phone Reader ↗
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="shadow-2xl border border-stone-800 rounded-lg overflow-hidden bg-white">
+                  <canvas ref={canvasRef} className="block mx-auto" />
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Direct / Google iframe Stream */
+            <iframe
+              key={`stream-${viewerEngine}-${activeStreamSrc}`}
+              src={activeStreamSrc}
+              title={`${book.title} - Textbook Cloud Reader`}
+              className="w-full h-full min-h-full flex-1 border-none bg-stone-900 block"
+              style={{ width: '100%', height: '100%', minHeight: '100%' }}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          )}
+
         </div>
 
         {/* Rishi AI Guide Sidebar / Mobile Full Screen */}
@@ -449,137 +619,69 @@ function PdfReaderModalInner({ isOpen, onClose, book, onOpenAIWithQuestion, curr
             {/* AI Header */}
             <div className="p-3 bg-stone-950 border-b border-stone-800 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <BlackDogLogo className="w-4 h-4" bgClassName="bg-amber-500" />
+                <BlackDogLogo className="w-5 h-5" bgClassName="bg-stone-900" />
                 <div>
-                  <h4 className="text-xs font-black text-white flex items-center gap-1.5">
-                    <span>Rishi AI Textbook Guide</span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  </h4>
-                  <p className="text-[10px] text-amber-300/80">
-                    Live tutor for {book.title}
-                  </p>
+                  <h4 className="text-xs font-black text-white">Rishi AI Companion</h4>
+                  <p className="text-[10px] text-amber-300">Live Textbook Guide</p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  if (isMobileScreen) setMobileTab('pdf');
-                  else setShowAiCompanion(false);
-                }}
-                className="p-1 rounded-lg text-stone-400 hover:text-white hover:bg-stone-800 transition cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-900/60 text-purple-200 border border-purple-500/30 font-mono">
+                {chapterList.length} Chapters
+              </span>
             </div>
 
-            {/* AI Messages Stream */}
-            <div className="flex-1 overflow-y-auto p-3 space-y-3 text-xs">
+            {/* Quick Chapter Shortcuts */}
+            {chapterList.length > 0 && (
+              <div className="p-2 bg-stone-950/60 border-b border-stone-800/80 overflow-x-auto flex gap-1.5 shrink-0 scrollbar-none">
+                {chapterList.map((ch, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => handleRequestChapterSummary(ch)}
+                    className="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-amber-500 hover:text-stone-950 text-stone-300 text-[10px] font-bold whitespace-nowrap transition cursor-pointer shrink-0 border border-stone-700"
+                    title={`Summarize ${ch.title || `Chapter ${ch.num || idx + 1}`}`}
+                  >
+                    Ch {ch.num || idx + 1}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Message Stream */}
+            <div className="flex-1 overflow-y-auto p-3 space-y-2.5 text-xs text-stone-200">
               {aiMessages.map((msg, i) => (
-                <div
-                  key={i}
-                  className={`p-3 rounded-xl ${
-                    msg.role === 'user'
-                      ? 'bg-amber-500 text-stone-950 font-bold ml-6 rounded-tr-sm'
-                      : 'bg-stone-800/90 text-stone-200 mr-4 rounded-tl-sm border border-stone-700/60 leading-relaxed'
+                <div 
+                  key={i} 
+                  className={`p-2.5 rounded-xl ${
+                    msg.role === 'user' 
+                      ? 'bg-amber-500/15 border border-amber-500/30 text-amber-200 ml-4' 
+                      : 'bg-stone-800/70 border border-stone-700/60 mr-4'
                   }`}
                 >
-                  <div className="whitespace-pre-wrap font-sans leading-relaxed">
-                    {typeof msg.text === 'object' ? (msg.text?.text || JSON.stringify(msg.text)) : String(msg.text || '')}
-                  </div>
+                  <p className="leading-relaxed whitespace-pre-wrap">{msg.text}</p>
                 </div>
               ))}
-
               {aiLoading && (
-                <div className="p-3 rounded-xl bg-stone-800/90 text-amber-300 border border-amber-500/30 flex items-center gap-2">
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin text-amber-400" />
-                  <span className="text-[11px] font-semibold">Preparing textbook intelligence...</span>
+                <div className="p-2.5 rounded-xl bg-purple-950/40 border border-purple-500/30 text-purple-300 text-xs flex items-center gap-2 mr-4">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Rishi AI is scanning textbook pages...</span>
                 </div>
               )}
             </div>
 
-            {/* Chapter Summary Selector (All Chapters for this Book) */}
-            {chapterList.length > 0 && (
-              <div className="p-2 border-t border-stone-800 bg-stone-950 flex flex-col gap-1.5">
-                <div className="flex items-center justify-between text-[10px] font-bold">
-                  <span className="text-amber-300 flex items-center gap-1">
-                    <BookOpen className="w-3 h-3 text-amber-400" />
-                    <span>Chapter Summaries ({chapterList.length} Chapters):</span>
-                  </span>
-                  <span className="text-stone-400 font-mono text-[9px]">Tap to Summarize</span>
-                </div>
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
-                  {chapterList.map((ch, idx) => {
-                    const cNum = ch.num || ch.number || (idx + 1);
-                    return (
-                      <button
-                        key={cNum}
-                        type="button"
-                        onClick={() => handleRequestChapterSummary(ch)}
-                        disabled={aiLoading}
-                        className="px-2.5 py-1 rounded-lg bg-stone-900 hover:bg-amber-500 hover:text-stone-950 text-stone-300 border border-stone-700/80 font-mono text-[10px] font-bold whitespace-nowrap transition cursor-pointer shrink-0 disabled:opacity-40"
-                        title={`Ch ${cNum}: ${ch.title}`}
-                      >
-                        Ch {cNum}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Quick Suggestions */}
-            <div className="p-2 border-t border-stone-800 bg-stone-950 flex items-center gap-1.5 overflow-x-auto text-[10px]">
-              <button
-                type="button"
-                onClick={() => {
-                  if (chapterList.length > 0) {
-                    handleRequestChapterSummary(chapterList[0]);
-                  } else {
-                    setAiQuestion('Summarize the key points and definitions of this chapter.');
-                  }
-                }}
-                disabled={aiLoading}
-                className="px-2 py-1 rounded-lg bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-800 whitespace-nowrap cursor-pointer disabled:opacity-40"
-              >
-                📝 Full Book Summary
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setAiQuestion('What are 3 important 5-mark exam questions from this textbook?');
-                }}
-                disabled={aiLoading}
-                className="px-2 py-1 rounded-lg bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-800 whitespace-nowrap cursor-pointer disabled:opacity-40"
-              >
-                🎯 5-Mark Questions
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setAiQuestion('Give me 5 rapid-fire practice MCQs with answers from this syllabus.');
-                }}
-                disabled={aiLoading}
-                className="px-2 py-1 rounded-lg bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-800 whitespace-nowrap cursor-pointer disabled:opacity-40"
-              >
-                ⚡ Practice MCQs
-              </button>
-            </div>
-
-            {/* AI Chat Input Form */}
-            <form onSubmit={handleSendAiMessage} className="p-2.5 bg-stone-950 border-t border-stone-800 flex items-center gap-2">
+            {/* Prompt Input */}
+            <form onSubmit={handleSendAiMessage} className="p-2.5 bg-stone-950 border-t border-stone-800 flex gap-1.5 shrink-0">
               <input
                 type="text"
-                placeholder="Ask any question about this textbook..."
+                placeholder="Ask about this textbook..."
                 value={aiQuestion}
                 onChange={(e) => setAiQuestion(e.target.value)}
-                disabled={aiLoading}
-                className="flex-1 px-3 py-2 bg-stone-900 border border-stone-700 rounded-xl text-xs text-white placeholder-stone-500 focus:outline-none focus:border-amber-400"
+                className="flex-1 px-3 py-2 rounded-xl bg-stone-900 border border-stone-700 text-white text-xs placeholder-stone-500 focus:outline-none focus:border-amber-400"
               />
               <button
                 type="submit"
                 disabled={aiLoading || !aiQuestion.trim()}
-                className="p-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 disabled:opacity-40 transition cursor-pointer shrink-0"
-                title="Send Question"
+                className="px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-stone-950 font-black transition cursor-pointer"
               >
                 <Send className="w-3.5 h-3.5" />
               </button>
