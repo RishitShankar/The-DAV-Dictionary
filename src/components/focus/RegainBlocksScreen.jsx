@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {
   Shield, Plus, HelpCircle, X, Search, ChevronDown, ChevronUp,
-  Lock, Zap, Check, Play, Film, Globe, EyeOff, Sliders, Smartphone
+  Lock, Zap, Check, Play, Film, Globe, EyeOff, Sliders, Smartphone,
+  AlertTriangle, Flame, ArrowRight, ExternalLink
 } from 'lucide-react';
 import { focusDataStore } from '../../services/focusDataStore';
+import { RegainInterventionOverlay } from './RegainInterventionOverlay';
 
 export function RegainBlocksScreen({ onOpenShortsTracker }) {
   const [appBlocks, setAppBlocks] = useState(() => focusDataStore.getAppBlocks());
@@ -12,6 +14,9 @@ export function RegainBlocksScreen({ onOpenShortsTracker }) {
   const [distractingOpen, setDistractingOpen] = useState(true);
   const [configuringApp, setConfiguringApp] = useState(null);
   const [tempLimitMinutes, setTempLimitMinutes] = useState(60);
+
+  // Simulated Launch Interception State
+  const [interceptedApp, setInterceptedApp] = useState(null);
 
   useEffect(() => {
     const unsub = focusDataStore.subscribe((event, data) => {
@@ -46,6 +51,15 @@ export function RegainBlocksScreen({ onOpenShortsTracker }) {
     if (h > 0 && m > 0) return `${h}h ${m}m Limit`;
     if (h > 0) return `${h}h Limit`;
     return `${m}m Limit`;
+  };
+
+  const simulateAppLaunch = (app) => {
+    setInterceptedApp({
+      name: app.name,
+      icon: app.name === 'YouTube' ? '▶' : app.name.charAt(0),
+      dailyUsageMinutes: 38,
+      dailyLimitMinutes: app.dailyLimitMinutes || 30
+    });
   };
 
   const filteredItems = appBlocks.items.filter(app =>
@@ -90,13 +104,20 @@ export function RegainBlocksScreen({ onOpenShortsTracker }) {
         <div className="space-y-2.5">
           {/* Card 1: YouTube */}
           <div className="p-4 rounded-2xl border-2 border-dashed border-stone-800/90 bg-[#16171a] flex items-center justify-between">
-            <div className="flex items-center space-x-3.5">
+            <div
+              onClick={() => simulateAppLaunch(youtubeApp)}
+              className="flex items-center space-x-3.5 cursor-pointer group"
+              title="Click to test simulated launch interception"
+            >
               {/* Red YouTube Circular Logo */}
-              <div className="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center text-white shadow-lg shadow-red-900/40 flex-shrink-0">
+              <div className="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center text-white shadow-lg shadow-red-900/40 flex-shrink-0 group-hover:scale-105 transition-transform">
                 <Play className="w-6 h-6 fill-white text-white ml-0.5" />
               </div>
               <div className="space-y-0.5">
-                <h4 className="text-sm font-bold text-white">YouTube</h4>
+                <div className="flex items-center space-x-2">
+                  <h4 className="text-sm font-bold text-white group-hover:text-red-400 transition-colors">YouTube</h4>
+                  <span className="text-[10px] text-stone-500 font-normal">(Click to test launch)</span>
+                </div>
                 <p className="text-xs text-stone-400 font-mono">
                   {formatLimit(youtubeApp?.dailyLimitMinutes || 100)}
                 </p>
@@ -117,13 +138,20 @@ export function RegainBlocksScreen({ onOpenShortsTracker }) {
 
           {/* Card 2: WhatsApp */}
           <div className="p-4 rounded-2xl border-2 border-dashed border-stone-800/90 bg-[#16171a] flex items-center justify-between">
-            <div className="flex items-center space-x-3.5">
+            <div
+              onClick={() => simulateAppLaunch(whatsappApp)}
+              className="flex items-center space-x-3.5 cursor-pointer group"
+              title="Click to test simulated launch interception"
+            >
               {/* Green WhatsApp Circular Logo */}
-              <div className="w-12 h-12 rounded-full bg-[#25D366] flex items-center justify-center text-white shadow-lg shadow-green-900/40 flex-shrink-0">
+              <div className="w-12 h-12 rounded-full bg-[#25D366] flex items-center justify-center text-white shadow-lg shadow-green-900/40 flex-shrink-0 group-hover:scale-105 transition-transform">
                 <span className="text-xl font-bold">💬</span>
               </div>
               <div className="space-y-0.5">
-                <h4 className="text-sm font-bold text-white">WhatsApp</h4>
+                <div className="flex items-center space-x-2">
+                  <h4 className="text-sm font-bold text-white group-hover:text-green-400 transition-colors">WhatsApp</h4>
+                  <span className="text-[10px] text-stone-500 font-normal">(Click to test launch)</span>
+                </div>
                 <p className="text-xs text-stone-400 font-mono">
                   {formatLimit(whatsappApp?.dailyLimitMinutes || 40)}
                 </p>
@@ -226,7 +254,7 @@ export function RegainBlocksScreen({ onOpenShortsTracker }) {
           </div>
 
           {/* Card 3: Snapchat Spotlight */}
-          <div className="p-4 rounded-2xl bg-[#1c1d21] border border-stone-800 hover:border-stone-700 flex items-center justify-between">
+          <div className="p-4 rounded-2xl bg-[#1c1d21] border border-yellow-400/30 flex items-center justify-between">
             <div className="flex items-center space-x-3.5">
               <div className="w-11 h-11 rounded-2xl bg-yellow-400/20 border border-yellow-400/30 flex items-center justify-center text-yellow-300">
                 <Zap className="w-6 h-6" />
@@ -583,6 +611,23 @@ export function RegainBlocksScreen({ onOpenShortsTracker }) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* Simulated App Launch Interceptor Overlay                      */}
+      {/* ------------------------------------------------------------- */}
+      {interceptedApp && (
+        <RegainInterventionOverlay
+          isOpen={true}
+          appName={interceptedApp.name}
+          appIcon={interceptedApp.icon}
+          dailyUsageMinutes={interceptedApp.dailyUsageMinutes}
+          dailyLimitMinutes={interceptedApp.dailyLimitMinutes}
+          onDismiss={() => setInterceptedApp(null)}
+          onGrantBypass={() => {
+            alert(`5-Minute Pass granted for ${interceptedApp.name}. Lock will resume after 5 mins.`);
+          }}
+        />
       )}
     </div>
   );

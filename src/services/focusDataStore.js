@@ -871,6 +871,108 @@ class FocusDataStore {
     this.saveNotifications(updated);
     return updated;
   }
+
+
+  // --- 30-Day Monthly Telemetry Generator ---
+  getMonthlyTelemetry() {
+    const days = [];
+    const now = new Date();
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      const useful = Math.floor(140 + Math.sin(i * 0.4) * 45 + (i % 5) * 8);
+      const distracted = Math.floor(65 + Math.cos(i * 0.3) * 25 - (i > 15 ? 15 : 0));
+      const reels = Math.floor(10 + Math.sin(i * 0.5) * 8);
+      const pickups = Math.floor(35 + Math.random() * 20);
+      days.push({
+        date: dateStr,
+        dayOfWeek: d.toLocaleDateString('en-US', { weekday: 'short' }),
+        usefulMinutes: useful,
+        distractedMinutes: Math.max(10, distracted),
+        totalMinutes: useful + Math.max(10, distracted),
+        reelsWatched: Math.max(0, reels),
+        pickups,
+        complianceScore: Math.min(100, Math.round((useful / (useful + distracted)) * 100))
+      });
+    }
+    return days;
+  }
+
+  // --- Intervention Audit Logs ---
+  getInterventionAuditLogs() {
+    return [
+      { id: 'log_1', timestamp: '2026-11-09T08:15:00Z', type: 'app_launch_intercepted', app: 'Instagram', action: 'Prompted 10s reflection gate', status: 'Blocked' },
+      { id: 'log_2', timestamp: '2026-11-09T09:30:00Z', type: 'reels_doomscroll_warning', count: 10, action: 'Soft banner warning displayed', status: 'Acknowledged' },
+      { id: 'log_3', timestamp: '2026-11-09T10:45:00Z', type: 'mindfulness_breath_gate', count: 15, action: '15s breathing cycle enforced', status: 'Completed' },
+      { id: 'log_4', timestamp: '2026-11-09T11:20:00Z', type: 'anti_uninstall_tamper', action: 'Intercepted package removal trigger', status: 'Shielded' },
+      { id: 'log_5', timestamp: '2026-11-09T12:05:00Z', type: 'notification_batch_held', app: 'Snapchat', action: 'Held for 2:00 PM Afternoon Bundle', status: 'Vaulted' }
+    ];
+  }
+
+  // --- School District Benchmarks ---
+  getSchoolDistrictBenchmarks() {
+    return {
+      districtName: 'DAV College Managing Committee - North Zone',
+      averageDailyScreenTimeMinutes: 340, // 5h 40m
+      averageDistractedMinutes: 195,     // 3h 15m
+      averageUsefulMinutes: 145,         // 2h 25m
+      studentPercentile: 94,             // Top 6% in digital wellbeing
+      attentionRestorationScore: 'A+ (Elite Focus)'
+    };
+  }
+
+  // --- Bedtime Phone Usage Analyzer ---
+  getBedtimePhoneUsageAnalysis() {
+    return {
+      bedtimeWindowUsageMinutes: 14, // 10 PM - 6 AM
+      blueLightExposureRating: 'Minimal (Protected)',
+      circadianDisruptionRisk: 'Low',
+      firstPickupMorning: '06:15 AM',
+      lastScreenOffNight: '10:24 PM'
+    };
+  }
+
+  // --- Distraction Index Calculation ---
+  calculateDistractionIndex() {
+    const st = this.getScreenTimeData();
+    const reels = this.getReelsData();
+    const useful = st.usefulMinutes || 1;
+    const distracted = st.distractedMinutes || 1;
+    const ratio = useful / (useful + distracted);
+    const reelsPenalty = reels.todayReelsWatched * 0.01;
+    const finalScore = Math.max(0, Math.min(100, Math.round((ratio - reelsPenalty) * 100)));
+    return {
+      score: finalScore,
+      rating: finalScore >= 75 ? 'Optimal Flow' : finalScore >= 50 ? 'Moderate Control' : 'High Distraction Risk',
+      usefulRatio: Math.round(ratio * 100)
+    };
+  }
+
+  // --- Export Report as JSON ---
+  exportStudentReportJSON(userName = 'Student') {
+    const report = {
+      user: userName,
+      generatedAt: new Date().toISOString(),
+      screenTime: this.getScreenTimeData(),
+      reelsGuardian: this.getReelsData(),
+      appBlocks: this.getAppBlocks(),
+      strictShield: this.getStrictShield(),
+      benchmarks: this.getSchoolDistrictBenchmarks(),
+      distractionIndex: this.calculateDistractionIndex()
+    };
+    return JSON.stringify(report, null, 2);
+  }
+
+  // --- Export Report as CSV ---
+  // --- Export Report as CSV ---
+  exportStudentReportCSV() {
+    const days = this.getMonthlyTelemetry();
+    const headers = ['Date', 'Day', 'UsefulMinutes', 'DistractedMinutes', 'TotalMinutes', 'ReelsWatched', 'Pickups', 'ComplianceScore'].join(',') + '\n';
+    const rows = days.map(d => [d.date, d.dayOfWeek, d.usefulMinutes, d.distractedMinutes, d.totalMinutes, d.reelsWatched, d.pickups, d.complianceScore + '%'].join(',')).join('\n');
+    return headers + rows;
+  }
+
 }
 
 export const focusDataStore = new FocusDataStore();

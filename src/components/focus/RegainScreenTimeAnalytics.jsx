@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   BarChart3, Clock, Smartphone, RefreshCw, Zap, TrendingDown,
-  TrendingUp, Award, ShieldCheck, AlertCircle, ArrowUpRight, Flame
+  TrendingUp, Award, ShieldCheck, AlertCircle, ArrowUpRight, Flame,
+  Calendar, Moon, Sun, Download, FileText, CheckCircle2
 } from 'lucide-react';
 import { focusDataStore } from '../../services/focusDataStore';
 
@@ -10,6 +11,7 @@ export function RegainScreenTimeAnalytics() {
   const [isScanning, setIsScanning] = useState(false);
   const [timeRangeTab, setTimeRangeTab] = useState('today'); // today | week | month
   const [selectedBarHour, setSelectedBarHour] = useState(null);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   useEffect(() => {
     const unsub = focusDataStore.subscribe((event, data) => {
@@ -47,6 +49,17 @@ export function RegainScreenTimeAnalytics() {
     45
   );
 
+  // 7-Day historical screen time trend
+  const weeklyTrends = [
+    { day: 'Mon', useful: 180, distracted: 75, total: 255 },
+    { day: 'Tue', useful: 210, distracted: 60, total: 270 },
+    { day: 'Wed', useful: 195, distracted: 90, total: 285 },
+    { day: 'Thu', useful: 240, distracted: 45, total: 285 },
+    { day: 'Fri', useful: 220, distracted: 80, total: 300 },
+    { day: 'Sat', useful: 160, distracted: 110, total: 270 },
+    { day: 'Sun', useful: 168, distracted: 86, total: 254 }
+  ];
+
   return (
     <div className="w-full space-y-6 text-white select-none">
       {/* ------------------------------------------------------------- */}
@@ -66,14 +79,24 @@ export function RegainScreenTimeAnalytics() {
             <h2 className="text-2xl font-black text-white mt-1">Screen Time Scanner</h2>
           </div>
 
-          <button
-            onClick={handleScanDevice}
-            disabled={isScanning}
-            className="flex items-center space-x-2 px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-xs font-black text-white shadow-lg shadow-emerald-950 transition-all active:scale-95"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${isScanning ? 'animate-spin' : ''}`} />
-            <span>{isScanning ? 'Scanning Telemetry...' : 'Scan Device Usage'}</span>
-          </button>
+          <div className="flex items-center space-x-2 w-full sm:w-auto">
+            <button
+              onClick={() => setShowReportModal(true)}
+              className="px-3.5 py-2.5 rounded-2xl bg-stone-800 hover:bg-stone-750 border border-stone-700 text-xs font-bold text-stone-300 flex items-center space-x-1.5 transition-all"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Parent Report</span>
+            </button>
+
+            <button
+              onClick={handleScanDevice}
+              disabled={isScanning}
+              className="flex-1 sm:flex-none flex items-center justify-center space-x-2 px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-xs font-black text-white shadow-lg shadow-emerald-950 transition-all active:scale-95"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isScanning ? 'animate-spin' : ''}`} />
+              <span>{isScanning ? 'Scanning Telemetry...' : 'Scan Device Usage'}</span>
+            </button>
+          </div>
         </div>
 
         {/* ------------------------------------------------------------- */}
@@ -223,6 +246,41 @@ export function RegainScreenTimeAnalytics() {
       </div>
 
       {/* ------------------------------------------------------------- */}
+      {/* 7-Day Weekly Trend Analysis                                   */}
+      {/* ------------------------------------------------------------- */}
+      <div className="rounded-3xl bg-[#14161d] border border-stone-800 p-6 space-y-4 shadow-xl">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Calendar className="w-5 h-5 text-cyan-400" />
+            <h3 className="text-base font-bold text-white">7-Day Study vs Distraction Trend</h3>
+          </div>
+          <span className="text-xs text-stone-400">This Week</span>
+        </div>
+
+        <div className="grid grid-cols-7 gap-2 pt-2">
+          {weeklyTrends.map((wt) => {
+            const usefulRatio = Math.round((wt.useful / wt.total) * 100);
+            return (
+              <div
+                key={wt.day}
+                className="p-3 rounded-2xl bg-stone-950/70 border border-stone-850 text-center space-y-2"
+              >
+                <span className="text-xs font-bold text-stone-300">{wt.day}</span>
+                <div className="text-xs font-mono font-black text-white">{formatMins(wt.total)}</div>
+                <div className="w-full bg-stone-900 h-1.5 rounded-full overflow-hidden">
+                  <div
+                    className="bg-emerald-400 h-full rounded-full"
+                    style={{ width: `${usefulRatio}%` }}
+                  />
+                </div>
+                <span className="text-[10px] text-emerald-400 block font-semibold">{usefulRatio}% study</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ------------------------------------------------------------- */}
       {/* App Usage Breakdown List (Per-App Telemetry)                  */}
       {/* ------------------------------------------------------------- */}
       <div className="rounded-3xl bg-[#14161d] border border-stone-800 p-6 space-y-4 shadow-xl">
@@ -286,6 +344,55 @@ export function RegainScreenTimeAnalytics() {
           })}
         </div>
       </div>
+
+      {/* Parent Report Modal */}
+      {showReportModal && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-stone-900 border border-stone-800 rounded-3xl p-6 space-y-4 shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-2 border-b border-stone-800">
+              <h3 className="text-base font-black text-white flex items-center space-x-2">
+                <FileText className="w-5 h-5 text-emerald-400" />
+                <span>Parent & Teacher Study Telemetry</span>
+              </h3>
+              <button
+                onClick={() => setShowReportModal(false)}
+                className="text-stone-400 hover:text-white text-xs font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-stone-950 border border-stone-800 space-y-2 text-xs">
+              <div className="flex justify-between">
+                <span className="text-stone-400">Student:</span>
+                <span className="font-bold text-white">Rishit Shankar (DAV Section 10)</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-stone-400">Total Study Time Today:</span>
+                <span className="font-bold text-emerald-400">{formatMins(screenTimeData.usefulMinutes)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-stone-400">Distracted Social Minutes:</span>
+                <span className="font-bold text-rose-400">{formatMins(screenTimeData.distractedMinutes)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-stone-400">Strict Shield Compliance:</span>
+                <span className="font-bold text-emerald-400">100% (Zero Tampering)</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                alert('Report generated and saved to device memory!');
+                setShowReportModal(false);
+              }}
+              className="w-full py-3 rounded-2xl bg-white hover:bg-stone-200 text-stone-950 font-black text-xs shadow-lg transition-all"
+            >
+              Export PDF Telemetry
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   Calendar, Clock, Plus, Check, Trash2, Bell, BellOff,
-  ChevronLeft, ChevronRight, Sparkles, BookOpen, Shield, Flame
+  ChevronLeft, ChevronRight, Sparkles, BookOpen, Shield, Flame,
+  Download, Share2, Layers, CheckCircle2
 } from 'lucide-react';
 import { focusDataStore } from '../../services/focusDataStore';
 
@@ -9,6 +10,7 @@ export function RegainScheduleScreen() {
   const [schedules, setSchedules] = useState(() => focusDataStore.getSchedules());
   const [activeCardIndex, setActiveCardIndex] = useState(0);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showAutoTimetableModal, setShowAutoTimetableModal] = useState(false);
 
   // Form State for new schedule
   const [newTitle, setNewTitle] = useState('Daily Deep Focus');
@@ -75,6 +77,37 @@ export function RegainScheduleScreen() {
     setShowCreateModal(false);
   };
 
+  const handleApplyPresetTimetable = (presetName) => {
+    if (presetName === 'dav_topper') {
+      const morning = {
+        id: `sch_dav_m_${Date.now()}`,
+        title: 'DAV Morning Physics & Math Sprint',
+        timeRange: '05:30 AM - 07:30 AM',
+        daysLabel: 'Mon - Fri',
+        activeDays: [1, 2, 3, 4, 5],
+        enabled: true,
+        autoDnd: true,
+        blockDistractions: true,
+        targetSubject: 'Mathematics & Science'
+      };
+      const evening = {
+        id: `sch_dav_e_${Date.now()}`,
+        title: 'DAV Evening Board Exam Mastery',
+        timeRange: '07:00 PM - 09:30 PM',
+        daysLabel: 'All Days',
+        activeDays: [0, 1, 2, 3, 4, 5, 6],
+        enabled: true,
+        autoDnd: true,
+        blockDistractions: true,
+        targetSubject: 'Social Science & Languages'
+      };
+      focusDataStore.addSchedule(morning);
+      focusDataStore.addSchedule(evening);
+      setShowAutoTimetableModal(false);
+      alert('DAV Topper Master Timetable successfully loaded!');
+    }
+  };
+
   const activeCard = schedules[activeCardIndex] || schedules[0];
 
   return (
@@ -136,14 +169,22 @@ export function RegainScheduleScreen() {
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* "Create Schedule" Button (Solid White Pill)                   */}
+      {/* Dual Action Buttons: "Create Schedule" & "Auto-Timetable"     */}
       {/* ------------------------------------------------------------- */}
-      <div className="flex justify-center pt-2">
+      <div className="flex justify-center items-center space-x-3 pt-2">
         <button
           onClick={() => setShowCreateModal(true)}
           className="px-8 py-3.5 rounded-full font-black text-sm bg-white hover:bg-stone-200 text-stone-950 shadow-2xl transition-all active:scale-95 text-center"
         >
           Create Schedule
+        </button>
+
+        <button
+          onClick={() => setShowAutoTimetableModal(true)}
+          className="px-5 py-3.5 rounded-full font-bold text-xs bg-stone-850 hover:bg-stone-800 text-emerald-300 border border-emerald-500/30 shadow-lg transition-all active:scale-95 text-center flex items-center space-x-1.5"
+        >
+          <Sparkles className="w-4 h-4 text-emerald-400" />
+          <span>DAV Syllabus AI Timetable</span>
         </button>
       </div>
 
@@ -328,6 +369,45 @@ export function RegainScheduleScreen() {
                 Save Schedule
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Auto Syllabus Timetable Preset Modal */}
+      {showAutoTimetableModal && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-stone-900 border border-stone-800 rounded-3xl p-6 space-y-4 shadow-2xl animate-in zoom-in-95 duration-200">
+            <h3 className="text-base font-black text-white flex items-center space-x-2">
+              <Sparkles className="w-5 h-5 text-emerald-400" />
+              <span>DAV Academic AI Schedules</span>
+            </h3>
+            <p className="text-xs text-stone-400">
+              Select a pre-configured study blueprint aligned with DAV Public School syllabus benchmarks:
+            </p>
+
+            <div className="space-y-2.5">
+              <div
+                onClick={() => handleApplyPresetTimetable('dav_topper')}
+                className="p-4 rounded-2xl bg-stone-950 hover:bg-stone-850 border border-emerald-500/30 cursor-pointer transition-all space-y-1"
+              >
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold text-white">DAV Board Exam Topper Routine</h4>
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-500/20 text-emerald-400">
+                    Recommended
+                  </span>
+                </div>
+                <p className="text-[11px] text-stone-400">
+                  Morning (05:30 - 07:30 AM) + Evening (07:00 - 09:30 PM) with automatic distraction blocking.
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowAutoTimetableModal(false)}
+              className="w-full py-2.5 rounded-xl bg-stone-800 text-xs font-bold text-stone-300"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}

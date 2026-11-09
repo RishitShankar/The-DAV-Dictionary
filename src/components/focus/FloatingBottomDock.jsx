@@ -1,8 +1,9 @@
 import React from 'react';
 import {
   Hourglass, Calendar, Users, ShieldAlert, Film, BarChart3,
-  Sparkles, Lock
+  Sparkles, Lock, Volume2
 } from 'lucide-react';
+import { ambientAudio } from '../../services/focusDataStore';
 
 export function FloatingBottomDock({ activeTab, onSelectTab }) {
   const tabs = [
@@ -13,6 +14,11 @@ export function FloatingBottomDock({ activeTab, onSelectTab }) {
     { id: 'reels', label: 'BrainPal', icon: Film, isBadge: 'NEW' },
     { id: 'analytics', label: 'Scanner', icon: BarChart3 }
   ];
+
+  const handleSelect = (tabId) => {
+    ambientAudio.playBellChime();
+    onSelectTab(tabId);
+  };
 
   return (
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-11/12 max-w-md select-none">
@@ -26,7 +32,7 @@ export function FloatingBottomDock({ activeTab, onSelectTab }) {
             return (
               <button
                 key={tab.id}
-                onClick={() => onSelectTab(tab.id)}
+                onClick={() => handleSelect(tab.id)}
                 className={`flex items-center space-x-1.5 px-3.5 py-2.5 rounded-full text-xs font-bold transition-all ${
                   isActive
                     ? 'bg-emerald-500 text-stone-950 shadow-lg shadow-emerald-950 font-black'
@@ -42,7 +48,7 @@ export function FloatingBottomDock({ activeTab, onSelectTab }) {
           return (
             <button
               key={tab.id}
-              onClick={() => onSelectTab(tab.id)}
+              onClick={() => handleSelect(tab.id)}
               className={`flex-1 flex flex-col items-center justify-center py-1.5 px-1 rounded-full transition-all relative ${
                 isActive
                   ? 'text-emerald-400 font-bold'

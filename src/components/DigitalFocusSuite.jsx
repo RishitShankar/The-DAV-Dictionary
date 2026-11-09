@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import {
   Hourglass, Calendar, Users, ShieldAlert, Film, BarChart3,
   Sparkles, Sliders, Volume2, ShieldCheck, Zap, X, Trophy,
-  RefreshCw, Clock, Flame, Award, Heart, BookOpen, Layers
+  RefreshCw, Clock, Flame, Award, Heart, BookOpen, Layers,
+  Music, Radio, Eye, CheckSquare
 } from 'lucide-react';
 
 import { RegainFocusScreen } from './focus/RegainFocusScreen';
@@ -11,35 +12,30 @@ import { RegainScheduleScreen } from './focus/RegainScheduleScreen';
 import { RegainGroupsScreen } from './focus/RegainGroupsScreen';
 import { RegainBlocksScreen } from './focus/RegainBlocksScreen';
 import { BrainPalReelsTracker } from './focus/BrainPalReelsTracker';
+import { BrainPalDoomscrollDetector } from './focus/BrainPalDoomscrollDetector';
+import { BrainPalChallengeDashboard } from './focus/BrainPalChallengeDashboard';
 import { RegainScreenTimeAnalytics } from './focus/RegainScreenTimeAnalytics';
 import { RegainStrictShield } from './focus/RegainStrictShield';
 import { RegainNotificationManager } from './focus/RegainNotificationManager';
+import { RegainSoundscapesPlayer } from './focus/RegainSoundscapesPlayer';
+import { RegainStudyRoomLive } from './focus/RegainStudyRoomLive';
+import { RegainPermissionManager } from './focus/RegainPermissionManager';
 import { FloatingBottomDock } from './focus/FloatingBottomDock';
 import { focusDataStore, ambientAudio } from '../services/focusDataStore';
 
 export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) {
   // Navigation active tab in focus engine
-  // 'focus' | 'schedule' | 'groups' | 'blocks' | 'reels' | 'analytics' | 'strict' | 'notifications'
+  // 'focus' | 'schedule' | 'groups' | 'blocks' | 'reels' | 'analytics' | 'strict' | 'notifications' | 'audio' | 'detector' | 'studyroom' | 'challenges' | 'permissions'
   const [activeTab, setActiveTab] = useState('focus');
 
   // Modal dialog states
   const [showSetupModal, setShowSetupModal] = useState(false);
   const [showSettingsDrawer, setShowSettingsDrawer] = useState(false);
-  const [showGroupModal, setShowGroupModal] = useState(false);
 
   // Audio volume state
   const [audioVolume, setAudioVolume] = useState(0.5);
 
-  // Focus accumulator tick
-  useEffect(() => {
-    const interval = setInterval(() => {
-      // Periodic study sync if needed
-    }, 10000);
-    return () => clearInterval(interval);
-  }, []);
-
   const handleStartSessionFromModal = (config) => {
-    // If timer config set, notify user or play sound
     ambientAudio.playBellChime();
     if (onAccumulateMs) {
       onAccumulateMs(1000 * 60); // mark progress
@@ -83,6 +79,30 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
           </button>
 
           <button
+            onClick={() => setActiveTab('detector')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
+              activeTab === 'detector'
+                ? 'bg-orange-500 text-stone-950 font-black shadow-md'
+                : 'text-stone-300 hover:bg-stone-800'
+            }`}
+          >
+            <Flame className="w-3.5 h-3.5" />
+            <span>Doomscroll Radar</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('challenges')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
+              activeTab === 'challenges'
+                ? 'bg-amber-500 text-stone-950 font-black shadow-md'
+                : 'text-stone-300 hover:bg-stone-800'
+            }`}
+          >
+            <Award className="w-3.5 h-3.5" />
+            <span>Quests & Badges</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('blocks')}
             className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
               activeTab === 'blocks'
@@ -119,6 +139,18 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
           </button>
 
           <button
+            onClick={() => setActiveTab('studyroom')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
+              activeTab === 'studyroom'
+                ? 'bg-teal-500 text-stone-950 font-black shadow-md'
+                : 'text-stone-300 hover:bg-stone-800'
+            }`}
+          >
+            <Radio className="w-3.5 h-3.5" />
+            <span>Live Study Hall</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('analytics')}
             className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
               activeTab === 'analytics'
@@ -127,7 +159,19 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
             }`}
           >
             <BarChart3 className="w-3.5 h-3.5" />
-            <span>Screen Time Scanner</span>
+            <span>Scanner</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('audio')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
+              activeTab === 'audio'
+                ? 'bg-indigo-500 text-white font-black shadow-md'
+                : 'text-stone-300 hover:bg-stone-800'
+            }`}
+          >
+            <Music className="w-3.5 h-3.5" />
+            <span>Audio Studio</span>
           </button>
 
           <button
@@ -140,6 +184,18 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
           >
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Anti-Uninstall</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('permissions')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
+              activeTab === 'permissions'
+                ? 'bg-emerald-600 text-white font-black shadow-md'
+                : 'text-stone-300 hover:bg-stone-800'
+            }`}
+          >
+            <CheckSquare className="w-3.5 h-3.5" />
+            <span>OS Permissions</span>
           </button>
 
           <button
@@ -174,34 +230,59 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
           <BrainPalReelsTracker user={user} />
         )}
 
-        {/* Tab 3: ReGain Blocks Screen */}
+        {/* Tab 3: BrainPal Doomscroll Velocity Detector */}
+        {activeTab === 'detector' && (
+          <BrainPalDoomscrollDetector />
+        )}
+
+        {/* Tab 4: Attention Mastery Quests & Badges */}
+        {activeTab === 'challenges' && (
+          <BrainPalChallengeDashboard />
+        )}
+
+        {/* Tab 5: ReGain Blocks Screen */}
         {activeTab === 'blocks' && (
           <RegainBlocksScreen
             onOpenShortsTracker={() => setActiveTab('reels')}
           />
         )}
 
-        {/* Tab 4: ReGain Schedule Screen */}
+        {/* Tab 6: ReGain Schedule Screen */}
         {activeTab === 'schedule' && (
           <RegainScheduleScreen />
         )}
 
-        {/* Tab 5: ReGain Focus Groups Screen */}
+        {/* Tab 7: ReGain Focus Groups Screen */}
         {activeTab === 'groups' && (
           <RegainGroupsScreen user={user} />
         )}
 
-        {/* Tab 6: Screen Time Analytics & Scanner */}
+        {/* Tab 8: Live Virtual Study Hall */}
+        {activeTab === 'studyroom' && (
+          <RegainStudyRoomLive user={user} />
+        )}
+
+        {/* Tab 9: Screen Time Analytics & Scanner */}
         {activeTab === 'analytics' && (
           <RegainScreenTimeAnalytics />
         )}
 
-        {/* Tab 7: Strict Mode & Anti-Uninstall Shield */}
+        {/* Tab 10: Dedicated Audio Synthesizer Studio */}
+        {activeTab === 'audio' && (
+          <RegainSoundscapesPlayer />
+        )}
+
+        {/* Tab 11: Strict Mode & Anti-Uninstall Shield */}
         {activeTab === 'strict' && (
           <RegainStrictShield />
         )}
 
-        {/* Tab 8: Smart Notification Shield */}
+        {/* Tab 12: Android OS Permission Manager */}
+        {activeTab === 'permissions' && (
+          <RegainPermissionManager />
+        )}
+
+        {/* Tab 13: Smart Notification Shield */}
         {activeTab === 'notifications' && (
           <RegainNotificationManager />
         )}
@@ -321,6 +402,17 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
               >
                 <ShieldCheck className="w-4 h-4" />
                 <span>Anti-Uninstall & Emergency PIN</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setActiveTab('permissions');
+                  setShowSettingsDrawer(false);
+                }}
+                className="w-full p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-emerald-300 text-xs font-bold flex items-center space-x-2"
+              >
+                <CheckSquare className="w-4 h-4" />
+                <span>Android OS Diagnostics</span>
               </button>
 
               <button

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   ShieldAlert, ShieldCheck, Lock, Unlock, Key, AlertTriangle,
-  Clock, CheckCircle2, RefreshCw, Smartphone, Eye
+  Clock, CheckCircle2, RefreshCw, Smartphone, Eye, FileText,
+  UserCheck, Shield, ChevronRight
 } from 'lucide-react';
 import { focusDataStore } from '../../services/focusDataStore';
 
@@ -10,7 +11,14 @@ export function RegainStrictShield() {
   const [inputPin, setInputPin] = useState('');
   const [pinError, setPinError] = useState(false);
   const [showOverrideModal, setShowOverrideModal] = useState(false);
-  const [cooldownRemaining, setCooldownRemaining] = useState(0);
+  const [showTamperLog, setShowTamperLog] = useState(false);
+
+  // Simulated Tamper Detection History
+  const [tamperLogs, setTamperLogs] = useState([
+    { id: 1, event: 'Blocked attempt to kill DAV background service', time: '10:45 AM', status: 'Prevented' },
+    { id: 2, event: 'App uninstallation prompt intercepted & neutralized', time: '11:15 AM', status: 'Shielded' },
+    { id: 3, event: 'Attempted to turn off accessibility permissions', time: '12:30 PM', status: 'Locked' }
+  ]);
 
   useEffect(() => {
     const unsub = focusDataStore.subscribe((event, data) => {
@@ -161,6 +169,34 @@ export function RegainStrictShield() {
           >
             Use PIN
           </button>
+        </div>
+      </div>
+
+      {/* Tamper Detection History Log */}
+      <div className="p-5 rounded-3xl bg-stone-900/90 border border-stone-800 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <FileText className="w-4 h-4 text-amber-400" />
+            <h4 className="text-sm font-bold text-white">Anti-Cheat Interception Log</h4>
+          </div>
+          <span className="text-xs text-stone-400">{tamperLogs.length} events logged</span>
+        </div>
+
+        <div className="space-y-2">
+          {tamperLogs.map((log) => (
+            <div
+              key={log.id}
+              className="p-3 rounded-2xl bg-stone-950 border border-stone-850 flex items-center justify-between text-xs"
+            >
+              <div className="space-y-0.5">
+                <p className="font-bold text-stone-200">{log.event}</p>
+                <span className="font-mono text-stone-500 text-[10px]">{log.time}</span>
+              </div>
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                {log.status}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
 

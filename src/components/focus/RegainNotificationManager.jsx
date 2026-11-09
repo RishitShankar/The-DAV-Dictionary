@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import {
   Bell, BellOff, Shield, Check, Clock, AlertCircle,
-  Inbox, Sparkles, Send, VolumeX, Eye
+  Inbox, Sparkles, Send, VolumeX, Eye, MessageSquare,
+  Smartphone, UserCheck, Plus, X
 } from 'lucide-react';
 import { focusDataStore } from '../../services/focusDataStore';
 
 export function RegainNotificationManager() {
   const [notificationsData, setNotificationsData] = useState(() => focusDataStore.getNotifications());
   const [releasedToast, setReleasedToast] = useState(null);
+  const [autoReplyEnabled, setAutoReplyEnabled] = useState(true);
+  const [autoReplyMsg, setAutoReplyMsg] = useState(
+    'I am currently deep in study on DAV Smart Portal until 8:00 PM. I will get back to you during my scheduled notification window.'
+  );
+  const [newWhitelistName, setNewWhitelistName] = useState('');
+  const [showAddContact, setShowAddContact] = useState(false);
 
   useEffect(() => {
     const unsub = focusDataStore.subscribe((event, data) => {
@@ -23,6 +30,25 @@ export function RegainNotificationManager() {
     setNotificationsData(updated);
     setReleasedToast(`Delivered all held notifications for ${label}!`);
     setTimeout(() => setReleasedToast(null), 4000);
+  };
+
+  const handleAddWhitelist = () => {
+    if (!newWhitelistName.trim()) return;
+    const current = focusDataStore.getNotifications();
+    const updated = {
+      ...current,
+      whitelist: [...current.whitelist, newWhitelistName.trim()]
+    };
+    focusDataStore.saveNotifications(updated);
+    setNewWhitelistName('');
+    setShowAddContact(false);
+  };
+
+  const handleRemoveWhitelist = (index) => {
+    const current = focusDataStore.getNotifications();
+    const updatedList = current.whitelist.filter((_, i) => i !== index);
+    const updated = { ...current, whitelist: updatedList };
+    focusDataStore.saveNotifications(updated);
   };
 
   return (
@@ -102,6 +128,42 @@ export function RegainNotificationManager() {
         </div>
       </div>
 
+      {/* Auto-Reply During Focus Mode */}
+      <div className="p-5 rounded-3xl bg-stone-900/90 border border-stone-800 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <MessageSquare className="w-4 h-4 text-emerald-400" />
+            <h4 className="text-sm font-bold text-white">Auto-Reply During Focus Sessions</h4>
+          </div>
+          <button
+            onClick={() => setAutoReplyEnabled(!autoReplyEnabled)}
+            className={`w-10 h-6 rounded-full p-0.5 transition-colors ${
+              autoReplyEnabled ? 'bg-emerald-500' : 'bg-stone-700'
+            }`}
+          >
+            <div
+              className={`w-5 h-5 rounded-full bg-white shadow transition-transform ${
+                autoReplyEnabled ? 'translate-x-4' : 'translate-x-0'
+              }`}
+            />
+          </button>
+        </div>
+
+        {autoReplyEnabled && (
+          <div className="space-y-2">
+            <textarea
+              rows="2"
+              value={autoReplyMsg}
+              onChange={(e) => setAutoReplyMsg(e.target.value)}
+              className="w-full p-3 rounded-2xl bg-stone-950 border border-stone-850 text-xs text-stone-300 focus:outline-none focus:border-emerald-500"
+            />
+            <p className="text-[10px] text-stone-500">
+              This message is automatically dispatched to WhatsApp and SMS contacts while your focus session runs.
+            </p>
+          </div>
+        )}
+      </div>
+
       {/* Whitelisted Contacts */}
       <div className="p-5 rounded-3xl bg-stone-900/90 border border-stone-800 space-y-3">
         <div className="flex items-center justify-between">
@@ -109,18 +171,48 @@ export function RegainNotificationManager() {
             <Shield className="w-4 h-4 text-emerald-400" />
             <h4 className="text-sm font-bold text-white">VIP Priority Whitelist (Instant Delivery)</h4>
           </div>
-          <span className="text-xs text-emerald-400 font-semibold">Bypasses DND</span>
+          <button
+            onClick={() => setShowAddContact(!showAddContact)}
+            className="text-xs font-bold text-emerald-400 hover:text-emerald-300"
+          >
+            + Add Contact
+          </button>
         </div>
         <p className="text-xs text-stone-400">
           Calls and messages from these contacts will immediately ring through, even during deep focus sessions:
         </p>
+
+        {showAddContact && (
+          <div className="flex space-x-2 py-1">
+            <input
+              type="text"
+              value={newWhitelistName}
+              onChange={(e) => setNewWhitelistName(e.target.value)}
+              placeholder="Contact Name or Title"
+              className="flex-1 px-3 py-1.5 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white"
+            />
+            <button
+              onClick={handleAddWhitelist}
+              className="px-4 py-1.5 rounded-xl bg-emerald-600 text-xs font-bold text-white"
+            >
+              Add
+            </button>
+          </div>
+        )}
+
         <div className="flex flex-wrap gap-2 pt-1">
           {notificationsData.whitelist.map((wl, i) => (
             <span
               key={i}
-              className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-950/60 text-emerald-300 border border-emerald-500/30 flex items-center space-x-1"
+              className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-950/60 text-emerald-300 border border-emerald-500/30 flex items-center space-x-2"
             >
               <span>👤 {wl}</span>
+              <button
+                onClick={() => handleRemoveWhitelist(i)}
+                className="text-stone-400 hover:text-rose-400 text-xs"
+              >
+                ✕
+              </button>
             </span>
           ))}
         </div>

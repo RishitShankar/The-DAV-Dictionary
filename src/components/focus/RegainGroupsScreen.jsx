@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import {
   Users, Plus, HelpCircle, UserPlus, Check, Sparkles,
-  Flame, Award, Clock, ArrowRight, MessageSquare, Send, BookOpen
+  Flame, Award, Clock, ArrowRight, MessageSquare, Send, BookOpen,
+  Volume2, ShieldCheck, Heart, Star, Compass
 } from 'lucide-react';
-import { focusDataStore } from '../../services/focusDataStore';
+import { focusDataStore, ambientAudio } from '../../services/focusDataStore';
 
 export function RegainGroupsScreen({ user }) {
   const [groupsData, setGroupsData] = useState(() => focusDataStore.getGroups());
@@ -18,6 +19,18 @@ export function RegainGroupsScreen({ user }) {
     { id: 3, user: 'Rishi Shankar', text: 'Great focus everyone! Let us lead the campus board.', time: '1:24 PM' }
   ]);
 
+  // Shared Group Timer Simulation
+  const [groupTimerSeconds, setGroupTimerSeconds] = useState(25 * 60);
+  const [groupTimerRunning, setGroupTimerRunning] = useState(true);
+
+  // Group Leaderboard Simulation
+  const groupRankers = [
+    { rank: 1, name: 'Rishi Shankar', hours: '28.4h', badge: '🥇 DAV Champion' },
+    { rank: 2, name: 'Aman Sharma', hours: '24.1h', badge: '🥈 Deep Worker' },
+    { rank: 3, name: 'Priya Patel', hours: '21.8h', badge: '🥉 Math Wizard' },
+    { rank: 4, name: 'Sneha Roy', hours: '19.5h', badge: '⭐ Consistent' }
+  ];
+
   useEffect(() => {
     const unsub = focusDataStore.subscribe((event, data) => {
       if (event === 'groups_updated') {
@@ -27,9 +40,23 @@ export function RegainGroupsScreen({ user }) {
     return unsub;
   }, []);
 
+  // Synchronized group timer tick
+  useEffect(() => {
+    let t = null;
+    if (activeGroupRoom && groupTimerRunning) {
+      t = setInterval(() => {
+        setGroupTimerSeconds(prev => (prev <= 1 ? 25 * 60 : prev - 1));
+      }, 1000);
+    }
+    return () => {
+      if (t) clearInterval(t);
+    };
+  }, [activeGroupRoom, groupTimerRunning]);
+
   const handleJoin = (groupId) => {
     const updated = focusDataStore.joinGroup(groupId);
     setGroupsData(updated);
+    ambientAudio.playBellChime();
   };
 
   const handleCreate = () => {
@@ -38,6 +65,7 @@ export function RegainGroupsScreen({ user }) {
     setGroupsData(updated);
     setNewGroupName('');
     setShowCreateModal(false);
+    ambientAudio.playBellChime();
   };
 
   const handleSendMessage = () => {
@@ -50,6 +78,12 @@ export function RegainGroupsScreen({ user }) {
     };
     setChatLog([...chatLog, newMsg]);
     setChatMessage('');
+  };
+
+  const formatTimer = (s) => {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
   };
 
   return (
@@ -180,11 +214,11 @@ export function RegainGroupsScreen({ user }) {
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* Interactive Group Study Room Modal                            */}
+      {/* Interactive Group Study Room Modal with Synchronized Timer    */}
       {/* ------------------------------------------------------------- */}
       {activeGroupRoom && (
         <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-2xl flex items-center justify-center p-4">
-          <div className="w-full max-w-lg bg-stone-900 border border-stone-800 rounded-3xl p-6 space-y-5 shadow-2xl animate-in zoom-in-95 duration-200 text-white">
+          <div className="w-full max-w-lg bg-stone-900 border border-stone-800 rounded-3xl p-6 space-y-5 shadow-2xl animate-in zoom-in-95 duration-200 text-white max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-stone-800 pb-3">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 rounded-full bg-emerald-900/50 flex items-center justify-center text-emerald-300">
@@ -205,22 +239,45 @@ export function RegainGroupsScreen({ user }) {
               </button>
             </div>
 
-            {/* Live Study Status Bar */}
-            <div className="p-4 rounded-2xl bg-stone-950 border border-emerald-500/30 flex items-center justify-between">
-              <div>
-                <span className="text-[11px] uppercase tracking-wider text-stone-400 font-bold">Group Weekly Target</span>
-                <div className="text-lg font-black text-white mt-0.5">{activeGroupRoom.weeklyGoalHours || 25} Hours / Week</div>
+            {/* Synchronized Group Pomodoro Timer */}
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/60 to-stone-950 border border-emerald-500/40 text-center space-y-2">
+              <span className="text-[11px] font-black uppercase tracking-wider text-emerald-400">
+                Squad Synchronized Focus Block
+              </span>
+              <div className="text-4xl font-black font-mono text-white">
+                {formatTimer(groupTimerSeconds)}
               </div>
-              <div className="text-right">
-                <span className="text-[11px] uppercase tracking-wider text-emerald-400 font-bold">Squad Pace</span>
-                <div className="text-lg font-black text-emerald-300 mt-0.5">Top 5% Campus</div>
+              <p className="text-[11px] text-stone-400">
+                All members in this room are currently locked into this timer.
+              </p>
+            </div>
+
+            {/* Group Leaderboard Table */}
+            <div className="space-y-2">
+              <span className="text-xs font-bold text-stone-400 uppercase tracking-wider">
+                Weekly Squad Leaderboard
+              </span>
+              <div className="space-y-1.5">
+                {groupRankers.map(r => (
+                  <div
+                    key={r.rank}
+                    className="p-2.5 rounded-xl bg-stone-950 border border-stone-850 flex items-center justify-between text-xs"
+                  >
+                    <div className="flex items-center space-x-2.5">
+                      <span className="w-5 font-bold font-mono text-stone-400">#{r.rank}</span>
+                      <span className="font-bold text-white">{r.name}</span>
+                      <span className="text-[10px] text-emerald-400">{r.badge}</span>
+                    </div>
+                    <span className="font-mono font-black text-amber-400">{r.hours}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
             {/* Group Chat & Motivation Stream */}
             <div className="space-y-2">
-              <span className="text-xs font-bold text-stone-400">Study Stream & Motivation</span>
-              <div className="h-44 overflow-y-auto space-y-2 p-3 rounded-2xl bg-stone-950/80 border border-stone-800 text-xs">
+              <span className="text-xs font-bold text-stone-400">Live Study Chat</span>
+              <div className="h-36 overflow-y-auto space-y-2 p-3 rounded-2xl bg-stone-950/80 border border-stone-800 text-xs">
                 {chatLog.map((c) => (
                   <div key={c.id} className="p-2 rounded-xl bg-stone-900 border border-stone-850">
                     <div className="flex justify-between items-center text-[10px] text-stone-400 mb-0.5">
@@ -287,7 +344,7 @@ export function RegainGroupsScreen({ user }) {
                 max="60"
                 value={weeklyGoal}
                 onChange={(e) => setWeeklyGoal(Number(e.target.value))}
-                className="w-full mt-1.5 px-4 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:outline-none focus:border-emerald-500"
+                className="w-full mt-1.5 px-4 py-2.5 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:outline-none focus:border-emerald-500"
               />
             </div>
 
