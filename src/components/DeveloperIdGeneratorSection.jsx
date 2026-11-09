@@ -8,7 +8,7 @@ import { saveCloudStudent, fetchCloudStudents, updateCloudPassword } from '../se
 import { DAV_OFFICIAL_SCHOOLS } from './CleanBusTracker';
 
 export function DeveloperIdGeneratorSection({ currentUser }) {
-  // Tab: 'driver' | 'parent' | 'student' | 'teacher' | 'all_accounts'
+  // Tab: 'driver' | 'parent' | 'student' | 'all_accounts'
   const [activeTab, setActiveTab] = useState('driver');
   const [registeredList, setRegisteredList] = useState(() => getRegisteredUsers());
 
@@ -16,17 +16,17 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
   const [searchQuery, setSearchQuery] = useState('');
 
   // 1. Bus Driver Account (Dimension 7) State
-  const [driverSchool, setDriverSchool] = useState(DAV_OFFICIAL_SCHOOLS[0].id);
+  const officialSchool = DAV_OFFICIAL_SCHOOLS[0];
   const [driverBusNum, setDriverBusNum] = useState(1);
   const [driverId, setDriverId] = useState('');
   const [driverName, setDriverName] = useState('');
   const [driverPhone, setDriverPhone] = useState('');
-  const [driverPassword, setDriverPassword] = useState('dav123');
+  const [driverPassword, setDriverPassword] = useState('');
 
   // 2. Parent Account (Dimension 8) State
-  const [parentLinkedStudentId, setParentLinkedStudentId] = useState('rishibhai');
+  const [parentLinkedStudentId, setParentLinkedStudentId] = useState('');
   const [parentId, setParentId] = useState('');
-  const [parentPassword, setParentPassword] = useState('davparent');
+  const [parentPassword, setParentPassword] = useState('');
 
   // 3. Student Account State
   const [studentId, setStudentId] = useState('');
@@ -34,7 +34,7 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
   const [studentClass, setStudentClass] = useState('8');
   const [studentSection, setStudentSection] = useState('D');
   const [studentPlan, setStudentPlan] = useState('vip');
-  const [studentPassword, setStudentPassword] = useState('dav123');
+  const [studentPassword, setStudentPassword] = useState('');
 
   // Check ID uniqueness
   const isIdTaken = (id) => {
@@ -48,7 +48,7 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
 
     const trimmedId = driverId.trim();
     if (!trimmedId) {
-      setFeedback({ type: 'error', text: 'Driver ID is required.' });
+      setFeedback({ type: 'error', text: 'Driver ID / Username is required.' });
       return;
     }
     if (isIdTaken(trimmedId)) {
@@ -56,21 +56,19 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
       return;
     }
 
-    const schoolObj = DAV_OFFICIAL_SCHOOLS.find(s => s.id === driverSchool) || DAV_OFFICIAL_SCHOOLS[0];
-
     const newDriver = {
       id: trimmedId,
       studentId: trimmedId,
       name: driverName.trim() || `Driver of Bus #${driverBusNum}`,
-      password: driverPassword.trim() || 'dav123',
+      password: driverPassword.trim() || '1',
       dimension: 7,
       dimensionName: 'Bus Driver (Dimension 7)',
       plan: 'bus_driver',
       role: 'bus_driver',
       isDriver: true,
       busNumber: Number(driverBusNum),
-      schoolId: schoolObj.id,
-      schoolName: schoolObj.name,
+      schoolId: officialSchool.id,
+      schoolName: officialSchool.name,
       phoneNumber: driverPhone.trim(),
       createdAt: new Date().toISOString()
     };
@@ -94,6 +92,7 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
     setDriverId('');
     setDriverName('');
     setDriverPhone('');
+    setDriverPassword('');
   };
 
   // Generate Parent Account (Dimension 8)
@@ -111,16 +110,18 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
       return;
     }
 
+    const linkedStudent = parentLinkedStudentId.trim().toLowerCase() || 'student';
+
     const newParent = {
       id: trimmedId,
       studentId: trimmedId,
-      name: `Parent of ${parentLinkedStudentId}`,
-      password: parentPassword.trim() || 'davparent',
+      name: `Parent of ${linkedStudent}`,
+      password: parentPassword.trim() || '1',
       dimension: 8,
       dimensionName: 'Parent Portal (Dimension 8)',
       plan: 'parent',
       role: 'parent',
-      studentLinkedId: parentLinkedStudentId.trim().toLowerCase(),
+      studentLinkedId: linkedStudent,
       createdAt: new Date().toISOString()
     };
 
@@ -139,8 +140,10 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
       });
     } catch (e) {}
 
-    setFeedback({ type: 'success', text: `Dimension 8 Parent Account "${trimmedId}" linked to "${parentLinkedStudentId}" generated!` });
+    setFeedback({ type: 'success', text: `Dimension 8 Parent Account "${trimmedId}" linked to "${linkedStudent}" generated!` });
     setParentId('');
+    setParentPassword('');
+    setParentLinkedStudentId('');
   };
 
   // Generate Student Scholar Account
@@ -158,17 +161,18 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
       return;
     }
 
-    const dim = studentPlan === 'vvip' ? 3 : studentPlan === 'vip' ? 2 : 1;
+    const dim = studentPlan === 'vvip' ? 4 : studentPlan === 'vip' ? 3 : 2;
+
     const newStudent = {
       id: trimmedId,
       studentId: trimmedId,
-      name: studentName.trim() || trimmedId,
+      name: studentName.trim() || `Scholar ${trimmedId}`,
+      password: studentPassword.trim() || '1',
       classNum: studentClass,
       section: studentSection,
-      password: studentPassword.trim() || 'dav123',
-      dimension: dim,
-      dimensionName: `Dimension ${dim} (${studentPlan.toUpperCase()})`,
       plan: studentPlan,
+      dimension: dim,
+      dimensionName: studentPlan === 'vvip' ? 'Double VIP Pass' : studentPlan === 'vip' ? 'VIP Pass' : 'Normal Plan',
       createdAt: new Date().toISOString()
     };
 
@@ -190,6 +194,7 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
     setFeedback({ type: 'success', text: `Student Account "${trimmedId}" created successfully!` });
     setStudentId('');
     setStudentName('');
+    setStudentPassword('');
   };
 
   const handleDownloadBackup = () => {
@@ -295,39 +300,32 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
                 <span>Provision Dimension 7 Bus Driver Account</span>
               </h3>
               <p className="text-xs text-slate-400">
-                Create verified driver credentials with pre-assigned school ID and bus number (1 to 100).
+                Create verified driver credentials for {officialSchool.name}. Enter any bus number freely.
               </p>
             </div>
 
             <form onSubmit={handleCreateDriver} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Assigned School Campus
+                  Assigned School Campus (Official)
                 </label>
-                <select
-                  value={driverSchool}
-                  onChange={(e) => setDriverSchool(e.target.value)}
-                  className="w-full py-2.5 px-3 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-bold focus:outline-none"
-                >
-                  {DAV_OFFICIAL_SCHOOLS.map(s => (
-                    <option key={s.id} value={s.id}>{s.name} ({s.code})</option>
-                  ))}
-                </select>
+                <div className="w-full py-2.5 px-3 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-bold">
+                  {officialSchool.name}
+                </div>
               </div>
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Assigned Bus Number (1 to 100)
+                  Assigned Bus Number (Enter Any Number)
                 </label>
-                <select
+                <input
+                  type="number"
+                  min="1"
                   value={driverBusNum}
-                  onChange={(e) => setDriverBusNum(Number(e.target.value))}
-                  className="w-full py-2.5 px-3 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-bold focus:outline-none"
-                >
-                  {Array.from({ length: 100 }, (_, i) => i + 1).map(n => (
-                    <option key={n} value={n}>Bus #{n}</option>
-                  ))}
-                </select>
+                  onChange={(e) => setDriverBusNum(Math.max(1, parseInt(e.target.value) || 1))}
+                  placeholder="e.g. 1, 12, 101, 205..."
+                  className="w-full py-2.5 px-4 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-xs focus:outline-none focus:border-cyan-400"
+                />
               </div>
 
               <div>
@@ -338,7 +336,7 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
                   type="text"
                   value={driverId}
                   onChange={(e) => setDriverId(e.target.value)}
-                  placeholder="e.g. driver_bus_1"
+                  placeholder="e.g. driver_1 or 12"
                   className="w-full py-2.5 px-4 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-xs focus:outline-none focus:border-cyan-400"
                 />
               </div>
@@ -351,7 +349,7 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
                   type="text"
                   value={driverName}
                   onChange={(e) => setDriverName(e.target.value)}
-                  placeholder="e.g. Shri Ramesh Kumar"
+                  placeholder="e.g. Driver Name"
                   className="w-full py-2.5 px-4 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:border-cyan-400"
                 />
               </div>
@@ -371,24 +369,24 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Password
+                  Driver Password
                 </label>
                 <input
                   type="text"
                   value={driverPassword}
                   onChange={(e) => setDriverPassword(e.target.value)}
-                  placeholder="e.g. dav123"
+                  placeholder="Enter custom password"
                   className="w-full py-2.5 px-4 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-xs focus:outline-none focus:border-cyan-400"
                 />
               </div>
 
-              <div className="sm:col-span-2 flex justify-end pt-2">
+              <div className="sm:col-span-2 pt-2">
                 <button
                   type="submit"
-                  className="py-3 px-8 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black text-xs uppercase tracking-wider shadow-lg hover:brightness-110 active:scale-95 cursor-pointer flex items-center gap-2"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:brightness-110 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>Create Dimension 7 Driver Account</span>
+                  <span>Generate Dimension 7 Driver Account</span>
                 </button>
               </div>
             </form>
@@ -401,36 +399,36 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
             <div>
               <h3 className="text-lg font-black text-white flex items-center gap-2">
                 <Users className="w-5 h-5 text-amber-400" />
-                <span>Generate Dimension 8 Parent Account</span>
+                <span>Provision Dimension 8 Parent Account</span>
               </h3>
               <p className="text-xs text-slate-400">
-                Create parent credentials linked directly to a student scholar ID.
+                Generate authenticated parent credentials linked to a student account.
               </p>
             </div>
 
             <form onSubmit={handleCreateParent} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Linked Student Scholar ID
+                  Linked Student ID
                 </label>
                 <input
                   type="text"
                   value={parentLinkedStudentId}
                   onChange={(e) => setParentLinkedStudentId(e.target.value)}
-                  placeholder="e.g. rishibhai"
+                  placeholder="e.g. student_id"
                   className="w-full py-2.5 px-4 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-xs focus:outline-none focus:border-amber-400"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Parent Username / ID (Must Be Unique)
+                  Parent Username / ID (Unique)
                 </label>
                 <input
                   type="text"
                   value={parentId}
                   onChange={(e) => setParentId(e.target.value)}
-                  placeholder="e.g. parent_rishibhai"
+                  placeholder="e.g. parent_01"
                   className="w-full py-2.5 px-4 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-xs focus:outline-none focus:border-amber-400"
                 />
               </div>
@@ -443,15 +441,15 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
                   type="text"
                   value={parentPassword}
                   onChange={(e) => setParentPassword(e.target.value)}
-                  placeholder="Enter parent password"
+                  placeholder="Enter custom password"
                   className="w-full py-2.5 px-4 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-xs focus:outline-none focus:border-amber-400"
                 />
               </div>
 
-              <div className="sm:col-span-2 flex justify-end pt-2">
+              <div className="sm:col-span-2 pt-2">
                 <button
                   type="submit"
-                  className="py-3 px-8 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 font-black text-xs uppercase tracking-wider shadow-lg hover:brightness-110 active:scale-95 cursor-pointer flex items-center gap-2"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Generate Dimension 8 Parent Account</span>
@@ -461,156 +459,134 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
           </div>
         )}
 
-        {/* TAB 3: GENERATE STUDENT SCHOLAR ACCOUNT */}
+        {/* TAB 3: GENERATE STUDENT ACCOUNT */}
         {activeTab === 'student' && (
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6 animate-fadeIn">
             <div>
               <h3 className="text-lg font-black text-white flex items-center gap-2">
                 <GraduationCap className="w-5 h-5 text-emerald-400" />
-                <span>Generate Student Scholar Account</span>
+                <span>Provision Student Scholar Account</span>
               </h3>
               <p className="text-xs text-slate-400">
-                Enroll student with Normal (Dim 1), VIP (Dim 2), or Double VIP (Dim 3) Scholar Pass.
+                Create Normal, VIP, or Double VIP student credentials.
               </p>
             </div>
 
             <form onSubmit={handleCreateStudent} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Student ID (Unique Username)
+                  Student ID (Unique)
                 </label>
                 <input
                   type="text"
                   value={studentId}
                   onChange={(e) => setStudentId(e.target.value)}
-                  placeholder="e.g. rahul_dav8"
+                  placeholder="e.g. dav_student_01"
                   className="w-full py-2.5 px-4 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-xs focus:outline-none focus:border-emerald-400"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Student Full Name
+                  Full Name
                 </label>
                 <input
                   type="text"
                   value={studentName}
                   onChange={(e) => setStudentName(e.target.value)}
-                  placeholder="e.g. Rahul Sharma"
+                  placeholder="e.g. Student Name"
                   className="w-full py-2.5 px-4 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:border-emerald-400"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Class &amp; Section
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <select
-                    value={studentClass}
-                    onChange={(e) => setStudentClass(e.target.value)}
-                    className="py-2.5 px-3 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-bold focus:outline-none"
-                  >
-                    {['LKG', 'UKG', '1', '2', '3', '4', '5', '6', '7', '8'].map(c => (
-                      <option key={c} value={c}>Class {c}</option>
-                    ))}
-                  </select>
-                  <select
-                    value={studentSection}
-                    onChange={(e) => setStudentSection(e.target.value)}
-                    className="py-2.5 px-3 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-bold focus:outline-none"
-                  >
-                    {['A', 'B', 'C', 'D', 'E'].map(sec => (
-                      <option key={sec} value={sec}>Sec {sec}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Plan Tier
+                  Tier Plan
                 </label>
                 <select
                   value={studentPlan}
                   onChange={(e) => setStudentPlan(e.target.value)}
                   className="w-full py-2.5 px-3 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-bold focus:outline-none"
                 >
-                  <option value="normal">Normal Scholar Pass (Dim 1)</option>
-                  <option value="vip">VIP Scholar Pass (Dim 2)</option>
-                  <option value="vvip">Double VIP / VVIP Pass (Dim 3)</option>
+                  <option value="normal">Normal Plan (Dimension 2)</option>
+                  <option value="vip">VIP Pass (Dimension 3)</option>
+                  <option value="vvip">Double VIP Pass (Dimension 4)</option>
                 </select>
               </div>
 
-              <div className="sm:col-span-2">
+              <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Student Password
+                  Password
                 </label>
                 <input
                   type="text"
                   value={studentPassword}
                   onChange={(e) => setStudentPassword(e.target.value)}
-                  placeholder="Enter student password"
+                  placeholder="Enter custom password"
                   className="w-full py-2.5 px-4 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-xs focus:outline-none focus:border-emerald-400"
                 />
               </div>
 
-              <div className="sm:col-span-2 flex justify-end pt-2">
+              <div className="sm:col-span-2 pt-2">
                 <button
                   type="submit"
-                  className="py-3 px-8 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-stone-950 font-black text-xs uppercase tracking-wider shadow-lg hover:brightness-110 active:scale-95 cursor-pointer flex items-center gap-2"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>Create Student Scholar Account</span>
+                  <span>Generate Student Account</span>
                 </button>
               </div>
             </form>
           </div>
         )}
 
-        {/* TAB 4: ALL REGISTERED ACCOUNTS */}
+        {/* TAB 4: ALL ACCOUNTS TABLE */}
         {activeTab === 'all_accounts' && (
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-4 p-6 animate-fadeIn">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4 animate-fadeIn">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="relative flex-1 max-w-md">
+              <h3 className="text-base font-black text-white">
+                All Provisioned Accounts ({registeredList.length})
+              </h3>
+
+              <div className="relative">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search by ID, name, plan or dimension..."
-                  className="w-full py-2.5 pl-10 pr-4 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:border-amber-400"
+                  placeholder="Search by ID, name, plan..."
+                  className="py-1.5 pl-8 pr-3 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none"
                 />
-                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
               </div>
-
-              <span className="text-xs text-slate-400 font-mono">
-                Showing {filteredUsers.length} of {registeredList.length} accounts
-              </span>
             </div>
 
-            <div className="divide-y divide-slate-800 max-h-[60vh] overflow-y-auto">
-              {filteredUsers.map((u, idx) => (
-                <div key={idx} className="py-3.5 flex items-center justify-between text-xs">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono font-bold text-white text-sm">{u.id}</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-mono">
-                        Dim {u.dimension || 1}
-                      </span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-950 text-amber-300 uppercase font-bold">
-                        {u.plan || 'Scholar'}
-                      </span>
-                    </div>
-                    <div className="text-slate-400 text-[11px] mt-0.5">
-                      Name: <strong className="text-slate-200">{u.name}</strong> • Password: <span className="font-mono text-amber-400">{u.password}</span>
-                    </div>
-                  </div>
-
-                  <span className="text-[11px] font-mono text-slate-500">
-                    {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'Verified'}
-                  </span>
-                </div>
-              ))}
+            <div className="overflow-x-auto border border-slate-800 rounded-2xl max-h-[500px]">
+              <table className="w-full text-left text-xs font-sans">
+                <thead className="bg-slate-950 text-slate-400 uppercase font-mono text-[10px] sticky top-0">
+                  <tr>
+                    <th className="py-2.5 px-4">User ID</th>
+                    <th className="py-2.5 px-4">Name</th>
+                    <th className="py-2.5 px-4">Dimension</th>
+                    <th className="py-2.5 px-4">Plan / Role</th>
+                    <th className="py-2.5 px-4">Password</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800 text-slate-200">
+                  {filteredUsers.map((u, i) => (
+                    <tr key={i} className="hover:bg-slate-800/40">
+                      <td className="py-2.5 px-4 font-mono font-bold text-amber-400">{u.id || u.studentId}</td>
+                      <td className="py-2.5 px-4">{u.name}</td>
+                      <td className="py-2.5 px-4 font-mono">Dim {u.dimension || 2}</td>
+                      <td className="py-2.5 px-4 uppercase text-[10px] font-bold">
+                        <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">
+                          {u.plan || u.role || 'normal'}
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-4 font-mono text-slate-400">{u.password}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         )}
@@ -618,3 +594,5 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
     </div>
   );
 }
+
+export default DeveloperIdGeneratorSection;

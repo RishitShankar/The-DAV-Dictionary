@@ -4267,9 +4267,19 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
 
 
 
+    if (isBusDriver) {
+    return (
+      <div className="w-full min-h-[100dvh] bg-slate-950 p-4 sm:p-6 animate-fadeIn">
+        <CleanBusTracker 
+          user={user} 
+          isBusDriver={true} 
+          onClose={() => {}} 
+        />
+      </div>
+    );
+  }
+
   return (
-
-
 
     <div className="w-full min-h-screen bg-gradient-to-b from-stone-950 via-slate-900 to-indigo-950 text-slate-100 pb-28 selection:bg-amber-400 selection:text-stone-950 font-sans relative overflow-hidden">
 
@@ -6262,7 +6272,7 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
         {activeSubSection === 'track_bus' && (
           <div className="w-full space-y-6 animate-fadeIn">
             <CleanBusTracker 
-              user={currentUser} 
+              user={user} 
               isBusDriver={isBusDriver} 
               onClose={() => setActiveSubSection('go_to_khabra')} 
             />
