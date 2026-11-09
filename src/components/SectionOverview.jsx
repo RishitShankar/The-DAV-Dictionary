@@ -321,7 +321,7 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
 
   const handleTriggerSparkles = () => {
     setIsSparkleActive(true);
-    setTimeout(() => setIsSparkleActive(false), 2000);
+    setTimeout(() => setIsSparkleActive(false), 5500);
   };
 
   return (

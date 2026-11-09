@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   Settings as SettingsIcon, User, Palette, Moon, Sun, Key, Sparkles, 
   Users, Shield, Check, AlertCircle, Save, Train, Eye, ArrowRight,
-  Printer, Camera, RefreshCw, X, CheckCircle2, Lock, ChevronRight, Play
+  Printer, Camera, RefreshCw, X, CheckCircle2, Lock, ChevronRight, Play,
+  Monitor, Volume2, Zap, Sliders, EyeOff
 } from 'lucide-react';
 import { VFX_MASTER_CATALOG } from './vfx/VfxMasterDirector';
 import { StudentProfileSection } from './StudentProfileSection';
@@ -10,21 +11,21 @@ import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers'
 import { updateCloudPassword, saveCloudStudent, fetchCloudStudents } from '../services/supabaseClient';
 
 export const TEXT_COLOR_OPTIONS = [
-  { id: 'red', name: 'Crimson Red', hex: '#ef4444', class: 'text-red-500', border: 'border-red-500' },
-  { id: 'emerald', name: 'Emerald Green', hex: '#10b981', class: 'text-emerald-500', border: 'border-emerald-500' },
-  { id: 'gold', name: 'Royal Gold', hex: '#f59e0b', class: 'text-amber-500', border: 'border-amber-500' },
-  { id: 'cyan', name: 'Electric Cyan', hex: '#06b6d4', class: 'text-cyan-500', border: 'border-cyan-500' },
-  { id: 'rose', name: 'Rose Pink', hex: '#f43f5e', class: 'text-rose-500', border: 'border-rose-500' },
-  { id: 'purple', name: 'Deep Purple', hex: '#8b5cf6', class: 'text-purple-500', border: 'border-purple-500' },
-  { id: 'orange', name: 'Bright Orange', hex: '#f97316', class: 'text-orange-500', border: 'border-orange-500' },
-  { id: 'blue', name: 'Sky Blue', hex: '#3b82f6', class: 'text-blue-500', border: 'border-blue-500' },
+  { id: 'black', name: 'Pitch Black', hex: '#000000', class: 'text-black', border: 'border-slate-500' },
   { id: 'white', name: 'Pure White', hex: '#ffffff', class: 'text-white', border: 'border-white' },
-  { id: 'lime', name: 'Neon Lime', hex: '#84cc16', class: 'text-lime-500', border: 'border-lime-500' }
+  { id: 'red', name: 'Primary Red', hex: '#dc2626', class: 'text-red-600', border: 'border-red-600' },
+  { id: 'blue', name: 'Primary Blue', hex: '#2563eb', class: 'text-blue-600', border: 'border-blue-600' },
+  { id: 'yellow', name: 'Primary Yellow', hex: '#eab308', class: 'text-yellow-500', border: 'border-yellow-500' },
+  { id: 'green', name: 'Primary Green', hex: '#16a34a', class: 'text-green-600', border: 'border-green-600' },
+  { id: 'orange', name: 'Primary Orange', hex: '#ea580c', class: 'text-orange-600', border: 'border-orange-600' },
+  { id: 'purple', name: 'Primary Purple', hex: '#9333ea', class: 'text-purple-600', border: 'border-purple-600' },
+  { id: 'cyan', name: 'Electric Cyan', hex: '#06b6d4', class: 'text-cyan-500', border: 'border-cyan-500' },
+  { id: 'gold', name: 'DAV Gold', hex: '#f59e0b', class: 'text-amber-500', border: 'border-amber-500' }
 ];
 
 export function applyPortalTheme(colorId, themeMode) {
   const root = document.documentElement;
-  const colorObj = TEXT_COLOR_OPTIONS.find(c => c.id === colorId) || TEXT_COLOR_OPTIONS[2];
+  const colorObj = TEXT_COLOR_OPTIONS.find(c => c.id === colorId) || TEXT_COLOR_OPTIONS[9];
   root.style.setProperty('--portal-text-accent', colorObj.hex);
   root.setAttribute('data-accent-color', colorId);
 
@@ -34,32 +35,48 @@ export function applyPortalTheme(colorId, themeMode) {
     styleEl.id = 'dav-dynamic-accent-style';
     document.head.appendChild(styleEl);
   }
+
+  const isBlack = colorId === 'black';
+  const textShadowRule = isBlack 
+    ? 'text-shadow: 0 0 2px rgba(255, 255, 255, 0.7) !important;' 
+    : '';
+
   styleEl.innerHTML = `
-    h1, h2, h3, h4,
+    h1, h2, h3, h4, h5, h6,
     .portal-accent-text,
-    .text-amber-400, .text-amber-500,
-    .text-cyan-400, .text-cyan-500,
+    .text-accent,
+    .text-amber-400, .text-amber-500, .text-amber-300, .text-amber-600,
+    .text-cyan-400, .text-cyan-500, .text-cyan-300, .text-cyan-600,
     .text-yellow-400, .text-yellow-500 {
       color: ${colorObj.hex} !important;
+      ${textShadowRule}
     }
-    .border-amber-400, .border-amber-500,
+    .border-amber-400, .border-amber-500, .border-amber-300,
     .border-cyan-400, .border-cyan-500 {
       border-color: ${colorObj.hex} !important;
     }
   `;
 
-  if (themeMode === 'system') {
-    root.classList.remove('dark');
-    root.classList.add('light-theme');
-  } else {
-    root.classList.remove('light-theme');
+  root.classList.remove('light-theme', 'white-theme', 'system-theme', 'dark');
+
+  if (themeMode === 'white') {
+    root.classList.add('light-theme', 'white-theme');
+    root.setAttribute('data-theme', 'white');
+  } else if (themeMode === 'dark' || themeMode === 'moon') {
     root.classList.add('dark');
+    root.setAttribute('data-theme', 'dark');
+  } else {
+    // 'system': Classic original portal theme
+    root.classList.add('system-theme');
+    root.setAttribute('data-theme', 'system');
   }
 
   try {
     localStorage.setItem('dav_text_color', colorId);
     localStorage.setItem('dav_theme_mode', themeMode);
-    window.dispatchEvent(new CustomEvent('dav_theme_changed', { detail: { color: colorId, hex: colorObj.hex, theme: themeMode } }));
+    window.dispatchEvent(new CustomEvent('dav_theme_changed', { 
+      detail: { color: colorId, hex: colorObj.hex, theme: themeMode } 
+    }));
   } catch (e) {}
 }
 
@@ -101,6 +118,46 @@ export function SettingsHubSection({ user, onLogout, onSelectSection }) {
   // 3. Change ID & Password Form State
   const [newStudentId, setNewStudentId] = useState(user?.id || user?.studentId || '');
   const [newPassword, setNewPassword] = useState(user?.password || '');
+  // 5. Additional Campus Study Preferences
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    try { return localStorage.getItem('dav_sound_enabled') !== 'false'; } catch (e) { return true; }
+  });
+  const [batterySaver, setBatterySaver] = useState(() => {
+    try { return localStorage.getItem('dav_battery_saver') === 'true'; } catch (e) { return false; }
+  });
+  const [warmShield, setWarmShield] = useState(() => {
+    try { return localStorage.getItem('dav_warm_shield') === 'true'; } catch (e) { return false; }
+  });
+  const [focusMode, setFocusMode] = useState(() => {
+    try { return localStorage.getItem('dav_focus_mode') === 'true'; } catch (e) { return false; }
+  });
+
+  const toggleSound = () => {
+    const next = !soundEnabled;
+    setSoundEnabled(next);
+    try { localStorage.setItem('dav_sound_enabled', String(next)); } catch (e) {}
+  };
+  const toggleBatterySaver = () => {
+    const next = !batterySaver;
+    setBatterySaver(next);
+    try { localStorage.setItem('dav_battery_saver', String(next)); } catch (e) {}
+  };
+  const toggleWarmShield = () => {
+    const next = !warmShield;
+    setWarmShield(next);
+    try { localStorage.setItem('dav_warm_shield', String(next)); } catch (e) {}
+    if (next) {
+      document.documentElement.classList.add('dav-warm-shield');
+    } else {
+      document.documentElement.classList.remove('dav-warm-shield');
+    }
+  };
+  const toggleFocusMode = () => {
+    const next = !focusMode;
+    setFocusMode(next);
+    try { localStorage.setItem('dav_focus_mode', String(next)); } catch (e) {}
+  };
+
   const [idChangeStatus, setIdChangeStatus] = useState({ type: '', message: '' });
 
   // 4. Animation Studio State: 15 Sections Mapping
@@ -424,7 +481,7 @@ export function SettingsHubSection({ user, onLogout, onSelectSection }) {
                         className="w-6 h-6 rounded-full border border-white/20 shadow-inner flex items-center justify-center"
                         style={{ backgroundColor: c.hex }}
                       >
-                        {isSelected && <Check className="w-3.5 h-3.5 text-stone-950 stroke-[3]" />}
+                        {isSelected && <Check className={`w-3.5 h-3.5 stroke-[3] ${c.id === 'black' ? 'text-white' : 'text-stone-950'}`} />}
                       </div>
                       <span className="text-[11px] font-bold text-slate-200 leading-tight">
                         {c.name}
@@ -445,57 +502,81 @@ export function SettingsHubSection({ user, onLogout, onSelectSection }) {
               </div>
             </div>
 
-            {/* Setting 3: Theme Mode (System vs Moon) */}
+            {/* Setting 3: Theme Mode (System, White, Dark) */}
             <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
-                  <Moon className="w-5 h-5" />
+                  <Monitor className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-black text-white">Theme Mode</h3>
-                  <p className="text-xs text-slate-400">Switch between System (White Theme) and Moon (Dark Theme)</p>
+                  <h3 className="text-base font-black text-white">Theme Mode (3 Options)</h3>
+                  <p className="text-xs text-slate-400">Choose between System Default, Pure White, or Obsidian Dark</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                {/* 1. System Theme */}
                 <button
                   type="button"
                   onClick={() => setThemeMode('system')}
-                  className={`p-5 rounded-2xl border text-left transition flex flex-col gap-3 cursor-pointer ${
+                  className={`p-4 rounded-2xl border text-left transition flex flex-col justify-between gap-3 cursor-pointer ${
                     themeMode === 'system'
-                      ? 'border-amber-400 bg-amber-500/10 ring-2 ring-amber-400 shadow-lg'
+                      ? 'border-amber-400 bg-amber-500/15 ring-2 ring-amber-400 shadow-lg'
                       : 'border-slate-800 bg-slate-950/60 hover:bg-slate-800'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <Sun className="w-6 h-6 text-amber-400" />
-                    {themeMode === 'system' && <Check className="w-4 h-4 text-amber-400" />}
+                    <Monitor className="w-5 h-5 text-amber-400" />
+                    {themeMode === 'system' && <Check className="w-4 h-4 text-amber-400 stroke-[3]" />}
                   </div>
                   <div>
-                    <h4 className="text-sm font-black text-white">System (White Theme)</h4>
-                    <p className="text-[11px] text-slate-400 leading-relaxed">
-                      Clean daylight aesthetic with white card backgrounds and dark text.
+                    <h4 className="text-xs font-black text-white">System Theme</h4>
+                    <p className="text-[10px] text-slate-400 leading-tight mt-0.5">
+                      Classic DAV Portal original layout with balanced slate aesthetic.
                     </p>
                   </div>
                 </button>
 
+                {/* 2. Pure White Theme */}
                 <button
                   type="button"
-                  onClick={() => setThemeMode('moon')}
-                  className={`p-5 rounded-2xl border text-left transition flex flex-col gap-3 cursor-pointer ${
-                    themeMode === 'moon'
-                      ? 'border-cyan-400 bg-cyan-500/10 ring-2 ring-cyan-400 shadow-lg'
+                  onClick={() => setThemeMode('white')}
+                  className={`p-4 rounded-2xl border text-left transition flex flex-col justify-between gap-3 cursor-pointer ${
+                    themeMode === 'white'
+                      ? 'border-amber-400 bg-amber-500/15 ring-2 ring-amber-400 shadow-lg'
                       : 'border-slate-800 bg-slate-950/60 hover:bg-slate-800'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <Moon className="w-6 h-6 text-cyan-400" />
-                    {themeMode === 'moon' && <Check className="w-4 h-4 text-cyan-400" />}
+                    <Sun className="w-5 h-5 text-amber-400" />
+                    {themeMode === 'white' && <Check className="w-4 h-4 text-amber-400 stroke-[3]" />}
                   </div>
                   <div>
-                    <h4 className="text-sm font-black text-white">Moon (Dark Theme)</h4>
-                    <p className="text-[11px] text-slate-400 leading-relaxed">
-                      Deep space aesthetic with obsidian backgrounds and luminous highlights.
+                    <h4 className="text-xs font-black text-white">Pure White Theme</h4>
+                    <p className="text-[10px] text-slate-400 leading-tight mt-0.5">
+                      Daylight pure white backgrounds, crisp white cards and dark text.
+                    </p>
+                  </div>
+                </button>
+
+                {/* 3. Obsidian Dark Theme */}
+                <button
+                  type="button"
+                  onClick={() => setThemeMode('dark')}
+                  className={`p-4 rounded-2xl border text-left transition flex flex-col justify-between gap-3 cursor-pointer ${
+                    themeMode === 'dark' || themeMode === 'moon'
+                      ? 'border-cyan-400 bg-cyan-500/15 ring-2 ring-cyan-400 shadow-lg'
+                      : 'border-slate-800 bg-slate-950/60 hover:bg-slate-800'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <Moon className="w-5 h-5 text-cyan-400" />
+                    {(themeMode === 'dark' || themeMode === 'moon') && <Check className="w-4 h-4 text-cyan-400 stroke-[3]" />}
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-black text-white">Obsidian Dark</h4>
+                    <p className="text-[10px] text-slate-400 leading-tight mt-0.5">
+                      Deep space dark immersion with black obsidian backgrounds everywhere.
                     </p>
                   </div>
                 </button>
@@ -504,6 +585,105 @@ export function SettingsHubSection({ user, onLogout, onSelectSection }) {
               <p className="text-[11px] text-slate-500 italic">
                 Active theme transforms the entire portal instantly and stays saved across sessions.
               </p>
+            </div>
+
+            {/* Setting 3.5: Campus Study Preferences & Accessibility */}
+            <div className="md:col-span-2 bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                  <Sliders className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-white">Campus Study Preferences &amp; Smart Controls</h3>
+                  <p className="text-xs text-slate-400">Fine-tune your reading comfort, sound effects, battery usage, and study focus</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-2">
+                {/* 1. Audio Effects */}
+                <div 
+                  onClick={toggleSound}
+                  className={`p-4 rounded-2xl border transition cursor-pointer flex flex-col justify-between gap-3 ${
+                    soundEnabled ? 'border-amber-400/60 bg-amber-500/10' : 'border-slate-800 bg-slate-950/60 opacity-70'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <Volume2 className={`w-5 h-5 ${soundEnabled ? 'text-amber-400' : 'text-slate-500'}`} />
+                    <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+                      soundEnabled ? 'bg-amber-400 text-stone-950' : 'bg-slate-800 text-slate-400'
+                    }`}>
+                      {soundEnabled ? 'ACTIVE' : 'MUTED'}
+                    </span>
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-black text-white">Sound Effects</h4>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Button haptics, celebration fanfare &amp; page chimes</p>
+                  </div>
+                </div>
+
+                {/* 2. Battery & Performance Saver */}
+                <div 
+                  onClick={toggleBatterySaver}
+                  className={`p-4 rounded-2xl border transition cursor-pointer flex flex-col justify-between gap-3 ${
+                    batterySaver ? 'border-emerald-400/60 bg-emerald-500/10' : 'border-slate-800 bg-slate-950/60'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <Zap className={`w-5 h-5 ${batterySaver ? 'text-emerald-400' : 'text-slate-500'}`} />
+                    <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+                      batterySaver ? 'bg-emerald-400 text-stone-950' : 'bg-slate-800 text-slate-400'
+                    }`}>
+                      {batterySaver ? '60 FPS LOCKED' : 'STANDARD'}
+                    </span>
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-black text-white">Performance Mode</h4>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Optimize graphics and preserve battery on mobile</p>
+                  </div>
+                </div>
+
+                {/* 3. Night Study Warm Shield */}
+                <div 
+                  onClick={toggleWarmShield}
+                  className={`p-4 rounded-2xl border transition cursor-pointer flex flex-col justify-between gap-3 ${
+                    warmShield ? 'border-orange-400/60 bg-orange-500/10' : 'border-slate-800 bg-slate-950/60'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <Sun className={`w-5 h-5 ${warmShield ? 'text-orange-400' : 'text-slate-500'}`} />
+                    <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+                      warmShield ? 'bg-orange-400 text-stone-950' : 'bg-slate-800 text-slate-400'
+                    }`}>
+                      {warmShield ? 'WARM 2700K' : 'OFF'}
+                    </span>
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-black text-white">Night Study Shield</h4>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Reduces blue light during late-night exam prep</p>
+                  </div>
+                </div>
+
+                {/* 4. Study Focus Mode */}
+                <div 
+                  onClick={toggleFocusMode}
+                  className={`p-4 rounded-2xl border transition cursor-pointer flex flex-col justify-between gap-3 ${
+                    focusMode ? 'border-cyan-400/60 bg-cyan-500/10' : 'border-slate-800 bg-slate-950/60'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <Eye className={`w-5 h-5 ${focusMode ? 'text-cyan-400' : 'text-slate-500'}`} />
+                    <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+                      focusMode ? 'bg-cyan-400 text-stone-950' : 'bg-slate-800 text-slate-400'
+                    }`}>
+                      {focusMode ? 'FOCUSED' : 'STANDARD'}
+                    </span>
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-black text-white">Study Focus Mode</h4>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Minimizes distractions and cleans textbook reading view</p>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Setting 4: Change ID and Password */}

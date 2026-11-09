@@ -27,16 +27,17 @@ export function Navbar({
 
   const [isLight, setIsLight] = useState(() => {
     try {
-      return localStorage.getItem('dav_theme_mode') === 'system';
+      const saved = localStorage.getItem('dav_theme_mode');
+      return saved === 'white' || saved === 'system';
     } catch (e) {
-      return false;
+      return true;
     }
   });
 
   useEffect(() => {
     const handleThemeChange = (e) => {
       if (e?.detail?.theme) {
-        setIsLight(e.detail.theme === 'system');
+        setIsLight(e.detail.theme === 'white' || e.detail.theme === 'system');
       }
     };
     window.addEventListener('dav_theme_changed', handleThemeChange);

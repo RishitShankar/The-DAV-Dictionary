@@ -219,7 +219,7 @@ export function AboutCreatorSection() {
     setTimeout(() => {
       setIsPartyActive(false);
       setPartyPoppers([]);
-    }, 3200);
+    }, 6000);
   };
 
   const tabs = [

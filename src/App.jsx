@@ -658,7 +658,7 @@ export function App() {
   const isGuest = user.plan === 'guest' || user.isDemo;
 
   return (
-    <div className={`min-h-[100dvh] ${activeSection === 4 ? 'h-screen max-h-screen overflow-hidden' : ''} ${themeMode === 'system' ? 'light-theme bg-[#f8fafc] text-slate-900' : 'dark bg-slate-950 text-slate-100'} flex flex-col font-sans selection:bg-amber-300 selection:text-red-950`}>
+    <div className={`min-h-[100dvh] ${activeSection === 4 ? 'h-screen max-h-screen overflow-hidden' : ''} ${themeMode === 'white' ? 'white-theme bg-white text-slate-900' : (themeMode === 'dark' || themeMode === 'moon') ? 'dark bg-[#030712] text-slate-100' : 'system-theme bg-slate-50 text-slate-900'} flex flex-col font-sans selection:bg-amber-300 selection:text-red-950`}>
       {/* Offline Connectivity Notification Banner (Bug 12) */}
       {!isOnline && (
         <div className="fixed top-0 left-0 right-0 z-[9999] bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 text-white text-xs sm:text-sm font-black px-4 py-2.5 text-center shadow-xl flex items-center justify-center gap-2 animate-bounce">
