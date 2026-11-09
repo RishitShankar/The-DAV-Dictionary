@@ -1,4 +1,3 @@
-import { VfxSolarSystemGalaxy } from './vfx/VfxSolarSystemGalaxy';
 import React, { useState, useDeferredValue } from 'react';
 import { DAV_SUBJECTS } from '../data/mockData';
 import { 
@@ -235,9 +234,6 @@ export function BookLibrary({
 
   return (
     <div id="library-section" className="relative overflow-hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 transition-all">
-      {/* High-Caliber Solar System, Galaxy, Rocket & Spaceship Canvas (VFX #1) */}
-      <VfxSolarSystemGalaxy />
-      
       {/* ========================================================================= */}
       {/* SECTION 2 HERO HEADER: With Rich DAV Graphic Motif & Verified Badges     */}
       {/* ========================================================================= */}

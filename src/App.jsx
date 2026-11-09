@@ -16,7 +16,7 @@ import { VfxSolarSystemGalaxy } from './components/vfx/VfxSolarSystemGalaxy';
 import { VfxCycloneVortex } from './components/vfx/VfxCycloneVortex';
 import { VfxGlobalSuite } from './components/VfxGlobalSuite';
 import { VfxMasterDirector } from './components/vfx/VfxMasterDirector';
-import { SettingsHubSection } from './components/SettingsHubSection';
+import { SettingsHubSection, applyPortalTheme } from './components/SettingsHubSection';
 import { ParentPortalSection } from './components/ParentPortalSection';
 import { DeveloperIdGeneratorSection } from './components/DeveloperIdGeneratorSection';
 import { AuthModal } from './components/AuthModal';
@@ -176,6 +176,13 @@ export function App() {
     }
   }, [user]);
 
+    // Auto-lock Dimension 8 (Parent) to Parent Portal
+  useEffect(() => {
+    if (user?.dimension === 8 || user?.plan === 'parent' || user?.role === 'parent') {
+      setActiveSection('parent');
+    }
+  }, [user]);
+
   // Castle App-Inspired 12-Hour Ad-Watch Pass Resolver
   // Section Background Animation Map (Configured exclusively via Settings -> Animation Studio)
   const [sectionVfxMap, setSectionVfxMap] = useState(() => {
@@ -183,8 +190,37 @@ export function App() {
       const saved = localStorage.getItem('dav_section_vfx_map');
       if (saved) return JSON.parse(saved);
     } catch (e) {}
-    return {};
+    return { 2: 'solar_system' };
   });
+
+  const [themeMode, setThemeMode] = useState(() => {
+    try {
+      return localStorage.getItem('dav_theme_mode') || 'dark';
+    } catch (e) {
+      return 'dark';
+    }
+  });
+
+  const [textColor, setTextColor] = useState(() => {
+    try {
+      return localStorage.getItem('dav_text_color') || 'amber';
+    } catch (e) {
+      return 'amber';
+    }
+  });
+
+  useEffect(() => {
+    applyPortalTheme(textColor, themeMode);
+
+    const handleThemeChange = (e) => {
+      if (e?.detail) {
+        if (e.detail.theme) setThemeMode(e.detail.theme);
+        if (e.detail.color) setTextColor(e.detail.color);
+      }
+    };
+    window.addEventListener('dav_theme_changed', handleThemeChange);
+    return () => window.removeEventListener('dav_theme_changed', handleThemeChange);
+  }, []);
 
   useEffect(() => {
     const handleVfxUpdate = (e) => {
@@ -384,7 +420,7 @@ export function App() {
     if (userIsTeacher) {
       setActiveSection(5);
     }
-    const userIsBusDriver = Boolean(
+        const userIsBusDriver = Boolean(
       loggedInUser?.dimension === 7 ||
       loggedInUser?.plan === 'bus_driver' ||
       loggedInUser?.isDriver ||
@@ -392,6 +428,15 @@ export function App() {
     );
     if (userIsBusDriver) {
       setActiveSection(7);
+    }
+    const userIsParent = Boolean(
+      loggedInUser?.dimension === 8 ||
+      loggedInUser?.plan === 'parent' ||
+      loggedInUser?.role === 'parent' ||
+      (loggedInUser?.dimensionName && loggedInUser?.dimensionName.toLowerCase().includes('parent'))
+    );
+    if (userIsParent) {
+      setActiveSection('parent');
     }
     try {
       const guidePending = localStorage.getItem('dav_new_user_guide_pending_' + loggedInUser.id) === 'true';
@@ -613,7 +658,7 @@ export function App() {
   const isGuest = user.plan === 'guest' || user.isDemo;
 
   return (
-    <div className={`min-h-[100dvh] ${activeSection === 4 ? 'h-screen max-h-screen overflow-hidden' : ''} bg-slate-50 flex flex-col font-sans selection:bg-amber-300 selection:text-red-950`}>
+    <div className={`min-h-[100dvh] ${activeSection === 4 ? 'h-screen max-h-screen overflow-hidden' : ''} ${themeMode === 'system' ? 'light-theme bg-[#f8fafc] text-slate-900' : 'dark bg-slate-950 text-slate-100'} flex flex-col font-sans selection:bg-amber-300 selection:text-red-950`}>
       {/* Offline Connectivity Notification Banner (Bug 12) */}
       {!isOnline && (
         <div className="fixed top-0 left-0 right-0 z-[9999] bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 text-white text-xs sm:text-sm font-black px-4 py-2.5 text-center shadow-xl flex items-center justify-center gap-2 animate-bounce">
@@ -691,7 +736,7 @@ export function App() {
           sectionName={`Section ${activeSection}`}
           onGoToOverview={() => setActiveSection(1)}
         >
-        {(user?.dimension === 8 || user?.plan === 'parent') ? (
+        {(user?.dimension === 8 || user?.plan === 'parent' || user?.role === 'parent' || activeSection === 'parent') ? (
           <ParentPortalSection 
             user={activeUser || user} 
             onLogout={handleLogout} 
@@ -709,7 +754,7 @@ export function App() {
         ) : activeSection === 1 ? (
           <SectionOverview currentUser={activeUser || user} onSelectSection={handleSelectSection} onOpenPurchaseModal={() => setIsPricingOpen(true)} />
         ) : activeSection === 2 ? (
-          <div className="relative min-h-[100dvh] bg-[#030712] text-white">
+          <div className={`relative min-h-[100dvh] ${sectionVfxMap[2] && sectionVfxMap[2] !== 'clean_none' ? 'bg-[#030712]/35 backdrop-blur-[1px]' : 'bg-[#030712]'} text-white`}>
             {/* Section 2 Cosmic Solar System Canvas (The Sun, 9 Planets, Rocket, Spaceship, Starfield) */}
             {/* VfxSolarSystemGalaxy removed */}
             <div className="relative z-10">

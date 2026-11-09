@@ -22,6 +22,26 @@ export function Navbar({
 }) {
   const isAdmin = user?.isAdmin || user?.id === 'rishibhai';
   const isGuest = user?.plan === 'guest' || user?.plan === 'demo' || user?.isDemo;
+  const isBusDriver = Boolean(user?.dimension === 7 || user?.plan === 'bus_driver' || user?.isDriver);
+  const isParent = Boolean(user?.dimension === 8 || user?.plan === 'parent' || user?.role === 'parent');
+
+  const [isLight, setIsLight] = useState(() => {
+    try {
+      return localStorage.getItem('dav_theme_mode') === 'system';
+    } catch (e) {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    const handleThemeChange = (e) => {
+      if (e?.detail?.theme) {
+        setIsLight(e.detail.theme === 'system');
+      }
+    };
+    window.addEventListener('dav_theme_changed', handleThemeChange);
+    return () => window.removeEventListener('dav_theme_changed', handleThemeChange);
+  }, []);
 
   // State to track user's real uploaded photo from Section 10 (Student Profile)
   const [userPhoto, setUserPhoto] = useState(() => {
@@ -99,7 +119,7 @@ export function Navbar({
   }
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 border-b border-slate-200 shadow-sm shrink-0">
+    <header className={`sticky top-0 z-40 ${isLight ? 'bg-white/95 border-slate-200 text-slate-900 shadow-sm' : 'bg-slate-950/95 border-slate-800 text-white shadow-md'} border-b shrink-0 transition-colors duration-200`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 gap-2 sm:gap-4">
           
@@ -107,14 +127,16 @@ export function Navbar({
           <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={onToggleSidebar}
-              className={`p-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-slate-950 transition border shadow-2xs flex items-center gap-2 cursor-pointer ${
-                isTeacher ? 'border-purple-300 bg-purple-50/50' : 'border-slate-200'
+              className={`p-2.5 rounded-xl transition border shadow-2xs flex items-center gap-2 cursor-pointer ${
+                isLight 
+                  ? 'bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 border-slate-200' 
+                  : 'bg-slate-900/80 hover:bg-slate-800 text-slate-200 border-slate-700'
               }`}
-              title="Open Sections Menu"
+              title="Open Navigation Menu"
             >
-              <Menu className={`w-5 h-5 ${isTeacher ? 'text-purple-700' : 'text-slate-800'}`} />
-              <span className={`hidden sm:inline text-xs font-bold ${isTeacher ? 'text-purple-800' : 'text-slate-600'}`}>
-                {isTeacher ? 'Faculty Menu' : 'Sections'}
+              <Menu className={`w-5 h-5 ${isLight ? 'text-slate-800' : 'text-slate-200'}`} />
+              <span className={`hidden sm:inline text-xs font-bold ${isLight ? 'text-slate-700' : 'text-slate-200'}`}>
+                {isBusDriver ? 'Bus Cockpit' : isParent ? 'Parent Portal' : isTeacher ? 'Faculty Menu' : 'Sections'}
               </span>
             </button>
 
@@ -124,12 +146,12 @@ export function Navbar({
                 alt="DAV Dictionary Official Logo" 
                 className="w-14 h-14 sm:w-16 sm:h-16 object-contain drop-shadow-md hover:scale-105 transition-transform shrink-0"
               />
-              <span className="font-extrabold text-lg sm:text-xl text-slate-900 tracking-tight">DAV Dictionary</span>
+              <span className={`font-extrabold text-lg sm:text-xl ${isLight ? 'text-slate-900' : 'text-white'} tracking-tight`}>DAV Dictionary</span>
             </div>
           </div>
 
           {/* Center: High-Speed Bullet Train Animation (Runs ONLY when activeSection === 10 on Settings Tab) */}
-          {activeSection === 10 && (
+          {activeSection === 10 && !isBusDriver && !isParent && (
             <div className="flex-1 max-w-xl h-12 sm:h-14 relative overflow-hidden rounded-xl bg-slate-950 border border-cyan-500/30 shadow-inner flex items-center justify-center">
               <VfxBulletTrain isCompact={true} />
             </div>
@@ -139,7 +161,7 @@ export function Navbar({
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <div className="flex items-center gap-2 pl-2 sm:pl-3">
               <div className="text-right hidden sm:block">
-                <div className="text-xs font-bold text-slate-900 truncate max-w-[130px]">
+                <div className={`text-xs font-bold ${isLight ? 'text-slate-900' : 'text-white'} truncate max-w-[130px]`}>
                   {user?.name || (isTeacher ? 'DAV Faculty' : 'Rishit Shankar')}
                 </div>
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${tierBadgeBg}`}>

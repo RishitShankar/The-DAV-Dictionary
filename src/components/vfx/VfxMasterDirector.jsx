@@ -160,7 +160,13 @@ export const VFX_MASTER_CATALOG = [
  * NO floating switcher button on the page (all management moved to Settings Hub).
  */
 export function VfxMasterDirector({ activeSection = 1, sectionVfxMap = {} }) {
-  const chosenAnimationId = sectionVfxMap[activeSection];
+  // Section 10 (Settings) and Parent Portal do not allow background animation overlaps
+  if (activeSection === 10 || activeSection === 'parent') {
+    return null;
+  }
+
+  // Section 2 defaults to solar_system unless customized in Animation Studio
+  const chosenAnimationId = sectionVfxMap[activeSection] || (activeSection === 2 ? 'solar_system' : 'clean_none');
   if (!chosenAnimationId || chosenAnimationId === 'clean_none') {
     return null;
   }
@@ -169,5 +175,9 @@ export function VfxMasterDirector({ activeSection = 1, sectionVfxMap = {} }) {
   if (!catalogItem || !catalogItem.component) return null;
 
   const ActiveComponent = catalogItem.component;
-  return <ActiveComponent />;
+  return (
+    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      <ActiveComponent />
+    </div>
+  );
 }
