@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, LogOut, Award, Star } from 'lucide-react';
+import { VfxBulletTrain } from './vfx/VfxBulletTrain';
 
 export function Navbar({ 
   activeSection, 
@@ -100,7 +101,7 @@ export function Navbar({
   return (
     <header className="sticky top-0 z-40 bg-white/95 border-b border-slate-200 shadow-sm shrink-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-20 gap-2 sm:gap-4">
           
           {/* Left: 3-Lines Hamburger Icon + Brand Logo + Title */}
           <div className="flex items-center gap-3 shrink-0">
@@ -126,6 +127,13 @@ export function Navbar({
               <span className="font-extrabold text-lg sm:text-xl text-slate-900 tracking-tight">DAV Dictionary</span>
             </div>
           </div>
+
+          {/* Center: High-Speed Bullet Train Animation (Runs ONLY when activeSection === 10 on Settings Tab) */}
+          {activeSection === 10 && (
+            <div className="flex-1 max-w-xl h-12 sm:h-14 relative overflow-hidden rounded-xl bg-slate-950 border border-cyan-500/30 shadow-inner flex items-center justify-center">
+              <VfxBulletTrain isCompact={true} />
+            </div>
+          )}
 
           {/* Right: Profile Picture, Name, Plan badge, and Logout button */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">

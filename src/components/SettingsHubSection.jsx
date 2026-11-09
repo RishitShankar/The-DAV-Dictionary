@@ -4,7 +4,6 @@ import {
   Users, Shield, Check, AlertCircle, Save, Train, Eye, ArrowRight,
   Printer, Camera, RefreshCw, X, CheckCircle2, Lock, ChevronRight
 } from 'lucide-react';
-import { VfxBulletTrain } from './vfx/VfxBulletTrain';
 import { VFX_MASTER_CATALOG } from './vfx/VfxMasterDirector';
 import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
 import { updateCloudPassword, saveCloudStudent, fetchCloudStudents } from '../services/supabaseClient';
@@ -279,20 +278,25 @@ export function SettingsHubSection({ user, onLogout, onSelectSection }) {
 
   return (
     <div className="relative min-h-[100dvh] bg-slate-950 text-slate-100 flex flex-col pb-20 select-none font-sans overflow-x-hidden">
-      {/* 1. Sci-Fi Bullet Train Animation Running in Header */}
-      <div className="relative w-full h-56 sm:h-72 overflow-hidden bg-slate-950 border-b border-amber-500/30">
-        <VfxBulletTrain />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent flex flex-col justify-end p-6 z-10 pointer-events-none">
-          <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono font-bold tracking-widest uppercase">
-            <Train className="w-4 h-4 animate-pulse" />
-            <span>High-Speed Quantum Maglev • DAV Shinkansen Engine</span>
+      {/* Clean Header for Settings Hub without overlapping full-page canvas */}
+      <div className="relative w-full py-8 px-6 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border-b border-amber-500/20 shadow-md">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono font-bold tracking-widest uppercase">
+              <SettingsIcon className="w-4 h-4 text-amber-400" />
+              <span>Student Command &amp; Personalization Hub</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-1 drop-shadow-sm">
+              DAV Smart Settings &amp; Student Command Hub
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-400 font-medium mt-1">
+              Customize typography colors, global themes, animation suites, and parental credentials.
+            </p>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight drop-shadow-md">
-            DAV Smart Settings &amp; Student Command Hub
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-300 font-medium">
-            Customize typography colors, global themes, animation suites, and parental credentials.
-          </p>
+          <div className="flex items-center gap-2 text-xs font-mono px-3.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 self-start md:self-auto shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span>Live Settings Active</span>
+          </div>
         </div>
       </div>
 
