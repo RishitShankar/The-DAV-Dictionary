@@ -448,10 +448,10 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
             <span>Official Creator: <strong>Rishit Shankar</strong></span>
             <span>DAV Public School • Digital India 🇮🇳</span>
             <button
-              onClick={() => onSelectSection(12)}
+              onClick={() => onSelectSection(14)}
               className="text-red-800 hover:text-red-950 font-bold flex items-center gap-1 cursor-pointer"
             >
-              <span>Read Full Head Boy Profile in Section 12 →</span>
+              <span>Read Full Head Boy Profile in Section 14 →</span>
             </button>
           </div>
         </div>

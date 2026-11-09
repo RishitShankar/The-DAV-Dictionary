@@ -86,11 +86,11 @@ export function GeminiSidebar({
     { id: 9, name: 'Section 9: Study Leaderboard', icon: Trophy, status: 'Leaderboard' },
     { id: 10, name: 'Section 10: Settings Hub', icon: Settings, status: 'Settings & Student Hub' },
     { id: 11, name: 'Section 11: Donate & Reviews', icon: Heart, status: 'Donate, Reviews & Subscriptions' },
-    { id: 12, name: 'Section 12: About Creator', icon: Award, status: 'Head Boy Profile' },
     ...(isDimension4 ? [
-      { id: 13, name: 'Section 13: Developer Reviews', icon: Star, status: 'Reviews & Feedback' },
-      { id: 14, name: 'Section 14: Master ID Generator', icon: Key, status: 'Account Provisioning Desk' }
+      { id: 12, name: 'Section 12: Developer Reviews', icon: Star, status: 'Reviews & Feedback' },
+      { id: 13, name: 'Section 13: Master ID Generator', icon: Key, status: 'Account Provisioning Desk' }
     ] : []),
+    { id: 14, name: 'Section 14: About Creator', icon: Award, status: 'Head Boy Profile' },
   ];
 
   const teacherSubSections = [
@@ -235,7 +235,7 @@ export function GeminiSidebar({
 
               {sections.map((sec) => {
                 const isActive = activeSection === sec.id;
-                const isGoldenSection = sec.id === 10 || sec.id === 12;
+                const isGoldenSection = sec.id === 14;
                 const isTeacherSec5 = sec.id === 5 && isTeacher;
                 const IconComp = sec.icon || Sparkles;
 

@@ -448,8 +448,8 @@ export function App() {
         return;
       }
     }
-    // Section 12 is strictly for Dimension 4 only (hidden from dimensions 1, 2, 3, 5)
-    if (secId === 12 && !(user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai')) {
+    // Sections 12 & 13 are strictly for Developer (Dimension 4) only
+    if ((secId === 12 || secId === 13) && !(user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai' || user?.role === 'developer')) {
       return;
     }
     if (isTeacher && teacherSubDimension === 'teacher_only') {
@@ -458,7 +458,7 @@ export function App() {
       return;
     }
     // In 5B Teacher & Explorer mode, teacher can explore all sections freely!
-    if (secId === 12 && activeSection !== 12) {
+    if (secId === 14 && activeSection !== 14) {
       setIsCycloneOpen(true);
       return;
     }
@@ -791,8 +791,6 @@ export function App() {
             onRequireLogin={handleRequireLogin}
           />
         ) : activeSection === 12 ? (
-          <AboutCreatorSection />
-        ) : activeSection === 13 ? (
           (user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai' || user?.role === 'developer') ? (
             <DeveloperReviewsSection 
               currentUser={activeUser || user} 
@@ -801,23 +799,23 @@ export function App() {
           ) : (
             <SectionOverview currentUser={activeUser || user} onSelectSection={handleSelectSection} />
           )
-        ) : (
-          activeSection === 14 ? (
+        ) : activeSection === 13 ? (
           (user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai' || user?.role === 'developer') ? (
             <DeveloperIdGeneratorSection currentUser={activeUser || user} />
           ) : (
             <SectionOverview currentUser={activeUser || user} onSelectSection={handleSelectSection} />
           )
+        ) : activeSection === 14 ? (
+          <AboutCreatorSection />
         ) : (
           <UntitledSection sectionNumber={activeSection} />
-        )
         )}
         </SectionErrorBoundary>
         </Suspense>
       </main>
 
       {/* Official Purple Footer displayed on Section 9, 10, 11 & (12 for Dimension 4) */}
-      {(activeSection === 10 || activeSection === 11 || activeSection === 12 || (activeSection === 13 && (user?.dimension === 4 || user?.id === 'rishibhai'))) && (
+      {(activeSection === 10 || activeSection === 11 || activeSection === 14 || ((activeSection === 12 || activeSection === 13) && (user?.dimension === 4 || user?.id === 'rishibhai'))) && (
         <PurpleFooter currentUser={activeUser || user} onSelectSection={(secId) => setActiveSection(secId)} />
       )}
 
@@ -863,12 +861,12 @@ export function App() {
       {/* Global VFX Engine (Click Ripples, Constellation Net, Confetti Cannon) */}
       <VfxGlobalSuite />
 
-      {/* 3-Second Cyclone Vortex VFX for About Creator Profile (Section 12) */}
+      {/* 3-Second Cyclone Vortex VFX for About Creator Profile (Section 14) */}
       <VfxCycloneVortex
         isOpen={isCycloneOpen}
         onComplete={() => {
           setIsCycloneOpen(false);
-          setActiveSection(12);
+          setActiveSection(14);
         }}
       />
 
