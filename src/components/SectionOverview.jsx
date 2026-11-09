@@ -1,194 +1,55 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   BookOpen, Brain, Award, FileText, User, 
   HelpCircle, Bell, Compass, ArrowRight, Sparkles, 
   Layers, School, Heart, CheckCircle2, Star, Zap, Flame,
   BookmarkCheck, MessageCircle, ShieldCheck, Video, Bus, Navigation, 
-  CheckSquare, MapPin, Trophy, Play, Activity, Radio, Eye, KeyRound
+  CheckSquare, MapPin, Trophy, Play, KeyRound
 } from 'lucide-react';
 
 // =========================================================================
-// ANIMATION 1: INTERACTIVE COSMIC STAR-MESH & VEDIC AURORA CANVAS
+// FLOATING BALLOON CIRCLES (User's Favorite Animation)
+// Smooth, vibrant, colorful ambient circles floating gracefully in background
 // =========================================================================
-function CosmicStarMeshCanvas() {
-  const canvasRef = useRef(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let animId;
-    let width = (canvas.width = canvas.parentElement?.clientWidth || window.innerWidth);
-    let height = (canvas.height = canvas.parentElement?.clientHeight || window.innerHeight);
-
-    let mouseX = width / 2;
-    let mouseY = height / 3;
-
-    const handleResize = () => {
-      if (!canvas || !canvas.parentElement) return;
-      width = canvas.width = canvas.parentElement.clientWidth;
-      height = canvas.height = canvas.parentElement.clientHeight;
-    };
-
-    const handleMouseMove = (e) => {
-      const rect = canvas.getBoundingClientRect();
-      mouseX = e.clientX - rect.left;
-      mouseY = e.clientY - rect.top;
-    };
-
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('mousemove', handleMouseMove);
-
-    // Particle nodes for Vedic Constellation
-    const particleCount = Math.min(50, Math.floor(width / 24));
-    const particles = Array.from({ length: particleCount }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.6,
-      vy: (Math.random() - 0.5) * 0.6,
-      radius: Math.random() * 2 + 1,
-      color: Math.random() > 0.4 ? 'rgba(245, 158, 11, ' : (Math.random() > 0.5 ? 'rgba(239, 68, 68, ' : 'rgba(56, 189, 248, '),
-      alpha: Math.random() * 0.5 + 0.25
-    }));
-
-    const render = () => {
-      ctx.clearRect(0, 0, width, height);
-
-      // Draw faint connections
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 110) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(245, 158, 11, ${0.12 * (1 - dist / 110)})`;
-            ctx.lineWidth = 0.8;
-            ctx.stroke();
-          }
-        }
-      }
-
-      // Draw & update particles
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-
-        // Bounce on boundaries
-        if (p.x < 0 || p.x > width) p.vx *= -1;
-        if (p.y < 0 || p.y > height) p.vy *= -1;
-
-        // Subtle mouse attraction
-        const mdx = mouseX - p.x;
-        const mdy = mouseY - p.y;
-        const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
-        if (mdist < 140 && mdist > 5) {
-          p.x += (mdx / mdist) * 0.35;
-          p.y += (mdy / mdist) * 0.35;
-        }
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `${p.color}${p.alpha})`;
-        ctx.shadowBlur = 6;
-        ctx.shadowColor = '#f59e0b';
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      });
-
-      animId = requestAnimationFrame(render);
-    };
-
-    render();
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, []);
-
+function FloatingBalloonsBackground() {
   return (
-    <canvas 
-      ref={canvasRef} 
-      className="absolute inset-0 pointer-events-none z-0 opacity-70"
-    />
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      {/* Large Glowing Ambient Orbs */}
+      <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-gradient-to-br from-amber-400/30 to-orange-500/25 blur-3xl vfx-ambient-orb-gold" />
+      <div className="absolute top-1/4 -right-24 w-[28rem] h-[28rem] rounded-full bg-gradient-to-bl from-rose-500/25 to-red-600/20 blur-3xl vfx-ambient-orb-ruby" />
+      <div className="absolute bottom-10 left-1/3 w-[32rem] h-[32rem] rounded-full bg-gradient-to-tr from-cyan-400/25 to-blue-600/20 blur-3xl vfx-ambient-orb-cyan" />
+      <div className="absolute top-2/3 right-10 w-80 h-80 rounded-full bg-gradient-to-br from-emerald-400/25 to-teal-600/20 blur-3xl vfx-ambient-orb-emerald" />
+      <div className="absolute top-1/2 left-10 w-72 h-72 rounded-full bg-gradient-to-tr from-purple-500/25 to-pink-500/20 blur-3xl vfx-ambient-orb-purple" />
+
+      {/* Floating Balloon Circles with dynamic bobbing & drifting motions */}
+      <div className="absolute top-24 left-[12%] w-20 h-20 rounded-full bg-gradient-to-br from-amber-400/40 to-yellow-300/30 shadow-lg backdrop-blur-xs border border-amber-300/40 vfx-floating-balloon-1" />
+      <div className="absolute top-48 right-[15%] w-28 h-28 rounded-full bg-gradient-to-tr from-rose-400/35 to-pink-300/25 shadow-xl backdrop-blur-xs border border-rose-300/40 vfx-floating-balloon-2" />
+      <div className="absolute top-[42%] left-[8%] w-16 h-16 rounded-full bg-gradient-to-br from-cyan-400/40 to-sky-300/30 shadow-md backdrop-blur-xs border border-cyan-300/40 vfx-floating-balloon-3" />
+      <div className="absolute top-[60%] right-[10%] w-24 h-24 rounded-full bg-gradient-to-tr from-emerald-400/35 to-teal-300/25 shadow-lg backdrop-blur-xs border border-emerald-300/40 vfx-floating-balloon-1" />
+      <div className="absolute bottom-32 left-[20%] w-32 h-32 rounded-full bg-gradient-to-br from-purple-400/35 to-violet-300/25 shadow-xl backdrop-blur-xs border border-purple-300/40 vfx-floating-balloon-2" />
+      <div className="absolute bottom-48 right-[25%] w-14 h-14 rounded-full bg-gradient-to-tr from-orange-400/40 to-amber-300/30 shadow-md backdrop-blur-xs border border-orange-300/40 vfx-floating-balloon-3" />
+      <div className="absolute top-[80%] left-[45%] w-20 h-20 rounded-full bg-gradient-to-br from-blue-400/35 to-indigo-300/25 shadow-lg backdrop-blur-xs border border-blue-300/40 vfx-floating-balloon-1" />
+    </div>
   );
 }
 
 // =========================================================================
-// ANIMATION 2: 3D HOLOGRAPHIC PERSPECTIVE TILT CARD WITH LIGHT FLARE
+// CLEAN SECTION CARD COMPONENT (No tilt, no rainbow beam)
 // =========================================================================
-function HolographicSectionCard({ sec, isCurrent, isBeingClicked, onClick }) {
-  const [tilt, setTilt] = useState({ x: 0, y: 0, glareX: 50, glareY: 50 });
-  const [isHovered, setIsHovered] = useState(false);
-  const cardRef = useRef(null);
-
-  const handleMouseMove = (e) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    const rotateX = ((y - centerY) / centerY) * -9; // Max 9 deg tilt
-    const rotateY = ((x - centerX) / centerX) * 9;
-
-    setTilt({
-      x: rotateX,
-      y: rotateY,
-      glareX: (x / rect.width) * 100,
-      glareY: (y / rect.height) * 100
-    });
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    setTilt({ x: 0, y: 0, glareX: 50, glareY: 50 });
-  };
-
+function CleanSectionCard({ sec, isCurrent, isBeingClicked, onClick }) {
   const IconComp = sec.icon || Sparkles;
 
   return (
     <div
-      ref={cardRef}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
       onClick={onClick}
-      style={{
-        transform: isHovered
-          ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(-6px) scale(1.015)`
-          : 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px) scale(1)',
-        transition: isHovered ? 'transform 0.08s ease-out' : 'transform 0.45s ease-out'
-      }}
-      className={`p-6 sm:p-7 rounded-3xl bg-gradient-to-br ${sec.cardBg} border-2 relative overflow-hidden flex flex-col justify-between shadow-md hover:shadow-2xl cursor-pointer group select-none vfx-card-beam-container ${
+      className={`p-6 sm:p-7 rounded-3xl bg-gradient-to-br ${sec.cardBg} border-2 relative overflow-hidden flex flex-col justify-between shadow-md hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 cursor-pointer group select-none ${
         isCurrent
-          ? 'border-amber-400 ring-4 ring-amber-400/25 vfx-card-beam-glow'
-          : isHovered 
-            ? 'border-amber-400/80 ring-2 ring-amber-400/20 vfx-card-beam-glow' 
-            : `border-slate-200/90 ${sec.borderHover}`
-      } ${isBeingClicked ? 'scale-95 ring-4 ring-red-500 transition-transform' : ''}`}
+          ? 'border-amber-400 ring-4 ring-amber-400/20'
+          : `border-slate-200/90 ${sec.borderHover}`
+      } ${isBeingClicked ? 'scale-95 transition-transform' : ''}`}
     >
-      {/* Dynamic Specular Glare Reflection follows cursor */}
-      {isHovered && (
-        <div 
-          className="absolute inset-0 pointer-events-none z-10 transition-opacity duration-200"
-          style={{
-            background: `radial-gradient(circle 240px at ${tilt.glareX}% ${tilt.glareY}%, rgba(255, 255, 255, 0.45), transparent 70%)`
-          }}
-        />
-      )}
-
-      {/* Subtle Corner Floating Emoji */}
-      <div className="absolute -right-3 -bottom-3 text-6xl opacity-10 select-none pointer-events-none group-hover:scale-130 group-hover:opacity-25 transition-all duration-300">
+      {/* Corner Floating Emoji */}
+      <div className="absolute -right-3 -bottom-3 text-6xl opacity-10 select-none pointer-events-none group-hover:scale-120 group-hover:opacity-20 transition-all duration-200">
         {sec.emoji}
       </div>
 
@@ -196,7 +57,7 @@ function HolographicSectionCard({ sec, isCurrent, isBeingClicked, onClick }) {
         {/* Header Row */}
         <div className="flex items-center justify-between mb-4 gap-3">
           <div className="flex items-center gap-3.5">
-            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${sec.color} text-white flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shrink-0`}>
+            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${sec.color} text-white flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-200 shrink-0`}>
               <IconComp className="w-7 h-7" />
             </div>
             <div>
@@ -246,177 +107,11 @@ function HolographicSectionCard({ sec, isCurrent, isBeingClicked, onClick }) {
 }
 
 // =========================================================================
-// ANIMATION 3: ANIMATED LIVE CAMPUS STATS COUNTER & RADAR BEACON DECK
-// =========================================================================
-function LiveCampusStatsRadarDeck() {
-  const [counts, setCounts] = useState({
-    books: 0,
-    sections: 0,
-    aiHours: 0,
-    scholars: 0
-  });
-
-  useEffect(() => {
-    let start = performance.now();
-    const duration = 1600; // 1.6s smooth counter climb
-
-    const animateCounts = (now) => {
-      const progress = Math.min(1, (now - start) / duration);
-      const easeProgress = 1 - Math.pow(1 - progress, 3); // Ease out cubic
-
-      setCounts({
-        books: Math.floor(easeProgress * 70),
-        sections: Math.floor(easeProgress * 14),
-        aiHours: Math.floor(easeProgress * 24),
-        scholars: Math.floor(easeProgress * 10000)
-      });
-
-      if (progress < 1) {
-        requestAnimationFrame(animateCounts);
-      }
-    };
-
-    const id = requestAnimationFrame(animateCounts);
-    return () => cancelAnimationFrame(id);
-  }, []);
-
-  return (
-    <div className="p-5 sm:p-6 rounded-3xl bg-slate-950/90 backdrop-blur-md border border-amber-500/30 shadow-2xl text-white relative overflow-hidden">
-      
-      {/* Background Neon Scanner Grid */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/10 via-slate-950 to-transparent pointer-events-none" />
-
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
-        
-        {/* Radar Beacon Status */}
-        <div className="flex items-center gap-4 shrink-0">
-          <div className="relative w-14 h-14 rounded-2xl bg-slate-900 border border-emerald-500/40 flex items-center justify-center overflow-hidden shadow-inner">
-            {/* Radar scanner sweep */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/30 to-transparent vfx-radar-sweep-scanner" />
-            {/* Concentric Sonar Rings */}
-            <div className="absolute w-8 h-8 rounded-full border border-emerald-400/40 vfx-radar-sonar-ring" />
-            <div className="absolute w-4 h-4 rounded-full border border-emerald-400/60" />
-            {/* Center Beacon */}
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_#10b981] animate-pulse" />
-          </div>
-
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              <span className="text-xs font-black uppercase tracking-wider text-emerald-400 font-mono">
-                CAMPUS INTELLIGENCE RADAR ACTIVE
-              </span>
-            </div>
-            <p className="text-xs text-stone-300 font-medium mt-0.5">
-              Live DAV Curriculum telemetry &amp; synced academic repository
-            </p>
-          </div>
-        </div>
-
-        {/* 4 Rolling Counters */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 w-full lg:w-auto">
-          <div className="p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 text-center">
-            <div className="text-xl sm:text-2xl font-black text-amber-400 font-mono tracking-tight">
-              {counts.books}+
-            </div>
-            <span className="text-[10px] sm:text-xs font-bold text-stone-300 block uppercase">Textbooks</span>
-          </div>
-
-          <div className="p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 text-center">
-            <div className="text-xl sm:text-2xl font-black text-rose-400 font-mono tracking-tight">
-              {counts.sections}
-            </div>
-            <span className="text-[10px] sm:text-xs font-bold text-stone-300 block uppercase">Sections</span>
-          </div>
-
-          <div className="p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 text-center">
-            <div className="text-xl sm:text-2xl font-black text-cyan-400 font-mono tracking-tight">
-              {counts.aiHours}/7
-            </div>
-            <span className="text-[10px] sm:text-xs font-bold text-stone-300 block uppercase">Rishi AI</span>
-          </div>
-
-          <div className="p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 text-center">
-            <div className="text-xl sm:text-2xl font-black text-emerald-400 font-mono tracking-tight">
-              {counts.scholars.toLocaleString()}+
-            </div>
-            <span className="text-[10px] sm:text-xs font-bold text-stone-300 block uppercase">DAV Scholars</span>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  );
-}
-
-// =========================================================================
-// ANIMATION 4: FLOATING GOLDEN DAV MASCOT BOOK & CELEBRATION CHIME
-// =========================================================================
-function FloatingGoldenBookMascot({ onCelebrate }) {
-  const [sparkles, setSparkles] = useState([]);
-
-  const handleMascotClick = (e) => {
-    onCelebrate();
-    // Spawn floating sparkles
-    const newSparkles = Array.from({ length: 6 }, (_, i) => ({
-      id: Date.now() + i,
-      left: 10 + Math.random() * 80,
-      top: 10 + Math.random() * 80
-    }));
-    setSparkles(newSparkles);
-    setTimeout(() => setSparkles([]), 2200);
-  };
-
-  return (
-    <div 
-      onClick={handleMascotClick}
-      className="relative cursor-pointer group shrink-0 select-none vfx-flying-book"
-      title="Click to unleash Vedic celebration burst!"
-    >
-      {/* Outer Glowing Pulsing Aura */}
-      <div 
-        className="absolute -inset-3 rounded-full bg-gradient-to-tr from-amber-400 via-orange-500 to-yellow-300 opacity-75 group-hover:opacity-100 animate-spin" 
-        style={{ animationDuration: '10s' }} 
-      />
-
-      {/* Golden Book Crest Box */}
-      <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-red-950 via-stone-900 to-amber-950 p-2 border-2 border-amber-400/90 flex flex-col items-center justify-center shadow-2xl group-hover:scale-105 transition-transform duration-300">
-        <img 
-          src="/logo.png" 
-          alt="Official DAV Logo Crest" 
-          className="w-16 h-16 sm:w-20 sm:h-20 object-contain drop-shadow-md animate-pulse"
-          style={{ animationDuration: '3s' }}
-        />
-        <div className="absolute -bottom-2 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-400 text-stone-950 text-[9px] font-black uppercase tracking-wider shadow-md flex items-center gap-1">
-          <Sparkles className="w-2.5 h-2.5" />
-          <span>DAV MOTTO</span>
-        </div>
-      </div>
-
-      {/* Floating Vedic Flame */}
-      <div className="absolute -top-1.5 -right-1.5 w-7 h-7 rounded-full bg-gradient-to-tr from-amber-400 to-yellow-300 text-stone-950 flex items-center justify-center shadow-lg animate-bounce">
-        <Flame className="w-4 h-4 text-red-900 fill-red-800" />
-      </div>
-
-      {/* Stardust particles on click */}
-      {sparkles.map((s) => (
-        <span
-          key={s.id}
-          style={{ left: `${s.left}%`, top: `${s.top}%` }}
-          className="absolute w-2 h-2 rounded-full bg-amber-300 shadow-[0_0_8px_#fde047] pointer-events-none vfx-stardust-sparkle"
-        />
-      ))}
-    </div>
-  );
-}
-
-// =========================================================================
 // MAIN OVERVIEW HUB COMPONENT (SECTION 1)
 // =========================================================================
 export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseModal }) {
   const [clickedCardId, setClickedCardId] = useState(null);
   const [isSparkleActive, setIsSparkleActive] = useState(false);
-  const [shockwaveCoord, setShockwaveCoord] = useState(null);
 
   // Dimension 4 check: Sections 12 & 13 are strictly reserved for Developer Rishit Shankar
   const isDimension4 = Boolean(
@@ -438,7 +133,7 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
       borderHover: 'hover:border-amber-500',
       tag: 'You Are Here',
       tagColor: 'bg-amber-100 text-amber-900 border-amber-300 font-bold',
-      description: 'The master directory and architectural dashboard for all verified academic sections. Jump directly to any section with one click and inspect live campus telemetry.'
+      description: 'The master directory and architectural dashboard for all verified academic sections. Jump directly to any section with one click.'
     },
     {
       id: 2,
@@ -616,64 +311,64 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
     return sectionsList.filter(sec => (sec.id !== 12 && sec.id !== 13) || isDimension4);
   }, [sectionsList, isDimension4]);
 
-  // ANIMATION 5: Radial Golden Shockwave Teleportation Ripple
-  const handleCardClick = (id, event) => {
-    if (event) {
-      setShockwaveCoord({ x: event.clientX, y: event.clientY });
-    }
+  const handleCardClick = (id) => {
     setClickedCardId(id);
     setTimeout(() => {
       setClickedCardId(null);
-      setShockwaveCoord(null);
       onSelectSection(id);
-    }, 320);
+    }, 120);
   };
 
   const handleTriggerSparkles = () => {
     setIsSparkleActive(true);
-    setTimeout(() => setIsSparkleActive(false), 2200);
+    setTimeout(() => setIsSparkleActive(false), 2000);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#fffbeb] via-[#fff7ed] to-[#f0f9ff] py-10 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden">
       
-      {/* ANIMATION 1: COSMIC STAR-MESH CANVAS & VEDIC AURORA ORBS */}
-      <CosmicStarMeshCanvas />
-
-      {/* Floating Vedic Aurora Light Beams & Multi-Layered Glowing Orbs */}
-      <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-gradient-to-br from-amber-400/25 to-orange-500/20 blur-3xl pointer-events-none vfx-ambient-orb-gold" />
-      <div className="absolute top-1/4 -right-24 w-[28rem] h-[28rem] rounded-full bg-gradient-to-bl from-rose-500/20 to-red-600/15 blur-3xl pointer-events-none vfx-ambient-orb-ruby" />
-      <div className="absolute bottom-10 left-1/3 w-[32rem] h-[32rem] rounded-full bg-gradient-to-tr from-cyan-400/20 to-blue-600/15 blur-3xl pointer-events-none vfx-ambient-orb-cyan" />
-      <div className="absolute top-0 right-1/4 w-72 h-[120%] bg-gradient-to-b from-amber-300/15 via-transparent to-transparent pointer-events-none vfx-light-beam-sweep" />
-
-      {/* ANIMATION 5: EXPANDING RADIAL SHOCKWAVE TELEPORT OVERLAY */}
-      {shockwaveCoord && (
-        <div 
-          className="fixed pointer-events-none z-50 rounded-full vfx-teleport-shockwave-ring"
-          style={{
-            left: `${shockwaveCoord.x - 75}px`,
-            top: `${shockwaveCoord.y - 75}px`,
-            width: '150px',
-            height: '150px'
-          }}
-        />
-      )}
+      {/* FLOATING BALLOON CIRCLES ANIMATION (User Favorite) */}
+      <FloatingBalloonsBackground />
 
       <div className="max-w-7xl mx-auto space-y-10 relative z-10">
         
-        {/* TOP CREST BANNER WITH ANIMATION 4 (FLOATING GOLDEN MASCOT) */}
+        {/* TOP CREST BANNER */}
         <div className="p-6 sm:p-10 rounded-3xl bg-gradient-to-r from-red-950 via-slate-900 to-amber-950 text-white border border-amber-500/40 shadow-2xl relative overflow-hidden">
           
-          {/* Subtle god-rays in banner */}
-          <div className="vfx-god-rays opacity-40" />
-
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8 relative z-10">
             
             {/* Left: Animated DAV Crest & Vedic Flame */}
             <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
               
-              {/* ANIMATION 4: FLOATING GOLDEN MASCOT BOOK */}
-              <FloatingGoldenBookMascot onCelebrate={handleTriggerSparkles} />
+              <div 
+                onClick={handleTriggerSparkles}
+                className="relative cursor-pointer group shrink-0 select-none"
+                title="Click to activate golden celebration animation!"
+              >
+                {/* Outer Glowing Spinning Ring */}
+                <div 
+                  className="absolute -inset-2.5 rounded-full bg-gradient-to-tr from-amber-400 via-orange-500 to-yellow-300 opacity-75 group-hover:opacity-100 animate-spin" 
+                  style={{ animationDuration: '10s' }} 
+                />
+
+                {/* Crest Box */}
+                <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-red-950 via-stone-900 to-amber-950 p-2 border-2 border-amber-400/90 flex flex-col items-center justify-center shadow-2xl group-hover:scale-105 transition-transform duration-200">
+                  <img 
+                    src="/logo.png" 
+                    alt="Official DAV Logo Crest" 
+                    className="w-16 h-16 sm:w-20 sm:h-20 object-contain drop-shadow-md animate-pulse"
+                    style={{ animationDuration: '3s' }}
+                  />
+                  <div className="absolute -bottom-2 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-400 text-stone-950 text-[9px] font-black uppercase tracking-wider shadow-md">
+                    DAV MOTTO
+                  </div>
+                </div>
+
+                {/* Floating Vedic Flame */}
+                <div className="absolute -top-1.5 -right-1.5 w-7 h-7 rounded-full bg-gradient-to-tr from-amber-400 to-yellow-300 text-stone-950 flex items-center justify-center shadow-lg animate-bounce">
+                  <Flame className="w-4 h-4 text-red-900 fill-red-800" />
+                </div>
+              </div>
 
               {/* Title & Slogan */}
               <div>
@@ -720,7 +415,7 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
               )}
 
               <button
-                onClick={(e) => handleCardClick(2, e)}
+                onClick={() => handleCardClick(2)}
                 className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 font-black text-xs uppercase tracking-wider shadow-xl flex items-center justify-center gap-2 cursor-pointer transition transform hover:scale-105"
               >
                 <BookOpen className="w-4 h-4" />
@@ -728,7 +423,7 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
               </button>
 
               <button
-                onClick={(e) => handleCardClick(11, e)}
+                onClick={() => handleCardClick(11)}
                 className="px-6 py-3 rounded-2xl bg-rose-900/80 hover:bg-rose-800 text-white border border-rose-400/40 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition"
               >
                 <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" />
@@ -747,10 +442,7 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
 
         </div>
 
-        {/* ANIMATION 3: LIVE CAMPUS STATS & RADAR BEACON DECK */}
-        <LiveCampusStatsRadarDeck />
-
-        {/* 14 SECTIONS GRID WITH ANIMATION 2 (3D HOLOGRAPHIC TILT & LASER BEAM) */}
+        {/* 14 SECTIONS GRID (Clean, solid cards with subtle hover lift) */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
@@ -758,18 +450,18 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
               <span>Explore All Verified Academic Sections</span>
             </h2>
             <span className="text-xs font-bold text-slate-500 bg-white/90 backdrop-blur-sm px-3.5 py-1.5 rounded-full border border-slate-200 shadow-xs">
-              Interactive 3D Cards • Click any to teleport
+              Click any card to enter
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {visibleSections.map((sec) => (
-              <HolographicSectionCard
+              <CleanSectionCard
                 key={sec.id}
                 sec={sec}
                 isCurrent={sec.id === 1}
                 isBeingClicked={clickedCardId === sec.id}
-                onClick={(e) => handleCardClick(sec.id, e)}
+                onClick={() => handleCardClick(sec.id)}
               />
             ))}
           </div>
@@ -807,7 +499,7 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
             <span>Official Creator: <strong>Rishit Shankar</strong></span>
             <span>DAV Public School • Digital India 🇮🇳</span>
             <button
-              onClick={(e) => handleCardClick(14, e)}
+              onClick={() => handleCardClick(14)}
               className="text-red-800 hover:text-red-950 font-bold flex items-center gap-1 cursor-pointer"
             >
               <span>Read Full Head Boy Profile in Section 14 →</span>
