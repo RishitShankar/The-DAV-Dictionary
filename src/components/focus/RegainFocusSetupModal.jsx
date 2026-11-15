@@ -129,18 +129,51 @@ export function RegainFocusSetupModal({
               </div>
               <div className="pt-2">
                 <div className="flex justify-between text-xs text-stone-400 mb-1">
-                  <span>Custom: {focusMinutes} minutes</span>
-                  <span>(0 to Unlimited)</span>
+                  <span>Custom: {focusMinutes} minutes ({Math.floor(focusMinutes / 60)}h {focusMinutes % 60}m)</span>
+                  <span className="text-emerald-400 font-bold">(0 to Unlimited Hours)</span>
                 </div>
                 <input
                   type="range"
                   min="5"
-                  max="300"
+                  max="480"
                   step="5"
                   value={focusMinutes}
                   onChange={(e) => setFocusMinutes(Number(e.target.value))}
-                  className="w-full accent-emerald-500"
+                  className="w-full accent-emerald-500 cursor-pointer"
                 />
+                
+                {/* Direct Numeric Input for Unlimited Custom Hours & Mins */}
+                <div className="mt-2.5 p-2.5 rounded-xl bg-stone-900/90 border border-stone-800 flex items-center justify-between gap-2">
+                  <span className="text-[11px] text-stone-300 font-medium">Type Custom Target:</span>
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      type="number"
+                      min="0"
+                      max="48"
+                      value={Math.floor(focusMinutes / 60)}
+                      onChange={(e) => {
+                        const h = Math.max(0, parseInt(e.target.value, 10) || 0);
+                        const m = focusMinutes % 60;
+                        setFocusMinutes(h * 60 + m);
+                      }}
+                      className="w-14 px-2 py-1 rounded-lg bg-stone-950 border border-stone-750 text-emerald-400 font-mono text-xs text-center font-bold"
+                    />
+                    <span className="text-[11px] text-stone-400">h</span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="59"
+                      value={focusMinutes % 60}
+                      onChange={(e) => {
+                        const h = Math.floor(focusMinutes / 60);
+                        const m = Math.max(0, Math.min(59, parseInt(e.target.value, 10) || 0));
+                        setFocusMinutes(h * 60 + m);
+                      }}
+                      className="w-14 px-2 py-1 rounded-lg bg-stone-950 border border-stone-750 text-emerald-400 font-mono text-xs text-center font-bold"
+                    />
+                    <span className="text-[11px] text-stone-400">m</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}

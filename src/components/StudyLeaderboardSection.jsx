@@ -393,7 +393,7 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
           <div className="flex flex-wrap items-center gap-3">
             
             {/* IN APK MODE ONLY: Dual Tabs (Focus Suite vs Leaderboard) */}
-            {isApkActive && (
+            {isApkActive ? (
               <div className="flex items-center gap-1.5 bg-stone-900/90 p-1.5 rounded-2xl border border-stone-800 shadow-inner">
                 <button
                   type="button"
@@ -421,28 +421,15 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
                   <span>2. Campus Leaderboard</span>
                 </button>
               </div>
-            )}
-
-            {/* Quick APK Simulator Toggle / Exit Button */}
-            {isApkModeSimulated ? (
-              <button
-                type="button"
-                onClick={() => handleToggleApkMode(false)}
-                className="px-3 py-2 rounded-xl text-xs font-bold bg-purple-950 text-purple-200 border border-purple-500/60 hover:bg-purple-900 transition flex items-center gap-1.5 cursor-pointer shadow-lg"
-              >
-                <Smartphone className="w-4 h-4 text-purple-400" />
-                <span>Exit APK Mode</span>
-              </button>
             ) : (
-              <button
-                type="button"
-                onClick={() => handleToggleApkMode(true)}
-                className="px-3 py-2 rounded-xl text-xs font-bold bg-stone-900 hover:bg-stone-800 text-stone-300 hover:text-white border border-stone-700 transition flex items-center gap-1.5 cursor-pointer"
-                title="Preview APK Focus OS & Reel Scroller in Android Phone Shell"
+              <a
+                href="/DAV_Smart_Portal.apk"
+                download="DAV_Smart_Portal.apk"
+                className="px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-500 to-indigo-500 text-white transition flex items-center gap-1.5 cursor-pointer shadow-lg hover:from-purple-400"
               >
-                <Smartphone className="w-4 h-4 text-emerald-400" />
-                <span>Preview APK View</span>
-              </button>
+                <Download className="w-4 h-4" />
+                <span>Get DAV Android APK</span>
+              </a>
             )}
 
           </div>
@@ -733,19 +720,10 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
               </div>
 
               <div className="flex items-center gap-2.5 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => handleToggleApkMode(true)}
-                  className="px-4 py-2.5 rounded-2xl bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border border-stone-700"
-                >
-                  <Eye className="w-4 h-4 text-emerald-400" />
-                  <span>Preview APK Simulation</span>
-                </button>
-
                 <a
                   href="/DAV_Smart_Portal.apk"
                   download="DAV_Smart_Portal.apk"
-                  className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-400 text-white text-xs font-black uppercase tracking-wider transition shadow-lg flex items-center gap-1.5 cursor-pointer"
+                  className="px-5 py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-400 text-white text-xs font-black uppercase tracking-wider transition shadow-lg flex items-center gap-2 cursor-pointer hover:scale-105 active:scale-95"
                 >
                   <Download className="w-4 h-4" />
                   <span>Download APK (2.8 MB)</span>

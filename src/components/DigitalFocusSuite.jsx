@@ -29,17 +29,30 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
   // 'focus' | 'schedule' | 'groups' | 'blocks' | 'reels' | 'analytics'
   const [activeTab, setActiveTab] = useState('focus');
 
-  // Phone Shell Simulator mode on desktop (defaults to true for 100% exact ReGain visual replication)
+  // Device & Platform Detection
+  const isNativeApk = typeof window !== 'undefined' && (
+    window.Android !== undefined ||
+    window.location.protocol === 'file:' ||
+    window.location.hostname.includes('appassets') || 
+    window.location.hostname.includes('davportal') ||
+    (navigator.userAgent && navigator.userAgent.includes('DAVSmartPortalApp'))
+  );
+  const isMobile = typeof window !== 'undefined' && (window.innerWidth <= 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+  const isRunningOnMobileOrApk = isNativeApk || isMobile;
+
+  // Phone Shell Simulator mode on desktop ONLY (Never on actual mobile devices or inside APK)
   const [isPhoneFrame, setIsPhoneFrame] = useState(() => {
+    if (isRunningOnMobileOrApk) return false;
     try {
       const saved = localStorage.getItem('dav_regain_phone_frame');
-      return saved !== 'false';
+      return saved === 'true';
     } catch (e) {
-      return true;
+      return false;
     }
   });
 
   const handleTogglePhoneFrame = (val) => {
+    if (isRunningOnMobileOrApk) return;
     setIsPhoneFrame(val);
     try {
       localStorage.setItem('dav_regain_phone_frame', String(val));
@@ -56,6 +69,7 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
 
   const handleStartSessionFromModal = (config) => {
     ambientAudio.playBellChime();
+    if (window.Android?.vibrate) window.Android.vibrate(40);
     if (onAccumulateMs) {
       onAccumulateMs(1000 * 60 * (config.focusDurationSeconds ? config.focusDurationSeconds / 60 : 25));
     }
@@ -71,43 +85,46 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
       
       {/* ------------------------------------------------------------- */}
       {/* Top Desktop Auxiliary Toolbar (View Mode Switcher)            */}
+      {/* RENDERED ON DESKTOP ONLY - NEVER INSIDE APK OR MOBILE SCREENS */}
       {/* ------------------------------------------------------------- */}
-      <div className="max-w-md mx-auto mb-4 flex items-center justify-between px-3 py-2 rounded-2xl bg-stone-900/80 border border-stone-800 text-xs">
-        <div className="flex items-center space-x-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="font-bold text-stone-300">ReGain App Engine v3.4</span>
-        </div>
+      {!isRunningOnMobileOrApk && (
+        <div className="max-w-md mx-auto mb-4 flex items-center justify-between px-3 py-2 rounded-2xl bg-stone-900/80 border border-stone-800 text-xs">
+          <div className="flex items-center space-x-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="font-bold text-stone-300">ReGain App Engine v3.4</span>
+          </div>
 
-        <div className="flex items-center space-x-1.5">
-          <button
-            type="button"
-            onClick={() => handleTogglePhoneFrame(true)}
-            className={`px-2.5 py-1 rounded-xl font-bold flex items-center space-x-1 transition cursor-pointer ${
-              isPhoneFrame
-                ? 'bg-emerald-500 text-stone-950 shadow-md'
-                : 'text-stone-400 hover:text-white'
-            }`}
-            title="Authentic Smartphone Aspect Ratio"
-          >
-            <Smartphone className="w-3.5 h-3.5" />
-            <span className="text-[11px]">Phone Shell</span>
-          </button>
+          <div className="flex items-center space-x-1.5">
+            <button
+              type="button"
+              onClick={() => handleTogglePhoneFrame(true)}
+              className={`px-2.5 py-1 rounded-xl font-bold flex items-center space-x-1 transition cursor-pointer ${
+                isPhoneFrame
+                  ? 'bg-emerald-500 text-stone-950 shadow-md'
+                  : 'text-stone-400 hover:text-white'
+              }`}
+              title="Authentic Smartphone Aspect Ratio"
+            >
+              <Smartphone className="w-3.5 h-3.5" />
+              <span className="text-[11px]">Phone Shell</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => handleTogglePhoneFrame(false)}
-            className={`px-2.5 py-1 rounded-xl font-bold flex items-center space-x-1 transition cursor-pointer ${
-              !isPhoneFrame
-                ? 'bg-emerald-500 text-stone-950 shadow-md'
-                : 'text-stone-400 hover:text-white'
-            }`}
-            title="Expanded Full Width View"
-          >
-            <Monitor className="w-3.5 h-3.5" />
-            <span className="text-[11px]">Expanded</span>
-          </button>
+            <button
+              type="button"
+              onClick={() => handleTogglePhoneFrame(false)}
+              className={`px-2.5 py-1 rounded-xl font-bold flex items-center space-x-1 transition cursor-pointer ${
+                !isPhoneFrame
+                  ? 'bg-emerald-500 text-stone-950 shadow-md'
+                  : 'text-stone-400 hover:text-white'
+              }`}
+              title="Expanded Full Width View"
+            >
+              <Monitor className="w-3.5 h-3.5" />
+              <span className="text-[11px]">Expanded</span>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ------------------------------------------------------------- */}
       {/* Authentic ReGain Smartphone Viewport Container                */}
@@ -116,11 +133,11 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
         className={`mx-auto transition-all duration-300 relative ${
           isPhoneFrame
             ? 'w-full max-w-[420px] min-h-[850px] rounded-[50px] border-[10px] border-[#18191d] ring-2 ring-stone-800 shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden bg-[#021811] flex flex-col justify-between'
-            : 'w-full max-w-4xl min-h-[800px] rounded-[36px] border border-stone-800 bg-[#021811] shadow-2xl overflow-hidden flex flex-col justify-between'
+            : 'w-full max-w-4xl min-h-[750px] rounded-3xl sm:rounded-[36px] border border-stone-800/80 bg-[#021811] shadow-2xl overflow-hidden flex flex-col justify-between'
         }`}
       >
-        {/* Simulated Android Status Bar (Exact match to ReGain App Screenshot) */}
-        {isPhoneFrame && (
+        {/* Simulated Android Status Bar (ONLY when phone frame simulator is explicitly enabled on desktop) */}
+        {isPhoneFrame && !isRunningOnMobileOrApk && (
           <div className="relative z-30 pt-3 pb-1 px-6 flex items-center justify-between text-[11px] font-sans font-semibold text-white/90 select-none bg-black/20 backdrop-blur-sm">
             {/* Left: Clock */}
             <div className="flex items-center space-x-2">
@@ -146,7 +163,6 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
           </div>
         )}
 
-        {/* ----------------------------------------------------------- */}
         {/* ----------------------------------------------------------- */}
         {/* Active Tab Screen Content                                   */}
         {/* ----------------------------------------------------------- */}
@@ -204,19 +220,20 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
 
         {/* ----------------------------------------------------------- */}
         {/* Floating Bottom Navigation Dock                             */}
-        {/* Rendered on Schedule, Groups, Blocks, Reels, Analytics      */}
+        {/* Universal across all screens so student can switch anytime  */}
         {/* (Exact match to ReGain App Screenshots 5, 6, 7)             */}
         {/* ----------------------------------------------------------- */}
-        {activeTab !== 'focus' && (
-          <FloatingBottomDock
-            activeTab={activeTab}
-            onSelectTab={(tabId) => setActiveTab(tabId)}
-            isEmbedded={true}
-          />
-        )}
+        <FloatingBottomDock
+          activeTab={activeTab}
+          onSelectTab={(tabId) => {
+            if (window.Android?.vibrate) window.Android.vibrate(30);
+            setActiveTab(tabId);
+          }}
+          isEmbedded={true}
+        />
 
-        {/* Simulated Android Navigation Gestures Bar (Matches Screenshot 1 Bottom) */}
-        {isPhoneFrame && (
+        {/* Simulated Android Navigation Gestures Bar (ONLY on Desktop Phone Frame) */}
+        {isPhoneFrame && !isRunningOnMobileOrApk && (
           <div className="relative z-30 py-2.5 px-8 flex items-center justify-around bg-black/60 backdrop-blur-md border-t border-white/5 select-none text-stone-500">
             {/* Recent Apps Button */}
             <div 

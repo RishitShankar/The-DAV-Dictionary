@@ -252,6 +252,7 @@ export function RegainFocusScreen({
   // -------------------------------------------------------------------------
   const handleStartResume = () => {
     ambientAudio.init();
+    if (window.Android?.vibrate) window.Android.vibrate(35);
     if (!isRunning) {
       setIsRunning(true);
       setIsPaused(false);
@@ -276,6 +277,7 @@ export function RegainFocusScreen({
   };
 
   const handleStop = () => {
+    if (window.Android?.vibrate) window.Android.vibrate(50);
     if (strictShield.strictModeActive) {
       setStrictCountdown(strictShield.emergencyDelaySeconds || 30);
       setShowStrictModal(true);
@@ -290,6 +292,7 @@ export function RegainFocusScreen({
   };
 
   const handleTakeBreak = () => {
+    if (window.Android?.vibrate) window.Android.vibrate(35);
     setIsOnBreak(!isOnBreak);
     setBuddyMood(isOnBreak ? 'focused' : 'sleepy');
     ambientAudio.playBellChime();
@@ -297,6 +300,7 @@ export function RegainFocusScreen({
   };
 
   const handleToggleStrict = () => {
+    if (window.Android?.vibrate) window.Android.vibrate(60);
     const updated = focusDataStore.toggleStrictMode();
     setStrictShield(updated);
     ambientAudio.playWarningChime();
@@ -316,7 +320,7 @@ export function RegainFocusScreen({
 
   return (
     <div 
-      className="relative w-full h-[780px] rounded-[36px] overflow-hidden flex flex-col justify-between p-5 select-none text-white shadow-2xl border border-emerald-950/40 bg-[#021811]"
+      className="relative w-full min-h-[640px] flex-1 rounded-3xl sm:rounded-[36px] overflow-hidden flex flex-col justify-between p-4 sm:p-5 select-none text-white shadow-2xl border border-emerald-950/40 bg-[#021811] pb-6"
       style={{
         backgroundImage: 'radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.35) 0%, rgba(6, 78, 59, 0.45) 50%, rgba(2, 24, 17, 0.98) 100%)'
       }}

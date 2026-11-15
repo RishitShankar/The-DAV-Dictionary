@@ -135,6 +135,26 @@ export function BrainPalInteractiveReelsFeed({ onReturnToStudy }) {
 
   const canvasRef = useRef(null);
   const dwellTimerRef = useRef(null);
+  const touchStartYRef = useRef(0);
+
+  const handleTouchStart = (e) => {
+    if (e.touches && e.touches[0]) {
+      touchStartYRef.current = e.touches[0].clientY;
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    if (e.changedTouches && e.changedTouches[0]) {
+      const deltaY = touchStartYRef.current - e.changedTouches[0].clientY;
+      if (deltaY > 40) {
+        // Swiped UP -> Next reel (Natural TikTok / IG Reels gesture)
+        handleNextReel();
+      } else if (deltaY < -40) {
+        // Swiped DOWN -> Prev reel
+        handlePrevReel();
+      }
+    }
+  };
 
   // Sync with FocusDataStore
   useEffect(() => {
@@ -343,6 +363,7 @@ export function BrainPalInteractiveReelsFeed({ onReturnToStudy }) {
   // Scroll Navigation Handlers (Real Reel Count Increment)
   // -------------------------------------------------------------------------
   const handleNextReel = () => {
+    if (window.Android?.vibrate) window.Android.vibrate(30);
     if (isHardLocked) {
       ambientAudio.playWarningChime();
       showToast('⚠️ Daily Reel Quota Exceeded! Complete the Mindful Reset.');
@@ -459,8 +480,12 @@ export function BrainPalInteractiveReelsFeed({ onReturnToStudy }) {
         </div>
       </div>
 
-      {/* Main 9:16 Phone-style Reel Player Container */}
-      <div className="relative w-full max-w-sm sm:max-w-md h-[560px] sm:h-[620px] rounded-[36px] bg-stone-950 border-4 border-stone-800 shadow-2xl overflow-hidden flex flex-col">
+      {/* Main 9:16 Phone-style Reel Player Container with Native Swipe Gestures */}
+      <div 
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        className="relative w-full max-w-sm sm:max-w-md h-[560px] sm:h-[620px] rounded-[36px] bg-stone-950 border-4 border-stone-800 shadow-2xl overflow-hidden flex flex-col cursor-grab active:cursor-grabbing"
+      >
         
         {/* Animated Canvas Backdrop */}
         <canvas

@@ -79,12 +79,48 @@ export function RegainBlocksScreen({ onOpenShortsTracker }) {
       <div className="flex items-center justify-between pt-2">
         <h2 className="text-2xl font-black text-white tracking-tight">Blocks</h2>
         <button
-          onClick={() => alert('Blocks shield your focus by locking short-form feeds, setting hard daily app usage limits, and neutralizing adult/distracting domains.')}
-          className="flex items-center space-x-1 px-3 py-1.5 rounded-full bg-stone-900 border border-stone-800 text-xs font-semibold text-stone-300 hover:text-white transition-all"
+          onClick={() => {
+            if (window.Android?.showToast) {
+              window.Android.showToast('Blocks shield your focus by locking short-form feeds, setting app limits, and blocking adult sites.');
+            } else {
+              alert('Blocks shield your focus by locking short-form feeds, setting hard daily app usage limits, and neutralizing adult/distracting domains.');
+            }
+          }}
+          className="flex items-center space-x-1 px-3 py-1.5 rounded-full bg-stone-900 border border-stone-800 text-xs font-semibold text-stone-300 hover:text-white transition-all cursor-pointer"
         >
           <span>💬 Help</span>
         </button>
       </div>
+
+      {/* Native APK Accessibility Service Shield Status */}
+      {typeof window !== 'undefined' && window.Android && (
+        <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-stone-900 to-stone-950 border border-emerald-500/40 flex items-center justify-between gap-3 shadow-xl">
+          <div className="flex items-center space-x-3 min-w-0">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center font-bold text-lg shrink-0">
+              🛡️
+            </div>
+            <div className="min-w-0">
+              <h4 className="text-xs font-black text-white flex items-center gap-1.5 truncate">
+                <span>Android OS App Blocker Service</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              </h4>
+              <p className="text-[11px] text-stone-400 mt-0.5 truncate">
+                Background app interception linked to native Android accessibility service.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              if (window.Android?.openAccessibilitySettings) {
+                window.Android.openAccessibilitySettings();
+              }
+            }}
+            className="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-bold text-xs cursor-pointer shadow-md shrink-0 transition active:scale-95"
+          >
+            Settings
+          </button>
+        </div>
+      )}
 
       {/* ------------------------------------------------------------- */}
       {/* Section 1: "App Limits" + "+ Add App"                         */}

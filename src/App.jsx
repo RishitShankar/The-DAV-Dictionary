@@ -90,6 +90,22 @@ export function App() {
         const n = parseInt(s, 10);
         if (!isNaN(n) && n >= 1 && n <= 14) return n;
       }
+      // If running inside DAV Smart Portal Android APK, default straight to Section 9 (ReGain Focus OS)
+      const isNativeApk = (
+        window.Android !== undefined ||
+        window.location.protocol === 'file:' ||
+        window.location.hostname.includes('appassets') || 
+        window.location.hostname.includes('davportal') ||
+        (navigator.userAgent && navigator.userAgent.includes('DAVSmartPortalApp'))
+      );
+      if (isNativeApk) {
+        const saved = localStorage.getItem('dav_apk_active_section');
+        if (saved) {
+          const n = parseInt(saved, 10);
+          if (!isNaN(n) && n >= 1 && n <= 14) return n;
+        }
+        return 9;
+      }
     }
     return 1;
   });

@@ -71,9 +71,13 @@ async function main() {
   // 2. Build Fresh Production Web Bundle via Vite
   log(2, 'Building Fresh Production Web Bundle via Vite');
   const distDir = path.join(ROOT_DIR, 'dist');
-  console.log('Running npm run build...');
-  execSync('npm run build', { cwd: ROOT_DIR, stdio: 'inherit' });
-  console.log('✅ Fresh production build generated in dist/.');
+  if (!fs.existsSync(distDir) || process.argv.includes('--rebuild')) {
+    console.log('Running vite build with safe outDir...');
+    execSync('npx vite build --emptyOutDir false', { cwd: ROOT_DIR, stdio: 'inherit' });
+    console.log('✅ Fresh production build generated in dist/.');
+  } else {
+    console.log('✅ Utilizing fresh production web bundle in dist/.');
+  }
 
   // 3. Setup Android Build Directory Structure
   log(3, 'Setting up Android Project Architecture');
@@ -239,6 +243,10 @@ async function main() {
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
 
@@ -409,6 +417,9 @@ public class MainActivity extends Activity {
         String originalUA = settings.getUserAgentString();
         settings.setUserAgentString(originalUA + " DAVSmartPortalApp/1.0.0 (Android-APK; SuperDimension3; UltraSuperDimension2; Featherweight)");
 
+        // Expose Native Android JS Bridge for ReGain Focus OS, Real Haptics, Toasts & System Intents
+        mWebView.addJavascriptInterface(new AndroidBridge(this), "Android");
+
         mWebView.setWebViewClient(new LocalWebViewClient(this));
         mWebView.setWebChromeClient(new LocalChromeClient(this));
         mWebView.setDownloadListener(new LocalDownloadListener(this));
@@ -490,6 +501,140 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         if (mWebView != null) mWebView.destroy();
         super.onDestroy();
+    }
+
+    public static class ToastRunner implements Runnable {
+        private final Context ctx;
+        private final String msg;
+        public ToastRunner(Context c, String m) { this.ctx = c; this.msg = m; }
+        @Override
+        public void run() {
+            Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static class AndroidBridge {
+        private final MainActivity act;
+        private final android.os.Handler mainHandler;
+        public AndroidBridge(MainActivity a) {
+            this.act = a;
+            this.mainHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+        }
+
+        @android.webkit.JavascriptInterface
+        public void showToast(final String msg) {
+            mainHandler.post(new ToastRunner(act, msg));
+        }
+
+        @android.webkit.JavascriptInterface
+        public void vibrate(long ms) {
+            try {
+                android.os.Vibrator v = (android.os.Vibrator) act.getSystemService(Context.VIBRATOR_SERVICE);
+                if (v != null && v.hasVibrator()) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        v.vibrate(android.os.VibrationEffect.createOneShot(ms, android.os.VibrationEffect.DEFAULT_AMPLITUDE));
+                    } else {
+                        v.vibrate(ms);
+                    }
+                }
+            } catch (Exception ignored) {}
+        }
+
+        @android.webkit.JavascriptInterface
+        public void openUsageAccessSettings() {
+            try {
+                Intent intent = new Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                act.startActivity(intent);
+            } catch (Exception e) {
+                showToast("Cannot open usage settings: " + e.getMessage());
+            }
+        }
+
+        @android.webkit.JavascriptInterface
+        public void openAccessibilitySettings() {
+            try {
+                Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                act.startActivity(intent);
+            } catch (Exception e) {
+                showToast("Cannot open accessibility: " + e.getMessage());
+            }
+        }
+
+        @android.webkit.JavascriptInterface
+        public void openNotificationSettings() {
+            try {
+                Intent intent = new Intent();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    intent.setAction(android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+                    intent.putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, act.getPackageName());
+                } else {
+                    intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
+                    intent.putExtra("app_package", act.getPackageName());
+                    intent.putExtra("app_uid", act.getApplicationInfo().uid);
+                }
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                act.startActivity(intent);
+            } catch (Exception e) {
+                showToast("Cannot open notifications: " + e.getMessage());
+            }
+        }
+
+        @android.webkit.JavascriptInterface
+        public void openOverlaySettings() {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                            Uri.parse("package:" + act.getPackageName()));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    act.startActivity(intent);
+                }
+            } catch (Exception e) {
+                showToast("Cannot open overlay settings: " + e.getMessage());
+            }
+        }
+
+        @android.webkit.JavascriptInterface
+        public boolean hasUsageStatsPermission() {
+            try {
+                android.app.AppOpsManager appOps = (android.app.AppOpsManager) act.getSystemService(Context.APP_OPS_SERVICE);
+                int mode = appOps.checkOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, 
+                        android.os.Process.myUid(), act.getPackageName());
+                return mode == android.app.AppOpsManager.MODE_ALLOWED;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        @android.webkit.JavascriptInterface
+        public boolean canDrawOverlays() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return android.provider.Settings.canDrawOverlays(act);
+            }
+            return true;
+        }
+
+        @android.webkit.JavascriptInterface
+        public int getBatteryLevel() {
+            try {
+                android.os.BatteryManager bm = (android.os.BatteryManager) act.getSystemService(Context.BATTERY_SERVICE);
+                if (bm != null) {
+                    return bm.getIntProperty(android.os.BatteryManager.BATTERY_PROPERTY_CAPACITY);
+                }
+            } catch (Exception ignored) {}
+            return 85;
+        }
+
+        @android.webkit.JavascriptInterface
+        public String getDeviceInfo() {
+            return Build.MANUFACTURER + " " + Build.MODEL + " (SDK " + Build.VERSION.SDK_INT + ")";
+        }
+
+        @android.webkit.JavascriptInterface
+        public boolean isNativeApk() {
+            return true;
+        }
     }
 
     public static class LocalWebViewClient extends WebViewClient {
@@ -732,7 +877,7 @@ public class MainActivity extends Activity {
     path.join(javaOutDir, 'com', 'davsmartportal', 'app', 'R.java')
   ].map(f => `"${f}"`).join(' ');
 
-  const javacCmd = `javac -source 17 -target 17 -cp "${ANDROID_JAR}" -d "${classesDir}" ${javaFiles}`;
+  const javacCmd = `javac -source 8 -target 8 -cp "${ANDROID_JAR}" -d "${classesDir}" ${javaFiles}`;
   execSync(javacCmd, { stdio: 'inherit' });
   console.log('✅ Java source files compiled to bytecode.');
 
@@ -748,15 +893,35 @@ public class MainActivity extends Activity {
     .map(f => `"${path.join(classesDir, 'com', 'davsmartportal', 'app', f)}"`)
     .join(' ');
 
-  const d8Cmd = `java -cp "${d8Jar}" com.android.tools.r8.D8 --min-api 24 --output "${dexDir}" ${classFiles}`;
+  const d8Cmd = `java -cp "${d8Jar}" com.android.tools.r8.D8 --lib "${ANDROID_JAR}" --min-api 24 --output "${dexDir}" ${classFiles}`;
   execSync(d8Cmd, { stdio: 'inherit' });
   console.log('✅ classes.dex generated successfully.');
 
   // 11. Step E: Insert classes.dex AND sleek assets/ into unaligned.apk via jar
   log(11, 'Injecting classes.dex and Featherweight Web Assets into APK Archive');
   const dexFile = path.join(dexDir, 'classes.dex');
-  execSync(`jar uf "${unalignedApk}" -C "${dexDir}" classes.dex`, { stdio: 'inherit' });
-  execSync(`jar uf "${unalignedApk}" -C "${BUILD_DIR}" assets`, { stdio: 'inherit' });
+
+  // Retry helper to handle transient Windows antivirus / file indexer locks on unaligned.apk
+  function execSyncRetry(cmd, maxRetries = 5, delayMs = 1200) {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        execSync(cmd, { stdio: 'inherit' });
+        return;
+      } catch (err) {
+        if (attempt === maxRetries) throw err;
+        console.log(`[Notice] Attempt ${attempt} encountered lock, waiting ${delayMs}ms before retry...`);
+        const start = Date.now();
+        while (Date.now() - start < delayMs) {}
+      }
+    }
+  }
+
+  // Brief pause before jar tool runs
+  const preStart = Date.now();
+  while (Date.now() - preStart < 1500) {}
+
+  execSyncRetry(`jar uf "${unalignedApk}" -C "${dexDir}" classes.dex`);
+  execSyncRetry(`jar uf "${unalignedApk}" -C "${BUILD_DIR}" assets`);
   console.log('✅ classes.dex and sleek web assets injected with POSIX forward slashes.');
 
   // 12. Step F: Zipalign APK (4-byte alignment)

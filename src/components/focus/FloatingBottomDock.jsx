@@ -19,6 +19,9 @@ import { ambientAudio } from '../../services/focusDataStore';
 export function FloatingBottomDock({ activeTab, onSelectTab, isEmbedded = true }) {
   const handleSelect = (tabId) => {
     ambientAudio.playBellChime();
+    if (window.Android?.vibrate) {
+      window.Android.vibrate(30);
+    }
     onSelectTab(tabId);
   };
 

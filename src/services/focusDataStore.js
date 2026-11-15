@@ -739,7 +739,9 @@ class FocusDataStore {
     let batteryLevel = 85;
     let isCharging = false;
     try {
-      if (typeof navigator !== 'undefined' && navigator.getBattery) {
+      if (typeof window !== 'undefined' && window.Android && window.Android.getBatteryLevel) {
+        batteryLevel = window.Android.getBatteryLevel();
+      } else if (typeof navigator !== 'undefined' && navigator.getBattery) {
         const batt = await navigator.getBattery();
         batteryLevel = Math.round(batt.level * 100);
         isCharging = batt.charging;
@@ -747,7 +749,14 @@ class FocusDataStore {
     } catch (e) {}
 
     let osName = 'Windows PC';
-    if (typeof navigator !== 'undefined') {
+    if (typeof window !== 'undefined' && window.Android && window.Android.getDeviceInfo) {
+      try {
+        const info = JSON.parse(window.Android.getDeviceInfo());
+        osName = `Android (${info.model || 'Device'})`;
+      } catch (e) {
+        osName = 'Android Native APK';
+      }
+    } else if (typeof navigator !== 'undefined') {
       const ua = navigator.userAgent;
       if (/Android/i.test(ua)) osName = 'Android Mobile';
       else if (/iPhone|iPad|iPod/i.test(ua)) osName = 'iOS Device';
