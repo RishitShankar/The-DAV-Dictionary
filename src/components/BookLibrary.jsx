@@ -1,3 +1,84 @@
+export const OFFICIAL_TEACHER_FACULTY_PDFS = [
+  {
+    id: 'fac_math_blueprint_8',
+    name: 'DAV Class 8 Mathematics Board Blueprint & High-Yield HOTS Bank',
+    subject: 'Mathematics',
+    subjectKey: 'math',
+    teacher: 'Dr. Rajesh Sharma (HoD Mathematics)',
+    date: 'Academic Session 2026',
+    pages: '48 Pages',
+    tag: 'Board Blueprint',
+    badgeColor: 'from-blue-600 to-indigo-700',
+    borderColor: 'border-blue-400/60',
+    summary: 'Comprehensive examination scoring blueprint for Class 8 DAV Board Exams. Contains step-by-step model solutions for Squares & Square Roots, Linear Equations, Algebraic Identities, Mensuration 3D, and Direct & Inverse Variations with official step-marking rubrics.'
+  },
+  {
+    id: 'fac_sci_lab_manual_8',
+    name: 'Class 8 Science Complete Experimental Guide & Concept Maps',
+    subject: 'Science',
+    subjectKey: 'science',
+    teacher: 'S. Banerjee (Senior Science Faculty)',
+    date: 'Term 1 & Term 2 Complete',
+    pages: '64 Pages',
+    tag: 'Lab Manual & Notes',
+    badgeColor: 'from-emerald-600 to-teal-700',
+    borderColor: 'border-emerald-400/60',
+    summary: 'Official DAV Science concept compendium covering all 19 units including Crop Production, Microorganisms, Combustion & Flame, Reproduction in Animals, Chemical Effects of Electric Current, and Stars & Solar System with full diagram annotations.'
+  },
+  {
+    id: 'fac_hindi_gyan_sagar_8',
+    name: 'DAV Hindi Gyan Sagar & Abhyas Sagar 5-Mark Scoring Compendium',
+    subject: 'Hindi',
+    subjectKey: 'hindi',
+    teacher: 'P. Trivedi (Hindi Subject Head)',
+    date: 'Board Verified 2026',
+    pages: '52 Pages',
+    tag: 'Model Solutions',
+    badgeColor: 'from-amber-600 to-orange-700',
+    borderColor: 'border-amber-400/60',
+    summary: 'Master Q&A key and model answers for Gyan Sagar and Abhyas Sagar Class 8. Features Hum Panchi Unmukt Gagan Ke, Asal Dhan, Achhe Padosi Ke Gun, and complete sandhi, samas, upsarg-pratyay vyakaran guides.'
+  },
+  {
+    id: 'fac_eng_lit_matrix_8',
+    name: 'English Literature Critical Companion & Grammar Blueprint',
+    subject: 'English',
+    subjectKey: 'english',
+    teacher: 'M. Iyer (English Dept Convenor)',
+    date: 'Updated Curriculum',
+    pages: '44 Pages',
+    tag: 'Literature Companion',
+    badgeColor: 'from-purple-600 to-violet-700',
+    borderColor: 'border-purple-400/60',
+    summary: 'Unit-by-unit thematic guides, poetic devices, character sketches, and advanced grammar workbooks covering Active-Passive Voice, Reported Speech, Modals, and Letter/Notice formats.'
+  },
+  {
+    id: 'fac_sst_revision_map_8',
+    name: 'Social Science Chapter Revision Maps & Muzaffarpur Regional Guide',
+    subject: 'Social Science',
+    subjectKey: 'sst',
+    teacher: 'V. K. Singh (SST Dept Head)',
+    date: 'Full Board Syllabus',
+    pages: '56 Pages',
+    tag: 'Revision Maps',
+    badgeColor: 'from-rose-600 to-red-700',
+    borderColor: 'border-rose-400/60',
+    summary: 'Complete History (Resources & Development, The Indian Constitution, Judiciary, Colonialism and the City) with timeline charts, flowcharts, and 100% board map items.'
+  },
+  {
+    id: 'fac_sans_surbhi_8',
+    name: 'Sanskrit Surbhi Shloka Anvaya, Bhavartha & Vyakaran Handbook',
+    subject: 'Sanskrit',
+    subjectKey: 'sanskrit',
+    teacher: 'Acharya Vidyadhar (Sanskrit Dept Head)',
+    date: 'Vedic Sanskrit Edition',
+    pages: '38 Pages',
+    tag: 'Shloka & Grammar',
+    badgeColor: 'from-orange-600 to-amber-700',
+    borderColor: 'border-orange-400/60',
+    summary: 'Complete Shloka word-by-word meanings (Padachheda, Anvaya, Bhavartha), Sandhi rules, Karak-Vibhakti tables, and Shabdaroop/Dhaturoop quick-revision index.'
+  }
+];
+
 import React, { useState, useDeferredValue } from 'react';
 import { DAV_SUBJECTS } from '../data/mockData';
 import { 

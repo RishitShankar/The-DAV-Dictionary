@@ -314,35 +314,24 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
           {!isSuccess ? (
             <form onSubmit={handleLoginSubmit} className="space-y-3.5">
               <div className="space-y-1">
-                <div className="flex items-center justify-between">
-                  <label htmlFor="userIdInputMobile" className="chalk-text font-bold text-xs uppercase tracking-wider">Student ID</label>
-                  <span className="text-[10px] text-slate-300/80">{showId ? "Visible" : "Hidden"}</span>
-                </div>
+                <label htmlFor="userIdInputMobile" className="chalk-text font-bold text-xs uppercase tracking-wider">Student ID / Username</label>
                 <div className="relative flex items-center">
                   <input
                     id="userIdInputMobile"
                     name="username"
                     type="text"
                     autoComplete="username"
-                    style={!showId ? { WebkitTextSecurity: 'disc' } : {}}
                     autoCapitalize="none"
                     autoCorrect="off"
                     spellCheck="false"
-                    placeholder="Enter your Student ID (e.g. XYZ)"
+                    placeholder="Enter Student ID (e.g. rishibhai)"
                     value={userId}
                     onChange={(e) => {
                       setUserId(e.target.value);
                       if (feedback) setFeedback("");
                     }}
-                    className="chalk-input w-full rounded-xl pl-3 pr-16 py-2.5 text-sm"
+                    className="chalk-input w-full rounded-xl px-3.5 py-2.5 text-sm"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowId(!showId)}
-                    className="absolute right-2 px-2.5 py-1 rounded bg-stone-800/90 text-[10px] font-bold text-slate-100 hover:text-yellow-200 border border-slate-200/50"
-                  >
-                    {showId ? "Hide" : "Show"}
-                  </button>
                 </div>
               </div>
 
@@ -463,8 +452,7 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
               >
                 <div className="flex flex-col gap-0.5 sm:gap-1">
                   <div className="flex items-center justify-between">
-                    <label htmlFor="userIdInput" className="chalk-text font-bold text-xs sm:text-base md:text-lg tracking-wider uppercase">ID</label>
-                    <span className="text-[10px] sm:text-xs text-slate-300/80">{showId ? "Visible" : "Hidden"}</span>
+                    <label htmlFor="userIdInput" className="chalk-text font-bold text-xs sm:text-base md:text-lg tracking-wider uppercase">Student ID / Username</label>
                   </div>
                   <div className="relative flex items-center w-full">
                     <input
@@ -472,25 +460,17 @@ export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
                       name="username"
                       type="text"
                       autoComplete="username"
-                      style={!showId ? { WebkitTextSecurity: 'disc' } : {}}
                       autoCapitalize="none"
                       autoCorrect="off"
                       spellCheck="false"
-                      placeholder="Enter your ID (e.g. XYZ)"
+                      placeholder="Enter ID (e.g. rishibhai or student_01)"
                       value={userId}
                       onChange={(e) => {
                         setUserId(e.target.value);
                         if (feedback) setFeedback("");
                       }}
-                      className="chalk-input w-full rounded-lg pl-2.5 pr-16 py-1 sm:pl-3.5 sm:pr-20 sm:py-2 text-xs sm:text-sm md:text-base"
+                      className="chalk-input w-full rounded-lg px-3 py-1 sm:px-3.5 sm:py-2 text-xs sm:text-sm md:text-base"
                     />
-                    <button
-                      type="button"
-                      onClick={() => setShowId(!showId)}
-                      className="absolute right-1.5 sm:right-2 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded border border-slate-200/70 bg-stone-800/90 hover:bg-yellow-200/25 hover:border-yellow-200 text-[10px] sm:text-xs font-semibold text-slate-100 hover:text-yellow-200 transition-colors cursor-pointer z-20"
-                    >
-                      {showId ? "Hide" : "Show"}
-                    </button>
                   </div>
                 </div>
 
