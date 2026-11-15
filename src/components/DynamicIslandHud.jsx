@@ -3,7 +3,7 @@ import {
   Sparkles, Clock, Flame, Play, Pause, RotateCcw, 
   Bus, CloudSun, ChevronDown, ChevronUp, Search, 
   FlaskConical, FileText, CheckCircle, ShieldCheck, X,
-  Atom, Music, Calculator, Sliders, Layers
+  Atom, Music, Calculator, Sliders, Layers, Rocket, Zap
 } from 'lucide-react';
 import { getGamificationState, subscribeToGamification } from '../services/scholasticGamificationStore';
 
@@ -17,7 +17,9 @@ export function DynamicIslandHud({
   onOpenAnthemPlayer,
   onOpenFormulaSheet,
   onOpenAccessibility,
-  onOpenConcepts200
+  onOpenConcepts200,
+  onOpenFeatures300,
+  onOpenHiTech50
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [gamification, setGamification] = useState(getGamificationState);
@@ -294,6 +296,30 @@ export function DynamicIslandHud({
                 <Layers className="w-4 h-4 text-amber-400 mb-1 group-hover:scale-110 transition-transform" />
                 <span className="text-[11px] font-bold text-white block">200 Concepts</span>
                 <span className="text-[9px] text-stone-500">Blueprint</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsExpanded(false);
+                  onOpenFeatures300?.();
+                }}
+                className="p-2 rounded-xl bg-stone-900 border border-stone-800 hover:border-cyan-400 text-left transition cursor-pointer group"
+              >
+                <Rocket className="w-4 h-4 text-cyan-400 mb-1 group-hover:scale-110 transition-transform" />
+                <span className="text-[11px] font-bold text-white block">300 Features</span>
+                <span className="text-[9px] text-stone-500">Next-Gen Labs</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsExpanded(false);
+                  onOpenHiTech50?.();
+                }}
+                className="p-2 rounded-xl bg-stone-900 border border-stone-800 hover:border-yellow-400 text-left transition cursor-pointer group"
+              >
+                <Zap className="w-4 h-4 text-yellow-400 mb-1 group-hover:scale-110 transition-transform" />
+                <span className="text-[11px] font-bold text-white block">50 Hi-Tech</span>
+                <span className="text-[9px] text-stone-500">Quantum Hub</span>
               </button>
             </div>
 

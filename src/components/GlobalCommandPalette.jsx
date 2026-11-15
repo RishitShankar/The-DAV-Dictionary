@@ -3,9 +3,10 @@ import {
   Search, BookOpen, Compass, Sparkles, Video, Bus, CheckSquare, 
   Trophy, Settings, Heart, Star, Key, Award, FlaskConical, 
   FileText, ShieldCheck, ArrowRight, CornerDownLeft, X, Layers, Brain,
-  Atom, Music, Calculator, Sliders
+  Atom, Music, Calculator, Sliders, Rocket
 } from 'lucide-react';
 import { DAV_200_PLATFORM_CONCEPTS } from '../data/dav200PlatformConceptsData';
+import { DAV_300_FUTURE_FEATURES } from '../data/dav300FutureFeaturesData';
 
 export function GlobalCommandPalette({ 
   isOpen, 
@@ -16,6 +17,8 @@ export function GlobalCommandPalette({
   onOpenAdmitCard,
   onOpenConceptsVault,
   onOpenConcepts200,
+  onOpenFeatures300,
+  onOpenHiTech50,
   onOpenPeriodicTable,
   onOpenBusTelemetry,
   onOpenAnthemPlayer,
@@ -45,7 +48,9 @@ export function GlobalCommandPalette({
     { id: 'sec_10', type: 'section', title: 'Section 10: Settings Hub', subtitle: 'Themes, accent engine & preferences', icon: Settings, action: () => onSelectSection?.(10) },
     
     // Feature Modals & Concepts
+    { id: 'act_hitech50', type: 'hitech', title: '50 Hi-Tech Innovations Nexus (Quantum Hub)', subtitle: 'Socratic AI, Edge CV, 3D Ray-Tracing, IoT Bus & Proctoring', icon: Zap, action: () => onOpenHiTech50?.() },
     { id: 'act_200', type: 'blueprint', title: '200 Platform Concepts Master Blueprint', subtitle: 'All 200 cutting-edge features & architectural designs', icon: Layers, action: () => onOpenConcepts200?.() },
+    { id: 'act_300', type: 'blueprint', title: '300 Next-Gen Features Catalog & Live Sandboxes', subtitle: 'All 300 future-ready features with interactive simulation lab benches', icon: Rocket, action: () => onOpenFeatures300?.() },
     { id: 'act_periodic', type: 'tool', title: 'Interactive Periodic Table & Orbitals', subtitle: 'Concept #107 & #123 • Bohr models & flame test lab', icon: Atom, action: () => onOpenPeriodicTable?.() },
     { id: 'act_bus_live', type: 'tool', title: 'DAV Live Bus GPS Telemetry Tracker', subtitle: 'Concept #96 • Real-time speed, stops & parent SOS hotline', icon: Bus, action: () => onOpenBusTelemetry?.() },
     { id: 'act_anthem', type: 'tool', title: 'Official DAV Anthem & Vedic Chants', subtitle: 'Concept #98 & #114 • Synchronized Sanskrit/English lyrics', icon: Music, action: () => onOpenAnthemPlayer?.() },
@@ -57,7 +62,7 @@ export function GlobalCommandPalette({
     { id: 'act_concepts', type: 'tool', title: '110 Master Academic Concepts Vault', subtitle: 'Formulas, mnemonics & interactive flashcard tests', icon: Brain, action: () => onOpenConceptsVault?.() },
   ];
 
-  // Filter commands & 200 concepts
+  // Filter commands, 200 concepts, and 300 future features
   const filtered = query.trim() ? [
     ...primaryCommands.filter(c => 
       c.title.toLowerCase().includes(query.toLowerCase()) || 
@@ -67,7 +72,7 @@ export function GlobalCommandPalette({
       c.title.toLowerCase().includes(query.toLowerCase()) || 
       c.description.toLowerCase().includes(query.toLowerCase()) ||
       c.category.toLowerCase().includes(query.toLowerCase())
-    ).slice(0, 10).map(c => ({
+    ).slice(0, 6).map(c => ({
       id: `concept_${c.id}`,
       type: 'concept',
       title: `Concept #${c.id}: ${c.title}`,
@@ -84,6 +89,19 @@ export function GlobalCommandPalette({
         else if (c.id === 188) onOpenAdmitCard?.();
         else onOpenConcepts200?.();
       }
+    })),
+    ...DAV_300_FUTURE_FEATURES.filter(f =>
+      f.title.toLowerCase().includes(query.toLowerCase()) ||
+      f.description.toLowerCase().includes(query.toLowerCase()) ||
+      f.category.toLowerCase().includes(query.toLowerCase()) ||
+      f.tags?.some(t => t.toLowerCase().includes(query.toLowerCase()))
+    ).slice(0, 6).map(f => ({
+      id: `feat300_${f.id}`,
+      type: 'feature300',
+      title: `Feature #${f.id}: ${f.title}`,
+      subtitle: `${f.category} • ${f.impact} • ${f.status}`,
+      icon: Rocket,
+      action: () => onOpenFeatures300?.()
     }))
   ] : primaryCommands;
 

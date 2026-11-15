@@ -53,6 +53,8 @@ const CustomPurchaseModal = lazy(() => import('./components/CustomPurchaseModal'
 const UploadPdfModal = lazy(() => import('./components/UploadPdfModal').then(m => ({ default: m.UploadPdfModal })));
 const ConceptsMasterVaultSection = lazy(() => import('./components/ConceptsMasterVaultSection').then(m => ({ default: m.ConceptsMasterVaultSection })));
 const Concepts200MasterExplorer = lazy(() => import('./components/Concepts200MasterExplorer').then(m => ({ default: m.Concepts200MasterExplorer })));
+const Features300MasterExplorer = lazy(() => import('./components/Features300MasterExplorer').then(m => ({ default: m.Features300MasterExplorer })));
+const HiTech50NexusSection = lazy(() => import('./components/HiTech50NexusSection').then(m => ({ default: m.HiTech50NexusSection })));
 import { DynamicIslandHud } from './components/DynamicIslandHud';
 import { GlobalCommandPalette } from './components/GlobalCommandPalette';
 import { InteractiveScienceLabModal } from './components/InteractiveScienceLabModal';
@@ -82,6 +84,8 @@ export function App() {
       const s = params.get('section');
       if (s === 'concepts' || s === 'vault') return 'concepts';
       if (s === '200' || s === 'concepts200') return 'concepts200';
+      if (s === '300' || s === 'features300') return 'features300';
+      if (s === '50' || s === 'hitech' || s === 'hitech50' || s === 'quantum') return 'hitech50';
       if (s) {
         const n = parseInt(s, 10);
         if (!isNaN(n) && n >= 1 && n <= 14) return n;
@@ -925,6 +929,24 @@ export function App() {
             onOpenAccessibility={() => setIsAccessibilityOpen(true)}
             onGoToSection={handleSelectSection} 
           />
+        ) : (activeSection === 'features300' || activeSection === 300) ? (
+          <Features300MasterExplorer 
+            onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+            onOpenVirtualLab={() => setIsVirtualLabOpen(true)}
+            onOpenMistakeVault={() => setIsMistakeVaultOpen(true)}
+            onOpenAdmitCard={() => setIsAdmitCardOpen(true)}
+            onOpenPeriodicTable={() => setIsPeriodicTableOpen(true)}
+            onOpenBusTelemetry={() => setIsBusTelemetryOpen(true)}
+            onOpenAnthemPlayer={() => setIsAnthemPlayerOpen(true)}
+            onOpenFormulaSheet={() => setIsFormulaSheetOpen(true)}
+            onOpenAccessibility={() => setIsAccessibilityOpen(true)}
+            onGoToSection={handleSelectSection} 
+          />
+        ) : (activeSection === 'hitech50' || activeSection === 50 || activeSection === 'quantum') ? (
+          <HiTech50NexusSection 
+            currentUser={activeUser || user} 
+            onGoToSection={handleSelectSection} 
+          />
         ) : (
           <UntitledSection sectionNumber={activeSection} />
         )}
@@ -1089,6 +1111,8 @@ export function App() {
         onOpenFormulaSheet={() => setIsFormulaSheetOpen(true)}
         onOpenAccessibility={() => setIsAccessibilityOpen(true)}
         onOpenConcepts200={() => setActiveSection('concepts200')}
+        onOpenFeatures300={() => setActiveSection('features300')}
+        onOpenHiTech50={() => setActiveSection('hitech50')}
       />
 
       <GlobalCommandPalette 
@@ -1103,6 +1127,8 @@ export function App() {
         onOpenAdmitCard={() => setIsAdmitCardOpen(true)}
         onOpenConceptsVault={() => setActiveSection('concepts')}
         onOpenConcepts200={() => setActiveSection('concepts200')}
+        onOpenFeatures300={() => setActiveSection('features300')}
+        onOpenHiTech50={() => setActiveSection('hitech50')}
         onOpenPeriodicTable={() => setIsPeriodicTableOpen(true)}
         onOpenBusTelemetry={() => setIsBusTelemetryOpen(true)}
         onOpenAnthemPlayer={() => setIsAnthemPlayerOpen(true)}

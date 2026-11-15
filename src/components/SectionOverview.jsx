@@ -393,6 +393,32 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
       tag: '200 Concepts Mastered',
       tagColor: 'bg-amber-100 text-amber-900 border-amber-300 font-bold',
       description: 'The master architecture of 200 website design, UI/UX, AI intelligence, 3D virtual lab, and enterprise concepts engineered for DAV Public School, Khabra.'
+    },
+    {
+      id: 'features300',
+      title: '300 Next-Generation Feature Suite',
+      shortTitle: '300 Features Explorer',
+      icon: Zap,
+      emoji: '🚀',
+      color: 'from-cyan-400 via-teal-500 to-indigo-600',
+      cardBg: 'from-cyan-500/10 via-teal-50/80 to-white',
+      borderHover: 'hover:border-cyan-400',
+      tag: '300 Features Live',
+      tagColor: 'bg-cyan-100 text-cyan-900 border-cyan-300 font-bold',
+      description: 'Futuristic 300-feature ecosystem spanning AI tutoring, 3D STEM experiments, OMR grading, Vedic mathematics, wellness companion, and parental digests.'
+    },
+    {
+      id: 'hitech50',
+      title: '50 Hi-Tech Innovations Nexus (Quantum Hub)',
+      shortTitle: '50 Hi-Tech Hub',
+      icon: Zap,
+      emoji: '⚡',
+      color: 'from-amber-400 via-purple-500 to-cyan-500',
+      cardBg: 'from-amber-500/10 via-purple-50/80 to-white',
+      borderHover: 'hover:border-purple-400',
+      tag: '50 Quantum Modules Live',
+      tagColor: 'bg-purple-100 text-purple-900 border-purple-300 font-bold',
+      description: 'Cutting-edge suite of 50 interactive technologies: Vedic Socratic AI, AR Geometry Protractor, 3D Ray-Tracing, Dual-Camera Proctoring, Sanskrit Swara Voice Engine, and IoT Bus Telemetry.'
     }
   ], []);
 
@@ -485,6 +511,14 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
                     <Zap className="w-3.5 h-3.5 text-emerald-400" />
                     <span>Real-time Cloud Sync</span>
                   </span>
+                  <button
+                    type="button"
+                    onClick={() => handleCardClick('hitech50')}
+                    className="flex items-center gap-1.5 bg-purple-500/30 hover:bg-purple-500/50 text-purple-200 px-3.5 py-1 rounded-full border border-purple-400/40 cursor-pointer transition shadow-sm"
+                  >
+                    <Zap className="w-3.5 h-3.5 text-yellow-300" />
+                    <span>⚡ 50 Hi-Tech Innovations Nexus</span>
+                  </button>
                 </div>
               </div>
 
