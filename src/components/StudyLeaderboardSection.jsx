@@ -10,16 +10,22 @@ import { getRegisteredUsers } from '../data/preloadedUsers';
 import { DigitalFocusSuite } from './DigitalFocusSuite';
 
 export function StudyLeaderboardSection({ user, onRequireLogin }) {
-  // Application Mode Toggle: Web Mode (Leaderboard only) vs APK Mode (Focus + Leaderboard)
-  const [isApkMode, setIsApkMode] = useState(() => {
+  // Section 9 Active View: 'focus' (Deep Study Suite) | 'leaderboard' (Campus Scholastic Arena)
+  const [activeSectionTab, setActiveSectionTab] = useState(() => {
     try {
-      return localStorage.getItem('dav_apk_focus_mode') === 'true';
+      const saved = localStorage.getItem('dav_section9_tab');
+      return saved === 'leaderboard' ? 'leaderboard' : 'focus';
     } catch (e) {
-      return false;
+      return 'focus';
     }
   });
 
-  const [activeTabInApk, setActiveTabInApk] = useState('focus'); // 'focus' | 'leaderboard'
+  const handleSelectSectionTab = (tab) => {
+    setActiveSectionTab(tab);
+    try {
+      localStorage.setItem('dav_section9_tab', tab);
+    } catch (e) {}
+  };
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClassFilter, setSelectedClassFilter] = useState('all'); // 'all' | '8' | '9' | '10' | '11' | '12'
   const [timeframeFilter, setTimeframeFilter] = useState('all_time'); // 'today' | 'week' | 'all_time'
@@ -202,37 +208,37 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
                 </span>
               </div>
               <h1 className="text-xl sm:text-2xl font-black text-white">
-                'DAV Deep Study Mode & Campus Focus Suite'
+                DAV Deep Study Mode &amp; Campus Focus Suite
               </h1>
             </div>
           </div>
 
-          {/* Mode Switcher Pill */}
+          {/* Dual Tab Navigation (Focus Suite vs Scholastic Leaderboard) */}
           <div className="flex items-center gap-2 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800">
             <button
               type="button"
-              onClick={() => handleToggleApkMode(false)}
-              className={`py-2 px-3.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-                !isApkMode
-                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 shadow-md font-black'
+              onClick={() => handleSelectSectionTab('focus')}
+              className={`py-2 px-4 rounded-xl text-xs font-black transition flex items-center gap-2 cursor-pointer ${
+                activeSectionTab === 'focus'
+                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-stone-950 shadow-md'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              <Monitor className="w-3.5 h-3.5" />
-              <span>Website Mode (Leaderboard Only)</span>
+              <Target className="w-4 h-4" />
+              <span>1. Deep Study Focus Suite</span>
             </button>
 
             <button
               type="button"
-              onClick={() => handleToggleApkMode(true)}
-              className={`py-2 px-3.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-                isApkMode
-                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-stone-950 shadow-md font-black'
+              onClick={() => handleSelectSectionTab('leaderboard')}
+              className={`py-2 px-4 rounded-xl text-xs font-black transition flex items-center gap-2 cursor-pointer ${
+                activeSectionTab === 'leaderboard'
+                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 shadow-md'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              <Smartphone className="w-3.5 h-3.5" />
-              <span>📱 Focus APK Mode</span>
+              <Trophy className="w-4 h-4" />
+              <span>2. Campus Leaderboard</span>
             </button>
           </div>
 
@@ -245,9 +251,22 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
       <div className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
         
         {/* ========================================================================= */}
-        {/* MODE A: WEBSITE MODE (CAMPUS LEADERBOARD ONLY)                            */}
+        {/* TAB 1: DEEP STUDY FOCUS SUITE (ACTIVE BY DEFAULT)                       */}
         {/* ========================================================================= */}
-        {!isApkMode && (
+        {activeSectionTab === 'focus' && (
+          <div className="space-y-6 animate-fadeIn">
+            <DigitalFocusSuite 
+              user={user}
+              accumulatedStudyMs={accumulatedStudyMs}
+              onAccumulateMs={handleAccumulateMs}
+            />
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 2: CAMPUS SCHOLASTIC LEADERBOARD                                     */}
+        {/* ========================================================================= */}
+        {activeSectionTab === 'leaderboard' && (
           <div className="space-y-6 animate-fadeIn">
             
             {/* Banner Callout for APK Mode */}

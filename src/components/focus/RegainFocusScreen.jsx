@@ -165,98 +165,84 @@ export function RegainFocusScreen({
   useEffect(() => {
     if (!isRunning || isPaused || isOnBreak) return;
 
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        // Student switched away to another application / tab!
-        awayStartRef.current = Date.now();
-        ambientAudio.playAlarmSiren();
+    const triggerBreach = (sourceName = 'External Window / App') => {
+      if (awayStartRef.current) return;
+      awayStartRef.current = Date.now();
+      ambientAudio.playAlarmSiren();
 
-        // Repeating siren if user remains away
-        if (!sirenIntervalRef.current) {
-          sirenIntervalRef.current = setInterval(() => {
-            if (document.hidden) {
-              ambientAudio.playAlarmSiren();
-            }
-          }, 3500);
-        }
+      // Repeating siren while student is away
+      if (!sirenIntervalRef.current) {
+        sirenIntervalRef.current = setInterval(() => {
+          ambientAudio.playAlarmSiren();
+        }, 3200);
+      }
 
-        // Title Flash Alert in browser tab bar
-        let flashToggle = false;
-        if (!titleIntervalRef.current) {
-          titleIntervalRef.current = setInterval(() => {
-            document.title = flashToggle
-              ? '🚨 FOCUS BROKEN! RETURN TO STUDY! 🚨'
-              : '⚠️ DAVDixence Focus Guardian Alert!';
-            flashToggle = !flashToggle;
-          }, 700);
-        }
+      // Tab Title Flasher
+      let flashToggle = false;
+      if (!titleIntervalRef.current) {
+        titleIntervalRef.current = setInterval(() => {
+          document.title = flashToggle
+            ? '🚨 FOCUS BROKEN! RETURN TO STUDY! 🚨'
+            : '⚠️ DAVDixence Focus Guardian Alert!';
+          flashToggle = !flashToggle;
+        }, 700);
+      }
 
-        // Push desktop notification if permitted
-        if ('Notification' in window && Notification.permission === 'granted') {
-          try {
-            new Notification('🚨 DAVDixence Focus Guardian', {
-              body: 'You switched away from your active study session! Return immediately to defend your streak!',
-              icon: '/favicon.ico'
-            });
-          } catch (e) {}
-        }
-      } else {
-        // Student returned back to DAVDixence!
-        if (sirenIntervalRef.current) {
-          clearInterval(sirenIntervalRef.current);
-          sirenIntervalRef.current = null;
-        }
-        if (titleIntervalRef.current) {
-          clearInterval(titleIntervalRef.current);
-          titleIntervalRef.current = null;
-          document.title = 'DAVDixence | Official Digital Smart Campus';
-        }
-
-        if (awayStartRef.current) {
-          const awaySecs = Math.max(1, Math.round((Date.now() - awayStartRef.current) / 1000));
-          awayStartRef.current = null;
-
-          // Record breach event in persistent data store
-          focusDataStore.recordAppSwitch(awaySecs, 'External Application');
-          const breaches = focusDataStore.getBreachesToday();
-
-          // Play warning chime & trigger mood
-          ambientAudio.playWarningChime();
-          setBuddyMood('alert');
-          setBuddyQuote(`🚨 Focus breach detected! You were away for ${awaySecs}s. Multitasking harms learning retention! Re-lock focus now!`);
-
-          // Display Breach Intercept HUD modal
-          setBreachModal({
-            isOpen: true,
-            awaySeconds: awaySecs,
-            breachesToday: breaches
+      // System notification if permitted
+      if ('Notification' in window && Notification.permission === 'granted') {
+        try {
+          new Notification('🚨 DAVDixence Focus Guardian', {
+            body: 'You switched away from your active study session! Return immediately to defend your streak!',
+            icon: '/favicon.ico'
           });
-        }
+        } catch (e) {}
       }
     };
 
-    const handleWindowBlur = () => {
-      if (!awayStartRef.current && !document.hidden) {
-        awayStartRef.current = Date.now();
-        ambientAudio.playAlarmSiren();
+    const resolveBreach = (sourceName = 'External Application') => {
+      if (sirenIntervalRef.current) {
+        clearInterval(sirenIntervalRef.current);
+        sirenIntervalRef.current = null;
       }
-    };
+      if (titleIntervalRef.current) {
+        clearInterval(titleIntervalRef.current);
+        titleIntervalRef.current = null;
+        document.title = 'DAVDixence | Official Digital Smart Campus';
+      }
 
-    const handleWindowFocus = () => {
-      if (awayStartRef.current && !document.hidden) {
+      if (awayStartRef.current) {
         const awaySecs = Math.max(1, Math.round((Date.now() - awayStartRef.current) / 1000));
         awayStartRef.current = null;
-        focusDataStore.recordAppSwitch(awaySecs, 'Multi-Window App');
+
+        focusDataStore.recordAppSwitch(awaySecs, sourceName);
         const breaches = focusDataStore.getBreachesToday();
+
         ambientAudio.playWarningChime();
         setBuddyMood('alert');
-        setBuddyQuote(`🚨 App switch intercepted! ${awaySecs}s away from study material.`);
+        setBuddyQuote(`🚨 Focus breach detected! You were away for ${awaySecs}s. Multitasking harms learning retention! Re-lock focus now!`);
+
         setBreachModal({
           isOpen: true,
           awaySeconds: awaySecs,
           breachesToday: breaches
         });
       }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        triggerBreach('Browser Tab Switch');
+      } else {
+        resolveBreach('Browser Tab Return');
+      }
+    };
+
+    const handleWindowBlur = () => {
+      triggerBreach('Desktop App / Window Switch');
+    };
+
+    const handleWindowFocus = () => {
+      resolveBreach('Desktop App Return');
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -324,6 +310,7 @@ export function RegainFocusScreen({
   const dotY = centerY + radius * Math.sin(((angle - 90) * Math.PI) / 180);
 
     const handleStartResume = () => {
+    ambientAudio.init(); // Explicit user-gesture audio unlock
     if ('Notification' in window && Notification.permission === 'default') {
       try { Notification.requestPermission(); } catch (e) {}
     }
@@ -336,7 +323,14 @@ export function RegainFocusScreen({
     } else if (isPaused) {
       setIsPaused(false);
       setBuddyMood('focused');
+      setBuddyQuote('Focus resumed! Keep the momentum going.');
       if (activeSound) ambientAudio.playTrack(activeSound);
+    } else {
+      // Pause toggle when active
+      setIsPaused(true);
+      setBuddyMood('sleepy');
+      setBuddyQuote('Session paused. Take a deep breath and resume when ready!');
+      ambientAudio.stopAll();
     }
   };
 

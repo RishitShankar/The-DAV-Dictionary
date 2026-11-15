@@ -228,8 +228,8 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
     },
     {
       id: 9,
-      title: 'Section 9: Study Leaderboard & Focus Suite',
-      shortTitle: 'Study Leaderboard',
+      title: 'Section 9: Deep Study Mode & Campus Focus Suite',
+      shortTitle: 'Deep Study Mode',
       icon: Trophy,
       emoji: '🏆',
       color: 'from-amber-500 to-yellow-600',
