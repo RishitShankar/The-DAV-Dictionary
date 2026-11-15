@@ -138,22 +138,6 @@ const INITIAL_DAV_CHANNELS = [
   }
 ];
 
-  useEffect(() => {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const joinCode = params.get('joinChannel');
-      if (joinCode) {
-        const found = channels.find(c => c.inviteCode?.toUpperCase() === joinCode.toUpperCase() || c.id === joinCode);
-        if (found) {
-          setActiveChannelId(found.id);
-          if (!mySubscribedChannelIds.includes(found.id)) {
-            setMySubscribedChannelIds(prev => [...prev, found.id]);
-          }
-        }
-      }
-    } catch (e) {}
-  }, [channels]);
-
 export function WhatsAppChannelsModule({ user, isDimension5, onSwitchToChats }) {
   // Dimension 4 (Developer Master) and Dimension 5 (Teacher / Staff) are authorized to create & broadcast
   const userDimension = Number(user?.dimension ?? (user?.isAdmin ? 4 : 1));
@@ -204,6 +188,26 @@ export function WhatsAppChannelsModule({ user, isDimension5, onSwitchToChats }) 
   const [activeChannelId, setActiveChannelId] = useState(() => {
     return channels[0]?.id || null;
   });
+
+  // Deep Link URL Query Param Handler for Channel Invites (?joinChannel=CODE)
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const joinCode = params.get('joinChannel') || params.get('channel');
+      if (joinCode) {
+        const found = channels.find(c => 
+          (c.inviteCode && c.inviteCode.toUpperCase() === joinCode.toUpperCase()) || 
+          c.id === joinCode
+        );
+        if (found) {
+          setActiveChannelId(found.id);
+          if (!mySubscribedChannelIds.includes(found.id)) {
+            setMySubscribedChannelIds(prev => [...prev, found.id]);
+          }
+        }
+      }
+    } catch (e) {}
+  }, [channels]);
 
   // Sub-Tab in Left Panel: 'my_channels' | 'explore'
   const [channelTab, setChannelTab] = useState('my_channels');
@@ -1256,23 +1260,29 @@ export function WhatsAppChannelsModule({ user, isDimension5, onSwitchToChats }) 
                     placeholder="Enter image URL or pick preset below"
                     className="w-full p-2 bg-[#f0f2f5] border border-transparent rounded-lg text-xs font-medium focus:bg-white focus:border-[#00a884] outline-none"
                   />
-                  {/* Preset Avatars */}
-                  <div className="flex items-center gap-1.5 pt-1">
-                    {[
-                      'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=150',
-                      'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=150',
-                      'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=150',
-                      'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=150'
-                    ].map((preset, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => setCreateForm(prev => ({ ...prev, dp: preset }))}
-                        className="w-6 h-6 rounded-full overflow-hidden border hover:border-[#00a884] transition cursor-pointer"
-                      >
-                        <img src={preset} alt={`preset ${idx}`} className="w-full h-full object-cover" />
-                      </button>
-                    ))}
+                  <div className="flex items-center gap-2 pt-1.5">
+                    <label className="px-3 py-1.5 rounded-xl bg-white border border-[#d1d7db] hover:border-[#00a884] text-[#111b21] text-xs font-bold flex items-center gap-1.5 cursor-pointer transition shadow-xs">
+                      <Upload className="w-3.5 h-3.5 text-[#00a884]" />
+                      <span>Upload Profile Photo</span>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        className="hidden" 
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (ev) => {
+                              if (ev.target?.result) {
+                                setCreateForm(prev => ({ ...prev, dp: ev.target.result }));
+                              }
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }} 
+                      />
+                    </label>
+                    <span className="text-[10px] text-[#8696a0]">Supports JPG, PNG, WEBP</span>
                   </div>
                 </div>
               </div>
@@ -1290,21 +1300,7 @@ export function WhatsAppChannelsModule({ user, isDimension5, onSwitchToChats }) 
                 />
               </div>
 
-              {/* Category */}
-              <div className="space-y-1">
-                <label className="text-[11px] font-black uppercase tracking-wider text-[#54656f]">Category / Subject</label>
-                <select
-                  value={createForm.category}
-                  onChange={(e) => setCreateForm(prev => ({ ...prev, category: e.target.value }))}
-                  className="w-full p-2.5 bg-[#f0f2f5] border border-transparent rounded-xl text-xs font-bold focus:bg-white focus:border-[#00a884] outline-none transition"
-                >
-                  <option value="Academics & Board Prep">Academics &amp; Board Prep</option>
-                  <option value="Teacher Subject Circular">Teacher Subject Circular</option>
-                  <option value="Science & Mathematics Olympiad">Science &amp; Mathematics Olympiad</option>
-                  <option value="Sports & Campus Activities">Sports &amp; Campus Activities</option>
-                  <option value="Official DAVCMC Notices">Official DAVCMC Notices</option>
-                </select>
-              </div>
+
 
               {/* Description */}
               <div className="space-y-1">
@@ -1527,15 +1523,7 @@ export function WhatsAppChannelsModule({ user, isDimension5, onSwitchToChats }) 
                     />
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-black uppercase text-[#54656f]">Category / Subject</label>
-                    <input
-                      type="text"
-                      value={manageForm.category}
-                      onChange={(e) => setManageForm(prev => ({ ...prev, category: e.target.value }))}
-                      className="w-full p-2.5 bg-[#f0f2f5] border border-transparent rounded-xl text-xs font-bold outline-none focus:bg-white focus:border-[#00a884]"
-                    />
-                  </div>
+
 
                   <div className="space-y-1">
                     <label className="text-[11px] font-black uppercase text-[#54656f]">Description</label>

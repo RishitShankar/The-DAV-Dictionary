@@ -210,7 +210,7 @@ export function PurpleFooter({ currentUser, onSelectSection }) {
                 { id: 6, name: 'Section 6: Videos & Exams' },
                 { id: 7, name: 'Section 7: Kids Fun Navigator' },
                 { id: 8, name: 'Section 8: Examination & Practice' },
-                { id: 9, name: 'Section 9: Study Leaderboard' },
+                { id: 9, name: 'Section 9: Deep Study Mode' },
                 { id: 10, name: 'Section 10: Student Profile' },
                 { id: 11, name: 'Section 11: Donate & Reviews' },
                 ...(isDimension4 ? [{ id: 12, name: 'Section 12: Review Vault' }] : []),

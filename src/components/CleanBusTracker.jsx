@@ -9,8 +9,8 @@ import { getRegisteredUsers } from '../data/preloadedUsers';
 // Only ONE Official School on the entire platform as instructed
 export const DAV_OFFICIAL_SCHOOLS = [
   { 
-    id: 'dav_khagaul_muz', 
-    name: 'DAV Public School, Khagaul, Muzaffarpur', 
+    id: 'dav_khabra_muz', 
+    name: 'DAV Public School, Khabra, Muzaffarpur', 
     code: 'DAV-KHA-842001', 
     buses: 200, 
     defaultPass: '' 

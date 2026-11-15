@@ -38,7 +38,7 @@ export function CustomPurchaseModal({isOpen, onClose, user, onPurchaseSubmitted 
   const [admissionNo, setAdmissionNo] = useState(user?.admissionNumber || '');
 
   // Page 3: Payment Mode ('cash' | 'online')
-  const [paymentMode, setPaymentMode] = useState('online'); // 'cash' | 'online'
+  const [paymentMode, setPaymentMode] = useState('cash'); // 'cash' | 'online'
   const [referenceNote, setReferenceNote] = useState('');
 
   const [errorMessage, setErrorMessage] = useState('');

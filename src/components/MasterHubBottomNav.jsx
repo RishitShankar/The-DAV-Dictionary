@@ -97,7 +97,7 @@ export const MASTER_HUBS = [
       },
       {
         number: 9,
-        title: 'Section 9: Study Leaderboard',
+        title: 'Section 9: Deep Study Mode',
         desc: 'Track classroom ranks, study streaks, quiz badges, and academic honors.',
         icon: Trophy,
         color: 'text-amber-700 bg-amber-50 border-amber-200'

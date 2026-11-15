@@ -3575,7 +3575,7 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
 
 
 
-    if (calendarYear === 2047 && calendarMonth === 9) return; // Clamped Oct 2047
+    if (calendarYear === 2047 && calendarMonth === 11) return; // Clamped Oct 2047
 
 
 
@@ -6925,18 +6925,7 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
 
 
                       const m = parseInt(e.target.value, 10);
-
-
-
-                      // Cap 2047 to October (month index 9)
-
-
-
-                      if (calendarYear === 2047 && m > 9) setCalendarMonth(9);
-
-
-
-                      else setCalendarMonth(m);
+                      setCalendarMonth(m);
 
 
 
@@ -6972,7 +6961,7 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
 
 
 
-                      if (calendarYear === 2047 && idx > 9) return null;
+                      // All 12 months supported
 
 
 
@@ -7024,7 +7013,7 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
 
 
 
-                      if (y === 2047 && calendarMonth > 9) setCalendarMonth(9);
+                      // All 12 months supported
 
 
 
@@ -7072,7 +7061,7 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
 
 
 
-                    disabled={calendarYear === 2047 && calendarMonth === 9}
+                    disabled={calendarYear === 2047 && calendarMonth === 11}
 
 
 

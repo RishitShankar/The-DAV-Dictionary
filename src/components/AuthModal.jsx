@@ -189,10 +189,10 @@ export function AuthModal({isOpen, onClose, user, onLogin, onLogout, onOpenDbGui
                 </span>
               </div>
               <div className="flex justify-between items-center p-3 rounded-xl bg-slate-50 border border-slate-100">
-                <span className="text-slate-500">Cloud Database Status</span>
+                <span className="text-slate-500">Student Account Status</span>
                 <span className="font-bold text-emerald-600 flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  Synced Locally + Cloud Ready
+                  Active &amp; Verified on DAVDixence
                 </span>
               </div>
             </div>

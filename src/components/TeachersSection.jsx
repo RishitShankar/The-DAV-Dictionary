@@ -12,7 +12,7 @@ import {
   ArrowRight, Play, CheckSquare, Radio, Maximize2, Minimize2,
   PhoneOff, Hand, MessageSquareMore, CheckCircle, ArrowLeft, ArrowDownLeft, ArrowUpRight, PhoneMissed,
   ChevronLeft, Compass, Palette, Trash2, Trophy, Share, Phone, MoreVertical, Settings, Ban,
-  Camera, UploadCloud, Edit3, Music, Film, FileCheck, Printer, PenTool
+  Camera, UploadCloud, Upload, Edit3, Music, Film, FileCheck, Printer, PenTool
 } from 'lucide-react';
 import { RishiAILogo } from './RishiAILogo';
 import { VfxSmokeEffect } from './vfx/VfxSmokeEffect';
@@ -565,7 +565,8 @@ export const RINGTONE_OPTIONS = [
   { id: 'whatsapp_pulse', name: 'Classic WhatsApp Pulse', desc: 'Authentic dual-frequency alternating acoustic pulses (440Hz / 480Hz)', category: 'Classic', badge: 'Popular' },
   { id: 'vedic_resonance', name: 'Vedic Resonance', desc: 'Warm meditative sitar harmonics with gentle acoustic reverberation', category: 'Sanskrit', badge: 'Sacred' },
   { id: 'cyber_radar', name: 'Digital Cyber Radar', desc: 'Modern electronic telemetry blips with high-clarity presence', category: 'Futuristic', badge: 'Hi-Tech' },
-  { id: 'brass_bell', name: 'Temple Brass Bell', desc: 'Deep resonant temple bell strike with rich natural acoustic sustain', category: 'Acoustic', badge: 'Acoustic' }
+  { id: 'brass_bell', name: 'Temple Brass Bell', desc: 'Deep resonant temple bell strike with rich natural acoustic sustain', category: 'Acoustic', badge: 'Acoustic' },
+  { id: 'custom_uploaded', name: 'Custom Device Audio', desc: 'Audio clip imported directly from your device storage', category: 'Device', badge: 'Custom' }
 ];
 
 export function TeachersSection({ 
@@ -1249,6 +1250,7 @@ export function TeachersSection({
   });
   const [isRingtoneModalOpen, setIsRingtoneModalOpen] = useState(false);
   const [previewingRingtoneId, setPreviewingRingtoneId] = useState(null);
+  const [customAudioName, setCustomAudioName] = useState(() => (typeof localStorage !== 'undefined' ? localStorage.getItem('dav_custom_ringtone_name') : null) || 'No file selected');
   const ringtonePreviewPlayerRef = useRef(null);
   const incomingCallTimerRef = useRef(null);
 
@@ -1301,6 +1303,30 @@ export function TeachersSection({
     }
   };
 
+  const handleUploadCustomRingtone = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) {
+      alert('Please select an audio file under 8MB.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result;
+      if (typeof dataUrl === 'string') {
+        try {
+          localStorage.setItem('dav_custom_ringtone_data', dataUrl);
+          localStorage.setItem('dav_custom_ringtone_name', file.name);
+          setCustomAudioName(file.name);
+          handleSelectRingtone('custom_uploaded');
+        } catch (err) {
+          alert('Audio file size exceeds localStorage storage limit. Please try a smaller audio clip.');
+        }
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSelectRingtone = (toneId) => {
     setSelectedRingtone(toneId);
     try {
@@ -1319,6 +1345,21 @@ export function TeachersSection({
       return;
     }
     setPreviewingRingtoneId(toneId);
+    if (toneId === 'custom_uploaded' && typeof localStorage !== 'undefined') {
+      const audioData = localStorage.getItem('dav_custom_ringtone_data');
+      if (audioData) {
+        try {
+          const a = new Audio(audioData);
+          a.play().catch(() => {});
+          ringtonePreviewPlayerRef.current = { stop: () => { try { a.pause(); a.currentTime = 0; } catch (e) {} } };
+          setTimeout(() => {
+            if (ringtonePreviewPlayerRef.current) { ringtonePreviewPlayerRef.current.stop(); ringtonePreviewPlayerRef.current = null; }
+            setPreviewingRingtoneId(null);
+          }, 6000);
+          return;
+        } catch (e) {}
+      }
+    }
     ringtonePreviewPlayerRef.current = createWhatsAppRingtonePlayer('incoming', toneId);
     setTimeout(() => {
       if (ringtonePreviewPlayerRef.current) {
@@ -1693,6 +1734,19 @@ export function TeachersSection({
         timerId = setInterval(playTone, 3800);
       } else {
         const chosenTone = toneId || selectedRingtone || (typeof localStorage !== 'undefined' ? localStorage.getItem('dav_selected_ringtone') : null) || 'dav_gurukul_chime';
+        if (chosenTone === 'custom_uploaded' && typeof localStorage !== 'undefined') {
+          const audioData = localStorage.getItem('dav_custom_ringtone_data');
+          if (audioData) {
+            try {
+              const a = new Audio(audioData);
+              a.loop = true;
+              a.play().catch(() => {});
+              return {
+                stop: () => { try { a.pause(); a.currentTime = 0; } catch (e) {} }
+              };
+            } catch (e) {}
+          }
+        }
 
         if (chosenTone === 'whatsapp_pulse') {
           const playPulse = () => {
@@ -2397,25 +2451,17 @@ export function TeachersSection({
       });
     }, 600);
 
-    // Maximum 30-Second Calling Period Limit:
-    // Calling duration strictly cannot exceed 30 seconds. If recipient does not answer, show OK prompt.
+    // Responsive Auto Pickup after 3.5s of Ringing:
+    // Automatically establishes connected WebRTC video/voice call with speaking visualizer & duration counter
     if (callTimerRef.current) clearTimeout(callTimerRef.current);
     callTimerRef.current = setTimeout(() => {
       setCallState(currentState => {
         if (currentState.isOpen && (currentState.status === 'calling' || currentState.status === 'ringing')) {
-          if (ringtonePlayerRef.current) {
-            ringtonePlayerRef.current.stop();
-            ringtonePlayerRef.current = null;
-          }
-          return {
-            ...currentState,
-            status: 'unanswered_timeout',
-            timeoutMessage: `No answer from ${contact.name}. Calling duration reached maximum 30 seconds limit.`
-          };
+          triggerAutoPickup(contact, type);
         }
         return currentState;
       });
-    }, 30000);
+    }, 3500);
   };
 
   // Accept Incoming Call (Callee)
@@ -5005,7 +5051,7 @@ export function TeachersSection({
                         {/* 4. Contacts & Profile Settings */}
                         <button 
                           type="button"
-                          onClick={() => setWhatsAppDockView('contacts')}
+                          onClick={() => { setShowSmokeVfx(true); setWhatsAppDockView('contacts'); }}
                           className={`relative p-2.5 rounded-xl shadow-xs cursor-pointer transition ${
                             whatsAppDockView === 'contacts' ? 'bg-[#d9fdd3] text-[#008069]' : 'text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21]'
                           }`}
@@ -5458,9 +5504,9 @@ export function TeachersSection({
                             <div>
                               <h3 className="text-sm font-bold text-[#111b21] flex items-center gap-1.5">
                                 <span>Rishi AI</span>
-                                <span className="px-1.5 py-0.2 rounded bg-[#d9fdd3] text-[#008069] text-[9px] font-black uppercase">Gemini 3.5 • Free</span>
+                                <span className="px-1.5 py-0.2 rounded bg-[#d9fdd3] text-[#008069] text-[9px] font-black uppercase">Curriculum Intelligence • Free</span>
                               </h3>
-                              <p className="text-[11px] font-semibold text-[#00a884]">Live Google Gemini Intelligence • Zero Cost</p>
+                              <p className="text-[11px] font-semibold text-[#00a884]">Live Rishi AI Intelligence • Grounded in DAV Curriculum</p>
                             </div>
                           </div>
 
@@ -5471,7 +5517,7 @@ export function TeachersSection({
                                 {
                                   id: 'ai_welcome_reset',
                                   role: 'assistant',
-                                  text: 'Academic chat cleared. What topic or doubt would you like Google Gemini to solve now?',
+                                  text: 'Academic chat cleared. What topic or doubt would you like Rishi AI to solve now?',
                                   time: 'Just now'
                                 }
                               ]);
@@ -5536,7 +5582,7 @@ export function TeachersSection({
                           {isAiLoading && (
                             <div className="flex items-center gap-2 text-xs font-bold text-[#008069] bg-white p-3 rounded-2xl max-w-xs shadow-xs animate-pulse">
                               <Sparkles className="w-4 h-4 animate-spin text-[#00a884]" />
-                              <span>Google Gemini is generating your verified academic solution...</span>
+                              <span>Rishi AI is generating your verified academic solution...</span>
                             </div>
                           )}
                         </div>
@@ -5545,7 +5591,7 @@ export function TeachersSection({
                         <div className="p-3 bg-[#f0f2f5] border-t border-[#d1d7db] flex items-center gap-2">
                           <input
                             type="text"
-                            placeholder="Ask Google Gemini any syllabus doubt or question (Free)..."
+                            placeholder="Ask Rishi AI any syllabus doubt or question (Free)..."
                             value={headChatAiInput}
                             onChange={(e) => setHeadChatAiInput(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSendHeadChatAiMessage()}
@@ -5925,7 +5971,7 @@ export function TeachersSection({
                                     className="w-full px-4 py-2.5 text-left hover:bg-[#f0f2f5] flex items-center gap-2 cursor-pointer transition text-[#00a884]"
                                   >
                                     <Bot className="w-4 h-4" />
-                                    <span>Instant Rishi AI Answer</span>
+                                    <span>Rishi AI Answer</span>
                                   </button>
                                   <button
                                     type="button"
@@ -7196,7 +7242,51 @@ export function TeachersSection({
                         </p>
                       </div>
 
-                      {/* 5 Ringtones List */}
+                      {/* Custom Device Audio Upload Card */}
+                        <div className="mb-3 p-3.5 rounded-2xl bg-[#111b21] border border-[#2a3942] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md">
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-[#00a884]/20 text-[#00a884] flex items-center justify-center font-bold shrink-0">
+                              <Music className="w-4 h-4" />
+                            </div>
+                            <div className="min-w-0">
+                              <div className="text-xs font-bold text-white flex items-center gap-2">
+                                <span>Custom Audio from Device (.mp3, .wav)</span>
+                                {selectedRingtone === 'custom_uploaded' && (
+                                  <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-[#00a884]/20 text-[#25d366] border border-[#00a884]/40">Active</span>
+                                )}
+                              </div>
+                              <p className="text-[11px] text-[#8696a0] truncate mt-0.5">{customAudioName}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <label 
+                              htmlFor="custom-device-ringtone-upload"
+                              className="px-3 py-1.5 rounded-xl bg-[#222d34] hover:bg-[#2a3942] text-[#25d366] text-xs font-bold cursor-pointer transition flex items-center gap-1.5 border border-[#00a884]/30"
+                            >
+                              <Upload className="w-3.5 h-3.5" />
+                              <span>Select File</span>
+                              <input 
+                                id="custom-device-ringtone-upload"
+                                type="file" 
+                                accept="audio/*" 
+                                className="hidden" 
+                                onChange={handleUploadCustomRingtone} 
+                              />
+                            </label>
+                            {typeof localStorage !== 'undefined' && localStorage.getItem('dav_custom_ringtone_data') && (
+                              <button
+                                type="button"
+                                onClick={() => previewRingtone('custom_uploaded')}
+                                className="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-[#222d34] hover:bg-[#2a3942] text-[#00a884] flex items-center gap-1 cursor-pointer"
+                              >
+                                {previewingRingtoneId === 'custom_uploaded' ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+                                <span>{previewingRingtoneId === 'custom_uploaded' ? 'Stop' : 'Play'}</span>
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* 5 Ringtones List */}
                       <div className="px-5 pb-5 space-y-2.5 max-h-[60vh] overflow-y-auto">
                         {RINGTONE_OPTIONS.map((tone) => {
                           const isSelected = selectedRingtone === tone.id;

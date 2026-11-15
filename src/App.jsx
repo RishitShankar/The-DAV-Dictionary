@@ -62,7 +62,19 @@ function SectionLoadingFallback() {
 }
 
 export function App() {
-  const [activeSection, setActiveSection] = useState(1);
+  const [activeSection, setActiveSection] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const search = window.location.search;
+      if (search.includes('joinChannel') || search.includes('channel')) return 5;
+      const params = new URLSearchParams(search);
+      const s = params.get('section');
+      if (s) {
+        const n = parseInt(s, 10);
+        if (!isNaN(n) && n >= 1 && n <= 14) return n;
+      }
+    }
+    return 1;
+  });
   const [isOnline, setIsOnline] = useState(() => (typeof navigator !== 'undefined' ? navigator.onLine : true));
 
   // Multi-Tab Desynchronization Synchronization (Bug 11)
@@ -160,6 +172,9 @@ export function App() {
 
   const [viewMode, setViewMode] = useState(() => {
     try {
+      if (typeof window !== 'undefined' && (window.location.search.includes('joinChannel') || window.location.search.includes('channel'))) {
+        return 'app';
+      }
       const saved = localStorage.getItem('dav_user');
       if (saved) {
         const parsed = validateUserIntegrity(JSON.parse(saved));
@@ -292,7 +307,24 @@ export function App() {
     }
   };
 
-  const [teacherSubSection, setTeacherSubSection] = useState('homework');
+  const [teacherSubSection, setTeacherSubSection] = useState(() => {
+    if (typeof window !== 'undefined' && (window.location.search.includes('joinChannel') || window.location.search.includes('channel'))) {
+      return 'channels';
+    }
+    return 'homework';
+  });
+
+  // Deep Link URL Handler for WhatsApp Channels (?joinChannel=CODE)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const search = window.location.search;
+      if (search.includes('joinChannel') || search.includes('channel')) {
+        setViewMode('app');
+        setActiveSection(5);
+        setTeacherSubSection('channels');
+      }
+    }
+  }, []);
 
   const [uploadedPdfs, setUploadedPdfs] = useState(() => {
     const saved = localStorage.getItem('dav_uploaded_pdfs');

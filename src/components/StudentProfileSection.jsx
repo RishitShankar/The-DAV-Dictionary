@@ -934,10 +934,10 @@ export function StudentProfileSection({ user, onLogout }) {
             <div className="mt-8 pt-6 border-t border-stone-800">
               <div className="flex items-center gap-2 text-amber-400 font-bold text-sm mb-2">
                 <Lock className="w-4 h-4" />
-                <span>Cloud Account Security & Change Password</span>
+                <span>Student Account Security & Change Password</span>
               </div>
               <p className="text-xs text-stone-400 mb-4">
-                Update your account password in the live Cloud Database. Once updated, you can log in with this new password on any phone or laptop.
+                Update your account password for DAVDixence. Once updated, you can log in with this new password on any phone or laptop.
               </p>
 
               <form onSubmit={handleChangePassword} className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
@@ -957,7 +957,7 @@ export function StudentProfileSection({ user, onLogout }) {
                   className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-md disabled:opacity-50"
                 >
                   <Key className="w-3.5 h-3.5" />
-                  <span>{isChangingPass ? 'Updating...' : 'Update Password in Cloud'}</span>
+                  <span>{isChangingPass ? 'Updating...' : 'Update Password'}</span>
                 </button>
               </form>
 
