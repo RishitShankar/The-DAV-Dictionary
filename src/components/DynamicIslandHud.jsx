@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   Sparkles, Clock, Flame, Play, Pause, RotateCcw, 
   Bus, CloudSun, ChevronDown, ChevronUp, Search, 
-  FlaskConical, FileText, CheckCircle, ShieldCheck, X
+  FlaskConical, FileText, CheckCircle, ShieldCheck, X,
+  Atom, Music, Calculator, Sliders, Layers
 } from 'lucide-react';
 import { getGamificationState, subscribeToGamification } from '../services/scholasticGamificationStore';
 
@@ -10,7 +11,13 @@ export function DynamicIslandHud({
   onOpenCommandPalette, 
   onOpenVirtualLab, 
   onOpenMistakeVault, 
-  onOpenAdmitCard 
+  onOpenAdmitCard,
+  onOpenPeriodicTable,
+  onOpenBusTelemetry,
+  onOpenAnthemPlayer,
+  onOpenFormulaSheet,
+  onOpenAccessibility,
+  onOpenConcepts200
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [gamification, setGamification] = useState(getGamificationState);
@@ -59,7 +66,7 @@ export function DynamicIslandHud({
         onClick={() => setIsExpanded(prev => !prev)}
         className={`bg-stone-950/95 backdrop-blur-xl border border-stone-800/90 shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden ${
           isExpanded 
-            ? 'w-[92vw] sm:w-[480px] rounded-3xl p-5 border-amber-400/50 shadow-amber-500/10' 
+            ? 'w-[94vw] sm:w-[520px] rounded-3xl p-5 border-amber-400/50 shadow-amber-500/10' 
             : 'h-10 px-4 rounded-full flex items-center gap-3.5 hover:border-stone-700 hover:scale-[1.02]'
         }`}
       >
@@ -98,110 +105,107 @@ export function DynamicIslandHud({
               <span className="text-[10px] bg-stone-900 border border-stone-800 text-amber-400 px-2 py-0.5 rounded-full font-bold">
                 Lv.{gamification.level}
               </span>
-              <ChevronDown className="w-3.5 h-3.5 text-stone-500" />
+              <ChevronDown className="w-3 h-3 text-stone-500" />
             </div>
 
           </div>
         ) : (
           /* =========================================================================
-             EXPANDED COMMAND HUD (Full Campus Dynamic Island Cockpit)
+             EXPANDED COCKPIT MODE (Dynamic Island Multi-Tool Drawer)
           ========================================================================= */
-          <div className="space-y-4 animate-in fade-in duration-200 text-stone-200" onClick={(e) => e.stopPropagation()}>
-            
-            {/* Header */}
+          <div 
+            onClick={(e) => e.stopPropagation()} 
+            className="space-y-4 text-stone-200 select-none animate-in fade-in duration-200"
+          >
+            {/* Cockpit Top Bar */}
             <div className="flex items-center justify-between border-b border-stone-850 pb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-amber-400/20 text-amber-400 flex items-center justify-center font-bold">
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-xs border border-amber-500/30">
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-black text-white uppercase tracking-wider">
-                    Campus Dynamic Island HUD
+                  <h4 className="text-xs font-black text-white tracking-wide uppercase">
+                    DAV Dynamic Island • Campus Cockpit
                   </h4>
-                  <p className="text-[10px] text-stone-400">
-                    DAVDixence Real-Time Focus &amp; Telemetry Cockpit
-                  </p>
+                  <span className="text-[10px] text-stone-400 block font-mono">
+                    Muzaffarpur • Concept #171 • 200 Architecture
+                  </span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => setIsExpanded(false)}
-                  className="p-1.5 text-stone-400 hover:text-white rounded-lg hover:bg-stone-900 transition"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
+              <button 
+                onClick={() => setIsExpanded(false)}
+                className="w-7 h-7 rounded-full bg-stone-900 border border-stone-800 flex items-center justify-center text-stone-400 hover:text-white transition cursor-pointer"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
             </div>
 
-            {/* Pomodoro Focus Controller */}
-            <div className="bg-stone-900/90 rounded-2xl p-3.5 border border-stone-800 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center font-mono font-black text-amber-400 text-sm">
+            {/* Focus Engine & Streak Tracker */}
+            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-stone-900/90 to-stone-900/40 border border-stone-800 flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">
+                  Pomodoro Focus Engine
+                </span>
+                <span className="text-2xl font-black font-mono text-amber-300">
                   {formatTimer(timerSeconds)}
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                    <span>Pomodoro Deep Study</span>
-                    {isTimerRunning && (
-                      <span className="text-[10px] text-emerald-400 bg-emerald-950/60 px-1.5 py-0.2 rounded font-black animate-pulse">
-                        RUNNING
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[10px] text-stone-400">
-                    25-min scholastic block • 40Hz focus active
-                  </p>
-                </div>
+                </span>
               </div>
 
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-2">
                 <button
                   onClick={toggleTimer}
-                  className={`p-2 rounded-xl font-bold text-xs transition cursor-pointer ${
-                    isTimerRunning
-                      ? 'bg-amber-400 text-stone-950'
-                      : 'bg-emerald-500 text-stone-950'
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs transition cursor-pointer ${
+                    isTimerRunning 
+                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40' 
+                      : 'bg-amber-500 text-stone-950 shadow-md shadow-amber-500/20 hover:bg-amber-400'
                   }`}
                 >
-                  {isTimerRunning ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+                  {isTimerRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
                 </button>
                 <button
                   onClick={resetTimer}
-                  className="p-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 transition cursor-pointer"
+                  className="w-9 h-9 rounded-xl bg-stone-800 hover:bg-stone-750 text-stone-400 hover:text-stone-200 flex items-center justify-center border border-stone-700 transition cursor-pointer"
+                  title="Reset Timer"
                 >
-                  <RotateCcw className="w-3.5 h-3.5" />
+                  <RotateCcw className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
-            {/* Quick Campus Telemetry Strip */}
-            <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-              <div className="bg-stone-900/60 rounded-xl p-2.5 border border-stone-850 flex items-center gap-2">
+            {/* Scholastic Telemetry Grid */}
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div 
+                onClick={() => {
+                  setIsExpanded(false);
+                  onOpenBusTelemetry?.();
+                }}
+                className="bg-stone-900/60 hover:bg-stone-900 rounded-xl p-2.5 border border-stone-800 hover:border-amber-400/40 flex items-center gap-2 cursor-pointer transition"
+              >
                 <Bus className="w-4 h-4 text-cyan-400" />
                 <div>
-                  <span className="text-[10px] text-stone-500 block">Bus Fleet:</span>
-                  <span className="text-stone-300 font-bold text-[11px]">Bus #101 on route</span>
+                  <span className="text-[10px] text-stone-500 block">Bus Fleet GPS:</span>
+                  <span className="text-stone-300 font-bold text-[11px]">Bus #04 • 7m ETA</span>
                 </div>
               </div>
 
-              <div className="bg-stone-900/60 rounded-xl p-2.5 border border-stone-850 flex items-center gap-2">
+              <div className="bg-stone-900/60 rounded-xl p-2.5 border border-stone-800 flex items-center gap-2">
                 <Flame className="w-4 h-4 text-orange-400 fill-orange-400" />
                 <div>
                   <span className="text-[10px] text-stone-500 block">Scholastic Rank:</span>
-                  <span className="text-amber-400 font-bold text-[11px]">{gamification.levelTitle}</span>
+                  <span className="text-amber-400 font-bold text-[11px] truncate">{gamification.levelTitle}</span>
                 </div>
               </div>
             </div>
 
-            {/* Quick Action Launchers */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+            {/* Quick Action Launchers (8 Flagship Features) */}
+            <div className="grid grid-cols-4 gap-2 pt-1">
               <button
                 onClick={() => {
                   setIsExpanded(false);
                   onOpenCommandPalette?.();
                 }}
-                className="p-2.5 rounded-xl bg-stone-900 border border-stone-800 hover:border-amber-400 text-left transition cursor-pointer group"
+                className="p-2 rounded-xl bg-stone-900 border border-stone-800 hover:border-amber-400 text-left transition cursor-pointer group"
               >
                 <Search className="w-4 h-4 text-amber-400 mb-1 group-hover:scale-110 transition-transform" />
                 <span className="text-[11px] font-bold text-white block">Spotlight</span>
@@ -211,13 +215,49 @@ export function DynamicIslandHud({
               <button
                 onClick={() => {
                   setIsExpanded(false);
+                  onOpenPeriodicTable?.();
+                }}
+                className="p-2 rounded-xl bg-stone-900 border border-stone-800 hover:border-purple-400 text-left transition cursor-pointer group"
+              >
+                <Atom className="w-4 h-4 text-purple-400 mb-1 group-hover:scale-110 transition-transform" />
+                <span className="text-[11px] font-bold text-white block">Elements</span>
+                <span className="text-[9px] text-stone-500">Bohr Orbitals</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsExpanded(false);
+                  onOpenFormulaSheet?.();
+                }}
+                className="p-2 rounded-xl bg-stone-900 border border-stone-800 hover:border-emerald-400 text-left transition cursor-pointer group"
+              >
+                <Calculator className="w-4 h-4 text-emerald-400 mb-1 group-hover:scale-110 transition-transform" />
+                <span className="text-[11px] font-bold text-white block">Formulas</span>
+                <span className="text-[9px] text-stone-500">LaTeX Hub</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsExpanded(false);
+                  onOpenAnthemPlayer?.();
+                }}
+                className="p-2 rounded-xl bg-stone-900 border border-stone-800 hover:border-amber-400 text-left transition cursor-pointer group"
+              >
+                <Music className="w-4 h-4 text-amber-400 mb-1 group-hover:scale-110 transition-transform" />
+                <span className="text-[11px] font-bold text-white block">Anthem</span>
+                <span className="text-[9px] text-stone-500">Vedic Chants</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsExpanded(false);
                   onOpenVirtualLab?.();
                 }}
-                className="p-2.5 rounded-xl bg-stone-900 border border-stone-800 hover:border-cyan-400 text-left transition cursor-pointer group"
+                className="p-2 rounded-xl bg-stone-900 border border-stone-800 hover:border-cyan-400 text-left transition cursor-pointer group"
               >
                 <FlaskConical className="w-4 h-4 text-cyan-400 mb-1 group-hover:scale-110 transition-transform" />
                 <span className="text-[11px] font-bold text-white block">Virtual Lab</span>
-                <span className="text-[9px] text-stone-500">3D Simulator</span>
+                <span className="text-[9px] text-stone-500">3D Workbench</span>
               </button>
 
               <button
@@ -225,23 +265,35 @@ export function DynamicIslandHud({
                   setIsExpanded(false);
                   onOpenMistakeVault?.();
                 }}
-                className="p-2.5 rounded-xl bg-stone-900 border border-stone-800 hover:border-rose-400 text-left transition cursor-pointer group"
+                className="p-2 rounded-xl bg-stone-900 border border-stone-800 hover:border-rose-400 text-left transition cursor-pointer group"
               >
                 <FileText className="w-4 h-4 text-rose-400 mb-1 group-hover:scale-110 transition-transform" />
                 <span className="text-[11px] font-bold text-white block">Mistake Vault</span>
-                <span className="text-[9px] text-stone-500">Error Notebook</span>
+                <span className="text-[9px] text-stone-500">Error Notes</span>
               </button>
 
               <button
                 onClick={() => {
                   setIsExpanded(false);
-                  onOpenAdmitCard?.();
+                  onOpenAccessibility?.();
                 }}
-                className="p-2.5 rounded-xl bg-stone-900 border border-stone-800 hover:border-emerald-400 text-left transition cursor-pointer group"
+                className="p-2 rounded-xl bg-stone-900 border border-stone-800 hover:border-teal-400 text-left transition cursor-pointer group"
               >
-                <ShieldCheck className="w-4 h-4 text-emerald-400 mb-1 group-hover:scale-110 transition-transform" />
-                <span className="text-[11px] font-bold text-white block">Admit Card</span>
-                <span className="text-[9px] text-stone-500">Verified QR</span>
+                <Sliders className="w-4 h-4 text-teal-400 mb-1 group-hover:scale-110 transition-transform" />
+                <span className="text-[11px] font-bold text-white block">A11y & Lo-Fi</span>
+                <span className="text-[9px] text-stone-500">Dyslexia / Rain</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsExpanded(false);
+                  onOpenConcepts200?.();
+                }}
+                className="p-2 rounded-xl bg-stone-900 border border-stone-800 hover:border-amber-400 text-left transition cursor-pointer group"
+              >
+                <Layers className="w-4 h-4 text-amber-400 mb-1 group-hover:scale-110 transition-transform" />
+                <span className="text-[11px] font-bold text-white block">200 Concepts</span>
+                <span className="text-[9px] text-stone-500">Blueprint</span>
               </button>
             </div>
 

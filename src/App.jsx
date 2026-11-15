@@ -58,6 +58,11 @@ import { GlobalCommandPalette } from './components/GlobalCommandPalette';
 import { InteractiveScienceLabModal } from './components/InteractiveScienceLabModal';
 import { MistakeVaultModal } from './components/MistakeVaultModal';
 import { DigitalAdmitCardModal } from './components/DigitalAdmitCardModal';
+import { InteractivePeriodicTableModal } from './components/InteractivePeriodicTableModal';
+import { DavBusTelemetryModal } from './components/DavBusTelemetryModal';
+import { DavAnthemPlayerModal } from './components/DavAnthemPlayerModal';
+import { FormulaSheetModal } from './components/FormulaSheetModal';
+import { AccessibilityStudyDock } from './components/AccessibilityStudyDock';
 
 function SectionLoadingFallback() {
   return (
@@ -125,6 +130,11 @@ export function App() {
   const [isVirtualLabOpen, setIsVirtualLabOpen] = useState(false);
   const [isMistakeVaultOpen, setIsMistakeVaultOpen] = useState(false);
   const [isAdmitCardOpen, setIsAdmitCardOpen] = useState(false);
+  const [isPeriodicTableOpen, setIsPeriodicTableOpen] = useState(false);
+  const [isBusTelemetryOpen, setIsBusTelemetryOpen] = useState(false);
+  const [isAnthemPlayerOpen, setIsAnthemPlayerOpen] = useState(false);
+  const [isFormulaSheetOpen, setIsFormulaSheetOpen] = useState(false);
+  const [isAccessibilityOpen, setIsAccessibilityOpen] = useState(false);
 
   // Global Ctrl+K / Cmd+K Spotlight Listener
   useEffect(() => {
@@ -908,6 +918,11 @@ export function App() {
             onOpenVirtualLab={() => setIsVirtualLabOpen(true)}
             onOpenMistakeVault={() => setIsMistakeVaultOpen(true)}
             onOpenAdmitCard={() => setIsAdmitCardOpen(true)}
+            onOpenPeriodicTable={() => setIsPeriodicTableOpen(true)}
+            onOpenBusTelemetry={() => setIsBusTelemetryOpen(true)}
+            onOpenAnthemPlayer={() => setIsAnthemPlayerOpen(true)}
+            onOpenFormulaSheet={() => setIsFormulaSheetOpen(true)}
+            onOpenAccessibility={() => setIsAccessibilityOpen(true)}
             onGoToSection={handleSelectSection} 
           />
         ) : (
@@ -1068,6 +1083,12 @@ export function App() {
         onOpenVirtualLab={() => setIsVirtualLabOpen(true)}
         onOpenMistakeVault={() => setIsMistakeVaultOpen(true)}
         onOpenAdmitCard={() => setIsAdmitCardOpen(true)}
+        onOpenPeriodicTable={() => setIsPeriodicTableOpen(true)}
+        onOpenBusTelemetry={() => setIsBusTelemetryOpen(true)}
+        onOpenAnthemPlayer={() => setIsAnthemPlayerOpen(true)}
+        onOpenFormulaSheet={() => setIsFormulaSheetOpen(true)}
+        onOpenAccessibility={() => setIsAccessibilityOpen(true)}
+        onOpenConcepts200={() => setActiveSection('concepts200')}
       />
 
       <GlobalCommandPalette 
@@ -1081,6 +1102,12 @@ export function App() {
         onOpenMistakeVault={() => setIsMistakeVaultOpen(true)}
         onOpenAdmitCard={() => setIsAdmitCardOpen(true)}
         onOpenConceptsVault={() => setActiveSection('concepts')}
+        onOpenConcepts200={() => setActiveSection('concepts200')}
+        onOpenPeriodicTable={() => setIsPeriodicTableOpen(true)}
+        onOpenBusTelemetry={() => setIsBusTelemetryOpen(true)}
+        onOpenAnthemPlayer={() => setIsAnthemPlayerOpen(true)}
+        onOpenFormulaSheet={() => setIsFormulaSheetOpen(true)}
+        onOpenAccessibility={() => setIsAccessibilityOpen(true)}
       />
 
       <InteractiveScienceLabModal 
@@ -1097,6 +1124,31 @@ export function App() {
         isOpen={isAdmitCardOpen}
         onClose={() => setIsAdmitCardOpen(false)}
         user={activeUser || user}
+      />
+
+      <InteractivePeriodicTableModal 
+        isOpen={isPeriodicTableOpen}
+        onClose={() => setIsPeriodicTableOpen(false)}
+      />
+
+      <DavBusTelemetryModal 
+        isOpen={isBusTelemetryOpen}
+        onClose={() => setIsBusTelemetryOpen(false)}
+      />
+
+      <DavAnthemPlayerModal 
+        isOpen={isAnthemPlayerOpen}
+        onClose={() => setIsAnthemPlayerOpen(false)}
+      />
+
+      <FormulaSheetModal 
+        isOpen={isFormulaSheetOpen}
+        onClose={() => setIsFormulaSheetOpen(false)}
+      />
+
+      <AccessibilityStudyDock 
+        isOpen={isAccessibilityOpen}
+        onClose={() => setIsAccessibilityOpen(false)}
       />
 
       {/* ========================================================================= */}

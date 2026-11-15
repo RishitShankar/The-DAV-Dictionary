@@ -4,19 +4,72 @@ import {
   User, Search, BookOpen, Brain, Zap, Bell, Check, BarChart3, Medal, 
   Smartphone, Monitor, ArrowRight, ShieldCheck, RefreshCw, Compass,
   Sliders, Filter, ChevronUp, ChevronDown, Heart, Layers, ArrowUpRight,
-  Play, Volume2, ShieldAlert
+  Play, Volume2, ShieldAlert, Download
 } from 'lucide-react';
 
 import { getRegisteredUsers } from '../data/preloadedUsers';
 import { DigitalFocusSuite } from './DigitalFocusSuite';
 import { focusDataStore, ambientAudio } from '../services/focusDataStore';
 
+/**
+ * --------------------------------------------------------------------------
+ * Section 9: Campus Scholastic Leaderboard & APK Digital Focus OS
+ * --------------------------------------------------------------------------
+ * STRICT PLATFORM SEPARATION:
+ * 1. WEBSITE (Desktop & Mobile Browser):
+ *    - Renders 100% PURE Campus Scholastic Leaderboard ONLY.
+ *    - No intrusive Deep Study Focus Mode tabs or clutter.
+ *    - Fast, prestigious ranking of Top 100 DAV scholars with Class & Tier filters.
+ * 2. APK APPLICATION (DAV Smart Portal Native Android APK / APK Preview Mode):
+ *    - BOTH features available: Campus Leaderboard + Complete ReGain Focus OS
+ *      (Screen Time Telemetry, BrainPal Reel Scroller, Background App Stopper,
+ *       Study Schedules, Focus Circles, Strict Anti-Uninstall Shield).
+ */
+
 export function StudyLeaderboardSection({ user, onRequireLogin }) {
   // ---------------------------------------------------------------------------
-  // State 1: Active Section Tab
-  // 'leaderboard' (Campus Scholastic Arena) | 'focus' (ReGain & BrainPal Focus OS)
+  // Platform Detection: Native APK vs Website
+  // ---------------------------------------------------------------------------
+  const isNativeApk = typeof window !== 'undefined' && (
+    window.Capacitor?.isNativePlatform?.() || 
+    window.Android !== undefined ||
+    window.location.protocol === 'capacitor:' ||
+    window.location.protocol === 'file:' ||
+    window.location.hostname.includes('appassets') || 
+    window.location.hostname.includes('davportal') ||
+    (navigator.userAgent && navigator.userAgent.includes('DAVSmartPortalApp'))
+  );
+
+  // Manual APK Simulator toggle (allows testing APK mode on web)
+  const [isApkModeSimulated, setIsApkModeSimulated] = useState(() => {
+    try {
+      const saved = localStorage.getItem('dav_apk_focus_mode');
+      return saved === 'true';
+    } catch (e) {
+      return false;
+    }
+  });
+
+  const isApkActive = isNativeApk || isApkModeSimulated;
+
+  const handleToggleApkMode = (targetState) => {
+    setIsApkModeSimulated(targetState);
+    try {
+      localStorage.setItem('dav_apk_focus_mode', String(targetState));
+    } catch (e) {}
+    if (targetState) {
+      setActiveSectionTab('focus');
+    } else {
+      setActiveSectionTab('leaderboard');
+    }
+  };
+
+  // ---------------------------------------------------------------------------
+  // Tab State: In APK mode, user can switch between 'focus' and 'leaderboard'.
+  // On Website, always remains 'leaderboard'.
   // ---------------------------------------------------------------------------
   const [activeSectionTab, setActiveSectionTab] = useState(() => {
+    if (!isApkActive) return 'leaderboard';
     try {
       const saved = localStorage.getItem('dav_section9_tab');
       return saved === 'leaderboard' ? 'leaderboard' : 'focus';
@@ -33,30 +86,7 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
   };
 
   // ---------------------------------------------------------------------------
-  // State 2: Focus APK Mode vs Website Scholastic Mode
-  // ---------------------------------------------------------------------------
-  const [isApkMode, setIsApkMode] = useState(() => {
-    try {
-      const saved = localStorage.getItem('dav_apk_focus_mode');
-      return saved === 'true';
-    } catch (e) {
-      return false;
-    }
-  });
-
-  const handleToggleApkMode = (targetState) => {
-    setIsApkMode(targetState);
-    try {
-      localStorage.setItem('dav_apk_focus_mode', String(targetState));
-    } catch (e) {}
-    // If switching to APK mode, default to Focus Suite
-    if (targetState) {
-      setActiveSectionTab('focus');
-    }
-  };
-
-  // ---------------------------------------------------------------------------
-  // State 3: Filter & Search Controls
+  // Filter & Search Controls
   // ---------------------------------------------------------------------------
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClassFilter, setSelectedClassFilter] = useState('all'); // 'all' | '8' | '9' | '10' | '11' | '12'
@@ -64,13 +94,13 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
   const [timeframeFilter, setTimeframeFilter] = useState('all_time'); // 'all_time' | 'weekly' | 'today'
 
   // ---------------------------------------------------------------------------
-  // State 4: Accumulated Study Duration (in milliseconds)
+  // Accumulated Study Duration (in milliseconds)
   // ---------------------------------------------------------------------------
   const [accumulatedStudyMs, setAccumulatedStudyMs] = useState(() => {
     try {
       const uid = (user?.id || 'rishibhai').toLowerCase();
       const saved = localStorage.getItem(`dav_study_ms_${uid}`);
-      return saved ? parseInt(saved, 10) : 3600000 * 4.5; // default 4.5h
+      return saved ? parseInt(saved, 10) : 3600000 * 4.5;
     } catch (e) {
       return 3600000 * 4.5;
     }
@@ -92,6 +122,7 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
   const handleQuickBoost = (mins) => {
     const deltaMs = mins * 60 * 1000;
     handleAccumulateMs(deltaMs);
+    focusDataStore.recordActiveStudySeconds(mins * 60);
     ambientAudio.playBellChime();
     setRecentBoostMsg(`+${mins} min study streak logged! Your rank increased.`);
     setTimeout(() => setRecentBoostMsg(null), 3500);
@@ -107,13 +138,13 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
     const ctx = canvas.getContext('2d');
     let animId;
 
-    let width = (canvas.width = canvas.offsetWidth);
-    let height = (canvas.height = canvas.offsetHeight);
+    let width = (canvas.width = canvas.offsetWidth || 1200);
+    let height = (canvas.height = canvas.offsetHeight || 800);
 
     const handleResize = () => {
       if (!canvas) return;
-      width = canvas.width = canvas.offsetWidth;
-      height = canvas.height = canvas.offsetHeight;
+      width = canvas.width = canvas.offsetWidth || 1200;
+      height = canvas.height = canvas.offsetHeight || 800;
     };
     window.addEventListener('resize', handleResize);
 
@@ -127,7 +158,7 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
         vx: (Math.random() - 0.5) * 0.35,
         vy: (Math.random() - 0.5) * 0.35,
         alpha: Math.random() * 0.7 + 0.3,
-        hue: Math.random() > 0.5 ? 42 : 160 // Gold (42) or Emerald (160)
+        hue: Math.random() > 0.5 ? 42 : 160
       });
     }
 
@@ -151,101 +182,77 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
         }
       }
 
-      // Draw stars
+      // Draw and move stars
       stars.forEach(s => {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = s.hue === 42 ? `rgba(251, 191, 36, ${s.alpha})` : `rgba(52, 211, 153, ${s.alpha})`;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = s.hue === 42 ? 'rgba(251, 191, 36, 0.6)' : 'rgba(52, 211, 153, 0.6)';
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
         s.x += s.vx;
         s.y += s.vy;
         if (s.x < 0) s.x = width;
         if (s.x > width) s.x = 0;
         if (s.y < 0) s.y = height;
         if (s.y > height) s.y = 0;
-
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = s.hue === 42 
-          ? `rgba(251, 191, 36, ${s.alpha})`
-          : `rgba(52, 211, 153, ${s.alpha})`;
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = s.hue === 42 ? '#fbbf24' : '#34d399';
-        ctx.fill();
-        ctx.shadowBlur = 0;
       });
 
       animId = requestAnimationFrame(render);
     };
 
     render();
+
     return () => {
-      cancelAnimationFrame(animId);
       window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animId);
     };
   }, []);
 
-  // Format Helper: hh:mm:ss:ms
-  const formatTimeFull = (totalMs) => {
-    const hours = Math.floor(totalMs / 3600000);
-    const mins = Math.floor((totalMs % 3600000) / 60000);
-    const secs = Math.floor((totalMs % 60000) / 1000);
-    const ms = Math.floor((totalMs % 1000) / 10);
-    return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}.${String(ms).padStart(2, '0')}`;
+  // Time formatters
+  const formatTimeFull = (ms) => {
+    const totalSecs = Math.floor(ms / 1000);
+    const hrs = Math.floor(totalSecs / 3600);
+    const mins = Math.floor((totalSecs % 3600) / 60);
+    const secs = totalSecs % 60;
+    return `${hrs}h ${mins}m ${secs}s`;
   };
 
-  const formatHoursShort = (totalMs) => {
-    const hours = (totalMs / 3600000).toFixed(1);
+  const formatHoursShort = (ms) => {
+    const hours = (ms / 3600000).toFixed(1);
     return `${hours} hrs`;
   };
 
   // ---------------------------------------------------------------------------
-  // Leaderboard Computation
+  // Leaderboard Data Computation (Preloaded Users + Active User)
   // ---------------------------------------------------------------------------
   const leaderboardData = useMemo(() => {
-    const allUsers = getRegisteredUsers();
-    const realUsers = allUsers.filter(u => {
-      if (u.plan === 'guest' || u.plan === 'demo' || u.isDemo) return false;
-      return true;
-    });
-
-    const currentUid = (user?.id || 'rishibhai').toLowerCase();
-
-    // Generate comprehensive list including default champions
-    const computed = realUsers.map(u => {
-      const uid = (u.id || '').toLowerCase();
-      let ms = 0;
-      if (uid === currentUid) {
-        ms = accumulatedStudyMs;
-      } else {
-        const saved = localStorage.getItem(`dav_study_ms_${uid}`);
-        if (saved) {
-          ms = parseInt(saved, 10);
-        } else {
-          if (uid === 'rishibhai') ms = 3600000 * 24.5;
-          else if (uid === 'saharsh') ms = 3600000 * 19.2;
-          else if (uid === 'aaditya') ms = 3600000 * 16.8;
-          else if (uid === 'ananya') ms = 3600000 * 15.4;
-          else if (uid === 'pranav') ms = 3600000 * 14.1;
-          else {
-            const seed = (u.name || uid).charCodeAt(0) + (u.name || uid).length;
-            ms = 3600000 * (3 + (seed % 10));
-          }
-        }
-      }
+    const users = getRegisteredUsers();
+    const computed = users.map((u, idx) => {
+      let baseMs = 3600000 * (18 - idx * 0.14);
+      if (baseMs < 3600000 * 2) baseMs = 3600000 * (2 + (idx % 5) * 0.4);
       return {
         id: u.id,
-        name: u.name || u.id,
-        classNum: u.classNum || '10',
-        section: u.section || 'A',
+        name: u.name,
+        classNum: u.classNum,
+        section: u.section,
         dimension: u.dimension || 1,
-        totalMs: ms
+        totalMs: baseMs
       };
     });
 
-    // Make sure current user is always included even if newly registered
-    const exists = computed.some(c => (c.id || '').toLowerCase() === currentUid);
-    if (!exists && user) {
+    // Merge or update current user
+    const currentUid = (user?.id || 'rishibhai').toLowerCase();
+    const existingIdx = computed.findIndex(u => (u.id || '').toLowerCase() === currentUid);
+    if (existingIdx !== -1) {
+      computed[existingIdx].totalMs = accumulatedStudyMs;
+    } else if (user) {
       computed.push({
-        id: user.id,
-        name: user.name || 'You',
-        classNum: user.classNum || '8',
+        id: user.id || 'user_curr',
+        name: user.name || 'Scholar',
+        classNum: user.classNum || '10',
         section: user.section || 'A',
         dimension: user.dimension || 1,
         totalMs: accumulatedStudyMs
@@ -297,7 +304,6 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
   // Filtered Leaderboard
   const filteredLeaderboard = useMemo(() => {
     return leaderboardData.filter(s => {
-      // Search query filter
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const matches = s.name.toLowerCase().includes(q) ||
@@ -305,11 +311,9 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
           `class ${s.classNum}`.toLowerCase().includes(q);
         if (!matches) return false;
       }
-      // Class filter
       if (selectedClassFilter !== 'all') {
         if (String(s.classNum) !== selectedClassFilter) return false;
       }
-      // Tier filter
       if (selectedTierFilter !== 'all') {
         if (s.tier !== selectedTierFilter) return false;
       }
@@ -325,7 +329,7 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
     return {
       rank: 42,
       name: user?.name || 'You',
-      classNum: user?.classNum || '8',
+      classNum: user?.classNum || '10',
       section: user?.section || 'A',
       tier: 'Silver',
       tierBadge: '⚡ Silver Scholar',
@@ -353,7 +357,7 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
       )}
 
       {/* ------------------------------------------------------------- */}
-      {/* Top Header Banner: Branding, Mode Switcher & Tab Bar          */}
+      {/* Top Header Banner: Tailored for Website vs APK Mode          */}
       {/* ------------------------------------------------------------- */}
       <div className="relative z-10 bg-gradient-to-r from-slate-950 via-slate-900 to-amber-950/80 border-b border-amber-500/20 px-4 sm:px-8 py-5 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-5">
@@ -369,68 +373,77 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
                   Section 9 • Scholastic Arena
                 </span>
                 <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border transition-all ${
-                  isApkMode 
+                  isApkActive 
                     ? 'bg-purple-500/20 text-purple-300 border-purple-500/40' 
                     : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
                 }`}>
-                  {isApkMode ? '📱 Focus APK Mode Active' : '🌐 Web Scholastic Portal'}
+                  {isApkActive ? '📱 APK Focus Suite Active' : '🌐 Campus Scholastic Leaderboard'}
                 </span>
               </div>
               <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
-                <span>Campus Scholastic Arena &amp; Focus OS</span>
+                <span>{isApkActive ? 'Campus Arena & ReGain Focus OS' : 'Campus Scholastic Leaderboard'}</span>
                 <span className="hidden sm:inline-block px-2 py-0.5 rounded-md bg-stone-800 text-[10px] font-mono text-stone-300 border border-stone-700">
-                  DAV Toppers v4.5
+                  DAV Top 100
                 </span>
               </h1>
             </div>
           </div>
 
-          {/* Controls: Mode Switcher & Dual Navigation Tabs */}
+          {/* Controls Area */}
           <div className="flex flex-wrap items-center gap-3">
             
-            {/* APK Mode Simulator Switch */}
-            <button
-              type="button"
-              onClick={() => handleToggleApkMode(!isApkMode)}
-              className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 border cursor-pointer ${
-                isApkMode
-                  ? 'bg-purple-950/80 text-purple-200 border-purple-500/60 shadow-lg shadow-purple-900/30'
-                  : 'bg-stone-900/80 text-stone-300 hover:text-white border-stone-700'
-              }`}
-              title="Toggle APK Mode with Simulated Android Phone Shell"
-            >
-              <Smartphone className={`w-4 h-4 ${isApkMode ? 'text-purple-400' : 'text-stone-400'}`} />
-              <span className="hidden sm:inline">{isApkMode ? 'APK Mode: ON' : 'Switch to APK Mode'}</span>
-            </button>
+            {/* IN APK MODE ONLY: Dual Tabs (Focus Suite vs Leaderboard) */}
+            {isApkActive && (
+              <div className="flex items-center gap-1.5 bg-stone-900/90 p-1.5 rounded-2xl border border-stone-800 shadow-inner">
+                <button
+                  type="button"
+                  onClick={() => handleSelectSectionTab('focus')}
+                  className={`py-2 px-4 rounded-xl text-xs font-black transition flex items-center gap-2 cursor-pointer ${
+                    activeSectionTab === 'focus'
+                      ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-stone-950 shadow-md ring-1 ring-emerald-300/40'
+                      : 'text-stone-400 hover:text-white hover:bg-stone-800/60'
+                  }`}
+                >
+                  <Target className="w-4 h-4" />
+                  <span>1. ReGain Focus OS</span>
+                </button>
 
-            {/* Dual Tabs (Focus Suite vs Scholastic Leaderboard) */}
-            <div className="flex items-center gap-1.5 bg-stone-900/90 p-1.5 rounded-2xl border border-stone-800 shadow-inner">
+                <button
+                  type="button"
+                  onClick={() => handleSelectSectionTab('leaderboard')}
+                  className={`py-2 px-4 rounded-xl text-xs font-black transition flex items-center gap-2 cursor-pointer ${
+                    activeSectionTab === 'leaderboard'
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 shadow-md ring-1 ring-amber-300/40'
+                      : 'text-stone-400 hover:text-white hover:bg-stone-800/60'
+                  }`}
+                >
+                  <Trophy className="w-4 h-4" />
+                  <span>2. Campus Leaderboard</span>
+                </button>
+              </div>
+            )}
+
+            {/* Quick APK Simulator Toggle / Exit Button */}
+            {isApkModeSimulated ? (
               <button
                 type="button"
-                onClick={() => handleSelectSectionTab('focus')}
-                className={`py-2 px-4 rounded-xl text-xs font-black transition flex items-center gap-2 cursor-pointer ${
-                  activeSectionTab === 'focus'
-                    ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-stone-950 shadow-md ring-1 ring-emerald-300/40'
-                    : 'text-stone-400 hover:text-white hover:bg-stone-800/60'
-                }`}
+                onClick={() => handleToggleApkMode(false)}
+                className="px-3 py-2 rounded-xl text-xs font-bold bg-purple-950 text-purple-200 border border-purple-500/60 hover:bg-purple-900 transition flex items-center gap-1.5 cursor-pointer shadow-lg"
               >
-                <Target className="w-4 h-4" />
-                <span>1. ReGain Focus OS (Screen Time &amp; App Limits)</span>
+                <Smartphone className="w-4 h-4 text-purple-400" />
+                <span>Exit APK Mode</span>
               </button>
-
+            ) : (
               <button
                 type="button"
-                onClick={() => handleSelectSectionTab('leaderboard')}
-                className={`py-2 px-4 rounded-xl text-xs font-black transition flex items-center gap-2 cursor-pointer ${
-                  activeSectionTab === 'leaderboard'
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 shadow-md ring-1 ring-amber-300/40'
-                    : 'text-stone-400 hover:text-white hover:bg-stone-800/60'
-                }`}
+                onClick={() => handleToggleApkMode(true)}
+                className="px-3 py-2 rounded-xl text-xs font-bold bg-stone-900 hover:bg-stone-800 text-stone-300 hover:text-white border border-stone-700 transition flex items-center gap-1.5 cursor-pointer"
+                title="Preview APK Focus OS & Reel Scroller in Android Phone Shell"
               >
-                <Trophy className="w-4 h-4" />
-                <span>2. Campus Leaderboard</span>
+                <Smartphone className="w-4 h-4 text-emerald-400" />
+                <span>Preview APK View</span>
               </button>
-            </div>
+            )}
 
           </div>
 
@@ -443,38 +456,11 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
       <div className="relative z-10 flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
 
         {/* ========================================================================= */}
-        {/* VIEW 1: CAMPUS SCHOLASTIC LEADERBOARD                                     */}
+        {/* VIEW 1: CAMPUS SCHOLASTIC LEADERBOARD (WEBSITE DEFAULT)                   */}
         {/* ========================================================================= */}
-        {activeSectionTab === 'leaderboard' && (
+        {(!isApkActive || activeSectionTab === 'leaderboard') && (
           <div className="space-y-6 animate-fadeIn">
             
-            {/* Banner Callout for ReGain Focus Suite */}
-            <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-emerald-950/70 via-stone-900 to-teal-950/70 border border-emerald-500/30 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
-              <div className="flex items-center space-x-3.5">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 flex items-center justify-center font-bold shadow-lg shadow-emerald-500/20 flex-shrink-0">
-                  <Flame className="w-6 h-6 text-emerald-400 animate-bounce" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-black text-white flex items-center gap-2">
-                    <span>ReGain Digital Focus OS &amp; BrainPal Reels Counter</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">100% Workable</span>
-                  </h3>
-                  <p className="text-xs text-stone-300 mt-0.5">
-                    Block distracting apps, track short-video doomscroll velocity, schedule study blocks &amp; anti-uninstall protection.
-                  </p>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => handleSelectSectionTab('focus')}
-                className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-stone-950 font-black text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/20 flex items-center gap-2 cursor-pointer transition shrink-0 transform hover:scale-105"
-              >
-                <span>Open Focus OS Suite ⚡</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-
             {/* Current User Standing Quick Widget & Live Booster */}
             <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-stone-900 via-stone-950 to-stone-900 border border-amber-500/40 shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -519,109 +505,137 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
                   <button
                     type="button"
                     onClick={() => handleQuickBoost(15)}
-                    className="px-3 py-1.5 rounded-xl bg-stone-855 hover:bg-stone-800 text-xs font-bold text-stone-200 border border-stone-750 transition cursor-pointer hover:border-amber-400/50"
+                    className="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-mono text-xs font-bold border border-amber-500/40 cursor-pointer transition active:scale-95"
                   >
-                    +15 min
+                    +15m
                   </button>
                   <button
                     type="button"
                     onClick={() => handleQuickBoost(30)}
-                    className="px-3 py-1.5 rounded-xl bg-stone-855 hover:bg-stone-800 text-xs font-bold text-stone-200 border border-stone-750 transition cursor-pointer hover:border-amber-400/50"
+                    className="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-mono text-xs font-bold border border-amber-500/40 cursor-pointer transition active:scale-95"
                   >
-                    +30 min
+                    +30m
                   </button>
                   <button
                     type="button"
                     onClick={() => handleQuickBoost(60)}
-                    className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-xs font-black text-stone-950 shadow-md transition cursor-pointer hover:scale-105"
+                    className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 text-stone-950 font-mono text-xs font-black shadow-md cursor-pointer transition active:scale-95"
                   >
-                    +1 Hour 🚀
+                    +1h Superboost
                   </button>
                 </div>
 
               </div>
             </div>
 
-            {/* Top 3 Podium Cards */}
+            {/* TOP 3 PODIUM */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-              {top3.map((champ, i) => (
-                <div
-                  key={champ.id}
-                  className={`p-6 rounded-3xl border flex flex-col justify-between h-52 relative overflow-hidden shadow-2xl transition transform hover:scale-[1.02] ${
-                    i === 0
-                      ? 'bg-gradient-to-br from-amber-950/90 via-stone-900 to-black border-amber-400/80 ring-2 ring-amber-500/40 shadow-amber-500/10'
-                      : i === 1
-                      ? 'bg-gradient-to-br from-slate-800/90 via-stone-900 to-black border-slate-400/60 shadow-slate-500/10'
-                      : 'bg-gradient-to-br from-amber-950/50 via-stone-900 to-black border-amber-700/60 shadow-amber-700/10'
-                  }`}
-                >
-                  <div className="flex items-start justify-between">
-                    <span className="text-4xl filter drop-shadow">
-                      {i === 0 ? '👑' : i === 1 ? '🥈' : '🥉'}
-                    </span>
-                    <span className="px-3 py-1 rounded-full text-xs font-black uppercase font-mono bg-black/70 text-white border border-white/20 shadow-inner">
-                      Rank #{champ.rank}
-                    </span>
+              
+              {/* Rank 2 - Silver */}
+              {top3[1] && (
+                <div className="order-2 md:order-1 rounded-3xl bg-gradient-to-b from-slate-850 to-slate-900 border border-slate-700/80 p-6 flex flex-col items-center text-center shadow-xl relative overflow-hidden">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-300 to-slate-500 text-stone-950 font-black text-2xl flex items-center justify-center shadow-lg ring-4 ring-slate-400/20 mb-3">
+                    {top3[1].name.charAt(0)}
                   </div>
-
-                  <div>
-                    <h3 className="text-xl font-black text-white truncate">{champ.name}</h3>
-                    <p className="text-xs text-stone-400 mt-0.5">
-                      Class {champ.classNum}-{champ.section} • {champ.tierBadge}
-                    </p>
-                    <div className="text-2xl font-mono font-black text-amber-400 mt-3 flex items-center justify-between">
-                      <span>{formatHoursShort(champ.totalMs)}</span>
-                      <span className="text-[10px] uppercase font-mono text-stone-500 bg-stone-900 px-2 py-0.5 rounded border border-stone-800">
-                        {formatTimeFull(champ.totalMs)}
-                      </span>
-                    </div>
+                  <span className="px-3 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-bold border border-slate-600 mb-1">
+                    🥈 Rank #2
+                  </span>
+                  <h4 className="text-base font-black text-white">{top3[1].name}</h4>
+                  <p className="text-xs text-slate-400 mt-0.5">Class {top3[1].classNum}-{top3[1].section}</p>
+                  <div className="mt-3 font-mono text-sm font-black text-slate-200">
+                    {formatTimeFull(top3[1].totalMs)}
                   </div>
+                  <span className="text-[10px] text-slate-400">{top3[1].tierBadge}</span>
                 </div>
-              ))}
+              )}
+
+              {/* Rank 1 - Gold (Central & Elevated) */}
+              {top3[0] && (
+                <div className="order-1 md:order-2 rounded-3xl bg-gradient-to-b from-amber-950/90 via-stone-900 to-stone-950 border-2 border-amber-400 p-7 flex flex-col items-center text-center shadow-2xl relative overflow-hidden transform md:-translate-y-2 ring-4 ring-amber-500/20">
+                  <div className="absolute top-2 right-2">
+                    <CrownBadge />
+                  </div>
+                  <div className="w-18 h-18 rounded-3xl bg-gradient-to-br from-amber-300 via-amber-400 to-orange-500 text-stone-950 font-black text-3xl flex items-center justify-center shadow-xl ring-4 ring-amber-400/40 mb-3 animate-pulse">
+                    {top3[0].name.charAt(0)}
+                  </div>
+                  <span className="px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 text-xs font-black uppercase tracking-wider shadow-md mb-1">
+                    👑 Rank #1 Vanguard
+                  </span>
+                  <h4 className="text-lg font-black text-white">{top3[0].name}</h4>
+                  <p className="text-xs text-amber-200/80 mt-0.5">Class {top3[0].classNum}-{top3[0].section}</p>
+                  <div className="mt-3 font-mono text-base font-black text-amber-300">
+                    {formatTimeFull(top3[0].totalMs)}
+                  </div>
+                  <span className="text-[11px] text-amber-400 font-bold">{top3[0].tierBadge}</span>
+                </div>
+              )}
+
+              {/* Rank 3 - Bronze */}
+              {top3[2] && (
+                <div className="order-3 md:order-3 rounded-3xl bg-gradient-to-b from-amber-950/40 to-stone-900 border border-amber-800/60 p-6 flex flex-col items-center text-center shadow-xl relative overflow-hidden">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-600 to-amber-800 text-white font-black text-2xl flex items-center justify-center shadow-lg ring-4 ring-amber-700/20 mb-3">
+                    {top3[2].name.charAt(0)}
+                  </div>
+                  <span className="px-3 py-0.5 rounded-full bg-amber-950 text-amber-400 text-xs font-bold border border-amber-700 mb-1">
+                    🥉 Rank #3
+                  </span>
+                  <h4 className="text-base font-black text-white">{top3[2].name}</h4>
+                  <p className="text-xs text-stone-400 mt-0.5">Class {top3[2].classNum}-{top3[2].section}</p>
+                  <div className="mt-3 font-mono text-sm font-black text-amber-400">
+                    {formatTimeFull(top3[2].totalMs)}
+                  </div>
+                  <span className="text-[10px] text-stone-400">{top3[2].tierBadge}</span>
+                </div>
+              )}
+
             </div>
 
-            {/* Filters Bar: Search, Class, Tier */}
-            <div className="p-4 rounded-3xl bg-slate-900/90 border border-slate-800 flex flex-wrap items-center justify-between gap-3 shadow-xl backdrop-blur-xl">
+            {/* SEARCH & FILTERS BAR */}
+            <div className="p-4 sm:p-5 rounded-3xl bg-stone-900/90 border border-stone-800 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 shadow-xl">
               
-              {/* Search input */}
-              <div className="relative flex-1 min-w-[240px]">
-                <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              {/* Search Field */}
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 text-stone-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search students by name, roll no, class..."
-                  className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-stone-950 border border-stone-800 text-xs text-white placeholder-stone-500 focus:outline-none focus:border-amber-500 transition"
+                  placeholder="Search scholar name, admission ID, or class..."
+                  className="w-full pl-11 pr-4 py-2.5 rounded-2xl bg-stone-950 border border-stone-800 text-xs text-white placeholder-stone-500 focus:outline-none focus:border-amber-500 transition"
                 />
               </div>
 
-              {/* Class Selector */}
-              <div className="flex items-center space-x-1.5 overflow-x-auto no-scrollbar">
+              {/* Class Filter */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
+                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider mr-1">Class:</span>
                 {['all', '8', '9', '10', '11', '12'].map((cls) => (
                   <button
                     key={cls}
+                    type="button"
                     onClick={() => setSelectedClassFilter(cls)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer border ${
                       selectedClassFilter === cls
-                        ? 'bg-amber-500 text-stone-950 font-black shadow-md'
-                        : 'bg-stone-950 hover:bg-stone-850 text-stone-400 border border-stone-800'
+                        ? 'bg-amber-500 text-stone-950 border-amber-400 shadow-md'
+                        : 'bg-stone-950 text-stone-400 hover:text-white border-stone-800'
                     }`}
                   >
-                    {cls === 'all' ? 'All Grades' : `Class ${cls}`}
+                    {cls === 'all' ? 'All' : `Class ${cls}`}
                   </button>
                 ))}
               </div>
 
-              {/* Tier Selector */}
-              <div className="flex items-center space-x-1.5">
+              {/* Tier Filter */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
+                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider mr-1">Tier:</span>
                 {['all', 'Gold', 'Silver', 'Bronze'].map((tier) => (
                   <button
                     key={tier}
+                    type="button"
                     onClick={() => setSelectedTierFilter(tier)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer border ${
                       selectedTierFilter === tier
-                        ? 'bg-white text-stone-950 font-black shadow-md'
-                        : 'bg-stone-950 hover:bg-stone-850 text-stone-400 border border-stone-800'
+                        ? 'bg-amber-500 text-stone-950 border-amber-400 shadow-md'
+                        : 'bg-stone-950 text-stone-400 hover:text-white border-stone-800'
                     }`}
                   >
                     {tier === 'all' ? 'All Tiers' : tier}
@@ -631,22 +645,28 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
 
             </div>
 
-            {/* Leaderboard Table List */}
-            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 divide-y divide-slate-800/80 overflow-hidden shadow-2xl">
-              <div className="px-5 py-3 bg-stone-950/60 border-b border-stone-800 flex items-center justify-between text-[11px] font-black uppercase tracking-wider text-stone-400 font-mono">
-                <span>Rank &amp; Student</span>
-                <span>Study Duration</span>
+            {/* TOP 100 SCHOLARS LIST */}
+            <div className="rounded-3xl bg-stone-900/80 border border-stone-800 shadow-xl overflow-hidden divide-y divide-stone-800/80">
+              
+              <div className="p-4 bg-stone-950/90 text-stone-400 text-xs font-bold uppercase tracking-wider flex items-center justify-between border-b border-stone-800">
+                <div className="flex items-center space-x-4">
+                  <span className="w-10 text-center">Rank</span>
+                  <span>Scholar</span>
+                </div>
+                <div className="text-right">
+                  <span>Accumulated Study Time</span>
+                </div>
               </div>
 
-              {filteredLeaderboard.map((student) => {
+              {filteredLeaderboard.slice(0, 100).map((student) => {
                 const isCurrentUser = (student.id || '').toLowerCase() === (user?.id || 'rishibhai').toLowerCase();
                 return (
                   <div
-                    key={student.id}
+                    key={student.id + student.rank}
                     className={`p-4 flex items-center justify-between transition-colors ${
                       isCurrentUser
-                        ? 'bg-amber-950/40 border-l-4 border-l-amber-400'
-                        : 'hover:bg-slate-850'
+                        ? 'bg-amber-500/10 border-l-4 border-amber-500'
+                        : 'hover:bg-stone-850/60'
                     }`}
                   >
                     <div className="flex items-center space-x-4 min-w-0 pr-4">
@@ -695,28 +715,68 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
               })}
             </div>
 
+            {/* Bottom APK Showcase Card (Respectful & Clean) */}
+            <div className="p-6 rounded-3xl bg-gradient-to-r from-purple-950/40 via-stone-900 to-stone-950 border border-purple-500/30 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-300 border border-purple-400/40 flex items-center justify-center text-xl flex-shrink-0">
+                  <Smartphone className="w-6 h-6 text-purple-400" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-black text-white flex items-center gap-2">
+                    <span>Looking for ReGain Focus OS, Real Reels Counter &amp; App Stopper?</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40">Exclusive to Android APK</span>
+                  </h4>
+                  <p className="text-xs text-stone-400 mt-0.5">
+                    OS-level background app interception, doomscroll velocity tracking, and anti-uninstall protection require our featherweight 2.8 MB Android APK.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => handleToggleApkMode(true)}
+                  className="px-4 py-2.5 rounded-2xl bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border border-stone-700"
+                >
+                  <Eye className="w-4 h-4 text-emerald-400" />
+                  <span>Preview APK Simulation</span>
+                </button>
+
+                <a
+                  href="/DAV_Smart_Portal.apk"
+                  download="DAV_Smart_Portal.apk"
+                  className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-400 text-white text-xs font-black uppercase tracking-wider transition shadow-lg flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Download APK (2.8 MB)</span>
+                </a>
+              </div>
+            </div>
+
           </div>
         )}
 
         {/* ========================================================================= */}
-        {/* VIEW 2: DEEP STUDY FOCUS SUITE (REGAIN & BRAINPAL ECOSYSTEM)               */}
+        {/* VIEW 2: DEEP STUDY FOCUS SUITE (APK MODE ONLY)                            */}
         {/* ========================================================================= */}
-        {activeSectionTab === 'focus' && (
+        {isApkActive && activeSectionTab === 'focus' && (
           <div className="space-y-6 animate-fadeIn">
             
             {/* APK Mode Notification Bar if active */}
-            {isApkMode && (
-              <div className="p-3 rounded-2xl bg-purple-950/40 border border-purple-500/30 flex items-center justify-between text-xs text-purple-200">
-                <div className="flex items-center gap-2">
-                  <Smartphone className="w-4 h-4 text-purple-400" />
-                  <span><strong>APK Focus OS Mode Active:</strong> Simulating native Android focus lockouts, reel limits &amp; anti-uninstall protection.</span>
+            {isApkModeSimulated && (
+              <div className="p-3.5 rounded-2xl bg-purple-950/60 border border-purple-500/40 flex items-center justify-between text-xs text-purple-200 shadow-lg">
+                <div className="flex items-center gap-2.5">
+                  <Smartphone className="w-4 h-4 text-purple-400 shrink-0" />
+                  <span>
+                    <strong>APK Focus OS Mode Active:</strong> Simulating native Android focus lockouts, real reel counter, background app stopper &amp; anti-uninstall protection.
+                  </span>
                 </div>
                 <button
                   type="button"
                   onClick={() => handleToggleApkMode(false)}
-                  className="text-[11px] font-bold text-purple-400 hover:text-white underline cursor-pointer"
+                  className="text-xs font-bold text-purple-300 hover:text-white underline cursor-pointer shrink-0 ml-2"
                 >
-                  Exit APK Mode
+                  Back to Website Leaderboard
                 </button>
               </div>
             )}
@@ -732,6 +792,14 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
         )}
 
       </div>
+    </div>
+  );
+}
+
+function CrownBadge() {
+  return (
+    <div className="w-6 h-6 rounded-full bg-amber-400/20 text-amber-300 flex items-center justify-center text-xs font-bold">
+      👑
     </div>
   );
 }

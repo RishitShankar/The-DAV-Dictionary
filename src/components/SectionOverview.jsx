@@ -113,6 +113,70 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
   const [clickedCardId, setClickedCardId] = useState(null);
   const [isSparkleActive, setIsSparkleActive] = useState(false);
 
+  // Daily Morning Streak & Suvichar State
+  const [streakData, setStreakData] = useState(() => {
+    try {
+      const saved = localStorage.getItem('dav_daily_streak_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const todayStr = new Date().toDateString();
+        return {
+          ...parsed,
+          claimedToday: parsed.lastCheckinDate === todayStr
+        };
+      }
+    } catch (e) {}
+    const todayStr = new Date().toDateString();
+    return {
+      count: 5,
+      lastCheckinDate: todayStr,
+      claimedToday: true,
+      weekDays: [true, true, true, true, true, false, false]
+    };
+  });
+
+  const [isStreakQuizOpen, setIsStreakQuizOpen] = useState(false);
+  const [streakQuizStep, setStreakQuizStep] = useState(0);
+  const [streakQuizChoice, setStreakQuizChoice] = useState(null);
+  const [streakQuizCompleted, setStreakQuizCompleted] = useState(false);
+
+  const streakQuestions = [
+    {
+      q: "Which organelle is known as the powerhouse of the eukaryotic cell?",
+      options: ["Ribosome", "Mitochondria", "Golgi apparatus", "Lysosome"],
+      correct: 1,
+      tip: "Produces ATP via aerobic cellular respiration."
+    },
+    {
+      q: "Find the square root of 576:",
+      options: ["22", "24", "26", "28"],
+      correct: 1,
+      tip: "24 * 24 = 576."
+    },
+    {
+      q: "Who was the founder of Arya Samaj and the spiritual foundation of all DAV institutions?",
+      options: ["Maharishi Swami Dayanand Saraswati", "Mahatma Hansraj", "Swami Vivekanand", "Lala Lajpat Rai"],
+      correct: 0,
+      tip: "Author of Satyarth Prakash and Vedic Renaissance visionary."
+    }
+  ];
+
+  const handleClaimDailyStreak = () => {
+    const todayStr = new Date().toDateString();
+    const newStreak = {
+      count: streakData.claimedToday ? streakData.count : streakData.count + 1,
+      lastCheckinDate: todayStr,
+      claimedToday: true,
+      weekDays: streakData.weekDays.map((d, i) => (i <= 4 ? true : d))
+    };
+    setStreakData(newStreak);
+    setStreakQuizCompleted(true);
+    try {
+      localStorage.setItem('dav_daily_streak_v1', JSON.stringify(newStreak));
+      window.dispatchEvent(new CustomEvent('dav_xp_awarded', { detail: { xp: 50, reason: 'Daily Streak Check-in' } }));
+    } catch (e) {}
+  };
+
   // Dimension 4 check: Sections 12 & 13 are strictly reserved for Developer Rishit Shankar
   const isDimension4 = Boolean(
     currentUser?.dimension === 4 ||
@@ -461,6 +525,257 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
           {isSparkleActive && (
             <div className="absolute inset-0 bg-amber-500/10 pointer-events-none flex items-center justify-center animate-ping">
               <Sparkles className="w-32 h-32 text-amber-400" />
+            </div>
+          )}
+
+        </div>
+
+        {/* ========================================================================= */}
+        {/* DAILY 5-MINUTE MORNING DAV STREAK & VEDIC SUVICHAR WIDGET                 */}
+        {/* ========================================================================= */}
+        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-stone-950 via-[#14120e] to-stone-950 border-2 border-amber-500/40 shadow-2xl relative overflow-hidden text-white">
+          <div className="absolute -top-16 -left-16 w-52 h-52 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-16 -right-16 w-52 h-52 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
+            
+            {/* Col 1: Dynamic Flame Streak Counter (4 Cols) */}
+            <div className="lg:col-span-4 p-5 rounded-2xl bg-gradient-to-br from-amber-950/40 via-stone-900 to-stone-950 border border-amber-500/30 flex flex-col justify-between space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-stone-950 shadow-lg shadow-amber-500/30 animate-bounce">
+                    <Flame className="w-5 h-5 fill-stone-950 text-stone-950" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black text-amber-300 uppercase tracking-wider">
+                      Daily DAV Streak
+                    </h3>
+                    <p className="text-[11px] text-stone-400">Consistent Morning Study Habit</p>
+                  </div>
+                </div>
+
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 font-mono font-black text-xs border border-amber-400/30">
+                  🔥 {streakData.count} Day Streak
+                </span>
+              </div>
+
+              {/* 7-Day Visual Progress Track */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between text-[10px] font-bold text-stone-400 uppercase tracking-wider">
+                  <span>Mon</span>
+                  <span>Tue</span>
+                  <span>Wed</span>
+                  <span>Thu</span>
+                  <span>Fri</span>
+                  <span>Sat</span>
+                  <span>Sun</span>
+                </div>
+                <div className="grid grid-cols-7 gap-1.5">
+                  {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, dIdx) => {
+                    const isPassed = streakData.weekDays[dIdx];
+                    const isToday = dIdx === 4;
+                    return (
+                      <div 
+                        key={dIdx} 
+                        className={`h-8 rounded-lg flex items-center justify-center text-[10px] font-black transition-all ${
+                          isPassed 
+                            ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-stone-950 shadow-md font-bold' 
+                            : isToday 
+                              ? 'bg-stone-800 border-2 border-amber-400 text-amber-300 animate-pulse'
+                              : 'bg-stone-900 border border-stone-800 text-stone-600'
+                        }`}
+                      >
+                        {isPassed ? '✓' : day}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Daily Streak Action Button */}
+              <div>
+                {streakData.claimedToday ? (
+                  <div className="w-full py-2 px-3 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center justify-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <span>Today's +50 XP Streak Secured!</span>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setIsStreakQuizOpen(true);
+                      setStreakQuizStep(0);
+                      setStreakQuizChoice(null);
+                      setStreakQuizCompleted(false);
+                    }}
+                    className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:brightness-110 text-stone-950 font-black text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 flex items-center justify-center gap-1.5 cursor-pointer transition"
+                  >
+                    <Zap className="w-4 h-4 fill-stone-950" />
+                    <span>Complete 3-Min Morning Sprint (+50 XP)</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Col 2: दैनिक वैदिक सुविचार (Vedic Quote & Reflection) (5 Cols) */}
+            <div className="lg:col-span-5 p-5 rounded-2xl bg-gradient-to-br from-red-950/40 via-stone-900 to-stone-950 border border-amber-500/30 flex flex-col justify-between space-y-3">
+              <div className="flex items-center justify-between border-b border-stone-800/80 pb-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 flex items-center gap-1.5">
+                  <School className="w-3.5 h-3.5" />
+                  <span>दैनिक वैदिक सुविचार • Daily Vedic Thought</span>
+                </span>
+                <span className="text-[9px] font-mono text-stone-400 px-2 py-0.5 rounded-full bg-stone-900 border border-stone-800">
+                  Morning Assembly Core
+                </span>
+              </div>
+
+              {/* Sanskrit Mantra Quote */}
+              <div className="space-y-1.5">
+                <p className="text-sm sm:text-base font-bold text-amber-200 tracking-wide leading-relaxed font-serif italic">
+                  "विद्या ददाति विनयं विनयाद्याति पात्रताम्।<br />
+                  पात्रत्वाद्धनमाप्नोति धनाद्धर्मं ततः सुखम्॥"
+                </p>
+                <p className="text-xs text-stone-300 leading-relaxed pt-1">
+                  <strong>English Translation:</strong> Knowledge gives humility; from humility comes worthiness; from worthiness comes honorable prosperity; from prosperity comes righteous duty; and from duty follows true joy.
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between pt-2 border-t border-stone-800/80 text-[10px] text-stone-400">
+                <span>Source: Hitopadesha • DAV Morning Reflection</span>
+                <span className="text-amber-400 font-bold">Classroom Virtue #1</span>
+              </div>
+            </div>
+
+            {/* Col 3: 1-Click Academic Jumpstart (3 Cols) */}
+            <div className="lg:col-span-3 p-5 rounded-2xl bg-stone-900/80 border border-stone-800 flex flex-col justify-between space-y-3 text-center sm:text-left">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-rose-400 block mb-1">
+                  Morning Study Sprint
+                </span>
+                <h4 className="text-sm font-black text-white">5 Minutes Before School</h4>
+                <p className="text-[11px] text-stone-400 mt-1 leading-snug">
+                  Quickly review chapter flashcards, check daily homework, or practice 5 MCQs before class starts.
+                </p>
+              </div>
+
+              <div className="space-y-2 pt-1">
+                <button
+                  onClick={() => handleCardClick(8)}
+                  className="w-full py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md transition"
+                >
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>Start 5-Minute Quiz (Sec 8)</span>
+                </button>
+                <button
+                  onClick={() => handleCardClick(5)}
+                  className="w-full py-2 px-3 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition border border-stone-700"
+                >
+                  <FileText className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Check Today's Homework</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Morning Sprint Quiz Modal */}
+          {isStreakQuizOpen && (
+            <div className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+              <div className="max-w-md w-full bg-stone-900 border-2 border-amber-400 rounded-3xl p-6 sm:p-7 space-y-4 shadow-2xl relative">
+                
+                <div className="flex items-center justify-between border-b border-stone-800 pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
+                    <h3 className="text-sm font-black text-white uppercase tracking-wider">
+                      Daily Morning Brain Sprint ({streakQuizStep + 1} of 3)
+                    </h3>
+                  </div>
+                  <button
+                    onClick={() => setIsStreakQuizOpen(false)}
+                    className="w-7 h-7 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-400 hover:text-white flex items-center justify-center text-xs cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {!streakQuizCompleted ? (
+                  <div className="space-y-4">
+                    <p className="text-sm sm:text-base font-bold text-amber-100 leading-snug">
+                      {streakQuestions[streakQuizStep].q}
+                    </p>
+
+                    <div className="space-y-2 pt-1">
+                      {streakQuestions[streakQuizStep].options.map((opt, optIdx) => {
+                        const isChosen = streakQuizChoice === optIdx;
+                        const isCorrect = optIdx === streakQuestions[streakQuizStep].correct;
+                        let btnCls = "bg-stone-950 border-stone-800 text-stone-300 hover:border-amber-400/60";
+
+                        if (streakQuizChoice !== null) {
+                          if (isCorrect) btnCls = "bg-emerald-950/80 border-emerald-500 text-emerald-200 font-bold";
+                          else if (isChosen && !isCorrect) btnCls = "bg-rose-950/80 border-rose-500 text-rose-200";
+                          else btnCls = "bg-stone-950/40 border-stone-850 text-stone-600 opacity-50";
+                        }
+
+                        return (
+                          <button
+                            key={optIdx}
+                            disabled={streakQuizChoice !== null}
+                            onClick={() => setStreakQuizChoice(optIdx)}
+                            className={`w-full p-3 rounded-xl border text-left text-xs transition cursor-pointer flex items-center justify-between ${btnCls}`}
+                          >
+                            <span>{opt}</span>
+                            {streakQuizChoice !== null && isCorrect && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {streakQuizChoice !== null && (
+                      <div className="p-3 rounded-xl bg-stone-950 border border-stone-800 text-[11px] text-stone-300">
+                        <span className="font-bold text-amber-400">DAV Fact: </span>
+                        {streakQuestions[streakQuizStep].tip}
+                      </div>
+                    )}
+
+                    {streakQuizChoice !== null && (
+                      <button
+                        onClick={() => {
+                          if (streakQuizStep + 1 < streakQuestions.length) {
+                            setStreakQuizStep(prev => prev + 1);
+                            setStreakQuizChoice(null);
+                          } else {
+                            handleClaimDailyStreak();
+                          }
+                        }}
+                        className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-stone-950 font-black text-xs uppercase tracking-wider hover:brightness-110 cursor-pointer shadow-lg"
+                      >
+                        {streakQuizStep + 1 < streakQuestions.length ? 'Next Question →' : 'Claim +50 XP & Lock Streak 🎉'}
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-4 space-y-4">
+                    <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-tr from-amber-400 to-orange-500 flex items-center justify-center text-3xl shadow-xl animate-bounce">
+                      🔥
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-black text-white">Streak Secured!</h4>
+                      <p className="text-xs text-amber-300 font-bold mt-1">
+                        +50 XP Claimed • 🔥 {streakData.count} Day Streak Active
+                      </p>
+                      <p className="text-xs text-stone-400 mt-2">
+                        Come back tomorrow morning to maintain your streak and earn the Master Vedic Scholar badge!
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setIsStreakQuizOpen(false)}
+                      className="w-full py-2.5 rounded-xl bg-amber-500 text-stone-950 font-black text-xs uppercase cursor-pointer"
+                    >
+                      Continue Exploring Overview
+                    </button>
+                  </div>
+                )}
+
+              </div>
             </div>
           )}
 

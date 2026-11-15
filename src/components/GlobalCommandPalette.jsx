@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Search, BookOpen, Compass, Sparkles, Video, Bus, CheckSquare, 
   Trophy, Settings, Heart, Star, Key, Award, FlaskConical, 
-  FileText, ShieldCheck, ArrowRight, CornerDownLeft, X, Layers, Brain
+  FileText, ShieldCheck, ArrowRight, CornerDownLeft, X, Layers, Brain,
+  Atom, Music, Calculator, Sliders
 } from 'lucide-react';
 import { DAV_200_PLATFORM_CONCEPTS } from '../data/dav200PlatformConceptsData';
 
@@ -13,7 +14,13 @@ export function GlobalCommandPalette({
   onOpenVirtualLab,
   onOpenMistakeVault,
   onOpenAdmitCard,
-  onOpenConceptsVault
+  onOpenConceptsVault,
+  onOpenConcepts200,
+  onOpenPeriodicTable,
+  onOpenBusTelemetry,
+  onOpenAnthemPlayer,
+  onOpenFormulaSheet,
+  onOpenAccessibility
 }) {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -28,7 +35,7 @@ export function GlobalCommandPalette({
 
   // Static Platform Quick Actions
   const primaryCommands = [
-    { id: 'sec_1', type: 'section', title: 'Section 1: Campus Overview', subtitle: 'Central navigation & portals radar', icon: Compass, action: () => onSelectSection?.(1) },
+    { id: 'sec_1', type: 'section', title: 'Section 1: Campus Overview Hub', subtitle: 'Central navigation & portals radar', icon: Compass, action: () => onSelectSection?.(1) },
     { id: 'sec_2', type: 'section', title: 'Section 2: Digital Textbooks', subtitle: '70+ DAV Curriculum Books (LKG to 8)', icon: BookOpen, action: () => onSelectSection?.(2) },
     { id: 'sec_4', type: 'section', title: 'Section 4: Rishi AI Workspace', subtitle: 'Curriculum-grounded artificial intelligence tutor', icon: Sparkles, action: () => onSelectSection?.(4) },
     { id: 'sec_5', type: 'section', title: 'Section 5: Faculty Desk & Channels', subtitle: '50+ Teachers Roster & Daily Diary', icon: Award, action: () => onSelectSection?.(5) },
@@ -37,11 +44,17 @@ export function GlobalCommandPalette({
     { id: 'sec_9', type: 'section', title: 'Section 9: Deep Study Focus Suite', subtitle: 'Pomodoro timer, binaural audio & leaderboard', icon: Trophy, action: () => onSelectSection?.(9) },
     { id: 'sec_10', type: 'section', title: 'Section 10: Settings Hub', subtitle: 'Themes, accent engine & preferences', icon: Settings, action: () => onSelectSection?.(10) },
     
-    // Feature Modals
-    { id: 'act_lab', type: 'tool', title: 'Interactive 3D Virtual Science Lab', subtitle: 'Simulate optics, circuits, and acid-base reactions', icon: FlaskConical, action: () => onOpenVirtualLab?.() },
-    { id: 'act_mistake', type: 'tool', title: 'The Mistake Vault (Error Notebook)', subtitle: 'Review and re-test questions missed in tests', icon: FileText, action: () => onOpenMistakeVault?.() },
-    { id: 'act_admit', type: 'tool', title: 'Digital Hall Ticket & Verified QR Admit Card', subtitle: 'Generate official DAV Term-2 exam pass', icon: ShieldCheck, action: () => onOpenAdmitCard?.() },
-    { id: 'act_concepts', type: 'tool', title: '110 Master Concepts Knowledge Vault', subtitle: 'Formulas, mnemonics & interactive quizzes', icon: Brain, action: () => onOpenConceptsVault?.() },
+    // Feature Modals & Concepts
+    { id: 'act_200', type: 'blueprint', title: '200 Platform Concepts Master Blueprint', subtitle: 'All 200 cutting-edge features & architectural designs', icon: Layers, action: () => onOpenConcepts200?.() },
+    { id: 'act_periodic', type: 'tool', title: 'Interactive Periodic Table & Orbitals', subtitle: 'Concept #107 & #123 • Bohr models & flame test lab', icon: Atom, action: () => onOpenPeriodicTable?.() },
+    { id: 'act_bus_live', type: 'tool', title: 'DAV Live Bus GPS Telemetry Tracker', subtitle: 'Concept #96 • Real-time speed, stops & parent SOS hotline', icon: Bus, action: () => onOpenBusTelemetry?.() },
+    { id: 'act_anthem', type: 'tool', title: 'Official DAV Anthem & Vedic Chants', subtitle: 'Concept #98 & #114 • Synchronized Sanskrit/English lyrics', icon: Music, action: () => onOpenAnthemPlayer?.() },
+    { id: 'act_formula', type: 'tool', title: 'Formula Sheet Drawer & LaTeX Hub', subtitle: 'Concept #122 • Instant formulas for Physics, Chem & Math', icon: Calculator, action: () => onOpenFormulaSheet?.() },
+    { id: 'act_a11y', type: 'tool', title: 'Accessibility, Dyslexia & Lo-Fi Soundscape', subtitle: 'Concept #172-#189 • Reading ruler, font scaling & soundscapes', icon: Sliders, action: () => onOpenAccessibility?.() },
+    { id: 'act_lab', type: 'tool', title: 'Interactive 3D Virtual Science Lab', subtitle: 'Concept #123 • Optics, circuits & pH workbench', icon: FlaskConical, action: () => onOpenVirtualLab?.() },
+    { id: 'act_mistake', type: 'tool', title: 'The Mistake Vault (Error Notebook)', subtitle: 'Concept #155 • Board score predictor & revision list', icon: FileText, action: () => onOpenMistakeVault?.() },
+    { id: 'act_admit', type: 'tool', title: 'Digital Hall Ticket & QR Admit Card', subtitle: 'Concept #188 • Verified Term-2 exam pass', icon: ShieldCheck, action: () => onOpenAdmitCard?.() },
+    { id: 'act_concepts', type: 'tool', title: '110 Master Academic Concepts Vault', subtitle: 'Formulas, mnemonics & interactive flashcard tests', icon: Brain, action: () => onOpenConceptsVault?.() },
   ];
 
   // Filter commands & 200 concepts
@@ -60,7 +73,17 @@ export function GlobalCommandPalette({
       title: `Concept #${c.id}: ${c.title}`,
       subtitle: `${c.category} • ${c.badge}`,
       icon: Layers,
-      action: () => onOpenConceptsVault?.()
+      action: () => {
+        if (c.id === 107) onOpenPeriodicTable?.();
+        else if (c.id === 96) onOpenBusTelemetry?.();
+        else if (c.id === 98) onOpenAnthemPlayer?.();
+        else if (c.id === 122) onOpenFormulaSheet?.();
+        else if (c.id >= 171 && c.id <= 190) onOpenAccessibility?.();
+        else if (c.id === 123 || c.id === 133 || c.id === 134) onOpenVirtualLab?.();
+        else if (c.id === 155 || c.id === 156) onOpenMistakeVault?.();
+        else if (c.id === 188) onOpenAdmitCard?.();
+        else onOpenConcepts200?.();
+      }
     }))
   ] : primaryCommands;
 
@@ -88,15 +111,15 @@ export function GlobalCommandPalette({
   return (
     <div 
       onClick={onClose}
-      className="fixed inset-0 z-[9999] bg-stone-950/80 backdrop-blur-md flex items-start justify-center pt-16 sm:pt-24 px-4 font-sans animate-in fade-in duration-150"
+      className="fixed inset-0 z-[9999] flex items-start justify-center pt-20 px-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150"
     >
       <div 
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-2xl bg-stone-900 border border-stone-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col text-stone-100"
+        className="w-full max-w-2xl bg-stone-900 border border-stone-800 rounded-3xl shadow-2xl overflow-hidden font-sans border-amber-500/20"
       >
         {/* Search Input Bar */}
-        <div className="p-4 border-b border-stone-800 flex items-center gap-3 bg-stone-950/90 relative">
-          <Search className="w-5 h-5 text-amber-400 shrink-0" />
+        <div className="relative flex items-center px-5 py-4 border-b border-stone-800/80 bg-stone-950/60">
+          <Search className="w-5 h-5 text-amber-400 mr-3 shrink-0" />
           <input
             ref={inputRef}
             type="text"
@@ -106,33 +129,27 @@ export function GlobalCommandPalette({
               setSelectedIndex(0);
             }}
             onKeyDown={handleKeyDown}
-            placeholder="Type a command, search 200 concepts, or jump to section (e.g. 'Virtual Lab', 'Bus', 'Admit Card')..."
-            className="flex-1 bg-transparent text-sm text-white placeholder-stone-500 focus:outline-none"
+            placeholder="Type a command, concept, or feature (e.g. Periodic Table, Bus, Anthem, Lab, Ctrl+K)..."
+            className="w-full bg-transparent text-stone-100 placeholder-stone-500 text-sm sm:text-base outline-none font-medium"
           />
-          {query && (
-            <button
-              onClick={() => setQuery('')}
-              className="text-stone-500 hover:text-white text-xs font-bold mr-2"
-            >
-              Clear
-            </button>
-          )}
-          <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono text-stone-400 bg-stone-800 rounded border border-stone-700">
-            ESC to close
-          </kbd>
+          <button 
+            onClick={onClose}
+            className="p-1.5 rounded-xl bg-stone-800/80 text-stone-400 hover:text-white transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
-        {/* Results List */}
-        <div className="max-h-[60vh] overflow-y-auto p-2 divide-y divide-stone-800/40">
+        {/* Command List */}
+        <div className="max-h-[60vh] overflow-y-auto p-3 space-y-1">
           {filtered.length === 0 ? (
-            <div className="p-8 text-center text-xs text-stone-500">
-              No matching commands or concepts found for "{query}".
+            <div className="py-12 text-center text-stone-400 text-xs sm:text-sm">
+              No matching commands or concepts for "{query}". Try "Periodic", "Bus", "Lab", or "Admit".
             </div>
           ) : (
             filtered.map((item, idx) => {
+              const Icon = item.icon;
               const isSelected = idx === selectedIndex;
-              const Icon = item.icon || Sparkles;
-
               return (
                 <div
                   key={item.id}
@@ -141,31 +158,34 @@ export function GlobalCommandPalette({
                     onClose();
                   }}
                   onMouseEnter={() => setSelectedIndex(idx)}
-                  className={`p-3 rounded-2xl flex items-center justify-between cursor-pointer transition ${
+                  className={`flex items-center justify-between px-4 py-3 rounded-2xl cursor-pointer transition-all ${
                     isSelected 
-                      ? 'bg-amber-400 text-stone-950 shadow-md font-bold' 
-                      : 'text-stone-200 hover:bg-stone-800/60'
+                      ? 'bg-amber-500/15 text-amber-200 border border-amber-500/30 shadow-md' 
+                      : 'text-stone-300 hover:bg-stone-800/60 border border-transparent'
                   }`}
                 >
-                  <div className="flex items-center gap-3 min-w-0 pr-2">
+                  <div className="flex items-center gap-3.5 min-w-0">
                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-                      isSelected ? 'bg-stone-950 text-amber-400' : 'bg-stone-800 text-stone-300'
+                      isSelected ? 'bg-amber-500 text-stone-950 font-bold' : 'bg-stone-800 text-stone-400'
                     }`}>
                       <Icon className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-xs font-extrabold truncate">
+                      <div className="text-sm font-bold text-stone-100 truncate">
                         {item.title}
                       </div>
-                      <div className={`text-[11px] truncate ${isSelected ? 'text-stone-900' : 'text-stone-400'}`}>
+                      <div className="text-xs text-stone-400 truncate">
                         {item.subtitle}
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1 shrink-0">
+                  <div className="flex items-center gap-2 pl-3 shrink-0">
                     {isSelected && (
-                      <CornerDownLeft className="w-3.5 h-3.5 text-stone-950" />
+                      <span className="text-[10px] font-mono font-bold text-amber-400 flex items-center gap-1 bg-amber-400/10 px-2 py-0.5 rounded">
+                        <span>Press Enter</span>
+                        <CornerDownLeft className="w-3 h-3" />
+                      </span>
                     )}
                   </div>
                 </div>
@@ -174,14 +194,14 @@ export function GlobalCommandPalette({
           )}
         </div>
 
-        {/* Footer shortcuts hint */}
-        <div className="px-4 py-2.5 bg-stone-950 border-t border-stone-800 flex items-center justify-between text-[11px] text-stone-500 font-mono">
+        {/* Footer Shortcut Hints */}
+        <div className="px-5 py-3 border-t border-stone-800/80 bg-stone-950/70 text-xs text-stone-500 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span>↑↓ Navigate</span>
-            <span>↵ Select</span>
-            <span>Ctrl + K to open anytime</span>
+            <span>Navigation: <kbd className="px-1.5 py-0.5 bg-stone-800 rounded text-[10px] font-mono text-stone-300">↑</kbd> <kbd className="px-1.5 py-0.5 bg-stone-800 rounded text-[10px] font-mono text-stone-300">↓</kbd></span>
+            <span>Execute: <kbd className="px-1.5 py-0.5 bg-stone-800 rounded text-[10px] font-mono text-stone-300">↵</kbd></span>
+            <span>Dismiss: <kbd className="px-1.5 py-0.5 bg-stone-800 rounded text-[10px] font-mono text-stone-300">ESC</kbd></span>
           </div>
-          <span>DAVDixence 200-Concepts Spotlight</span>
+          <span className="font-mono text-[10px] text-amber-500/80">DAVDixence Spotlight v4.0</span>
         </div>
 
       </div>

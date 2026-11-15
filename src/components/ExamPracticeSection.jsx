@@ -4,7 +4,8 @@ import {
   Clock, ShieldAlert, Sparkles, ChevronRight, ChevronLeft, 
   FileText, HelpCircle, Flame, Lock, Crown, Star, RefreshCw, 
   MapPin, Check, Send, Eye, EyeOff, Layers, Compass, Brain,
-  Info, ExternalLink, BarChart3, Shuffle, Volume2, UserCheck
+  Info, ExternalLink, BarChart3, Shuffle, Volume2, UserCheck,
+  BookmarkCheck, Trash2, RotateCcw, Filter, Search, CheckSquare
 } from 'lucide-react';
 import { OlympiadBoardMockSuite } from './exam/OlympiadBoardMockSuite';
 import { 
@@ -235,6 +236,170 @@ export function ExamPracticeSection({
   }, [selectedClass, selectedSubject, hasFullAccess, isDoubleVip, isVip, isNormal]);
 
   // -------------------------------------------------------------
+  // SUBSECTION 5: SMART MISTAKE NOTEBOOK (गलती डायरी)
+  // -------------------------------------------------------------
+  const mistakeStorageKey = `dav_mistakes_${currentUser?.id || 'student'}`;
+  const [mistakeList, setMistakeList] = useState(() => {
+    try {
+      const saved = localStorage.getItem(mistakeStorageKey);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return [
+      {
+        id: 'seed-1',
+        subject: 'Science',
+        classGrade: 'Class 8',
+        question: 'Which non-metal is stored in water to prevent it from catching fire in air?',
+        userAnsText: 'Sodium',
+        correctAnsText: 'Phosphorus',
+        date: 'Recent Test',
+        status: 'unresolved'
+      },
+      {
+        id: 'seed-2',
+        subject: 'Mathematics',
+        classGrade: 'Class 8',
+        question: 'What is the sum of all interior angles of a regular heptagon (7-sided polygon)?',
+        userAnsText: '1080°',
+        correctAnsText: '900° [Formula: (7 - 2) * 180°]',
+        date: 'Recent Test',
+        status: 'unresolved'
+      },
+      {
+        id: 'seed-3',
+        subject: 'Social Science',
+        classGrade: 'Class 8',
+        question: 'In which year was the Treaty of Allahabad signed following the Battle of Buxar?',
+        userAnsText: '1757',
+        correctAnsText: '1765',
+        date: 'Recent Test',
+        status: 'mastered'
+      }
+    ];
+  });
+
+  const [mistakeFilterSubject, setMistakeFilterSubject] = useState('all');
+  const [mistakeFilterStatus, setMistakeFilterStatus] = useState('all'); // 'all' | 'unresolved' | 'mastered'
+  const [mistakeSearchQuery, setMistakeSearchQuery] = useState('');
+
+  // Drill Mode State
+  const [isMistakeDrillActive, setIsMistakeDrillActive] = useState(false);
+  const [drillIndex, setDrillIndex] = useState(0);
+  const [drillSelectedChoice, setDrillSelectedChoice] = useState(null);
+  const [drillAnswerSubmitted, setDrillAnswerSubmitted] = useState(false);
+  const [drillScore, setDrillScore] = useState(0);
+
+  // Persist mistakes to localStorage & broadcast event
+  useEffect(() => {
+    try {
+      localStorage.setItem(mistakeStorageKey, JSON.stringify(mistakeList));
+      window.dispatchEvent(new CustomEvent('dav_mistakes_updated', { detail: mistakeList }));
+    } catch (e) {}
+  }, [mistakeList, mistakeStorageKey]);
+
+  // Auto-record incorrect questions from completed exams
+  useEffect(() => {
+    if (isExamSubmitted && examResults?.incorrectList?.length > 0) {
+      setMistakeList(prev => {
+        const newMistakes = [...prev];
+        examResults.incorrectList.forEach(item => {
+          const exists = newMistakes.some(m => m.question === item.question);
+          if (!exists) {
+            newMistakes.unshift({
+              id: 'err-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+              subject: selectedSubject,
+              classGrade: selectedClass,
+              question: item.question,
+              userAnsText: item.userAnsText,
+              correctAnsText: item.correctAnsText,
+              date: new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric' }),
+              status: 'unresolved'
+            });
+          }
+        });
+        return newMistakes;
+      });
+    }
+  }, [isExamSubmitted, examResults, selectedSubject, selectedClass]);
+
+  const handleToggleMistakeStatus = (id) => {
+    setMistakeList(prev => prev.map(m => {
+      if (m.id === id) {
+        return { ...m, status: m.status === 'mastered' ? 'unresolved' : 'mastered' };
+      }
+      return m;
+    }));
+  };
+
+  const handleDeleteMistake = (id) => {
+    setMistakeList(prev => prev.filter(m => m.id !== id));
+  };
+
+  const handleClearMasteredMistakes = () => {
+    setMistakeList(prev => prev.filter(m => m.status !== 'mastered'));
+  };
+
+  // Filtered mistakes list
+  const filteredMistakes = useMemo(() => {
+    return mistakeList.filter(m => {
+      if (mistakeFilterSubject !== 'all' && m.subject !== mistakeFilterSubject) return false;
+      if (mistakeFilterStatus !== 'all' && m.status !== mistakeFilterStatus) return false;
+      if (mistakeSearchQuery.trim()) {
+        const q = mistakeSearchQuery.toLowerCase();
+        return m.question.toLowerCase().includes(q) || (m.correctAnsText && m.correctAnsText.toLowerCase().includes(q));
+      }
+      return true;
+    });
+  }, [mistakeList, mistakeFilterSubject, mistakeFilterStatus, mistakeSearchQuery]);
+
+  const unresolvedCount = useMemo(() => {
+    return mistakeList.filter(m => m.status === 'unresolved').length;
+  }, [mistakeList]);
+
+  const masteredCount = useMemo(() => {
+    return mistakeList.filter(m => m.status === 'mastered').length;
+  }, [mistakeList]);
+
+  // Active Drill items: only unresolved mistakes
+  const drillItems = useMemo(() => {
+    return mistakeList.filter(m => m.status === 'unresolved');
+  }, [mistakeList]);
+
+  const handleStartMistakeDrill = () => {
+    if (drillItems.length === 0) return;
+    setIsMistakeDrillActive(true);
+    setDrillIndex(0);
+    setDrillSelectedChoice(null);
+    setDrillAnswerSubmitted(false);
+    setDrillScore(0);
+  };
+
+  const handleDrillChoiceSubmit = (choice) => {
+    if (drillAnswerSubmitted) return;
+    setDrillSelectedChoice(choice);
+    setDrillAnswerSubmitted(true);
+    const curr = drillItems[drillIndex];
+    if (choice === curr?.correctAnsText) {
+      setDrillScore(prev => prev + 1);
+      // Mark as mastered!
+      handleToggleMistakeStatus(curr.id);
+    }
+  };
+
+  const handleNextDrillQuestion = () => {
+    if (drillIndex + 1 < drillItems.length) {
+      setDrillIndex(prev => prev + 1);
+      setDrillSelectedChoice(null);
+      setDrillAnswerSubmitted(false);
+    } else {
+      setIsMistakeDrillActive(false);
+    }
+  };
+
+  // -------------------------------------------------------------
   // SUBSECTION 3: INTERACTIVE PRACTICE SUITE
   // -------------------------------------------------------------
   const [practiceType, setPracticeType] = useState('fill_blanks'); // 'fill_blanks' | 'tick' | 'true_false' | 'assertion' | 'case_study' | 'match' | 'map_skills'
@@ -374,7 +539,7 @@ export function ExamPracticeSection({
 
       {/* 2. SUBSECTION TABS NAVIGATION (Sub 1, Sub 2, Sub 3) */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           
           <button
             onClick={() => setActiveSubSection('tests')}
@@ -440,6 +605,29 @@ export function ExamPracticeSection({
           </button>
 
           <button
+            onClick={() => setActiveSubSection('mistakes')}
+            className={`p-4 rounded-2xl border text-left transition cursor-pointer relative overflow-hidden ${
+              activeSubSection === 'mistakes'
+                ? 'bg-gradient-to-br from-rose-500/25 via-red-950/40 to-slate-900 border-rose-400 text-white shadow-xl'
+                : 'bg-slate-900/60 hover:bg-slate-900 border-slate-800 text-slate-400'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] font-black uppercase tracking-wider text-rose-400">Subsection 5</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-mono font-bold">
+                {unresolvedCount} To Review
+              </span>
+            </div>
+            <div className="text-base font-black text-white flex items-center gap-2">
+              <BookmarkCheck className="w-4 h-4 text-rose-400" />
+              <span>Mistake Notebook (गलती डायरी)</span>
+            </div>
+            <p className="text-xs text-slate-400 mt-1">
+              Auto-saved test errors, 1-click drill &amp; board mastery tracking
+            </p>
+          </button>
+
+          <button
             onClick={() => setActiveSubSection('olympiad')}
             className={`p-4 rounded-2xl border text-left transition cursor-pointer relative overflow-hidden ${
               activeSubSection === 'olympiad'
@@ -464,6 +652,309 @@ export function ExamPracticeSection({
 
       {/* 3. MAIN CONTENT CONTAINER */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
+
+        {/* ========================================================================= */}
+        {/* SUBSECTION 5: SMART MISTAKE NOTEBOOK (गलती डायरी)                         */}
+        {/* ========================================================================= */}
+        {activeSubSection === 'mistakes' && (
+          <div className="space-y-6">
+            
+            {/* Top Header Card */}
+            <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-rose-950/60 via-stone-900 to-slate-950 border-2 border-rose-500/40 shadow-2xl relative overflow-hidden">
+              <div className="absolute -top-12 -right-12 w-48 h-48 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
+              
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+                <div className="space-y-2">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-black uppercase tracking-wider">
+                    <BookmarkCheck className="w-3.5 h-3.5" />
+                    <span>Board Exam Mistake Vault • गलती डायरी</span>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-black text-white">
+                    Smart Mistake Notebook (गलती डायरी)
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+                    Every incorrect or unattempted question from your Section 8 exams is automatically preserved here. Test only your past mistakes until you achieve 100% board mastery!
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleStartMistakeDrill}
+                    disabled={unresolvedCount === 0}
+                    className="px-5 py-3 rounded-2xl bg-gradient-to-r from-rose-500 via-red-600 to-rose-600 text-white font-black text-xs uppercase tracking-wider hover:brightness-110 active:scale-95 transition shadow-xl shadow-rose-500/20 flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <Zap className="w-4 h-4 fill-white" />
+                    <span>Start Mistake Drill ({unresolvedCount})</span>
+                  </button>
+
+                  {masteredCount > 0 && (
+                    <button
+                      onClick={handleClearMasteredMistakes}
+                      className="px-4 py-3 rounded-2xl bg-stone-900 hover:bg-stone-850 border border-stone-800 text-xs text-stone-300 font-bold transition flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5 text-slate-400" />
+                      <span>Clear Mastered</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Quick Metrics Bar */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-rose-500/20 relative z-10">
+                <div className="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 text-center">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total Recorded</span>
+                  <span className="text-xl sm:text-2xl font-black text-white">{mistakeList.length}</span>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-rose-950/40 border border-rose-500/30 text-center">
+                  <span className="text-[10px] font-bold text-rose-300 uppercase tracking-wider block">Needs Practice</span>
+                  <span className="text-xl sm:text-2xl font-black text-rose-400">{unresolvedCount}</span>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-center">
+                  <span className="text-[10px] font-bold text-emerald-300 uppercase tracking-wider block">Mastered &amp; Solved</span>
+                  <span className="text-xl sm:text-2xl font-black text-emerald-400">{masteredCount}</span>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-amber-950/40 border border-amber-500/30 text-center">
+                  <span className="text-[10px] font-bold text-amber-300 uppercase tracking-wider block">Mastery Ratio</span>
+                  <span className="text-xl sm:text-2xl font-black text-amber-400">
+                    {mistakeList.length > 0 ? Math.round((masteredCount / mistakeList.length) * 100) : 0}%
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Drill Mode Session Card (Interactive Re-attempt) */}
+            {isMistakeDrillActive && drillItems.length > 0 && (() => {
+              const currentDrillItem = drillItems[drillIndex] || drillItems[0];
+              // Synthetic options for drill
+              const drillOptions = [
+                currentDrillItem.correctAnsText,
+                currentDrillItem.userAnsText !== 'Not Attempted' ? currentDrillItem.userAnsText : 'Option B (Distractor)',
+                'Option C (Alternative Distractor)',
+                'Option D (Common Error)'
+              ].sort(() => 0.5 - Math.random());
+
+              return (
+                <div className="p-6 rounded-3xl bg-slate-900 border-2 border-rose-500/60 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-xs font-mono font-bold">
+                        Drill #{drillIndex + 1} of {drillItems.length}
+                      </span>
+                      <span className="text-xs text-slate-400 font-bold">
+                        • {currentDrillItem.subject}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-bold text-emerald-400">
+                        Score: {drillScore}
+                      </span>
+                      <button
+                        onClick={() => setIsMistakeDrillActive(false)}
+                        className="text-xs text-slate-400 hover:text-white underline cursor-pointer"
+                      >
+                        Exit Drill
+                      </button>
+                    </div>
+                  </div>
+
+                  <p className="text-base sm:text-lg font-black text-white leading-snug">
+                    {currentDrillItem.question}
+                  </p>
+
+                  {/* 4 Interactive Choices */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    {drillOptions.map((opt, optIdx) => {
+                      const isSelected = drillSelectedChoice === opt;
+                      const isCorrect = opt === currentDrillItem.correctAnsText;
+                      let btnStyle = 'bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700';
+
+                      if (drillAnswerSubmitted) {
+                        if (isCorrect) {
+                          btnStyle = 'bg-emerald-950/80 border-emerald-500 text-emerald-200 font-bold';
+                        } else if (isSelected && !isCorrect) {
+                          btnStyle = 'bg-rose-950/80 border-rose-500 text-rose-200';
+                        } else {
+                          btnStyle = 'bg-slate-950/40 border-slate-850 text-slate-600 opacity-50';
+                        }
+                      }
+
+                      return (
+                        <button
+                          key={optIdx}
+                          disabled={drillAnswerSubmitted}
+                          onClick={() => handleDrillChoiceSubmit(opt)}
+                          className={`p-4 rounded-2xl border text-left text-xs sm:text-sm transition cursor-pointer flex items-center justify-between ${btnStyle}`}
+                        >
+                          <span>{opt}</span>
+                          {drillAnswerSubmitted && isCorrect && <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />}
+                          {drillAnswerSubmitted && isSelected && !isCorrect && <XCircle className="w-4 h-4 text-rose-400 shrink-0" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* After Answer CTA */}
+                  {drillAnswerSubmitted && (
+                    <div className="flex items-center justify-between pt-3 border-t border-slate-800">
+                      <div className="text-xs">
+                        {drillSelectedChoice === currentDrillItem.correctAnsText ? (
+                          <span className="text-emerald-400 font-bold">
+                            🎉 Excellent! Marked as Mastered (+10 XP).
+                          </span>
+                        ) : (
+                          <span className="text-rose-400 font-bold">
+                            ⚠️ Incorrect. Review the official answer carefully.
+                          </span>
+                        )}
+                      </div>
+
+                      <button
+                        onClick={handleNextDrillQuestion}
+                        className="px-5 py-2.5 rounded-xl bg-amber-500 text-stone-950 font-black text-xs hover:brightness-110 transition cursor-pointer flex items-center gap-1.5"
+                      >
+                        <span>{drillIndex + 1 < drillItems.length ? 'Next Question →' : 'Finish Drill'}</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* Filter and Search Bar */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 rounded-2xl bg-slate-900 border border-slate-800 text-xs">
+              {/* Subject Pills */}
+              <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto scrollbar-none pb-1 sm:pb-0">
+                {['all', 'Science', 'Mathematics', 'Social Science', 'Hindi', 'English', 'Sanskrit'].map(sub => (
+                  <button
+                    key={sub}
+                    onClick={() => setMistakeFilterSubject(sub)}
+                    className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition cursor-pointer ${
+                      mistakeFilterSubject === sub
+                        ? 'bg-rose-500 text-white'
+                        : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                    }`}
+                  >
+                    {sub === 'all' ? 'All Subjects' : sub}
+                  </button>
+                ))}
+              </div>
+
+              {/* Status & Search */}
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <select
+                  value={mistakeFilterStatus}
+                  onChange={(e) => setMistakeFilterStatus(e.target.value)}
+                  className="px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold text-xs cursor-pointer"
+                >
+                  <option value="all">All Status</option>
+                  <option value="unresolved">Unresolved Only ({unresolvedCount})</option>
+                  <option value="mastered">Mastered Only ({masteredCount})</option>
+                </select>
+
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={mistakeSearchQuery}
+                    onChange={(e) => setMistakeSearchQuery(e.target.value)}
+                    placeholder="Search mistakes..."
+                    className="pl-8 pr-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-rose-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Mistakes Cards Grid */}
+            {filteredMistakes.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {filteredMistakes.map((item) => {
+                  const isMastered = item.status === 'mastered';
+                  return (
+                    <div 
+                      key={item.id}
+                      className={`p-5 rounded-2xl border transition-all space-y-3 ${
+                        isMastered 
+                          ? 'bg-slate-900/50 border-emerald-500/30' 
+                          : 'bg-slate-900 border-rose-500/30 hover:border-rose-500/60 shadow-md'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-[10px] font-mono font-bold text-slate-300">
+                            {item.subject} • {item.classGrade}
+                          </span>
+                          <span className="text-[10px] text-slate-500">{item.date}</span>
+                        </div>
+
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider flex items-center gap-1 ${
+                          isMastered 
+                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' 
+                            : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                        }`}>
+                          {isMastered ? <CheckCircle2 className="w-3 h-3" /> : <AlertTriangle className="w-3 h-3" />}
+                          <span>{isMastered ? 'Mastered' : 'Needs Review'}</span>
+                        </span>
+                      </div>
+
+                      <p className="text-sm font-bold text-white leading-relaxed">
+                        {item.question}
+                      </p>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <div className="p-2.5 rounded-xl bg-rose-950/40 border border-rose-900/40 text-rose-200">
+                          <span className="text-[10px] uppercase font-bold text-rose-400 block">Your Wrong Attempt</span>
+                          <span>{item.userAnsText}</span>
+                        </div>
+
+                        <div className="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-900/40 text-emerald-200">
+                          <span className="text-[10px] uppercase font-bold text-emerald-400 block">Verified Board Answer</span>
+                          <span className="font-bold">{item.correctAnsText}</span>
+                        </div>
+                      </div>
+
+                      {/* Card Action Controls */}
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-800 text-xs">
+                        <button
+                          onClick={() => handleToggleMistakeStatus(item.id)}
+                          className={`px-3 py-1.5 rounded-lg font-bold text-[11px] transition cursor-pointer flex items-center gap-1 ${
+                            isMastered 
+                              ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' 
+                              : 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                          }`}
+                        >
+                          <CheckSquare className="w-3.5 h-3.5" />
+                          <span>{isMastered ? 'Re-open Mistake' : 'Mark as Mastered'}</span>
+                        </button>
+
+                        <button
+                          onClick={() => handleDeleteMistake(item.id)}
+                          className="text-slate-500 hover:text-rose-400 p-1.5 transition cursor-pointer"
+                          title="Delete from Notebook"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="p-12 rounded-3xl bg-slate-900/40 border border-slate-800 text-center space-y-3">
+                <BookmarkCheck className="w-12 h-12 text-slate-600 mx-auto" />
+                <h4 className="text-base font-bold text-white">No Mistakes Found in Filter</h4>
+                <p className="text-xs text-slate-400 max-w-md mx-auto">
+                  Take tests in Subsection 1 to automatically identify your knowledge gaps and archive them here for targeted review.
+                </p>
+              </div>
+            )}
+
+          </div>
+        )}
 
         {/* ========================================================================= */}
         {/* SUBSECTION 4: NATIONAL BOARD MOCK PAPERS & OLYMPIAD SPRINT               */}
@@ -656,6 +1147,24 @@ export function ExamPracticeSection({
                         </div>
                       </div>
                     </div>
+
+                    {/* Smart Mistake Notebook Quick Link Banner */}
+                    {examResults?.incorrectList && examResults.incorrectList.length > 0 && (
+                      <div className="mt-6 p-4 rounded-2xl bg-rose-950/40 border border-rose-500/40 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                        <div className="flex items-center gap-2.5">
+                          <BookmarkCheck className="w-5 h-5 text-rose-400 shrink-0" />
+                          <span className="text-stone-200">
+                            <strong>{examResults.incorrectList.length} Mistakes Auto-Archived</strong> into your Smart Mistake Notebook (गलती डायरी).
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => setActiveSubSection('mistakes')}
+                          className="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-red-600 text-white font-black hover:brightness-110 transition shadow-md flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                        >
+                          <span>Open Mistake Notebook →</span>
+                        </button>
+                      </div>
+                    )}
 
                     {/* Incorrect & Unattempted Questions Breakdown */}
                     {examResults?.incorrectList && examResults.incorrectList.length > 0 ? (

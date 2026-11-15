@@ -733,7 +733,7 @@ class FocusDataStore {
     let connectionInfo = 'WiFi / Broadband (High Speed)';
     if (typeof navigator !== 'undefined' && navigator.connection) {
       const conn = navigator.connection;
-      connectionInfo = ${(conn.effectiveType || '4G').toUpperCase()} •  Mbps (RTT: ms);
+      connectionInfo = `${(conn.effectiveType || '4G').toUpperCase()} • ${conn.downlink || '10'} Mbps (RTT: ${conn.rtt || '40'}ms)`;
     }
 
     let batteryLevel = 85;

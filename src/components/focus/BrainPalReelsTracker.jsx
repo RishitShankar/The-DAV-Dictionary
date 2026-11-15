@@ -3,16 +3,18 @@ import {
   Smartphone, Film, Zap, AlertTriangle, ShieldAlert, CheckCircle2,
   Clock, Flame, RefreshCw, Volume2, VolumeX, Eye, ArrowDown,
   Sparkles, Lock, Play, Pause, Award, Heart, ShieldCheck, Target,
-  TrendingDown, Check, Activity, BarChart3, AlertCircle
+  TrendingDown, Check, Activity, BarChart3, AlertCircle, Layers
 } from 'lucide-react';
 import { focusDataStore, ambientAudio } from '../../services/focusDataStore';
+import { BrainPalInteractiveReelsFeed } from './BrainPalInteractiveReelsFeed';
 
 export function BrainPalReelsTracker({ user }) {
   const [reelsData, setReelsData] = useState(() => focusDataStore.getReelsData());
   const [screenTime, setScreenTime] = useState(() => focusDataStore.getScreenTimeData());
   const [breaches, setBreaches] = useState(() => focusDataStore.getBreachesToday());
+  const [activeTab, setActiveTab] = useState('feed'); // 'feed' | 'analytics'
   const [showBudgetModal, setShowBudgetModal] = useState(false);
-  const [tempBudget, setTempBudget] = useState(reelsData.dailyReelsBudget || 20);
+  const [tempBudget, setTempBudget] = useState(reelsData.dailyReelsBudget || 5);
   const [showMindfulnessModal, setShowMindfulnessModal] = useState(false);
   const [mindfulnessCountdown, setMindfulnessCountdown] = useState(15);
   const [breathPhase, setBreathPhase] = useState('inhale');
@@ -96,30 +98,49 @@ export function BrainPalReelsTracker({ user }) {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-black uppercase tracking-wider mb-2 border border-emerald-500/40">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Section 9 • Screen-Time &amp; Reels Guardian</span>
+              <span>BrainPal Reels Engine • 100% Workable</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-              BrainPal Real-Time Distraction Shield
+            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2">
+              <span>BrainPal Real-Time Reel Counter &amp; Scroller</span>
             </h2>
             <p className="text-xs sm:text-sm text-stone-300 max-w-xl mt-1 leading-relaxed">
-              Authentic multi-device screen-time monitoring, tab-switch breach detection, and short-video restriction engine designed for serious DAV scholars.
+              Interactive vertical video feed, actual scroll counting (1/5, 2/5...), dopamine dwell detection, and hard lockout with a 15-second mindful breathing break when quota is reached.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={() => setShowMindfulnessModal(true)}
-              className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black transition cursor-pointer flex items-center gap-2 shadow-lg"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Mindful Reset</span>
-            </button>
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            {/* View Switcher: Interactive Feed vs Guardian Analytics */}
+            <div className="flex items-center bg-stone-950 p-1 rounded-2xl border border-stone-800">
+              <button
+                onClick={() => setActiveTab('feed')}
+                className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  activeTab === 'feed'
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 shadow-md'
+                    : 'text-stone-400 hover:text-white'
+                }`}
+              >
+                <Film className="w-3.5 h-3.5" />
+                <span>Watch &amp; Count Reels</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('analytics')}
+                className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  activeTab === 'analytics'
+                    ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-stone-950 shadow-md'
+                    : 'text-stone-400 hover:text-white'
+                }`}
+              >
+                <Activity className="w-3.5 h-3.5" />
+                <span>Guardian Analytics</span>
+              </button>
+            </div>
+
             <button
               onClick={() => setShowBudgetModal(true)}
-              className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black transition cursor-pointer flex items-center gap-2 shadow-lg"
+              className="px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-white text-xs font-bold transition cursor-pointer flex items-center gap-1.5 border border-stone-700"
             >
-              <Target className="w-3.5 h-3.5" />
-              <span>Set Budget</span>
+              <Target className="w-3.5 h-3.5 text-amber-400" />
+              <span>Budget: {reelsData.dailyReelsBudget || 5}</span>
             </button>
           </div>
         </div>
@@ -140,18 +161,18 @@ export function BrainPalReelsTracker({ user }) {
             <div className="text-2xl font-black text-rose-400 font-mono mt-1">
               {screenTime.distractedMinutes || 0}m
             </div>
-            <span className="text-[10px] text-stone-500">App-Switches &amp; Tab Blurs</span>
+            <span className="text-[10px] text-stone-500">Reels &amp; App Switches</span>
           </div>
 
           <div className="p-4 rounded-2xl bg-stone-900/80 border border-stone-800">
-            <span className="text-[10px] font-black uppercase tracking-wider text-stone-400">Daily Short-Video Limit</span>
+            <span className="text-[10px] font-black uppercase tracking-wider text-stone-400">Reels Watched vs Limit</span>
             <div className="text-2xl font-black text-amber-400 font-mono mt-1">
-              {reelsData.todayReelsWatched || 0} / {reelsData.dailyReelsBudget || 20}
+              {reelsData.todayReelsWatched || 0} / {reelsData.dailyReelsBudget || 5}
             </div>
             <span className="text-[10px] text-stone-500">
               {(reelsData.dailyReelsBudget - (reelsData.todayReelsWatched || 0)) > 0 
-                ? `${reelsData.dailyReelsBudget - (reelsData.todayReelsWatched || 0)} Units Remaining` 
-                : 'Budget Exceeded (Strict Lock)'}
+                ? `${reelsData.dailyReelsBudget - (reelsData.todayReelsWatched || 0)} Reels Remaining` 
+                : 'Quota Exceeded (Hard Locked)'}
             </span>
           </div>
 
@@ -160,189 +181,155 @@ export function BrainPalReelsTracker({ user }) {
             <div className="text-2xl font-black text-cyan-400 font-mono mt-1">
               {complianceScore}%
             </div>
-            <span className="text-[10px] text-stone-500">Class Rank: High Tier</span>
+            <span className="text-[10px] text-stone-500">CBSE Scholar High Tier</span>
           </div>
 
         </div>
       </div>
 
-      {/* Live Breach Detection Log & Real Device Controls */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        {/* Left: Tab & App Switch Detector */}
-        <div className="p-6 rounded-3xl bg-stone-900 border border-stone-800 space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Activity className="w-5 h-5 text-emerald-400" />
-              <h3 className="text-base font-black text-white">Tab-Switch &amp; App Guardian</h3>
-            </div>
-            <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold">
-              {breaches} Breaches Today
-            </span>
-          </div>
-
-          <p className="text-xs text-stone-300 leading-relaxed">
-            Whenever you start a Deep Study session and switch tabs or minimize the browser, our background Page Visibility guardian immediately logs the departure, counts the seconds away, and sounds the focus defense alert.
-          </p>
-
-          <div className="p-4 rounded-2xl bg-stone-950 border border-stone-800 space-y-2.5">
-            <div className="flex items-center justify-between text-xs font-bold">
-              <span className="text-stone-400">Background Guardian Status</span>
-              <span className="text-emerald-400 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                Active &amp; Guarding
-              </span>
-            </div>
-            <div className="flex items-center justify-between text-xs font-bold">
-              <span className="text-stone-400">Anti-Doomscroll Velocity</span>
-              <span className="text-stone-200 font-mono">1.2 checks/min</span>
-            </div>
-            <div className="flex items-center justify-between text-xs font-bold">
-              <span className="text-stone-400">Strict Anti-Uninstall Shield</span>
-              <span className="text-amber-400 font-mono">Enabled</span>
-            </div>
-          </div>
-
-          <div className="pt-2 flex items-center gap-3">
-            <button
-              onClick={handleRecordSimulatedBreach}
-              className="flex-1 py-2.5 px-4 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer"
-            >
-              <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
-              <span>Test Breach Detector</span>
-            </button>
-            <button
-              onClick={handleResetReels}
-              className="py-2.5 px-4 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
-              title="Reset Counter"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span>Reset</span>
-            </button>
-          </div>
+      {/* Main Tab View: Interactive Reels Feed OR Guardian Analytics */}
+      {activeTab === 'feed' ? (
+        <div className="w-full">
+          <BrainPalInteractiveReelsFeed onReturnToStudy={() => setActiveTab('analytics')} />
         </div>
-
-        {/* Right: Head Boy Rishit Shankar's Study Discipline Protocol */}
-        <div className="p-6 rounded-3xl bg-stone-900 border border-stone-800 space-y-4">
-          <div className="flex items-center gap-2">
-            <Award className="w-5 h-5 text-amber-400" />
-            <h3 className="text-base font-black text-white">Study Protocol by Head Boy Rishit Shankar</h3>
-          </div>
-
-          <div className="space-y-3 text-xs text-stone-300">
-            <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-1">
-              <strong className="text-amber-300 font-bold block">1. The 50/10 Focus Principle:</strong>
-              <p className="text-stone-300 leading-relaxed">
-                Study DAV textbooks for 50 uninterrupted minutes with zero tab switches. Take a strict 10-minute non-screen break to let memory consolidate.
-              </p>
-            </div>
-
-            <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 space-y-1">
-              <strong className="text-emerald-300 font-bold block">2. Zero-Doomscroll Rule:</strong>
-              <p className="text-stone-300 leading-relaxed">
-                Short-form vertical video degrades working memory and mathematical retention. Keep your daily short-video budget below 20 minutes before examinations.
-              </p>
-            </div>
-
-            <div className="p-3 rounded-2xl bg-purple-500/10 border border-purple-500/20 space-y-1">
-              <strong className="text-purple-300 font-bold block">3. Binaural &amp; Soundscape Anchoring:</strong>
-              <p className="text-stone-300 leading-relaxed">
-                Use our built-in 40Hz gamma focus beats or rain acoustics to silence ambient distractions and trigger flow states.
-              </p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* Modal: Daily Budget Adjuster */}
-      {showBudgetModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 animate-fadeIn">
-          <div className="w-full max-w-md bg-stone-900 border border-stone-800 rounded-3xl p-6 space-y-5 shadow-2xl">
+      ) : (
+        /* Live Breach Detection Log & Real Device Controls */
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          {/* Left: Tab & App Switch Detector */}
+          <div className="p-6 rounded-3xl bg-stone-900 border border-stone-800 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-black text-white flex items-center gap-2">
-                <Target className="w-5 h-5 text-emerald-400" />
-                <span>Set Daily Short-Video Budget</span>
-              </h3>
-              <button onClick={() => setShowBudgetModal(false)} className="text-stone-400 hover:text-white">✕</button>
+              <div className="flex items-center gap-2">
+                <Activity className="w-5 h-5 text-emerald-400" />
+                <h3 className="text-base font-black text-white">Tab-Switch &amp; App Guardian</h3>
+              </div>
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold">
+                {breaches} Breaches Today
+              </span>
             </div>
 
             <p className="text-xs text-stone-300 leading-relaxed">
-              Define the maximum short-form videos permitted per day. Once reached, the strict lockout activates to safeguard your study time.
+              Whenever you start a Deep Study session and switch tabs or minimize the browser, our background Page Visibility guardian immediately logs the departure, counts the seconds away, and sounds the focus defense alert.
             </p>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-xs font-bold text-stone-300">
-                <span>Daily Allowance:</span>
-                <span className="text-emerald-400 font-mono text-base">{tempBudget} Units</span>
+            <div className="p-4 rounded-2xl bg-stone-950 border border-stone-800 space-y-2.5">
+              <div className="flex items-center justify-between text-xs font-bold">
+                <span className="text-stone-400">Background Guardian Status</span>
+                <span className="text-emerald-400 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  Active &amp; Guarding
+                </span>
               </div>
-              <input
-                type="range"
-                min="5"
-                max="60"
-                step="5"
-                value={tempBudget}
-                onChange={(e) => setTempBudget(e.target.value)}
-                className="w-full accent-emerald-500 cursor-pointer"
-              />
+              <div className="flex items-center justify-between text-xs font-bold">
+                <span className="text-stone-400">Anti-Doomscroll Velocity</span>
+                <span className="text-stone-200 font-mono">
+                  {reelsData.doomscrollVelocity || 0} reels/min
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-xs font-bold">
+                <span className="text-stone-400">Strict Anti-Uninstall Shield</span>
+                <span className="text-amber-400 font-mono">Enabled</span>
+              </div>
             </div>
 
-            <div className="flex gap-3 pt-2">
+            <div className="pt-2 flex items-center gap-3">
+              <button
+                onClick={handleRecordSimulatedBreach}
+                className="flex-1 py-2.5 px-4 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                <span>Test Breach Detector</span>
+              </button>
+              <button
+                onClick={handleResetReels}
+                className="py-2.5 px-4 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
+                title="Reset Counter"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Reset</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Right: Head Boy Rishit Shankar's Study Discipline Protocol */}
+          <div className="p-6 rounded-3xl bg-stone-900 border border-stone-800 space-y-4">
+            <div className="flex items-center gap-2">
+              <Award className="w-5 h-5 text-amber-400" />
+              <h3 className="text-base font-black text-white">Study Protocol by Head Boy Rishit Shankar</h3>
+            </div>
+
+            <div className="space-y-3 text-xs text-stone-300">
+              <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-1">
+                <strong className="text-amber-300 font-bold block">1. The 50/10 Focus Principle:</strong>
+                <p className="text-stone-300 leading-relaxed">
+                  Study DAV textbooks for 50 uninterrupted minutes with zero tab switches. Take a strict 10-minute non-screen break to let memory consolidate.
+                </p>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 space-y-1">
+                <strong className="text-emerald-300 font-bold block">2. Zero-Doomscroll Rule:</strong>
+                <p className="text-stone-300 leading-relaxed">
+                  Short-form vertical video degrades working memory and mathematical retention. Keep your daily short-video budget below 5 reels before examinations.
+                </p>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-purple-500/10 border border-purple-500/20 space-y-1">
+                <strong className="text-purple-300 font-bold block">3. Binaural &amp; Soundscape Anchoring:</strong>
+                <p className="text-stone-300 leading-relaxed">
+                  Use our built-in 432Hz alpha focus beats or rain acoustics to silence ambient distractions and trigger flow states.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      )}
+
+      {/* Set Daily Budget Modal */}
+      {showBudgetModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-stone-900 border border-stone-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+            <div className="flex items-center gap-3">
+              <Target className="w-6 h-6 text-amber-400" />
+              <div>
+                <h3 className="text-base font-black text-white">Daily Reels Budget</h3>
+                <p className="text-xs text-stone-400">Set maximum reels allowed per day</p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-stone-300">Choose Budget Limit</label>
+              <div className="grid grid-cols-4 gap-2">
+                {[3, 5, 10, 20].map(val => (
+                  <button
+                    key={val}
+                    onClick={() => setTempBudget(val)}
+                    className={`py-2 rounded-xl text-xs font-black transition cursor-pointer border ${
+                      tempBudget === val
+                        ? 'bg-amber-500 text-stone-950 border-amber-400'
+                        : 'bg-stone-800 text-stone-300 border-stone-700'
+                    }`}
+                  >
+                    {val} reels
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 pt-2">
               <button
                 onClick={() => setShowBudgetModal(false)}
-                className="flex-1 py-2.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs font-bold transition"
+                className="flex-1 py-2.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs font-bold cursor-pointer transition"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveBudget}
-                className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black transition shadow-lg"
+                className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-stone-950 text-xs font-black cursor-pointer transition"
               >
-                Save Budget
+                Save
               </button>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal: Mindfulness Breathing Reset */}
-      {showMindfulnessModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 animate-fadeIn">
-          <div className="w-full max-w-sm bg-stone-900 border border-purple-500/40 rounded-3xl p-8 text-center space-y-6 shadow-2xl">
-            <div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-purple-400 bg-purple-950 px-3 py-1 rounded-full border border-purple-800">
-                Dopamine Reset
-              </span>
-              <h3 className="text-xl font-black text-white mt-3">Reset Your Prefrontal Cortex</h3>
-            </div>
-
-            {/* Breathing Circle Animation */}
-            <div className="relative w-36 h-36 mx-auto flex items-center justify-center">
-              <div className={`absolute inset-0 rounded-full transition-all duration-1000 ${
-                breathPhase === 'inhale' 
-                  ? 'bg-purple-500/30 scale-110 border-2 border-purple-400' 
-                  : breathPhase === 'hold'
-                    ? 'bg-amber-500/30 scale-105 border-2 border-amber-400'
-                    : 'bg-emerald-500/20 scale-90 border-2 border-emerald-400'
-              }`} />
-              <div className="relative z-10 text-center">
-                <span className="text-4xl font-black text-white font-mono">{mindfulnessCountdown}s</span>
-                <span className="block text-xs uppercase font-bold tracking-widest text-purple-300 mt-1">
-                  {breathPhase.toUpperCase()}
-                </span>
-              </div>
-            </div>
-
-            <p className="text-xs text-stone-300">
-              Deep breathing restores attention span, lowers cortisol, and breaks impulsive scrolling habits.
-            </p>
-
-            <button
-              onClick={() => setShowMindfulnessModal(false)}
-              className="w-full py-2.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs font-bold transition"
-            >
-              Skip Reset
-            </button>
           </div>
         </div>
       )}
@@ -350,5 +337,3 @@ export function BrainPalReelsTracker({ user }) {
     </div>
   );
 }
-
-export default BrainPalReelsTracker;
