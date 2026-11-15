@@ -71,10 +71,14 @@ async function main() {
   // 2. Build Fresh Production Web Bundle via Vite
   log(2, 'Building Fresh Production Web Bundle via Vite');
   const distDir = path.join(ROOT_DIR, 'dist');
-  if (!fs.existsSync(distDir) || process.argv.includes('--rebuild')) {
-    console.log('Running vite build with safe outDir...');
-    execSync('npx vite build --emptyOutDir false', { cwd: ROOT_DIR, stdio: 'inherit' });
-    console.log('✅ Fresh production build generated in dist/.');
+  if (process.argv.includes('--rebuild') || !fs.existsSync(distDir)) {
+    try {
+      console.log('Running production vite build...');
+      execSync('npx vite build --emptyOutDir false', { cwd: ROOT_DIR, stdio: 'inherit' });
+      console.log('✅ Fresh production build generated in dist/.');
+    } catch (e) {
+      console.warn('Vite build warning (proceeding with dist):', e.message);
+    }
   } else {
     console.log('✅ Utilizing fresh production web bundle in dist/.');
   }
@@ -177,6 +181,7 @@ async function main() {
   fs.writeFileSync(path.join(valuesDir, 'strings.xml'), `<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">DAV Smart Portal</string>
+    <string name="accessibility_service_description">DAV ReGain Focus OS App Blocker intercepts distracting apps like YouTube, Instagram, and games during study hours to enforce deep concentration.</string>
 </resources>
 `);
 
@@ -205,6 +210,16 @@ async function main() {
   // xml/
   const xmlDir = path.join(resDir, 'xml');
   ensureDir(xmlDir);
+  fs.writeFileSync(path.join(xmlDir, 'accessibility_service_config.xml'), `<?xml version="1.0" encoding="utf-8"?>
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/accessibility_service_description"
+    android:accessibilityEventTypes="typeWindowStateChanged"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:notificationTimeout="50"
+    android:canRetrieveWindowContent="false"
+    android:accessibilityFlags="flagDefault" />
+`);
+
   fs.writeFileSync(path.join(xmlDir, 'network_security_config.xml'), `<?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <base-config cleartextTrafficPermitted="true">
@@ -247,6 +262,9 @@ async function main() {
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
 
@@ -265,6 +283,7 @@ async function main() {
         <activity
             android:name="com.davsmartportal.app.MainActivity"
             android:exported="true"
+            android:launchMode="singleTop"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
             android:windowSoftInputMode="adjustResize"
             android:label="@string/app_name">
@@ -273,6 +292,19 @@ async function main() {
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name="com.davsmartportal.app.FocusBlockerAccessibilityService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:label="DAV ReGain Focus App Blocker"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
     </application>
 </manifest>
 `;
@@ -284,7 +316,19 @@ async function main() {
   const javaContent = `package com.davsmartportal.app;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.DownloadManager;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
+import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -385,6 +429,36 @@ public class MainActivity extends Activity {
         String targetUrl = "https://appassets.androidplatform.net/index.html";
         Log.i(TAG, "Loading Application Entrypoint: " + targetUrl);
         mWebView.loadUrl(targetUrl);
+        handleBlockedAppIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleBlockedAppIntent(intent);
+    }
+
+    public static class AppBlockedRunner implements Runnable {
+        private final WebView wv;
+        private final String pkg;
+        public AppBlockedRunner(WebView w, String p) { this.wv = w; this.pkg = p; }
+        @Override
+        public void run() {
+            if (wv != null) {
+                wv.evaluateJavascript("window.onNativeAppBlocked && window.onNativeAppBlocked('" + pkg + "');", null);
+            }
+        }
+    }
+
+    private void handleBlockedAppIntent(Intent intent) {
+        if (intent != null && intent.hasExtra("blocked_package")) {
+            final String pkg = intent.getStringExtra("blocked_package");
+            Toast.makeText(this, "🚫 App Blocked: Stay in DAV ReGain Focus OS!", Toast.LENGTH_LONG).show();
+            if (mWebView != null) {
+                mWebView.post(new AppBlockedRunner(mWebView, pkg));
+            }
+        }
     }
 
     private void configureWebView() {
@@ -635,6 +709,137 @@ public class MainActivity extends Activity {
         public boolean isNativeApk() {
             return true;
         }
+
+        @android.webkit.JavascriptInterface
+        public boolean isAccessibilityServiceEnabled() {
+            return FocusBlockerAccessibilityService.isServiceRunning();
+        }
+
+        @android.webkit.JavascriptInterface
+        public void setFocusActive(boolean active) {
+            try {
+                SharedPreferences prefs = act.getSharedPreferences(FocusBlockerAccessibilityService.PREFS_NAME, Context.MODE_PRIVATE);
+                prefs.edit().putBoolean(FocusBlockerAccessibilityService.KEY_FOCUS_ACTIVE, active).apply();
+                if (active) {
+                    showToast("🔒 DAV ReGain Focus Active: Distracting apps locked!");
+                }
+            } catch (Exception ignored) {}
+        }
+
+        @android.webkit.JavascriptInterface
+        public void setBlockedPackages(String jsonArrayStr) {
+            try {
+                JSONArray arr = new JSONArray(jsonArrayStr);
+                Set<String> set = new HashSet<String>();
+                for (int i = 0; i < arr.length(); i++) {
+                    set.add(arr.getString(i));
+                }
+                SharedPreferences prefs = act.getSharedPreferences(FocusBlockerAccessibilityService.PREFS_NAME, Context.MODE_PRIVATE);
+                prefs.edit().putStringSet(FocusBlockerAccessibilityService.KEY_BLOCKED_PKGS, set).apply();
+                Log.i(MainActivity.TAG, "Blocked packages updated: " + set.size() + " apps");
+            } catch (Exception e) {
+                Log.e(MainActivity.TAG, "Error setting blocked packages: " + e.getMessage());
+            }
+        }
+
+        @android.webkit.JavascriptInterface
+        public String getRealUsageStatsJson() {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    UsageStatsManager usm = (UsageStatsManager) act.getSystemService(Context.USAGE_STATS_SERVICE);
+                    if (usm != null) {
+                        Calendar cal = Calendar.getInstance();
+                        cal.set(Calendar.HOUR_OF_DAY, 0);
+                        cal.set(Calendar.MINUTE, 0);
+                        cal.set(Calendar.SECOND, 0);
+                        long start = cal.getTimeInMillis();
+                        long end = System.currentTimeMillis();
+
+                        List<UsageStats> statsList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, start, end);
+                        if (statsList != null && !statsList.isEmpty()) {
+                            JSONObject result = new JSONObject();
+                            JSONArray appArray = new JSONArray();
+                            long totalForegroundMs = 0;
+                            long usefulForegroundMs = 0;
+                            long distractedForegroundMs = 0;
+
+                            for (UsageStats u : statsList) {
+                                long timeInFg = u.getTotalTimeInForeground();
+                                if (timeInFg > 0) {
+                                    totalForegroundMs += timeInFg;
+                                    String pkg = u.getPackageName();
+                                    boolean isDistracted = pkg.contains("youtube") || pkg.contains("instagram") || pkg.contains("whatsapp") || pkg.contains("facebook") || pkg.contains("tiktok") || pkg.contains("hotstar") || pkg.contains("snapchat") || pkg.contains("netflix");
+                                    if (isDistracted) {
+                                        distractedForegroundMs += timeInFg;
+                                    } else {
+                                        usefulForegroundMs += timeInFg;
+                                    }
+
+                                    JSONObject item = new JSONObject();
+                                    item.put("package", pkg);
+                                    item.put("minutes", Math.round(timeInFg / 60000.0));
+                                    item.put("lastTimeUsed", u.getLastTimeUsed());
+                                    item.put("isDistracted", isDistracted);
+                                    appArray.put(item);
+                                }
+                            }
+                            result.put("totalMinutes", Math.round(totalForegroundMs / 60000.0));
+                            result.put("usefulMinutes", Math.round(usefulForegroundMs / 60000.0));
+                            result.put("distractedMinutes", Math.round(distractedForegroundMs / 60000.0));
+                            result.put("apps", appArray);
+                            result.put("isRealData", true);
+                            return result.toString();
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(MainActivity.TAG, "Error querying real usage stats: " + e.getMessage());
+            }
+            try {
+                JSONObject fallback = new JSONObject();
+                fallback.put("isRealData", false);
+                fallback.put("totalMinutes", 0);
+                fallback.put("usefulMinutes", 0);
+                fallback.put("distractedMinutes", 0);
+                return fallback.toString();
+            } catch (Exception ignored) {}
+            return "{}";
+        }
+
+        @android.webkit.JavascriptInterface
+        public String getRealInstalledAppsJson() {
+            try {
+                PackageManager pm = act.getPackageManager();
+                List<ApplicationInfo> apps = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+                JSONArray list = new JSONArray();
+                for (ApplicationInfo app : apps) {
+                    if ((app.flags & ApplicationInfo.FLAG_SYSTEM) == 0 || 
+                        app.packageName.contains("youtube") || 
+                        app.packageName.contains("chrome")) {
+                        JSONObject item = new JSONObject();
+                        item.put("package", app.packageName);
+                        item.put("name", pm.getApplicationLabel(app).toString());
+                        list.put(item);
+                    }
+                }
+                return list.toString();
+            } catch (Exception e) {
+                return "[]";
+            }
+        }
+
+        @android.webkit.JavascriptInterface
+        public void killBackgroundProcesses(String packageName) {
+            try {
+                ActivityManager am = (ActivityManager) act.getSystemService(Context.ACTIVITY_SERVICE);
+                if (am != null) {
+                    am.killBackgroundProcesses(packageName);
+                    showToast("Stopped background processes for " + packageName);
+                }
+            } catch (Exception e) {
+                Log.e(MainActivity.TAG, "Cannot kill background processes: " + e.getMessage());
+            }
+        }
     }
 
     public static class LocalWebViewClient extends WebViewClient {
@@ -849,6 +1054,86 @@ public class MainActivity extends Activity {
   fs.writeFileSync(path.join(srcDir, 'MainActivity.java'), javaContent);
   console.log('✅ MainActivity.java authored.');
 
+  const serviceContent = `package com.davsmartportal.app;
+
+import android.accessibilityservice.AccessibilityService;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.util.Log;
+import android.view.accessibility.AccessibilityEvent;
+import java.util.Set;
+
+public class FocusBlockerAccessibilityService extends AccessibilityService {
+
+    public static final String TAG = "DAV_FOCUS_SERVICE";
+    public static final String PREFS_NAME = "dav_focus_prefs";
+    public static final String KEY_BLOCKED_PKGS = "blocked_packages";
+    public static final String KEY_FOCUS_ACTIVE = "focus_active";
+
+    private static FocusBlockerAccessibilityService sInstance = null;
+
+    public static boolean isServiceRunning() {
+        return sInstance != null;
+    }
+
+    @Override
+    public void onServiceConnected() {
+        super.onServiceConnected();
+        sInstance = this;
+        Log.i(TAG, "DAV ReGain Focus Blocker Accessibility Service connected!");
+    }
+
+    @Override
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+        if (event == null) return;
+        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            CharSequence pkgName = event.getPackageName();
+            if (pkgName == null) return;
+            String pkg = pkgName.toString();
+
+            if (pkg.equals(getPackageName()) || 
+                pkg.contains("launcher") || 
+                pkg.contains("systemui") || 
+                pkg.contains("settings") || 
+                pkg.contains("inputmethod")) {
+                return;
+            }
+
+            try {
+                SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+                boolean isFocusActive = prefs.getBoolean(KEY_FOCUS_ACTIVE, false);
+                Set<String> blockedSet = prefs.getStringSet(KEY_BLOCKED_PKGS, null);
+
+                if (blockedSet != null && blockedSet.contains(pkg)) {
+                    Log.w(TAG, "INTERCEPTED BLOCKED APP: " + pkg);
+                    performGlobalAction(GLOBAL_ACTION_HOME);
+
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("blocked_package", pkg);
+                    intent.putExtra("timestamp", System.currentTimeMillis());
+                    startActivity(intent);
+                }
+            } catch (Exception ignored) {}
+        }
+    }
+
+    @Override
+    public void onInterrupt() {
+        Log.w(TAG, "DAV ReGain Focus Blocker interrupted");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        sInstance = null;
+    }
+}
+`;
+  fs.writeFileSync(path.join(srcDir, 'FocusBlockerAccessibilityService.java'), serviceContent);
+  console.log('✅ FocusBlockerAccessibilityService.java authored.');
+
   // 7. Step A: Compile Android Resources via AAPT2
   log(7, 'Compiling Android Resources with AAPT2');
   const compiledResZip = path.join(outBuildDir, 'compiled_res.zip');
@@ -874,6 +1159,7 @@ public class MainActivity extends Activity {
 
   const javaFiles = [
     path.join(srcDir, 'MainActivity.java'),
+    path.join(srcDir, 'FocusBlockerAccessibilityService.java'),
     path.join(javaOutDir, 'com', 'davsmartportal', 'app', 'R.java')
   ].map(f => `"${f}"`).join(' ');
 

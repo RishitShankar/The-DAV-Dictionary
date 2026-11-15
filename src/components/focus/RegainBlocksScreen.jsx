@@ -92,20 +92,38 @@ export function RegainBlocksScreen({ onOpenShortsTracker }) {
         </button>
       </div>
 
-      {/* Native APK Accessibility Service Shield Status */}
+      {/* Native APK Accessibility Service Shield Status (Real Android OS Interception) */}
       {typeof window !== 'undefined' && window.Android && (
-        <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-stone-900 to-stone-950 border border-emerald-500/40 flex items-center justify-between gap-3 shadow-xl">
+        <div className={`p-4 rounded-2xl flex items-center justify-between gap-3 shadow-xl border ${
+          window.Android.isAccessibilityServiceEnabled && window.Android.isAccessibilityServiceEnabled()
+            ? 'bg-gradient-to-r from-emerald-950/90 via-stone-900 to-stone-950 border-emerald-500/50'
+            : 'bg-gradient-to-r from-amber-950/90 via-stone-900 to-stone-950 border-amber-500/50'
+        }`}>
           <div className="flex items-center space-x-3 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center font-bold text-lg shrink-0">
-              🛡️
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg shrink-0 border ${
+              window.Android.isAccessibilityServiceEnabled && window.Android.isAccessibilityServiceEnabled()
+                ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
+                : 'bg-amber-500/20 text-amber-400 border-amber-500/40 animate-pulse'
+            }`}>
+              {window.Android.isAccessibilityServiceEnabled && window.Android.isAccessibilityServiceEnabled() ? '🛡️' : '⚠️'}
             </div>
             <div className="min-w-0">
               <h4 className="text-xs font-black text-white flex items-center gap-1.5 truncate">
-                <span>Android OS App Blocker Service</span>
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>
+                  {window.Android.isAccessibilityServiceEnabled && window.Android.isAccessibilityServiceEnabled()
+                    ? 'Android Background App Blocker: Active'
+                    : 'Android App Blocker: Permission Needed'}
+                </span>
+                <span className={`w-2 h-2 rounded-full ${
+                  window.Android.isAccessibilityServiceEnabled && window.Android.isAccessibilityServiceEnabled()
+                    ? 'bg-emerald-400 animate-pulse'
+                    : 'bg-amber-400'
+                }`} />
               </h4>
               <p className="text-[11px] text-stone-400 mt-0.5 truncate">
-                Background app interception linked to native Android accessibility service.
+                {window.Android.isAccessibilityServiceEnabled && window.Android.isAccessibilityServiceEnabled()
+                  ? 'All selected distracting apps (YouTube, Instagram, games) are automatically blocked in background.'
+                  : 'Enable "DAV ReGain Focus Blocker" in Accessibility to stop apps when opened.'}
               </p>
             </div>
           </div>
@@ -115,9 +133,13 @@ export function RegainBlocksScreen({ onOpenShortsTracker }) {
                 window.Android.openAccessibilitySettings();
               }
             }}
-            className="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-bold text-xs cursor-pointer shadow-md shrink-0 transition active:scale-95"
+            className={`px-3.5 py-2 rounded-xl font-black text-xs cursor-pointer shadow-md shrink-0 transition active:scale-95 ${
+              window.Android.isAccessibilityServiceEnabled && window.Android.isAccessibilityServiceEnabled()
+                ? 'bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-700'
+                : 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 text-stone-950 animate-bounce'
+            }`}
           >
-            Settings
+            {window.Android.isAccessibilityServiceEnabled && window.Android.isAccessibilityServiceEnabled() ? 'Configure' : 'Enable Blocker'}
           </button>
         </div>
       )}

@@ -46,9 +46,10 @@ export function RegainScreenTimeAnalytics() {
   const handleScanDevice = async () => {
     setIsScanning(true);
     try {
+      focusDataStore.queryRealAndroidUsageStats();
       const updated = await focusDataStore.scanDeviceTelemetryAsync();
       setScreenTimeData(updated);
-      showToast('✅ Device telemetry & battery metrics updated in real-time!');
+      showToast('✅ Real Android system screen time & telemetry updated!');
     } catch (e) {
       const updated = focusDataStore.scanDeviceTelemetry();
       setScreenTimeData(updated);

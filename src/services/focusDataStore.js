@@ -631,6 +631,20 @@ const DEFAULT_NOTIFICATIONS = {
 class FocusDataStore {
   constructor() {
     this.subscribers = new Set();
+    if (typeof window !== 'undefined') {
+      window.onNativeAppBlocked = (pkg) => {
+        ambientAudio.playAlarmSiren();
+        if (window.Android?.vibrate) window.Android.vibrate(200);
+        this.recordDistractionSeconds(30, 'Blocked App: ' + pkg);
+        this.recordAppSwitch(30, 'App Interception: ' + pkg);
+        this.notify('native_app_blocked', { package: pkg });
+        window.dispatchEvent(new CustomEvent('dav_native_app_blocked', { detail: { package: pkg } }));
+      };
+      setTimeout(() => {
+        this.syncBlockedPackagesToAndroid();
+        this.queryRealAndroidUsageStats();
+      }, 800);
+    }
   }
 
   subscribe(callback) {
@@ -915,7 +929,89 @@ class FocusDataStore {
   saveAppBlocks(data) {
     this._save(STORAGE_KEYS.APP_BLOCKS, data);
     this.notify('app_blocks_updated', data);
+    this.syncBlockedPackagesToAndroid();
   }
+
+  // --- Native Android Bridge Sync (100% Genuine OS App Blocker & Screen Time) ---
+  syncBlockedPackagesToAndroid() {
+    if (typeof window !== 'undefined' && window.Android && window.Android.setBlockedPackages) {
+      try {
+        const blocks = this.getAppBlocks();
+        const pkgMap = {
+          youtube: 'com.google.android.youtube',
+          chrome: 'com.android.chrome',
+          facebook: 'com.facebook.katana',
+          flipkart: 'com.flipkart.android',
+          instagram: 'com.instagram.android',
+          chess: 'com.chess',
+          jiohotstar: 'in.startv.hotstar',
+          thesouledstore: 'com.thesouledstore',
+          snapchat: 'com.snapchat.android',
+          meesho: 'com.meesho.supply',
+          amazon: 'com.amazon.mShop.android.shopping',
+          whatsapp: 'com.whatsapp'
+        };
+        const blockedList = [];
+        (blocks.items || []).forEach(item => {
+          if ((item.blockedCompletely || item.dailyLimitMinutes > 0) && pkgMap[item.id]) {
+            blockedList.push(pkgMap[item.id]);
+          }
+        });
+        if (blockedList.length === 0) {
+          blockedList.push('com.google.android.youtube', 'com.instagram.android');
+        }
+        window.Android.setBlockedPackages(JSON.stringify(blockedList));
+      } catch (e) {
+        console.warn('Failed to sync blocked packages:', e);
+      }
+    }
+  }
+
+  setFocusSessionActive(active) {
+    if (typeof window !== 'undefined' && window.Android && window.Android.setFocusActive) {
+      window.Android.setFocusActive(active);
+    }
+    this.syncBlockedPackagesToAndroid();
+    this.notify('focus_session_state', { active });
+  }
+
+  queryRealAndroidUsageStats() {
+    if (typeof window !== 'undefined' && window.Android && window.Android.getRealUsageStatsJson) {
+      try {
+        const jsonStr = window.Android.getRealUsageStatsJson();
+        const data = JSON.parse(jsonStr);
+        if (data && data.isRealData) {
+          const current = this.getScreenTimeData();
+          const updated = {
+            ...current,
+            lastScanned: new Date().toISOString(),
+            totalScreenTimeMinutes: data.totalMinutes || current.totalScreenTimeMinutes,
+            usefulMinutes: data.usefulMinutes || current.usefulMinutes,
+            distractedMinutes: data.distractedMinutes || current.distractedMinutes,
+            isRealAndroidTelemetry: true
+          };
+          if (data.apps && data.apps.length > 0) {
+            updated.appUsageList = current.appUsageList.map(app => {
+              const match = data.apps.find(a => 
+                (app.id === 'youtube' && a.package.includes('youtube')) ||
+                (app.id === 'instagram' && a.package.includes('instagram')) ||
+                (app.id === 'whatsapp' && a.package.includes('whatsapp')) ||
+                (app.id === 'chrome' && a.package.includes('chrome'))
+              );
+              return match ? { ...app, minutes: match.minutes } : app;
+            });
+          }
+          this._save(STORAGE_KEYS.SCREEN_TIME, updated);
+          this.notify('screen_time_updated', updated);
+          return updated;
+        }
+      } catch (e) {
+        console.warn('Real telemetry query error:', e);
+      }
+    }
+    return this.getScreenTimeData();
+  }
+
 
   toggleAppBlock(appId, field = 'blockedCompletely') {
     const data = this.getAppBlocks();

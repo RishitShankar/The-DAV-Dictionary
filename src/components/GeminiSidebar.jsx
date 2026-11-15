@@ -85,7 +85,7 @@ export function GeminiSidebar({
     { id: 6, name: 'Section 6: Videos & Explanations', icon: Video, status: 'Lectures & Notes' },
     { id: 7, name: 'Section 7: Kids Fun Navigator', icon: Bus, status: 'Kids Portal' },
     { id: 8, name: 'Section 8: Examination & Practice', icon: CheckSquare, status: 'Exam & VVI Suite' },
-    { id: 9, name: 'Section 9: Deep Study Mode', icon: Trophy, status: 'Deep Study' },
+    { id: 9, name: 'Section 9: Campus Leaderboard', icon: Trophy, status: 'Campus Scholastic Leaderboard' },
     { id: 10, name: 'Section 10: Settings Hub', icon: Settings, status: 'Settings & Student Hub' },
     { id: 11, name: 'Section 11: Donate & Reviews', icon: Heart, status: 'Donate, Reviews & Subscriptions' },
     { id: 12, name: 'Section 12: Developer Reviews', icon: Star, status: 'Reviews & Feedback' },

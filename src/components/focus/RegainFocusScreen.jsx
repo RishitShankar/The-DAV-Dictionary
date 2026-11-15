@@ -259,19 +259,22 @@ export function RegainFocusScreen({
       setBuddyMood('focused');
       setBuddyQuote('Focus locked in! Let’s crush this chapter.');
       ambientAudio.playBellChime();
-      showToast('Focus session started! Textbooks active.');
+      focusDataStore.setFocusSessionActive(true);
+      showToast('Focus session started! Textbooks active & distracting apps locked.');
     } else if (isPaused) {
       setIsPaused(false);
       setBuddyMood('focused');
       setBuddyQuote('Focus resumed! Keep the momentum going.');
       ambientAudio.playBellChime();
-      showToast('Focus session resumed!');
+      focusDataStore.setFocusSessionActive(true);
+      showToast('Focus session resumed! Apps locked.');
     } else {
       // Pause toggle
       setIsPaused(true);
       setBuddyMood('sleepy');
       setBuddyQuote('Session paused. Take a deep breath and resume when ready!');
       ambientAudio.stopAll();
+      focusDataStore.setFocusSessionActive(false);
       showToast('Session paused.');
     }
   };
@@ -288,6 +291,7 @@ export function RegainFocusScreen({
     setIsOnBreak(false);
     setBuddyMood('happy');
     ambientAudio.stopAll();
+    focusDataStore.setFocusSessionActive(false);
     showToast('Focus session stopped.');
   };
 

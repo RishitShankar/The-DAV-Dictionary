@@ -292,16 +292,16 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
     },
     {
       id: 9,
-      title: 'Section 9: Deep Study Mode & Campus Focus Suite',
-      shortTitle: 'Deep Study Mode',
+      title: 'Section 9: Campus Scholastic Leaderboard',
+      shortTitle: 'Campus Leaderboard',
       icon: Trophy,
       emoji: '🏆',
       color: 'from-amber-500 to-yellow-600',
       cardBg: 'from-amber-500/10 via-yellow-50/80 to-white',
       borderHover: 'hover:border-amber-500',
-      tag: 'Campus Rankings',
+      tag: 'Top 100 Scholars',
       tagColor: 'bg-amber-100 text-amber-950 border-amber-300 font-black',
-      description: 'Official Campus Leaderboard tracking study time across Iron, Bronze, Silver, Gold & Diamond tiers, combined with deep focus sessions and binaural soundscapes.'
+      description: 'Official Campus Leaderboard tracking DAV student study hours across Gold, Silver, Bronze, Platinum, and Iron tiers with Top 100 rankings and real-time scholastic honors.'
     },
     {
       id: 10,
@@ -335,11 +335,11 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
       shortTitle: 'Review Vault',
       icon: Star,
       emoji: '⭐',
-      color: 'from-amber-700 to-red-900',
-      cardBg: 'from-amber-500/10 via-red-50/80 to-white',
-      borderHover: 'hover:border-amber-500',
+      color: 'from-rose-700 to-red-900',
+      cardBg: 'from-rose-500/10 via-red-50/80 to-white',
+      borderHover: 'hover:border-rose-500',
       tag: 'Developer Vault Only',
-      tagColor: 'bg-red-100 text-red-900 border-red-300 font-bold',
+      tagColor: 'bg-rose-100 text-rose-900 border-rose-300 font-bold',
       description: 'Reserved exclusively for Developer Rishit Shankar. Inspect student feedback, verify audio messages, analyze ratings, and export feedback summaries.'
     },
     {

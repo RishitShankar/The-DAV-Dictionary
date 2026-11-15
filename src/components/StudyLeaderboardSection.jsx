@@ -40,29 +40,17 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
     (navigator.userAgent && navigator.userAgent.includes('DAVSmartPortalApp'))
   );
 
-  // Manual APK Simulator toggle (allows testing APK mode on web)
-  const [isApkModeSimulated, setIsApkModeSimulated] = useState(() => {
-    try {
-      const saved = localStorage.getItem('dav_apk_focus_mode');
-      return saved === 'true';
-    } catch (e) {
-      return false;
-    }
-  });
+  // Pure Native Detection: ONLY native Android APK activates Focus OS dual mode.
+  // The website (desktop & mobile browser) is strictly 100% Pure Campus Scholastic Leaderboard ONLY.
+  const isApkActive = isNativeApk;
 
-  const isApkActive = isNativeApk || isApkModeSimulated;
-
-  const handleToggleApkMode = (targetState) => {
-    setIsApkModeSimulated(targetState);
-    try {
-      localStorage.setItem('dav_apk_focus_mode', String(targetState));
-    } catch (e) {}
-    if (targetState) {
-      setActiveSectionTab('focus');
-    } else {
-      setActiveSectionTab('leaderboard');
+  useEffect(() => {
+    if (!isNativeApk) {
+      try {
+        localStorage.removeItem('dav_apk_focus_mode');
+      } catch (e) {}
     }
-  };
+  }, [isNativeApk]);
 
   // ---------------------------------------------------------------------------
   // Tab State: In APK mode, user can switch between 'focus' and 'leaderboard'.
@@ -740,24 +728,7 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
         {isApkActive && activeSectionTab === 'focus' && (
           <div className="space-y-6 animate-fadeIn">
             
-            {/* APK Mode Notification Bar if active */}
-            {isApkModeSimulated && (
-              <div className="p-3.5 rounded-2xl bg-purple-950/60 border border-purple-500/40 flex items-center justify-between text-xs text-purple-200 shadow-lg">
-                <div className="flex items-center gap-2.5">
-                  <Smartphone className="w-4 h-4 text-purple-400 shrink-0" />
-                  <span>
-                    <strong>APK Focus OS Mode Active:</strong> Simulating native Android focus lockouts, real reel counter, background app stopper &amp; anti-uninstall protection.
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleToggleApkMode(false)}
-                  className="text-xs font-bold text-purple-300 hover:text-white underline cursor-pointer shrink-0 ml-2"
-                >
-                  Back to Website Leaderboard
-                </button>
-              </div>
-            )}
+
 
             {/* Mount the complete Digital Focus Suite */}
             <DigitalFocusSuite 
