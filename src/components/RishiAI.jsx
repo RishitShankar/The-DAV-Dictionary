@@ -20,10 +20,26 @@ import {
 
 function formatInline(str) {
   if (!str) return '';
-  const parts = str.split(/(\*\*.*?\*\*)/g);
+  // Clean raw LaTeX arrows and symbols
+  let cleaned = str
+    .replace(/\$\\rightarrow\$/g, '→')
+    .replace(/\\rightarrow/g, '→')
+    .replace(/\$\\implies\$/g, '⇒')
+    .replace(/\\implies/g, '⇒')
+    .replace(/\$\\cdot\$/g, '·')
+    .replace(/\\cdot/g, '·')
+    .replace(/\\times/g, '×');
+
+  const parts = cleaned.split(/(\*\*.*?\*\*|\*.*?\*|`.*?`)/g);
   return parts.map((part, i) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
+    if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
       return <strong key={i} className="font-bold text-stone-950">{part.slice(2, -2)}</strong>;
+    }
+    if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
+      return <em key={i} className="italic text-stone-800">{part.slice(1, -1)}</em>;
+    }
+    if (part.startsWith('`') && part.endsWith('`') && part.length > 2) {
+      return <code key={i} className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 font-mono text-xs">{part.slice(1, -1)}</code>;
     }
     return part;
   });
@@ -351,16 +367,6 @@ Your 24/7 intelligent curriculum companion grounded in official DAV textbooks (L
   const handleSend = async (textToSend, actionType = null) => {
     const question = textToSend || input;
     if (!question.trim() || loading) return;
-
-    if (user?.plan === 'guest' || user?.isDemo) {
-      if (onRequireLogin) {
-        onRequireLogin(
-          'Login to Continue',
-          'You are currently exploring in Free Demo Preview. Please log in or register with your Student ID & Password to ask questions, solve homework doubts, and generate AI chapter quizzes with Rishi AI.'
-        );
-      }
-      return;
-    }
 
     // Close quiz if user sends a question
     setShowQuiz(false);

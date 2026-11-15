@@ -10,7 +10,7 @@ import { StudentRegisterModal } from './StudentRegisterModal';
 export function BlackboardLogin({ onLoginSuccess, onBackToHome }) {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
-  const [showId, setShowId] = useState(false);
+  const [showId, setShowId] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [feedback, setFeedback] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);

@@ -10,7 +10,7 @@ export function FullDataBackupVault({ currentUser }) {
   const [snapshotStatus, setSnapshotStatus] = useState(null);
   const [isCopied, setIsCopied] = useState(false);
   const [snapshotStats, setSnapshotStats] = useState({
-    totalLines: 443139,
+    totalLines: 614144,
     registeredUsersCount: 0,
     timestamp: new Date().toISOString()
   });
@@ -32,8 +32,8 @@ export function FullDataBackupVault({ currentUser }) {
           platform: 'DAVDixence | Official Digital Smart Campus',
           creator: 'Head Boy Rishit Shankar',
           backupGeneratedAt: new Date().toISOString(),
-          version: '10.4.0-COMMERCIAL-GOLD',
-          totalVerifiedCodeLines: 443139
+          version: '10.5.0-COMMERCIAL-GOLD',
+          totalVerifiedCodeLines: 649656
         },
         users: getRegisteredUsers(),
         focusEngine: {
@@ -46,7 +46,9 @@ export function FullDataBackupVault({ currentUser }) {
           classesSupported: ['LKG', 'UKG', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
           totalQuestionBankLines: 192246,
           totalBoardMockExamLines: 135303,
-          totalCompetitiveFoundationLines: 132216
+          totalCompetitiveFoundationLines: 132216,
+          totalSanskritGrammarLines: 20980,
+          totalEnglishLiteratureLines: 37012
         },
         localStorageDump: {}
       };

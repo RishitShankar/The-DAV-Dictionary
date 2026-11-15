@@ -30,6 +30,7 @@ import { queryMasterQuestionBank } from '../data/davMasterQuestionBank.js';
 import { DAV_MASTER_BOARD_EXAMS, DAV_NATIONAL_OLYMPIAD_SPRINT, DAV_MASTER_FORMULA_DIRECTORY } from '../data/davMasterOlympiadAndBoardExams.js';
 import { DAV_MASTER_COMPETITIVE_FOUNDATION, DAV_FOUNDATION_DIAGNOSTIC_ROADMAP } from '../data/davMasterCompetitiveFoundation.js';
 import { DAV_SANSKRIT_SURABHI_CLASS8, SANSKRIT_DHATU_ROOP_BANK, SANSKRIT_SHABDA_ROOP_BANK, VEDIC_MATH_SPEED_ALGORITHMS, getSanskritChapterByNumber } from '../data/davMasterSanskritAndGrammar.js';
+import { DAV_MASTER_ENGLISH_LITERATURE_DATA, DAV_MASTER_ENGLISH_GRAMMAR_ENGINE } from '../data/davMasterEnglishLiteratureAndGrammar.js';
 
 const STORAGE_KEY = 'rishi_ai_api_key';
 // Built-in intelligent engine key decoded at runtime for automatic zero-configuration AI access
@@ -1174,6 +1175,28 @@ ${content}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🕉️ *सर्वे भवन्तु सुखिनः सर्वे सन्तु निरामयाः। सर्वे भद्राणि पश्यन्तु मा कश्चिद्दुःखभाग्भवेत्॥*`;
+    }
+
+    // English Literature, Grammar & Writing Skills
+    if (lq.includes('english') || lq.includes('grammar') || lq.includes('tense') || lq.includes('voice') || lq.includes('speech') || lq.includes('verb') || lq.includes('noun') || lq.includes('clause') || lq.includes('preposition') || lq.includes('tolstoy') || lq.includes('ruskin bond') || lq.includes('daffodils') || lq.includes('wordsworth') || lq.includes('three questions') || lq.includes('tree climbing')) {
+      return `📖 **Rishi AI English Literature & Advanced Grammar Engine**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**Inquiry / Topic:** *"${q}"*
+
+### ✒️ Literary & Grammatical Synthesis (DAV Board Standards)
+* **Textbook Alignment:** Official DAV Class 8 *English Literature* & *English Practice Book* (DAVCMC / DAVCAE syllabus).
+* **Core Principles:**
+  - **Literature Analysis:** Deep exploration of character motivations, central themes (compassion, nature reverence, moral fortitude), and figurative language (metaphor, imagery, personification).
+  - **Grammar Precision:** Strict adherence to structural rules for Subject-Verb Concord, Tense consistency, and Voice transformations without altering original semantic meaning.
+
+### 🌟 4 Essential DAV Board Scoring Criteria:
+1. **Reference to Context:** Always establish who is speaking, to whom, and under what dramatic or philosophical circumstances.
+2. **Grammar Worksheets:** In Editing and Omission questions, verify subject number (singular vs. plural) before correcting verbs.
+3. **Vocabulary & Phrasal Verbs:** Utilize rich contextual synonyms and avoid repetitive phrasing.
+4. **Writing Formats:** Maintain formal layout for Notice, Diary Entry, Speech, and Formal Letter to the Editor with proper salutations.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏆 *Exam Strategy by Head Boy Rishit Shankar (English Topper 96/100):* Highlighting keywords and maintaining crisp paragraph structure earns full marks!`;
     }
 
     // Default Encyclopedic Outer World Intelligence

@@ -34,9 +34,9 @@ export function QuestionsAnswersSection({
   onRequireLogin
 }) {
   // Plan Selection: 'normal' | 'vip' | 'vvip'
-  const initialPlan = (currentUser?.plan === 'vvip' || currentUser?.isAdmin) 
+  const initialPlan = (currentUser?.plan === 'vvip' || currentUser?.dimension === 3 || currentUser?.dimension === 4 || currentUser?.isAdmin) 
     ? 'vvip' 
-    : (currentUser?.plan === 'vip' ? 'vip' : 'vvip');
+    : (currentUser?.plan === 'vip' || currentUser?.dimension === 2 ? 'vip' : 'normal');
 
   const [activePlan, setActivePlan] = useState(initialPlan);
 

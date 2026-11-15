@@ -166,9 +166,7 @@ export function CustomPurchaseModal({isOpen, onClose, user, onPurchaseSubmitted 
       admissionNumber: admissionNo.trim()
     };
 
-    const paymentMethodLabel = paymentMode === 'cash' 
-      ? 'Cash (Direct to Head Boy Rishit Shankar)'
-      : 'Online (Paytm QR / UPI)';
+    const paymentMethodLabel = 'Cash in Hand (Direct to Head Boy Rishit Shankar)';
 
     const res = submitPurchaseRequest({
       studentId,

@@ -44,15 +44,15 @@ export function StudentProfileSection({ user, onLogout }) {
       };
     }
 
-    // Individual Student Account: Clean personalized template (no personal data of Rishit)
+    // Individual Student Account: Clean empty template for user to self-update
     return {
       fullName: user?.name || '',
       studentId: user?.id || user?.studentId || 'DAV-STUDENT',
-      gender: 'Male',
-      classNum: String(user?.classNum || '8'),
-      section: user?.section || 'A',
-      rollNumber: '',
-      admissionNumber: user?.admissionNumber || `ADM-${user?.id || 'NEW'}`,
+      gender: user?.gender || '',
+      classNum: user?.classNum ? String(user.classNum) : '',
+      section: user?.section || '',
+      rollNumber: user?.rollNumber || '',
+      admissionNumber: user?.admissionNumber || '',
       motherName: '',
       fatherName: '',
       residentialAddress: '',
@@ -568,13 +568,13 @@ export function StudentProfileSection({ user, onLogout }) {
                     {profile.fullName || 'Student Name'}
                   </div>
                   <div className="font-bold text-[11px] text-stone-900">
-                    Class: <span className="font-black">{profile.classNum}-{profile.section}</span> • Roll: <span className="font-black">{profile.rollNumber}</span>
+                    Class: <span className="font-black">{profile.classNum ? `${profile.classNum}-${profile.section || 'A'}` : 'Not set'}</span> • Roll: <span className="font-black">{profile.rollNumber || '-'}</span>
                   </div>
                   <div className="text-[10px] font-mono font-bold text-stone-900">
                     ID: {profile.studentId}
                   </div>
                   <div className="text-[10px] font-mono text-stone-800">
-                    Adm No: {profile.admissionNumber}
+                    Adm No: {profile.admissionNumber || 'Not updated yet'}
                   </div>
                   <div className="text-[10px] font-medium text-stone-900">
                     Father: <span className="font-bold">{profile.fatherName}</span>
@@ -747,11 +747,9 @@ export function StudentProfileSection({ user, onLogout }) {
                   <input
                     type="text"
                     value={profile.admissionNumber}
-                    readOnly={!isMasterRishit}
-                    onChange={(e) => isMasterRishit && handleChange('admissionNumber', e.target.value)}
-                    placeholder="ADM-XXXX"
-                    className={`w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-700 text-white focus:outline-none focus:border-amber-400 ${!isMasterRishit ? 'cursor-not-allowed opacity-80' : ''}`}
-                    title={!isMasterRishit ? "Official School Admission Number (Locked)" : ""}
+                    onChange={(e) => handleChange('admissionNumber', e.target.value)}
+                    placeholder="Enter your Admission Number"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-700 text-white focus:outline-none focus:border-amber-400"
                   />
                 </div>
               </div>

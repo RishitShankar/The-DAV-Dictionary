@@ -329,12 +329,12 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
 
   const faqs = [
     {
-      q: "What is DAVDixence & Smart Digital Campus?",
-      a: "DAVDixence is the official next-generation digital learning and academic management platform engineered specifically for DAV Public Schools by Head Boy Rishit Shankar. Spanning 14 comprehensive academic sections, DAVDixence delivers 70+ complete, uncompressed DAV textbooks from Class LKG to Class 8, proprietary curriculum-grounded Rishi AI, chapter-by-chapter Q&A solutions, daily homework tracking, online CBT exam practice, WebRTC video classrooms, Deep Study Mode with Pomodoro & binaural audio, and live Muzaffarpur bus radar & weather utilities."
+      q: "What is DAVDixence?",
+      a: "DAVDixence is the premier official digital learning and comprehensive academic portal engineered specifically for DAV Public Schools by Head Boy Rishit Shankar. Spanning 14 comprehensive academic portals, DAVDixence delivers 70+ complete official DAV textbooks from Class LKG to Class 8, the proprietary curriculum-grounded Rishi AI, chapter-by-chapter verified Q&A solutions, daily homework tracking, online CBT exam practice, full chapter video explanations, Deep Study Mode with Pomodoro & binaural audio, and live Muzaffarpur bus radar & weather utilities."
     },
     {
-      q: "What does 'Have a Demo Preview' allow me to do?",
-      a: "The Demo Preview grants instant 1-click access to all 14 Academic Sections of DAVDixence without requiring any registration or login! You can browse the Overview Hub, explore all 70+ digital textbooks, test verified Chapter Q&A selectors, interact with Rishi AI interfaces, inspect daily homework and attendance records, test the scientific calculator, weather radar, and 2026–2047 festival calendar, launch Deep Study Mode, and explore the developer showcase. Full textbook reading, custom chat, and exam practice are available upon entering your student credentials."
+      q: "What does Demo Preview allow me to do?",
+      a: "The Demo Preview grants immediate, complete access to explore all 14 Academic Sections and Portals of DAVDixence with zero restrictions! Visitors and prospective buyers can freely explore all 70+ digital textbooks, test verified Chapter Q&A selectors, interact with the full-screen Rishi AI engine, inspect daily homework and attendance records, test the scientific lab suites, weather radar, and festival calendar, launch Deep Study Mode, and explore the developer showcase. Every single feature is 100% workable and ready for live campus deployment."
     },
     {
       q: "Is access to the textbooks, Rishi AI, and Homework Hub free?",
@@ -389,14 +389,57 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
 
           {/* Desktop Nav Links */}
           <nav className="hidden lg:flex items-center gap-6 text-xs font-bold text-stone-300">
-            <a href="#dimensions" className="hover:text-amber-400 transition-colors flex items-center gap-1">
+            <a 
+              href="#dimensions" 
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('dimensions')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="hover:text-amber-400 transition-colors flex items-center gap-1"
+            >
               <span>14 Sections</span>
               <span className="px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 text-[10px] font-black">All</span>
             </a>
-            <a href="#features-overview" className="hover:text-amber-400 transition-colors">Campus Features</a>
-            <a href="#curriculum" className="hover:text-amber-400 transition-colors">70+ Textbooks</a>
-            <a href="#developer" className="hover:text-amber-400 transition-colors">Head Boy Rishit</a>
-            <a href="#faq" className="hover:text-amber-400 transition-colors">FAQ</a>
+            <a 
+              href="#features-overview" 
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('features-overview')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="hover:text-amber-400 transition-colors"
+            >
+              Campus Features
+            </a>
+            <a 
+              href="#curriculum" 
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('curriculum')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="hover:text-amber-400 transition-colors"
+            >
+              70+ Textbooks
+            </a>
+            <a 
+              href="#developer" 
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('developer')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="hover:text-amber-400 transition-colors"
+            >
+              Head Boy Rishit
+            </a>
+            <a 
+              href="#faq" 
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="hover:text-amber-400 transition-colors"
+            >
+              FAQ
+            </a>
           </nav>
 
           {/* Action CTAs */}
