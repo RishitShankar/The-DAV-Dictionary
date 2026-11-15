@@ -443,7 +443,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
             <School className="w-6 h-6 text-amber-400" />
           </div>
           <div className="text-left">
-            <div className="text-xs font-black text-white">11 Super-Dimensions</div>
+            <div className="text-xs font-black text-white">14 Academic Sections</div>
             <div className="text-[10px] text-amber-300/80">Complete Campus OS Online</div>
           </div>
         </div>
@@ -479,7 +479,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
 
           {/* Subtitle */}
           <p className="mt-6 text-base sm:text-xl text-stone-300 max-w-3xl mx-auto leading-relaxed">
-            Welcome to the new era of DAV education. Built by students for students, featuring <strong>11 comprehensive dimensions</strong>: 70+ official textbooks, Rishi AI companion, daily homework hub, CBT exam simulation, live campus utilities, and deep focus technology.
+            Welcome to the new era of DAV education. Built by students for students, featuring <strong>14 comprehensive academic sections</strong>: 70+ official textbooks, Rishi AI companion, daily homework hub, CBT exam simulation, live campus utilities, and deep focus technology.
           </p>
 
           {/* =========================================================================
@@ -546,15 +546,18 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
               </span>
             </div>
 
-            {/* Quick Dimension Selector Tabs */}
+            {/* Quick Section Selector Tabs */}
             <div className="flex items-center gap-1.5 sm:gap-2 mt-4 overflow-x-auto pb-2 scrollbar-none">
               {[
-                { idx: 0, label: 'Dim 1: Overview', icon: Layers },
-                { idx: 1, label: 'Dim 2: 70+ Books', icon: BookOpen },
-                { idx: 3, label: 'Dim 4: Rishi AI', icon: Brain },
-                { idx: 4, label: 'Dim 5: Smart ERP', icon: School },
-                { idx: 6, label: 'Dim 7: Utilities', icon: Compass },
-                { idx: 7, label: 'Dim 8: Deep Focus', icon: Trophy }
+                { idx: 0, label: 'Sec 1: Overview', icon: Layers },
+                { idx: 1, label: 'Sec 2: 70+ Books', icon: BookOpen },
+                { idx: 2, label: 'Sec 3: Q&A Bank', icon: FileText },
+                { idx: 3, label: 'Sec 4: Rishi AI', icon: Brain },
+                { idx: 4, label: 'Sec 5: Smart ERP', icon: School },
+                { idx: 6, label: 'Sec 7: Kids Portal', icon: Compass },
+                { idx: 7, label: 'Sec 8: CBT Exams', icon: Trophy },
+                { idx: 8, label: 'Sec 9: Deep Focus', icon: Zap },
+                { idx: 13, label: 'Sec 14: Head Boy', icon: Crown }
               ].map(tab => (
                 <button
                   key={tab.idx}
@@ -646,7 +649,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
       {/* =========================================================================
           NETFLIX-STYLE 5-SECTION MASTER DIRECTORY & GOOGLE SITELINKS
       ========================================================================= */}
-      <section id="features-overview" className="py-14 bg-gradient-to-b from-[#141414] via-[#0d0e12] to-[#141414] border-b border-stone-800/90 relative overflow-hidden">
+      <section id="features-overview" className="py-14 bg-gradient-to-b from-[#141414] via-[#0d0e12] to-[#141414] border-b border-stone-800/90 relative overflow-hidden scroll-mt-20">
         {/* Subtle Ambient Red/Amber Glow */}
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-red-600/5 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
@@ -757,10 +760,10 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
               Complete Architectural Blueprint
             </span>
             <h2 className="text-3xl sm:text-5xl font-black text-white mt-3 tracking-tight">
-              All 11 Super-Dimensions Explained
+              All 14 Academic Sections &amp; Super-Portals Explained
             </h2>
             <p className="mt-4 text-stone-300 text-sm sm:text-base leading-relaxed">
-              DAV Dictionary is not just a digital library. It is an all-inclusive digital campus featuring 11 distinct dimensions designed to take every DAVian to the top.
+              DAVDixence is not just a digital library. It is an all-inclusive digital campus featuring 14 distinct academic sections and portals designed to take every DAVian to the top.
             </p>
 
             {/* Filter Tabs */}
@@ -856,7 +859,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
           <div className="mt-12 p-8 rounded-3xl bg-gradient-to-r from-stone-900 via-amber-950/40 to-stone-900 border-2 border-amber-400/40 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
             <div className="space-y-1 text-center md:text-left">
               <h3 className="text-xl sm:text-2xl font-black text-white">
-                Want to test all 11 features right now without logging in?
+                Want to test all 14 academic sections right now without logging in?
               </h3>
               <p className="text-xs sm:text-sm text-stone-300">
                 Click Have a Demo Preview to roam freely through the entire school portal!
@@ -1018,7 +1021,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
                 </h2>
 
                 <p className="text-stone-300 text-xs sm:text-sm leading-relaxed">
-                  As Head Boy at DAV School, I observed students frequently struggling with heavy bags, forgotten books, or lack of instant explanations while studying at home. I engineered <strong>DAV Dictionary</strong> into an all-in-one digital companion—expanding from a digital library into 11 comprehensive dimensions uniting Rishi AI, homework tracking, CBT exams, bus radar, and deep focus technology.
+                  As Head Boy at DAV School, I observed students frequently struggling with heavy bags, forgotten books, or lack of instant explanations while studying at home. I engineered <strong>DAVDixence</strong> into an all-in-one digital companion—expanding from a digital library into 14 comprehensive academic sections uniting Rishi AI, homework tracking, CBT exams, bus radar, and deep focus technology.
                 </p>
 
                 {/* Developer Highlights */}

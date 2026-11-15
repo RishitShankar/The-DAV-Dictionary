@@ -88,10 +88,8 @@ export function GeminiSidebar({
     { id: 9, name: 'Section 9: Deep Study Mode', icon: Trophy, status: 'Deep Study' },
     { id: 10, name: 'Section 10: Settings Hub', icon: Settings, status: 'Settings & Student Hub' },
     { id: 11, name: 'Section 11: Donate & Reviews', icon: Heart, status: 'Donate, Reviews & Subscriptions' },
-    ...(isDimension4 ? [
-      { id: 12, name: 'Section 12: Developer Reviews', icon: Star, status: 'Reviews & Feedback' },
-      { id: 13, name: 'Section 13: Master ID Generator', icon: Key, status: 'Account Provisioning Desk' }
-    ] : []),
+    { id: 12, name: 'Section 12: Developer Reviews', icon: Star, status: 'Reviews & Feedback' },
+    { id: 13, name: 'Section 13: Master ID Generator', icon: Key, status: 'Account Provisioning Desk' },
     { id: 14, name: 'Section 14: About Creator', icon: Award, status: 'Head Boy Profile' },
   ];
 

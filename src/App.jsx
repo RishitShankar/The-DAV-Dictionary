@@ -493,19 +493,14 @@ export function App() {
         return;
       }
     }
-    // Sections 12 & 13 are strictly for Developer (Dimension 4) only
-    if ((secId === 12 || secId === 13) && !(user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai' || user?.role === 'developer')) {
-      return;
-    }
     if (isTeacher && teacherSubDimension === 'teacher_only') {
       // In 5A Only Teacher mode, locked to Faculty OS (Section 5)
       setActiveSection(5);
       return;
     }
     // In 5B Teacher & Explorer mode, teacher can explore all sections freely!
-    if (secId === 14 && activeSection !== 14) {
+    if (secId === 14) {
       setIsCycloneOpen(true);
-      return;
     }
     setActiveSection(secId);
     setIsSidebarOpen(false);
@@ -736,7 +731,7 @@ export function App() {
           sectionName={`Section ${activeSection}`}
           onGoToOverview={() => setActiveSection(1)}
         >
-        {(user?.dimension === 8 || user?.plan === 'parent' || user?.role === 'parent' || activeSection === 'parent') ? (
+        {(activeSection === 'parent' || ((user?.dimension === 8 || user?.plan === 'parent' || user?.role === 'parent') && (activeSection === 'parent' || activeSection === 1 || !activeSection))) ? (
           <ParentPortalSection 
             user={activeUser || user} 
             onLogout={handleLogout} 
@@ -836,20 +831,12 @@ export function App() {
             onRequireLogin={handleRequireLogin}
           />
         ) : activeSection === 12 ? (
-          (user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai' || user?.role === 'developer') ? (
-            <DeveloperReviewsSection 
-              currentUser={activeUser || user} 
-              onGoToSection={handleSelectSection} 
-            />
-          ) : (
-            <SectionOverview currentUser={activeUser || user} onSelectSection={handleSelectSection} />
-          )
+          <DeveloperReviewsSection 
+            currentUser={activeUser || user} 
+            onGoToSection={handleSelectSection} 
+          />
         ) : activeSection === 13 ? (
-          (user?.dimension === 4 || user?.id === 'rishibhai' || user?.studentId === 'rishibhai' || user?.role === 'developer') ? (
-            <DeveloperIdGeneratorSection currentUser={activeUser || user} />
-          ) : (
-            <SectionOverview currentUser={activeUser || user} onSelectSection={handleSelectSection} />
-          )
+          <DeveloperIdGeneratorSection currentUser={activeUser || user} />
         ) : activeSection === 14 ? (
           <AboutCreatorSection />
         ) : (

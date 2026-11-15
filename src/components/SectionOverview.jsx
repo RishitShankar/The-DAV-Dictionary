@@ -306,10 +306,8 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
     }
   ], []);
 
-  // Filter developer-only sections (12 & 13) for regular students
-  const visibleSections = useMemo(() => {
-    return sectionsList.filter(sec => (sec.id !== 12 && sec.id !== 13) || isDimension4);
-  }, [sectionsList, isDimension4]);
+  // All 14 verified sections always visible for all students and visitors
+  const visibleSections = sectionsList;
 
   const handleCardClick = (id) => {
     setClickedCardId(id);

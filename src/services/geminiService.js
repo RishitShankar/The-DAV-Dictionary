@@ -29,6 +29,7 @@ import { lookupTextbookDatabase, DAV_CLASS_8_SYLLABUS_INDEX, DAV_TEXTBOOK_DATABA
 import { queryMasterQuestionBank } from '../data/davMasterQuestionBank.js';
 import { DAV_MASTER_BOARD_EXAMS, DAV_NATIONAL_OLYMPIAD_SPRINT, DAV_MASTER_FORMULA_DIRECTORY } from '../data/davMasterOlympiadAndBoardExams.js';
 import { DAV_MASTER_COMPETITIVE_FOUNDATION, DAV_FOUNDATION_DIAGNOSTIC_ROADMAP } from '../data/davMasterCompetitiveFoundation.js';
+import { DAV_SANSKRIT_SURABHI_CLASS8, SANSKRIT_DHATU_ROOP_BANK, SANSKRIT_SHABDA_ROOP_BANK, VEDIC_MATH_SPEED_ALGORITHMS, getSanskritChapterByNumber } from '../data/davMasterSanskritAndGrammar.js';
 
 const STORAGE_KEY = 'rishi_ai_api_key';
 // Built-in intelligent engine key decoded at runtime for automatic zero-configuration AI access
@@ -974,6 +975,21 @@ The official DAV Board curriculum for Class 8 uses the following prescribed text
 
     let content = '';
     let actionBadge = 'Academic Intelligence';
+
+    // Check Sanskrit Surabhi Master Grounding
+    if (subj === 'sanskrit' || subj.includes('sanskrit') || lowerQ.includes('sanskrit') || lowerQ.includes('संस्कृत')) {
+      const sktChap = getSanskritChapterByNumber(chNum);
+      if (sktChap) {
+        let sktContent = `### 🕉️ सुरभिः (Surabhi) - पाठ ${sktChap.num}: ${sktChap.title}\n* **प्रसंग एवं शिक्षा:** ${sktChap.theme}\n\n`;
+        if (sktChap.slokas && sktChap.slokas.length > 0) {
+          sktContent += `#### 📜 प्रमुख श्लोकाः एवं अन्वय-भावार्थ:\n`;
+          sktChap.slokas.slice(0, 3).forEach(sl => {
+            sktContent += `> **श्लोक ${sl.num}:** ${sl.shloka.replace(/\\n/g, ' ')}\n* **अन्वयः:** ${sl.anvaya}\n* **सरल हिन्दी भावार्थ:** ${sl.hindiMeaning}\n\n`;
+          });
+        }
+        content = sktContent;
+      }
+    }
 
     if (action === 'summarize') {
       actionBadge = 'Chapter Summary';

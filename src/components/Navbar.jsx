@@ -145,10 +145,10 @@ export function Navbar({
             <div className="flex items-center gap-3 cursor-pointer">
               <img 
                 src="/logo.png" 
-                alt="DAV Dictionary Official Logo" 
+                alt="DAVDixence Official Logo" 
                 className="w-14 h-14 sm:w-16 sm:h-16 object-contain drop-shadow-md hover:scale-105 transition-transform shrink-0"
               />
-              <span className={`font-extrabold text-lg sm:text-xl ${isLight ? 'text-slate-900' : 'text-white'} tracking-tight`}>DAV Dictionary</span>
+              <span className={`font-extrabold text-lg sm:text-xl ${isLight ? 'text-slate-900' : 'text-white'} tracking-tight`}>DAVDixence</span>
             </div>
           </div>
 
