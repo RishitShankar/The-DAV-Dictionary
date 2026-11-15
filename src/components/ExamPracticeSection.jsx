@@ -5,7 +5,7 @@ import {
   FileText, HelpCircle, Flame, Lock, Crown, Star, RefreshCw, 
   MapPin, Check, Send, Eye, EyeOff, Layers, Compass, Brain,
   Info, ExternalLink, BarChart3, Shuffle, Volume2, UserCheck,
-  BookmarkCheck, Trash2, RotateCcw, Filter, Search, CheckSquare
+  BookmarkCheck, Trash2, RotateCcw, Filter, Search, CheckSquare, Zap
 } from 'lucide-react';
 import { OlympiadBoardMockSuite } from './exam/OlympiadBoardMockSuite';
 import { 

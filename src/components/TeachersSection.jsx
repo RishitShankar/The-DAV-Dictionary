@@ -12,7 +12,7 @@ import {
   ArrowRight, Play, CheckSquare, Radio, Maximize2, Minimize2,
   PhoneOff, Hand, MessageSquareMore, CheckCircle, ArrowLeft, ArrowDownLeft, ArrowUpRight, PhoneMissed,
   ChevronLeft, Compass, Palette, Trash2, Trophy, Share, Phone, MoreVertical, Settings, Ban,
-  Camera, UploadCloud, Upload, Edit3, Music, Film, FileCheck, Printer, PenTool
+  Camera, UploadCloud, Upload, Edit3, Music, Film, FileCheck, Printer, PenTool, Copy
 } from 'lucide-react';
 import { RishiAILogo } from './RishiAILogo';
 import { VfxSmokeEffect } from './vfx/VfxSmokeEffect';

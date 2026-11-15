@@ -147,36 +147,39 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
         )}
 
         {/* ----------------------------------------------------------- */}
+        {/* ----------------------------------------------------------- */}
         {/* Active Tab Screen Content                                   */}
         {/* ----------------------------------------------------------- */}
-        <div className="flex-1 w-full flex flex-col relative pb-24 overflow-y-auto no-scrollbar">
+        <div className="flex-1 w-full flex flex-col relative overflow-y-auto no-scrollbar">
           
-          {/* TAB 1: REGAIN FOCUS SCREEN (Exact match to Screenshot 1) */}
+          {/* TAB 1: REGAIN FOCUS SCREEN (Exact 100% match to Screenshot 1) */}
           {activeTab === 'focus' && (
-            <RegainFocusScreen
-              onOpenSetupModal={() => setShowSetupModal(true)}
-              onOpenGroupModal={() => setActiveTab('groups')}
-              onOpenSettingsDrawer={() => setShowSettingsDrawer(true)}
-            />
+            <div className="flex-1 w-full flex flex-col justify-between">
+              <RegainFocusScreen
+                onOpenSetupModal={() => setShowSetupModal(true)}
+                onOpenGroupModal={() => setActiveTab('groups')}
+                onOpenSettingsDrawer={() => setShowSettingsDrawer(true)}
+              />
+            </div>
           )}
 
           {/* TAB 2: REGAIN SCHEDULE SCREEN (Exact match to Screenshot 5) */}
           {activeTab === 'schedule' && (
-            <div className="p-4 sm:p-6 animate-fadeIn">
+            <div className="p-4 sm:p-6 animate-fadeIn pb-24">
               <RegainScheduleScreen />
             </div>
           )}
 
           {/* TAB 3: REGAIN GROUPS SCREEN (Exact match to Screenshot 6) */}
           {activeTab === 'groups' && (
-            <div className="p-4 sm:p-6 animate-fadeIn">
+            <div className="p-4 sm:p-6 animate-fadeIn pb-24">
               <RegainGroupsScreen user={user} />
             </div>
           )}
 
           {/* TAB 4: REGAIN BLOCKS SCREEN (Exact match to Screenshot 7 & Modals 2 & 3) */}
           {activeTab === 'blocks' && (
-            <div className="p-4 sm:p-6 animate-fadeIn">
+            <div className="p-4 sm:p-6 animate-fadeIn pb-24">
               <RegainBlocksScreen
                 onOpenShortsTracker={() => setActiveTab('reels')}
               />
@@ -185,14 +188,14 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
 
           {/* TAB 5: BRAINPAL REELS & SHORTS COUNTER */}
           {activeTab === 'reels' && (
-            <div className="p-4 sm:p-6 animate-fadeIn">
+            <div className="p-4 sm:p-6 animate-fadeIn pb-24">
               <BrainPalReelsTracker user={user} />
             </div>
           )}
 
           {/* TAB 6: SCREEN TIME SCANNER & ANALYTICS */}
           {activeTab === 'analytics' && (
-            <div className="p-4 sm:p-6 animate-fadeIn">
+            <div className="p-4 sm:p-6 animate-fadeIn pb-24">
               <RegainScreenTimeAnalytics />
             </div>
           )}
@@ -200,26 +203,47 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
         </div>
 
         {/* ----------------------------------------------------------- */}
-        {/* Floating Bottom Navigation Dock (Matches Screenshots 5,6,7) */}
+        {/* Floating Bottom Navigation Dock                             */}
+        {/* Rendered on Schedule, Groups, Blocks, Reels, Analytics      */}
+        {/* (Exact match to ReGain App Screenshots 5, 6, 7)             */}
         {/* ----------------------------------------------------------- */}
-        <FloatingBottomDock
-          activeTab={activeTab}
-          onSelectTab={(tabId) => setActiveTab(tabId)}
-        />
+        {activeTab !== 'focus' && (
+          <FloatingBottomDock
+            activeTab={activeTab}
+            onSelectTab={(tabId) => setActiveTab(tabId)}
+            isEmbedded={true}
+          />
+        )}
 
         {/* Simulated Android Navigation Gestures Bar (Matches Screenshot 1 Bottom) */}
         {isPhoneFrame && (
-          <div className="relative z-30 py-2.5 px-8 flex items-center justify-around bg-black/40 backdrop-blur-md border-t border-white/5 select-none text-stone-500">
+          <div className="relative z-30 py-2.5 px-8 flex items-center justify-around bg-black/60 backdrop-blur-md border-t border-white/5 select-none text-stone-500">
             {/* Recent Apps Button */}
-            <div className="flex flex-col space-y-0.5">
+            <div 
+              onClick={() => setActiveTab(activeTab === 'focus' ? 'blocks' : 'focus')}
+              className="flex flex-col space-y-0.5 cursor-pointer p-1"
+              title="Recent / Switch View"
+            >
               <span className="w-3.5 h-0.5 bg-stone-500 rounded-full" />
               <span className="w-3.5 h-0.5 bg-stone-500 rounded-full" />
               <span className="w-3.5 h-0.5 bg-stone-500 rounded-full" />
             </div>
             {/* Home Circle Button */}
-            <div className="w-3.5 h-3.5 rounded-full border border-stone-500" />
+            <div 
+              onClick={() => setActiveTab('focus')}
+              className="w-3.5 h-3.5 rounded-full border border-stone-500 cursor-pointer" 
+              title="Home / Focus Screen"
+            />
             {/* Back Chevron */}
-            <div className="text-xs font-mono font-bold">&lt;</div>
+            <div 
+              onClick={() => {
+                if (activeTab !== 'focus') setActiveTab('focus');
+              }}
+              className="text-xs font-mono font-bold cursor-pointer p-1"
+              title="Back"
+            >
+              &lt;
+            </div>
           </div>
         )}
 

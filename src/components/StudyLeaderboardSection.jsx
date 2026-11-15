@@ -4,7 +4,7 @@ import {
   User, Search, BookOpen, Brain, Zap, Bell, Check, BarChart3, Medal, 
   Smartphone, Monitor, ArrowRight, ShieldCheck, RefreshCw, Compass,
   Sliders, Filter, ChevronUp, ChevronDown, Heart, Layers, ArrowUpRight,
-  Play, Volume2, ShieldAlert, Download
+  Play, Volume2, ShieldAlert, Download, Eye
 } from 'lucide-react';
 
 import { getRegisteredUsers } from '../data/preloadedUsers';
