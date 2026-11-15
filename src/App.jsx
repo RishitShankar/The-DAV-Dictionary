@@ -52,6 +52,12 @@ const PdfReaderModal = lazy(() => import('./components/PdfReaderModal').then(m =
 const CustomPurchaseModal = lazy(() => import('./components/CustomPurchaseModal').then(m => ({ default: m.CustomPurchaseModal })));
 const UploadPdfModal = lazy(() => import('./components/UploadPdfModal').then(m => ({ default: m.UploadPdfModal })));
 const ConceptsMasterVaultSection = lazy(() => import('./components/ConceptsMasterVaultSection').then(m => ({ default: m.ConceptsMasterVaultSection })));
+const Concepts200MasterExplorer = lazy(() => import('./components/Concepts200MasterExplorer').then(m => ({ default: m.Concepts200MasterExplorer })));
+import { DynamicIslandHud } from './components/DynamicIslandHud';
+import { GlobalCommandPalette } from './components/GlobalCommandPalette';
+import { InteractiveScienceLabModal } from './components/InteractiveScienceLabModal';
+import { MistakeVaultModal } from './components/MistakeVaultModal';
+import { DigitalAdmitCardModal } from './components/DigitalAdmitCardModal';
 
 function SectionLoadingFallback() {
   return (
@@ -70,6 +76,7 @@ export function App() {
       const params = new URLSearchParams(search);
       const s = params.get('section');
       if (s === 'concepts' || s === 'vault') return 'concepts';
+      if (s === '200' || s === 'concepts200') return 'concepts200';
       if (s) {
         const n = parseInt(s, 10);
         if (!isNaN(n) && n >= 1 && n <= 14) return n;
@@ -113,6 +120,23 @@ export function App() {
     };
   }, []);
   const [isCycloneOpen, setIsCycloneOpen] = useState(false);
+  // 200 Concepts Master Overlays & Modals
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isVirtualLabOpen, setIsVirtualLabOpen] = useState(false);
+  const [isMistakeVaultOpen, setIsMistakeVaultOpen] = useState(false);
+  const [isAdmitCardOpen, setIsAdmitCardOpen] = useState(false);
+
+  // Global Ctrl+K / Cmd+K Spotlight Listener
+  useEffect(() => {
+    const handleGlobalKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
   const [flameVfx, setFlameVfx] = useState({
     isOpen: false,
     title: '',
@@ -878,6 +902,14 @@ export function App() {
             currentUser={activeUser || user} 
             onGoToSection={handleSelectSection} 
           />
+        ) : (activeSection === 'concepts200' || activeSection === 200) ? (
+          <Concepts200MasterExplorer 
+            onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+            onOpenVirtualLab={() => setIsVirtualLabOpen(true)}
+            onOpenMistakeVault={() => setIsMistakeVaultOpen(true)}
+            onOpenAdmitCard={() => setIsAdmitCardOpen(true)}
+            onGoToSection={handleSelectSection} 
+          />
         ) : (
           <UntitledSection sectionNumber={activeSection} />
         )}
@@ -1029,6 +1061,43 @@ export function App() {
           onSelectSection={handleSelectSection}
         />
       )}
+
+      {/* 200 Master Platform Concepts Overlays & Modals */}
+      <DynamicIslandHud 
+        onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+        onOpenVirtualLab={() => setIsVirtualLabOpen(true)}
+        onOpenMistakeVault={() => setIsMistakeVaultOpen(true)}
+        onOpenAdmitCard={() => setIsAdmitCardOpen(true)}
+      />
+
+      <GlobalCommandPalette 
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        onSelectSection={(secId) => {
+          setActiveSection(secId);
+          setIsCommandPaletteOpen(false);
+        }}
+        onOpenVirtualLab={() => setIsVirtualLabOpen(true)}
+        onOpenMistakeVault={() => setIsMistakeVaultOpen(true)}
+        onOpenAdmitCard={() => setIsAdmitCardOpen(true)}
+        onOpenConceptsVault={() => setActiveSection('concepts')}
+      />
+
+      <InteractiveScienceLabModal 
+        isOpen={isVirtualLabOpen}
+        onClose={() => setIsVirtualLabOpen(false)}
+      />
+
+      <MistakeVaultModal 
+        isOpen={isMistakeVaultOpen}
+        onClose={() => setIsMistakeVaultOpen(false)}
+      />
+
+      <DigitalAdmitCardModal 
+        isOpen={isAdmitCardOpen}
+        onClose={() => setIsAdmitCardOpen(false)}
+        user={activeUser || user}
+      />
 
       {/* ========================================================================= */}
       {/* REMOTE LOGOUT / SESSION TRANSFERRED NOTIFICATION MODAL                    */}

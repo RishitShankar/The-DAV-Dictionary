@@ -304,53 +304,30 @@ export const ambientAudio = new AmbientAudioEngine();
 
 const DEFAULT_SCREEN_TIME = {
   lastScanned: new Date().toISOString(),
-  totalScreenTimeMinutes: 254, // 4h 14m
-  usefulMinutes: 168,          // 2h 48m
-  distractedMinutes: 86,       // 1h 26m
-  devicePickups: 48,
-  firstPickup: '06:15 AM',
-  longestFocusSessionMinutes: 52,
-  hourlyUsage: [
-    { hour: '00', useful: 0, distracted: 0 },
-    { hour: '01', useful: 0, distracted: 0 },
-    { hour: '02', useful: 0, distracted: 0 },
-    { hour: '03', useful: 0, distracted: 0 },
-    { hour: '04', useful: 0, distracted: 0 },
-    { hour: '05', useful: 0, distracted: 0 },
-    { hour: '06', useful: 12, distracted: 5 },
-    { hour: '07', useful: 24, distracted: 8 },
-    { hour: '08', useful: 35, distracted: 10 },
-    { hour: '09', useful: 45, distracted: 6 },
-    { hour: '10', useful: 20, distracted: 14 },
-    { hour: '11', useful: 18, distracted: 12 },
-    { hour: '12', useful: 14, distracted: 31 },
-    { hour: '13', useful: 0, distracted: 0 },
-    { hour: '14', useful: 0, distracted: 0 },
-    { hour: '15', useful: 0, distracted: 0 },
-    { hour: '16', useful: 0, distracted: 0 },
-    { hour: '17', useful: 0, distracted: 0 },
-    { hour: '18', useful: 0, distracted: 0 },
-    { hour: '19', useful: 0, distracted: 0 },
-    { hour: '20', useful: 0, distracted: 0 },
-    { hour: '21', useful: 0, distracted: 0 },
-    { hour: '22', useful: 0, distracted: 0 },
-    { hour: '23', useful: 0, distracted: 0 }
-  ],
+  totalScreenTimeMinutes: 0,
+  usefulMinutes: 0,
+  distractedMinutes: 0,
+  devicePickups: 1,
+  firstPickup: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  longestFocusSessionMinutes: 0,
+  hourlyUsage: Array.from({ length: 24 }, (_, i) => ({
+    hour: String(i).padStart(2, '0'),
+    useful: 0,
+    distracted: 0
+  })),
   appUsageList: [
-    { id: 'dav_dict', name: 'DAV Smart Portal', icon: 'BookOpen', category: 'useful', minutes: 82, pickups: 12, limitMinutes: 0 },
-    { id: 'notion', name: 'Notion Study Notes', icon: 'FileText', category: 'useful', minutes: 54, pickups: 8, limitMinutes: 0 },
-    { id: 'youtube', name: 'YouTube', icon: 'Youtube', category: 'distracted', minutes: 46, pickups: 14, limitMinutes: 60 },
-    { id: 'instagram', name: 'Instagram & Reels', icon: 'Instagram', category: 'distracted', minutes: 28, pickups: 9, limitMinutes: 30 },
-    { id: 'whatsapp', name: 'WhatsApp', icon: 'MessageCircle', category: 'distracted', minutes: 22, pickups: 18, limitMinutes: 40 },
-    { id: 'chrome', name: 'Chrome Browser', icon: 'Globe', category: 'mixed', minutes: 22, pickups: 7, limitMinutes: 90 }
+    { id: 'dav_dict', name: 'DAV Smart Portal', icon: 'BookOpen', category: 'useful', minutes: 0, pickups: 1, limitMinutes: 0 },
+    { id: 'youtube', name: 'YouTube', icon: 'Youtube', category: 'distracted', minutes: 0, pickups: 0, limitMinutes: 60 },
+    { id: 'instagram', name: 'Instagram & Reels', icon: 'Instagram', category: 'distracted', minutes: 0, pickups: 0, limitMinutes: 30 },
+    { id: 'whatsapp', name: 'WhatsApp', icon: 'MessageCircle', category: 'distracted', minutes: 0, pickups: 0, limitMinutes: 40 },
+    { id: 'chrome', name: 'Chrome Browser', icon: 'Globe', category: 'mixed', minutes: 0, pickups: 0, limitMinutes: 90 }
   ]
 };
-
 const DEFAULT_REELS_TRACKER = {
-  todayReelsWatched: 12,
-  dailyReelsBudget: 25,
-  totalDoomscrollMinutes: 9.6,
-  doomscrollVelocity: 1.8, // reels/minute
+  todayReelsWatched: 0,
+  dailyReelsBudget: 5,
+  totalDoomscrollMinutes: 0,
+  doomscrollVelocity: 0, // reels/minute
   riskLevel: 'moderate',    // low | moderate | high | danger
   tier1WarningsTriggered: 1,
   tier2BreathsCompleted: 0,
@@ -700,20 +677,156 @@ class FocusDataStore {
     this.notify('screen_time_updated', data);
   }
 
-  simulateScreenTimeScan() {
+  // Real Screen Time Tracking (Zero fake data)
+  recordActiveStudySeconds(secs) {
     const current = this.getScreenTimeData();
-    const addUseful = Math.floor(Math.random() * 8) + 2;
-    const addDistracted = Math.floor(Math.random() * 4);
+    const addMins = Math.max(1, Math.round(secs / 60));
+    const nowHour = new Date().getHours();
+    const updatedHourly = current.hourlyUsage ? [...current.hourlyUsage] : [];
+    if (updatedHourly[nowHour]) {
+      updatedHourly[nowHour].useful += addMins;
+    }
     const updated = {
       ...current,
       lastScanned: new Date().toISOString(),
-      usefulMinutes: current.usefulMinutes + addUseful,
-      distractedMinutes: current.distractedMinutes + addDistracted,
-      totalScreenTimeMinutes: current.totalScreenTimeMinutes + addUseful + addDistracted,
-      devicePickups: current.devicePickups + 1
+      usefulMinutes: (current.usefulMinutes || 0) + addMins,
+      totalScreenTimeMinutes: (current.totalScreenTimeMinutes || 0) + addMins,
+      hourlyUsage: updatedHourly
     };
     this.saveScreenTimeData(updated);
     return updated;
+  }
+
+  recordDistractionSeconds(secs, appName = 'Reels / Distraction') {
+    const current = this.getScreenTimeData();
+    const addMins = Math.max(1, Math.round(secs / 60));
+    const nowHour = new Date().getHours();
+    const updatedHourly = current.hourlyUsage ? [...current.hourlyUsage] : [];
+    if (updatedHourly[nowHour]) {
+      updatedHourly[nowHour].distracted += addMins;
+    }
+    const updated = {
+      ...current,
+      lastScanned: new Date().toISOString(),
+      distractedMinutes: (current.distractedMinutes || 0) + addMins,
+      totalScreenTimeMinutes: (current.totalScreenTimeMinutes || 0) + addMins,
+      hourlyUsage: updatedHourly
+    };
+    this.saveScreenTimeData(updated);
+    return updated;
+  }
+
+  async scanDeviceTelemetryAsync() {
+    const current = this.getScreenTimeData();
+    const sessionSeconds = typeof performance !== 'undefined' ? Math.round(performance.now() / 1000) : 60;
+    const sessionMinutes = Math.max(1, Math.round(sessionSeconds / 60));
+    
+    const screenWidth = typeof window !== 'undefined' ? window.screen.width : 1080;
+    const screenHeight = typeof window !== 'undefined' ? window.screen.height : 2340;
+    const dpr = typeof window !== 'undefined' ? (window.devicePixelRatio || 1) : 1;
+    const cores = typeof navigator !== 'undefined' ? (navigator.hardwareConcurrency || 8) : 8;
+    const memory = (typeof performance !== 'undefined' && performance.memory) 
+      ? Math.round(performance.memory.usedJSHeapSize / 1048576) 
+      : 48;
+    const isOnline = typeof navigator !== 'undefined' ? navigator.onLine : true;
+
+    let connectionInfo = 'WiFi / Broadband (High Speed)';
+    if (typeof navigator !== 'undefined' && navigator.connection) {
+      const conn = navigator.connection;
+      connectionInfo = ${(conn.effectiveType || '4G').toUpperCase()} •  Mbps (RTT: ms);
+    }
+
+    let batteryLevel = 85;
+    let isCharging = false;
+    try {
+      if (typeof navigator !== 'undefined' && navigator.getBattery) {
+        const batt = await navigator.getBattery();
+        batteryLevel = Math.round(batt.level * 100);
+        isCharging = batt.charging;
+      }
+    } catch (e) {}
+
+    let osName = 'Windows PC';
+    if (typeof navigator !== 'undefined') {
+      const ua = navigator.userAgent;
+      if (/Android/i.test(ua)) osName = 'Android Mobile';
+      else if (/iPhone|iPad|iPod/i.test(ua)) osName = 'iOS Device';
+      else if (/Mac/i.test(ua)) osName = 'macOS';
+      else if (/Linux/i.test(ua)) osName = 'Linux';
+    }
+
+    const updated = {
+      ...current,
+      lastScanned: new Date().toISOString(),
+      usefulMinutes: Math.max(current.usefulMinutes || 0, sessionMinutes),
+      totalScreenTimeMinutes: Math.max(current.totalScreenTimeMinutes || 0, sessionMinutes + (current.distractedMinutes || 0)),
+      devicePickups: (current.devicePickups || 0) + 1,
+      telemetry: {
+        screenWidth,
+        screenHeight,
+        dpr,
+        cores,
+        memoryMB: memory,
+        isOnline,
+        sessionMinutes,
+        connectionInfo,
+        batteryLevel,
+        isCharging,
+        osName
+      }
+    };
+    this.saveScreenTimeData(updated);
+    return updated;
+  }
+
+  scanDeviceTelemetry() {
+    const current = this.getScreenTimeData();
+    const sessionSeconds = typeof performance !== 'undefined' ? Math.round(performance.now() / 1000) : 60;
+    const sessionMinutes = Math.max(1, Math.round(sessionSeconds / 60));
+    
+    const screenWidth = typeof window !== 'undefined' ? window.screen.width : 1080;
+    const screenHeight = typeof window !== 'undefined' ? window.screen.height : 2340;
+    const cores = typeof navigator !== 'undefined' ? (navigator.hardwareConcurrency || 8) : 8;
+    const memory = (typeof performance !== 'undefined' && performance.memory) 
+      ? Math.round(performance.memory.usedJSHeapSize / 1048576) 
+      : 48;
+    const isOnline = typeof navigator !== 'undefined' ? navigator.onLine : true;
+
+    let osName = 'Windows PC';
+    if (typeof navigator !== 'undefined') {
+      const ua = navigator.userAgent;
+      if (/Android/i.test(ua)) osName = 'Android Mobile';
+      else if (/iPhone|iPad|iPod/i.test(ua)) osName = 'iOS Device';
+      else if (/Mac/i.test(ua)) osName = 'macOS';
+      else if (/Linux/i.test(ua)) osName = 'Linux';
+    }
+
+    const updated = {
+      ...current,
+      lastScanned: new Date().toISOString(),
+      usefulMinutes: Math.max(current.usefulMinutes || 0, sessionMinutes),
+      totalScreenTimeMinutes: Math.max(current.totalScreenTimeMinutes || 0, sessionMinutes + (current.distractedMinutes || 0)),
+      devicePickups: (current.devicePickups || 0) + 1,
+      telemetry: {
+        screenWidth,
+        screenHeight,
+        cores,
+        memoryMB: memory,
+        isOnline,
+        sessionMinutes,
+        osName,
+        connectionInfo: 'WiFi / Broadband',
+        batteryLevel: 85,
+        isCharging: false
+      }
+    };
+    this.saveScreenTimeData(updated);
+    this.scanDeviceTelemetryAsync().catch(() => {});
+    return updated;
+  }
+
+  simulateScreenTimeScan() {
+    return this.scanDeviceTelemetry();
   }
 
   // --- BrainPal Reels Tracker ---

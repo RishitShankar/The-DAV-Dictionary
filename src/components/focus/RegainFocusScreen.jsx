@@ -161,9 +161,9 @@ export function RegainFocusScreen({
   }, [isRunning, isPaused, isOnBreak, sessionMode]);
 
   
-  // Anti-Distraction App-Switch & Tab-Blur Real-Time Guardian
+  // Anti-Distraction App-Switch & Tab-Blur Real-Time Guardian (Active in Strict Shield Mode)
   useEffect(() => {
-    if (!isRunning || isPaused || isOnBreak) return;
+    if (!isRunning || isPaused || isOnBreak || !strictShield?.strictModeActive) return;
 
     const triggerBreach = (sourceName = 'External Window / App') => {
       if (awayStartRef.current) return;

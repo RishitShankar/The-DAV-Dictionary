@@ -3,7 +3,8 @@ import {
   Hourglass, Calendar, Users, ShieldAlert, Film, BarChart3,
   Sparkles, Sliders, Volume2, ShieldCheck, Zap, X, Trophy,
   RefreshCw, Clock, Flame, Award, Heart, BookOpen, Layers,
-  Music, Radio, Eye, CheckSquare
+  Music, Radio, Eye, CheckSquare, Smartphone, Monitor, ChevronRight,
+  Wifi, Battery, Signal, Maximize2, Minimize2
 } from 'lucide-react';
 
 import { RegainFocusScreen } from './focus/RegainFocusScreen';
@@ -24,13 +25,31 @@ import { FloatingBottomDock } from './focus/FloatingBottomDock';
 import { focusDataStore, ambientAudio } from '../services/focusDataStore';
 
 export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) {
-  // Navigation active tab in focus engine
-  // 'focus' | 'schedule' | 'groups' | 'blocks' | 'reels' | 'analytics' | 'strict' | 'notifications' | 'audio' | 'detector' | 'studyroom' | 'challenges' | 'permissions'
+  // Navigation active tab in ReGain OS
+  // 'focus' | 'schedule' | 'groups' | 'blocks' | 'reels' | 'analytics'
   const [activeTab, setActiveTab] = useState('focus');
+
+  // Phone Shell Simulator mode on desktop (defaults to true for 100% exact ReGain visual replication)
+  const [isPhoneFrame, setIsPhoneFrame] = useState(() => {
+    try {
+      const saved = localStorage.getItem('dav_regain_phone_frame');
+      return saved !== 'false';
+    } catch (e) {
+      return true;
+    }
+  });
+
+  const handleTogglePhoneFrame = (val) => {
+    setIsPhoneFrame(val);
+    try {
+      localStorage.setItem('dav_regain_phone_frame', String(val));
+    } catch (e) {}
+  };
 
   // Modal dialog states
   const [showSetupModal, setShowSetupModal] = useState(false);
   const [showSettingsDrawer, setShowSettingsDrawer] = useState(false);
+  const [showAppBlockModalFromSetup, setShowAppBlockModalFromSetup] = useState(false);
 
   // Audio volume state
   const [audioVolume, setAudioVolume] = useState(0.5);
@@ -38,7 +57,7 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
   const handleStartSessionFromModal = (config) => {
     ambientAudio.playBellChime();
     if (onAccumulateMs) {
-      onAccumulateMs(1000 * 60); // mark progress
+      onAccumulateMs(1000 * 60 * (config.focusDurationSeconds ? config.focusDurationSeconds / 60 : 25));
     }
   };
 
@@ -48,319 +67,166 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
   };
 
   return (
-    <div className="relative w-full max-w-5xl mx-auto space-y-6 pb-28 text-white">
+    <div className="relative w-full select-none text-white">
+      
       {/* ------------------------------------------------------------- */}
-      {/* Top Secondary Navigation Pills (Desktop & Tablet Quick Jumper) */}
+      {/* Top Desktop Auxiliary Toolbar (View Mode Switcher)            */}
       {/* ------------------------------------------------------------- */}
-      <div className="flex items-center justify-between gap-2 overflow-x-auto p-1.5 rounded-2xl bg-stone-900/90 border border-stone-800 shadow-lg no-scrollbar">
+      <div className="max-w-md mx-auto mb-4 flex items-center justify-between px-3 py-2 rounded-2xl bg-stone-900/80 border border-stone-800 text-xs">
+        <div className="flex items-center space-x-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="font-bold text-stone-300">ReGain App Engine v3.4</span>
+        </div>
+
         <div className="flex items-center space-x-1.5">
           <button
-            onClick={() => setActiveTab('focus')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'focus'
-                ? 'bg-emerald-500 text-stone-950 font-black shadow-md'
-                : 'text-stone-300 hover:bg-stone-800'
+            type="button"
+            onClick={() => handleTogglePhoneFrame(true)}
+            className={`px-2.5 py-1 rounded-xl font-bold flex items-center space-x-1 transition cursor-pointer ${
+              isPhoneFrame
+                ? 'bg-emerald-500 text-stone-950 shadow-md'
+                : 'text-stone-400 hover:text-white'
             }`}
+            title="Authentic Smartphone Aspect Ratio"
           >
-            <Hourglass className="w-3.5 h-3.5" />
-            <span>Focus Orb</span>
+            <Smartphone className="w-3.5 h-3.5" />
+            <span className="text-[11px]">Phone Shell</span>
           </button>
 
           <button
-            onClick={() => setActiveTab('flashcards')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'flashcards'
-                ? 'bg-purple-600 text-white font-black shadow-md'
-                : 'text-stone-300 hover:bg-stone-800'
+            type="button"
+            onClick={() => handleTogglePhoneFrame(false)}
+            className={`px-2.5 py-1 rounded-xl font-bold flex items-center space-x-1 transition cursor-pointer ${
+              !isPhoneFrame
+                ? 'bg-emerald-500 text-stone-950 shadow-md'
+                : 'text-stone-400 hover:text-white'
             }`}
+            title="Expanded Full Width View"
           >
-            <BookOpen className="w-3.5 h-3.5" />
-            <span>Flashcards &amp; Revision</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('detector')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'detector'
-                ? 'bg-orange-500 text-stone-950 font-black shadow-md'
-                : 'text-stone-300 hover:bg-stone-800'
-            }`}
-          >
-            <Flame className="w-3.5 h-3.5" />
-            <span>Doomscroll Radar</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('challenges')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'challenges'
-                ? 'bg-amber-500 text-stone-950 font-black shadow-md'
-                : 'text-stone-300 hover:bg-stone-800'
-            }`}
-          >
-            <Award className="w-3.5 h-3.5" />
-            <span>Quests & Badges</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('blocks')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'blocks'
-                ? 'bg-emerald-500 text-stone-950 font-black shadow-md'
-                : 'text-stone-300 hover:bg-stone-800'
-            }`}
-          >
-            <ShieldAlert className="w-3.5 h-3.5" />
-            <span>App Blocks</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('schedule')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'schedule'
-                ? 'bg-emerald-500 text-stone-950 font-black shadow-md'
-                : 'text-stone-300 hover:bg-stone-800'
-            }`}
-          >
-            <Calendar className="w-3.5 h-3.5" />
-            <span>Schedule</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('groups')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'groups'
-                ? 'bg-emerald-500 text-stone-950 font-black shadow-md'
-                : 'text-stone-300 hover:bg-stone-800'
-            }`}
-          >
-            <Users className="w-3.5 h-3.5" />
-            <span>Focus Groups</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('studyroom')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'studyroom'
-                ? 'bg-teal-500 text-stone-950 font-black shadow-md'
-                : 'text-stone-300 hover:bg-stone-800'
-            }`}
-          >
-            <Radio className="w-3.5 h-3.5" />
-            <span>Live Study Hall</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('analytics')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'analytics'
-                ? 'bg-emerald-500 text-stone-950 font-black shadow-md'
-                : 'text-stone-300 hover:bg-stone-800'
-            }`}
-          >
-            <BarChart3 className="w-3.5 h-3.5" />
-            <span>Scanner</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('audio')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'audio'
-                ? 'bg-indigo-500 text-white font-black shadow-md'
-                : 'text-stone-300 hover:bg-stone-800'
-            }`}
-          >
-            <Music className="w-3.5 h-3.5" />
-            <span>Audio Studio</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('strict')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'strict'
-                ? 'bg-amber-500 text-stone-950 font-black shadow-md'
-                : 'text-stone-300 hover:bg-stone-800'
-            }`}
-          >
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Anti-Uninstall</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('permissions')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'permissions'
-                ? 'bg-emerald-600 text-white font-black shadow-md'
-                : 'text-stone-300 hover:bg-stone-800'
-            }`}
-          >
-            <CheckSquare className="w-3.5 h-3.5" />
-            <span>OS Permissions</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('notifications')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
-              activeTab === 'notifications'
-                ? 'bg-cyan-500 text-stone-950 font-black shadow-md'
-                : 'text-stone-300 hover:bg-stone-800'
-            }`}
-          >
-            <Zap className="w-3.5 h-3.5" />
-            <span>Notification Shield</span>
+            <Monitor className="w-3.5 h-3.5" />
+            <span className="text-[11px]">Expanded</span>
           </button>
         </div>
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* Active Tab View Rendering                                     */}
+      {/* Authentic ReGain Smartphone Viewport Container                */}
       {/* ------------------------------------------------------------- */}
-      <div className="w-full">
-        {/* Tab 1: ReGain Aurora Focus Screen */}
-        {activeTab === 'focus' && (
-          <RegainFocusScreen
-            onOpenSetupModal={() => setShowSetupModal(true)}
-            onOpenGroupModal={() => setActiveTab('groups')}
-            onOpenSettingsDrawer={() => setShowSettingsDrawer(true)}
-          />
-        )}
-
-        
-        {/* Tab: BrainPal Reels & Shorts Counter */}
-        {activeTab === 'reels' && (
-          <BrainPalReelsTracker user={user} />
-        )}
-
-        {/* Tab 2: Interactive Flashcards & Daily Revision Tracker */}
-        {activeTab === 'flashcards' && (
-          <div className="p-6 rounded-3xl bg-stone-900 border border-stone-800 space-y-6 animate-fadeIn">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-xl font-black text-white flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-amber-400" />
-                  <span>DAV Active Recall Flashcards &amp; Revision</span>
-                </h3>
-                <p className="text-xs text-stone-400 mt-1">
-                  High-yield concepts, definitions, and formulas across DAV Class 8 Science, Mathematics &amp; Social Science.
-                </p>
+      <div
+        className={`mx-auto transition-all duration-300 relative ${
+          isPhoneFrame
+            ? 'w-full max-w-[420px] min-h-[850px] rounded-[50px] border-[10px] border-[#18191d] ring-2 ring-stone-800 shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden bg-[#021811] flex flex-col justify-between'
+            : 'w-full max-w-4xl min-h-[800px] rounded-[36px] border border-stone-800 bg-[#021811] shadow-2xl overflow-hidden flex flex-col justify-between'
+        }`}
+      >
+        {/* Simulated Android Status Bar (Exact match to ReGain App Screenshot) */}
+        {isPhoneFrame && (
+          <div className="relative z-30 pt-3 pb-1 px-6 flex items-center justify-between text-[11px] font-sans font-semibold text-white/90 select-none bg-black/20 backdrop-blur-sm">
+            {/* Left: Clock */}
+            <div className="flex items-center space-x-2">
+              <span className="font-bold tracking-tight">1:24 PM</span>
+              <div className="flex items-center space-x-1 opacity-70">
+                <span className="text-[10px]">⌛</span>
+                <span className="text-[10px]">⌛</span>
               </div>
-              <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-xs font-mono font-bold">
-                Spaced Repetition Active
-              </span>
             </div>
 
-            {/* Flashcard Carousel */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[
-                { subject: 'Science', q: 'What is the function of the Golgi apparatus?', a: 'Packaging, modification, and dispatch of cellular proteins and lipids.', chapter: 'Ch 1: Cell Structure' },
-                { subject: 'Mathematics', q: 'What is the Pythagorean Triplet formula?', a: 'For any natural number m > 1: (2m, m² - 1, m² + 1) forms a Pythagorean triplet.', chapter: 'Ch 1: Squares and Square Roots' },
-                { subject: 'Social Science', q: 'Define Sustainable Development.', a: 'Development that meets the needs of the present without compromising future generations.', chapter: 'Ch 1: Resources' },
-                { subject: 'Science', q: 'State Snell\'s Law of Refraction.', a: 'The ratio of sine of angle of incidence to sine of angle of refraction is constant (sin i / sin r = constant).', chapter: 'Ch 10: Refraction of Light' },
-                { subject: 'Mathematics', q: 'What is the formula for Compound Interest?', a: 'A = P(1 + r/100)ⁿ, where CI = A - P.', chapter: 'Ch 6: Compound Interest' },
-                { subject: 'Science', q: 'What is the chemical formula of Rust?', a: 'Hydrated Ferric Oxide: Fe₂O₃ • xH₂O.', chapter: 'Ch 3: Metals and Non-Metals' }
-              ].map((card, idx) => (
-                <div key={idx} className="p-5 rounded-2xl bg-stone-950 border border-stone-800 hover:border-amber-400/60 transition group space-y-3 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between text-[10px] font-mono font-bold">
-                      <span className="text-amber-400 bg-amber-950/80 px-2 py-0.5 rounded border border-amber-500/30">
-                        {card.subject}
-                      </span>
-                      <span className="text-stone-500">{card.chapter}</span>
-                    </div>
-                    <h4 className="text-sm font-bold text-white mt-3 group-hover:text-amber-200 transition">
-                      {card.q}
-                    </h4>
-                  </div>
-                  <div className="p-3 rounded-xl bg-stone-900 border border-stone-800/80 text-xs text-stone-300 leading-relaxed font-sans">
-                    💡 <strong>Answer:</strong> {card.a}
-                  </div>
-                </div>
-              ))}
-            </div>
+            {/* Center Punch-hole Camera */}
+            <div className="w-3.5 h-3.5 rounded-full bg-black border border-stone-800/80 shadow-inner" />
 
-            {/* Revision Planner Checklist */}
-            <div className="p-4 rounded-2xl bg-stone-950 border border-stone-800 space-y-3">
-              <h4 className="text-xs font-black uppercase tracking-wider text-amber-400">
-                Daily Spaced Revision Target
-              </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-                <div className="p-3 rounded-xl bg-stone-900/80 border border-stone-800 flex items-center justify-between">
-                  <span>Science: Ch 1 to 5 Flashcards</span>
-                  <span className="text-emerald-400 font-bold">✓ Reviewed</span>
-                </div>
-                <div className="p-3 rounded-xl bg-stone-900/80 border border-stone-800 flex items-center justify-between">
-                  <span>Maths: Formula Practice</span>
-                  <span className="text-amber-400 font-bold">In Progress</span>
-                </div>
-                <div className="p-3 rounded-xl bg-stone-900/80 border border-stone-800 flex items-center justify-between">
-                  <span>SST: Map Locations</span>
-                  <span className="text-stone-500 font-bold">Scheduled (7 PM)</span>
-                </div>
+            {/* Right: Network & Battery Indicators */}
+            <div className="flex items-center space-x-2">
+              <span className="text-[9px] font-mono tracking-tighter opacity-80">VoLTE</span>
+              <Wifi className="w-3.5 h-3.5 opacity-90" />
+              <div className="flex items-center space-x-1 font-mono text-[10px]">
+                <Battery className="w-3.5 h-3.5 rotate-90 opacity-90" />
+                <span className="font-bold">27</span>
               </div>
             </div>
           </div>
         )}
 
-        {/* Tab 3: BrainPal Doomscroll Velocity Detector */}
-        {activeTab === 'detector' && (
-          <BrainPalDoomscrollDetector />
+        {/* ----------------------------------------------------------- */}
+        {/* Active Tab Screen Content                                   */}
+        {/* ----------------------------------------------------------- */}
+        <div className="flex-1 w-full flex flex-col relative pb-24 overflow-y-auto no-scrollbar">
+          
+          {/* TAB 1: REGAIN FOCUS SCREEN (Exact match to Screenshot 1) */}
+          {activeTab === 'focus' && (
+            <RegainFocusScreen
+              onOpenSetupModal={() => setShowSetupModal(true)}
+              onOpenGroupModal={() => setActiveTab('groups')}
+              onOpenSettingsDrawer={() => setShowSettingsDrawer(true)}
+            />
+          )}
+
+          {/* TAB 2: REGAIN SCHEDULE SCREEN (Exact match to Screenshot 5) */}
+          {activeTab === 'schedule' && (
+            <div className="p-4 sm:p-6 animate-fadeIn">
+              <RegainScheduleScreen />
+            </div>
+          )}
+
+          {/* TAB 3: REGAIN GROUPS SCREEN (Exact match to Screenshot 6) */}
+          {activeTab === 'groups' && (
+            <div className="p-4 sm:p-6 animate-fadeIn">
+              <RegainGroupsScreen user={user} />
+            </div>
+          )}
+
+          {/* TAB 4: REGAIN BLOCKS SCREEN (Exact match to Screenshot 7 & Modals 2 & 3) */}
+          {activeTab === 'blocks' && (
+            <div className="p-4 sm:p-6 animate-fadeIn">
+              <RegainBlocksScreen
+                onOpenShortsTracker={() => setActiveTab('reels')}
+              />
+            </div>
+          )}
+
+          {/* TAB 5: BRAINPAL REELS & SHORTS COUNTER */}
+          {activeTab === 'reels' && (
+            <div className="p-4 sm:p-6 animate-fadeIn">
+              <BrainPalReelsTracker user={user} />
+            </div>
+          )}
+
+          {/* TAB 6: SCREEN TIME SCANNER & ANALYTICS */}
+          {activeTab === 'analytics' && (
+            <div className="p-4 sm:p-6 animate-fadeIn">
+              <RegainScreenTimeAnalytics />
+            </div>
+          )}
+
+        </div>
+
+        {/* ----------------------------------------------------------- */}
+        {/* Floating Bottom Navigation Dock (Matches Screenshots 5,6,7) */}
+        {/* ----------------------------------------------------------- */}
+        <FloatingBottomDock
+          activeTab={activeTab}
+          onSelectTab={(tabId) => setActiveTab(tabId)}
+        />
+
+        {/* Simulated Android Navigation Gestures Bar (Matches Screenshot 1 Bottom) */}
+        {isPhoneFrame && (
+          <div className="relative z-30 py-2.5 px-8 flex items-center justify-around bg-black/40 backdrop-blur-md border-t border-white/5 select-none text-stone-500">
+            {/* Recent Apps Button */}
+            <div className="flex flex-col space-y-0.5">
+              <span className="w-3.5 h-0.5 bg-stone-500 rounded-full" />
+              <span className="w-3.5 h-0.5 bg-stone-500 rounded-full" />
+              <span className="w-3.5 h-0.5 bg-stone-500 rounded-full" />
+            </div>
+            {/* Home Circle Button */}
+            <div className="w-3.5 h-3.5 rounded-full border border-stone-500" />
+            {/* Back Chevron */}
+            <div className="text-xs font-mono font-bold">&lt;</div>
+          </div>
         )}
 
-        {/* Tab 4: Attention Mastery Quests & Badges */}
-        {activeTab === 'challenges' && (
-          <BrainPalChallengeDashboard />
-        )}
-
-        {/* Tab 5: ReGain Blocks Screen */}
-        {activeTab === 'blocks' && (
-          <RegainBlocksScreen
-            onOpenShortsTracker={() => setActiveTab('reels')}
-          />
-        )}
-
-        {/* Tab 6: ReGain Schedule Screen */}
-        {activeTab === 'schedule' && (
-          <RegainScheduleScreen />
-        )}
-
-        {/* Tab 7: ReGain Focus Groups Screen */}
-        {activeTab === 'groups' && (
-          <RegainGroupsScreen user={user} />
-        )}
-
-        {/* Tab 8: Live Virtual Study Hall */}
-        {activeTab === 'studyroom' && (
-          <RegainStudyRoomLive user={user} />
-        )}
-
-        {/* Tab 9: Screen Time Analytics & Scanner */}
-        {activeTab === 'analytics' && (
-          <RegainScreenTimeAnalytics />
-        )}
-
-        {/* Tab 10: Dedicated Audio Synthesizer Studio */}
-        {activeTab === 'audio' && (
-          <RegainSoundscapesPlayer />
-        )}
-
-        {/* Tab 11: Strict Mode & Anti-Uninstall Shield */}
-        {activeTab === 'strict' && (
-          <RegainStrictShield />
-        )}
-
-        {/* Tab 12: Android OS Permission Manager */}
-        {activeTab === 'permissions' && (
-          <RegainPermissionManager />
-        )}
-
-        {/* Tab 13: Smart Notification Shield */}
-        {activeTab === 'notifications' && (
-          <RegainNotificationManager />
-        )}
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* ReGain Focus Setup Sheet Modal                                */}
+      {/* ReGain Focus Setup Sheet Modal (Exact match to Screenshot 4)  */}
       {/* ------------------------------------------------------------- */}
       <RegainFocusSetupModal
         isOpen={showSetupModal}
@@ -373,26 +239,27 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
       />
 
       {/* ------------------------------------------------------------- */}
-      {/* Slide-over Settings Drawer (from Hamburger Menu)              */}
+      {/* ReGain Hamburger Settings Slide-over Drawer                   */}
       {/* ------------------------------------------------------------- */}
       {showSettingsDrawer && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex justify-end">
-          <div className="w-full max-w-sm bg-stone-900 border-l border-stone-800 h-full p-6 space-y-6 overflow-y-auto animate-in slide-in-from-right duration-200">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex justify-end animate-fadeIn">
+          <div className="w-full max-w-sm bg-[#121316] border-l border-stone-800 h-full p-6 space-y-6 overflow-y-auto">
             <div className="flex items-center justify-between pb-4 border-b border-stone-800">
               <h3 className="text-base font-black text-white flex items-center space-x-2">
                 <Sliders className="w-5 h-5 text-emerald-400" />
-                <span>Focus Engine Controls</span>
+                <span>ReGain Focus Controls</span>
               </h3>
               <button
+                type="button"
                 onClick={() => setShowSettingsDrawer(false)}
-                className="w-8 h-8 rounded-full bg-stone-800 flex items-center justify-center text-stone-400 hover:text-white"
+                className="w-8 h-8 rounded-full bg-stone-800 flex items-center justify-center text-stone-400 hover:text-white cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Audio Master Volume */}
-            <div className="p-4 rounded-2xl bg-stone-950 border border-stone-800 space-y-2">
+            {/* Synthesizer Audio Volume */}
+            <div className="p-4 rounded-2xl bg-stone-900 border border-stone-800 space-y-2">
               <div className="flex items-center justify-between text-xs font-bold text-stone-300">
                 <span className="flex items-center space-x-1.5">
                   <Volume2 className="w-4 h-4 text-emerald-400" />
@@ -411,7 +278,7 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
               />
             </div>
 
-            {/* Quick Presets */}
+            {/* Study Presets */}
             <div className="space-y-2">
               <span className="text-xs font-bold text-stone-400 uppercase tracking-wider">
                 Study Method Presets
@@ -419,11 +286,12 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
 
               <div className="space-y-2">
                 <button
+                  type="button"
                   onClick={() => {
                     setShowSetupModal(true);
                     setShowSettingsDrawer(false);
                   }}
-                  className="w-full p-3 rounded-xl bg-stone-850 hover:bg-stone-800 border border-stone-750 text-left transition-all flex items-center justify-between"
+                  className="w-full p-3 rounded-xl bg-stone-850 hover:bg-stone-800 border border-stone-750 text-left transition-all flex items-center justify-between cursor-pointer"
                 >
                   <div>
                     <h5 className="text-xs font-bold text-stone-200">Pomodoro Classic</h5>
@@ -433,11 +301,12 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => {
                     setShowSetupModal(true);
                     setShowSettingsDrawer(false);
                   }}
-                  className="w-full p-3 rounded-xl bg-stone-850 hover:bg-stone-800 border border-stone-750 text-left transition-all flex items-center justify-between"
+                  className="w-full p-3 rounded-xl bg-stone-850 hover:bg-stone-800 border border-stone-750 text-left transition-all flex items-center justify-between cursor-pointer"
                 >
                   <div>
                     <h5 className="text-xs font-bold text-stone-200">Deep Work Sprint</h5>
@@ -447,11 +316,12 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => {
                     setShowSetupModal(true);
                     setShowSettingsDrawer(false);
                   }}
-                  className="w-full p-3 rounded-xl bg-stone-850 hover:bg-stone-800 border border-stone-750 text-left transition-all flex items-center justify-between"
+                  className="w-full p-3 rounded-xl bg-stone-850 hover:bg-stone-800 border border-stone-750 text-left transition-all flex items-center justify-between cursor-pointer"
                 >
                   <div>
                     <h5 className="text-xs font-bold text-stone-200">Monk Mode Ultra</h5>
@@ -462,52 +332,58 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
               </div>
             </div>
 
-            {/* Quick Links to Security & Notifications */}
+            {/* Quick Feature Navigators */}
             <div className="space-y-2 pt-2">
               <button
+                type="button"
                 onClick={() => {
-                  setActiveTab('strict');
+                  setActiveTab('blocks');
                   setShowSettingsDrawer(false);
                 }}
-                className="w-full p-3 rounded-xl bg-amber-950/30 border border-amber-500/30 text-amber-300 text-xs font-bold flex items-center space-x-2"
+                className="w-full p-3 rounded-xl bg-stone-900 hover:bg-stone-850 border border-stone-800 text-stone-200 text-xs font-bold flex items-center justify-between cursor-pointer"
               >
-                <ShieldCheck className="w-4 h-4" />
-                <span>Anti-Uninstall & Emergency PIN</span>
+                <span className="flex items-center space-x-2">
+                  <ShieldAlert className="w-4 h-4 text-emerald-400" />
+                  <span>Select Apps to Block</span>
+                </span>
+                <ChevronRight className="w-4 h-4 text-stone-500" />
               </button>
 
               <button
+                type="button"
                 onClick={() => {
-                  setActiveTab('permissions');
+                  setActiveTab('reels');
                   setShowSettingsDrawer(false);
                 }}
-                className="w-full p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-emerald-300 text-xs font-bold flex items-center space-x-2"
+                className="w-full p-3 rounded-xl bg-stone-900 hover:bg-stone-850 border border-stone-800 text-stone-200 text-xs font-bold flex items-center justify-between cursor-pointer"
               >
-                <CheckSquare className="w-4 h-4" />
-                <span>Android OS Diagnostics</span>
+                <span className="flex items-center space-x-2">
+                  <Film className="w-4 h-4 text-rose-400" />
+                  <span>BrainPal Reels & Shorts Counter</span>
+                </span>
+                <ChevronRight className="w-4 h-4 text-stone-500" />
               </button>
 
               <button
+                type="button"
                 onClick={() => {
-                  setActiveTab('notifications');
+                  setActiveTab('schedule');
                   setShowSettingsDrawer(false);
                 }}
-                className="w-full p-3 rounded-xl bg-cyan-950/30 border border-cyan-500/30 text-cyan-300 text-xs font-bold flex items-center space-x-2"
+                className="w-full p-3 rounded-xl bg-stone-900 hover:bg-stone-850 border border-stone-800 text-stone-200 text-xs font-bold flex items-center justify-between cursor-pointer"
               >
-                <Zap className="w-4 h-4" />
-                <span>Notification Shield & Batches</span>
+                <span className="flex items-center space-x-2">
+                  <Calendar className="w-4 h-4 text-teal-400" />
+                  <span>Study Routines &amp; Timetable</span>
+                </span>
+                <ChevronRight className="w-4 h-4 text-stone-500" />
               </button>
             </div>
+
           </div>
         </div>
       )}
 
-      {/* ------------------------------------------------------------- */}
-      {/* Floating Bottom Pill Navigation Bar (Exact match to Screenshots) */}
-      {/* ------------------------------------------------------------- */}
-      <FloatingBottomDock
-        activeTab={activeTab}
-        onSelectTab={(tabId) => setActiveTab(tabId)}
-      />
     </div>
   );
 }

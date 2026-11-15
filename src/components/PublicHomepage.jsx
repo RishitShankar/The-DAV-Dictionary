@@ -8,7 +8,8 @@ import {
   Play, Compass, Calculator, Calendar as CalendarIcon, Clock as ClockIcon,
   CloudSun, Bus, MapPin, Eye, Trophy, Layers, Video, ClipboardList,
   UserCheck as UserCheckIcon, Shield, Zap, ExternalLink, Rocket,
-  Volume2, VolumeX, Pause, RefreshCw, Smartphone, Key, Upload, Database, Radio, Sparkle
+  Volume2, VolumeX, Pause, RefreshCw, Smartphone, Key, Upload, Database, Radio, Sparkle,
+  ArrowLeft, Shuffle, XCircle
 } from 'lucide-react';
 import { WhatsAppLogo, InstagramLogo, LinkedInLogo, SnapchatLogo, YouTubeLogo, XTwitterLogo } from './SocialLogos';
 import { RangoliCursorEffect } from './RangoliCursorEffect';
@@ -948,7 +949,8 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
               { num: 11, name: 'Patron & Pay' },
               { num: 12, name: 'Reviews' },
               { num: 13, name: 'ID Generator' },
-              { num: 14, name: 'Founder Bio' }
+              { num: 14, name: 'Founder Bio' },
+              { num: 'concepts200', name: '⚡ 200 Concepts' }
             ].map((s) => (
               <button
                 key={s.num}
@@ -1442,8 +1444,78 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
               </div>
             )}
 
+            {/* SPECIAL TAB: 200 PLATFORM CONCEPTS ARCHITECTURE */}
+            {interactiveSectionTab === 'concepts200' && (
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-stone-950 p-6 sm:p-8 rounded-3xl border border-amber-500/40 shadow-2xl">
+                <div className="lg:col-span-7 space-y-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-400 text-xs font-black uppercase tracking-wider">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>200 Platform Concepts Architecture</span>
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-black text-white">
+                    Master Architecture of 200 Platform &amp; Design Concepts
+                  </h3>
+                  <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
+                    Explore all 200 world-class website design, UI/UX, cognitive AI, 3D spatial sensory, collaborative, examination diagnostic, and enterprise ERP concepts engineered for DAVDixence.
+                  </p>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2 text-xs">
+                    <div className="p-2.5 rounded-xl bg-stone-900 border border-stone-800">
+                      <span className="text-[10px] font-bold text-amber-400 uppercase block">Phase 1–2</span>
+                      <span className="font-black text-white">Bento Grid &amp; Spotlight</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-stone-900 border border-stone-800">
+                      <span className="text-[10px] font-bold text-cyan-400 uppercase block">Phase 3–4</span>
+                      <span className="font-black text-white">Gamification &amp; CBT</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-stone-900 border border-stone-800">
+                      <span className="text-[10px] font-bold text-purple-400 uppercase block">Phase 6–7</span>
+                      <span className="font-black text-white">Voice AI &amp; 3D Lab</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-stone-900 border border-stone-800">
+                      <span className="text-[10px] font-bold text-emerald-400 uppercase block">Phase 8–9</span>
+                      <span className="font-black text-white">Collab &amp; Error Vault</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-stone-900 border border-stone-800">
+                      <span className="text-[10px] font-bold text-rose-400 uppercase block">Phase 10</span>
+                      <span className="font-black text-white">Dynamic Island HUD</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-stone-900 border border-stone-800">
+                      <span className="text-[10px] font-bold text-yellow-400 uppercase block">Phase 11</span>
+                      <span className="font-black text-white">QR Admit Card &amp; ERP</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => onEnterDemoPreview('concepts200')}
+                      className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 hover:opacity-95 text-stone-950 font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-xl shadow-amber-400/20 cursor-pointer"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      <span>Explore All 200 Platform Concepts</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="lg:col-span-5 bg-gradient-to-b from-stone-900 to-stone-950 p-6 rounded-2xl border border-stone-800 text-center space-y-4">
+                  <div className="w-20 h-20 rounded-3xl bg-amber-400/20 text-amber-400 flex items-center justify-center mx-auto shadow-xl">
+                    <Layers className="w-10 h-10" />
+                  </div>
+                  <h4 className="text-xl font-black text-white">200 Concepts Master Hub</h4>
+                  <p className="text-xs text-stone-300">
+                    Live interactive features: Dynamic Island HUD, Ctrl+K Command Palette, Virtual 3D Science Lab, Mistake Vault, and QR Admit Card.
+                  </p>
+                  <div className="p-2.5 rounded-xl bg-stone-950 border border-stone-850 font-mono text-xs text-emerald-400 font-bold">
+                    100% Implemented &amp; Live
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* SECTIONS 3, 6, 10, 11, 12, 13, 14 GENERIC COMPREHENSIVE CARD */}
-            {![1, 2, 4, 5, 7, 8, 9].includes(interactiveSectionTab) && (
+            {!['concepts200', 1, 2, 4, 5, 7, 8, 9].includes(interactiveSectionTab) && (
               (() => {
                 const cur = allDimensions.find(d => d.num === interactiveSectionTab) || allDimensions[0];
                 const IconC = cur.icon;

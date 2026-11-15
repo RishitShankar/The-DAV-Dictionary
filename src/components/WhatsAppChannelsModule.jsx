@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Users, Search, Plus, Share2, MoreVertical, Send, Check, 
   Paperclip, Smile, Image as ImageIcon, CheckCheck, Compass, 
-  Trash2, Settings, Camera, UploadCloud, Edit3, X, ShieldAlert,
+  Trash2, Settings, Camera, UploadCloud, Edit3, X, ShieldAlert, Upload,
   ArrowRight, Heart, ThumbsUp, Flame, PartyPopper, CheckCircle2,
   ExternalLink, Copy, UserPlus, UserMinus, ShieldCheck, Lock,
   BadgeCheck, MessageCircle, Volume2, Sparkles, Bell
@@ -201,9 +201,6 @@ export function WhatsAppChannelsModule({ user, isDimension5, onSwitchToChats }) 
         );
         if (found) {
           setActiveChannelId(found.id);
-          if (!mySubscribedChannelIds.includes(found.id)) {
-            setMySubscribedChannelIds(prev => [...prev, found.id]);
-          }
         }
       }
     } catch (e) {}

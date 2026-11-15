@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   BookOpen, Layers, X, Sparkles, User, ChevronRight, 
   PanelLeftClose, Award, CheckCircle2, LogOut, Lock, Compass, HelpCircle, Heart,
-  ClipboardList, MessageSquareMore, Video, CheckSquare, UserCheck, Bus, Trophy, Star, Settings, Key, Brain
+  ClipboardList, MessageSquareMore, Video, CheckSquare, UserCheck, Bus, Trophy, Star, Settings, Key, Brain, Shield
 } from 'lucide-react';
 
 export function GeminiSidebar({ 
@@ -92,6 +92,7 @@ export function GeminiSidebar({
     { id: 13, name: 'Section 13: Master ID Generator', icon: Key, status: 'Account Provisioning Desk' },
     { id: 14, name: 'Section 14: About Creator', icon: Award, status: 'Head Boy Profile' },
     { id: 'concepts', name: 'Master Concepts (106+ Vault)', icon: Brain, status: '110 Concepts Hall' },
+    { id: 'concepts200', name: '200 Platform Architecture', icon: Layers, status: '200 Design Concepts' },
   ];
 
   const teacherSubSections = [

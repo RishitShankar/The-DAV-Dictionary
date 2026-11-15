@@ -6,7 +6,7 @@ import {
   ExternalLink, Copy, Check, Search, Sparkles, Clock, 
   User, Layers, Filter, Download, ChevronRight, ChevronLeft, 
   Flame, ShieldCheck, HelpCircle, ArrowRight, Share2, Compass,
-  Star, Lock, AlertCircle, RefreshCw, Sparkle, Smile, Plus, Trash2, Upload, Eye
+  Star, Lock, AlertCircle, RefreshCw, Sparkle, Smile, Plus, Trash2, Upload, Eye, Atom
 } from 'lucide-react';
 import { 
   SECTION6_CLASSES, 

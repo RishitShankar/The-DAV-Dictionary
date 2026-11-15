@@ -1,75 +1,115 @@
 import React from 'react';
 import {
-  Hourglass, Calendar, Users, ShieldAlert, Film, BarChart3,
-  Sparkles, Lock, Volume2
+  Hourglass, Calendar, Users, ShieldAlert, Film, Trophy,
+  BarChart3, Sparkles, Sliders
 } from 'lucide-react';
 import { ambientAudio } from '../../services/focusDataStore';
 
 export function FloatingBottomDock({ activeTab, onSelectTab }) {
-  const tabs = [
-    { id: 'focus', label: 'Focus', icon: Hourglass },
-    { id: 'schedule', label: 'Schedule', icon: Calendar },
-    { id: 'groups', label: 'Groups', icon: Users },
-    { id: 'blocks', label: 'Blocks', icon: ShieldAlert, isSpecial: true },
-    { id: 'reels', label: 'BrainPal', icon: Film, isBadge: 'NEW' },
-    { id: 'analytics', label: 'Scanner', icon: BarChart3 }
-  ];
-
   const handleSelect = (tabId) => {
     ambientAudio.playBellChime();
     onSelectTab(tabId);
   };
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-11/12 max-w-md select-none">
-      <div className="p-1.5 rounded-full bg-[#111215]/95 backdrop-blur-2xl border border-stone-700/60 shadow-2xl shadow-black/80 flex items-center justify-between">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
+    <div className="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 w-full max-w-[420px] px-3 select-none pointer-events-auto">
+      <div className="flex items-center gap-2">
+        
+        {/* Main 3-Tab Container: Focus, Schedule, Groups (Matches Screenshot Navigation) */}
+        <div className="flex-1 h-16 rounded-full bg-[#0d0e11]/95 backdrop-blur-2xl border border-stone-800/80 shadow-2xl shadow-black/90 px-3 flex items-center justify-around">
+          
+          {/* Tab 1: Focus */}
+          <button
+            type="button"
+            onClick={() => handleSelect('focus')}
+            className={`flex flex-col items-center justify-center py-1 px-2 transition-all cursor-pointer ${
+              activeTab === 'focus'
+                ? 'text-white'
+                : 'text-stone-400 hover:text-stone-200'
+            }`}
+          >
+            <Hourglass className={`w-5 h-5 transition-transform ${activeTab === 'focus' ? 'text-white scale-110 stroke-[2.5]' : 'text-stone-400'}`} />
+            <span className={`text-[10px] mt-1 tracking-tight font-medium ${activeTab === 'focus' ? 'text-white font-bold' : 'text-stone-400'}`}>
+              Focus
+            </span>
+          </button>
 
-          if (tab.isSpecial) {
-            // "Blocks" pill button (as shown on the right side of the screenshot navigation)
-            return (
-              <button
-                key={tab.id}
-                onClick={() => handleSelect(tab.id)}
-                className={`flex items-center space-x-1.5 px-3.5 py-2.5 rounded-full text-xs font-bold transition-all ${
-                  isActive
-                    ? 'bg-emerald-500 text-stone-950 shadow-lg shadow-emerald-950 font-black'
-                    : 'bg-stone-850 hover:bg-stone-800 text-stone-300'
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5 stroke-[2.5]" />
-                <span>{tab.label}</span>
-              </button>
-            );
-          }
+          {/* Tab 2: Schedule */}
+          <button
+            type="button"
+            onClick={() => handleSelect('schedule')}
+            className={`flex flex-col items-center justify-center py-1 px-2 transition-all cursor-pointer ${
+              activeTab === 'schedule'
+                ? 'text-emerald-400 font-bold'
+                : 'text-stone-400 hover:text-stone-200'
+            }`}
+          >
+            <Calendar className={`w-5 h-5 transition-transform ${activeTab === 'schedule' ? 'text-emerald-400 scale-110 stroke-[2.5]' : 'text-stone-400'}`} />
+            <span className={`text-[10px] mt-1 tracking-tight ${activeTab === 'schedule' ? 'text-emerald-400 font-bold' : 'text-stone-400'}`}>
+              Schedule
+            </span>
+          </button>
 
-          return (
-            <button
-              key={tab.id}
-              onClick={() => handleSelect(tab.id)}
-              className={`flex-1 flex flex-col items-center justify-center py-1.5 px-1 rounded-full transition-all relative ${
-                isActive
-                  ? 'text-emerald-400 font-bold'
-                  : 'text-stone-400 hover:text-stone-200 font-medium'
-              }`}
-            >
-              <Icon className={`w-4 h-4 transition-transform ${isActive ? 'scale-110 stroke-[2.5]' : ''}`} />
-              <span className="text-[10px] mt-0.5 tracking-tight">{tab.label}</span>
+          {/* Tab 3: Groups */}
+          <button
+            type="button"
+            onClick={() => handleSelect('groups')}
+            className={`flex flex-col items-center justify-center py-1 px-2 transition-all cursor-pointer ${
+              activeTab === 'groups'
+                ? 'text-emerald-400 font-bold'
+                : 'text-stone-400 hover:text-stone-200'
+            }`}
+          >
+            <Users className={`w-5 h-5 transition-transform ${activeTab === 'groups' ? 'text-emerald-400 scale-110 stroke-[2.5]' : 'text-stone-400'}`} />
+            <span className={`text-[10px] mt-1 tracking-tight ${activeTab === 'groups' ? 'text-emerald-400 font-bold' : 'text-stone-400'}`}>
+              Groups
+            </span>
+          </button>
 
-              {tab.isBadge && !isActive && (
-                <span className="absolute -top-1 right-1 px-1 py-0.2 rounded-full text-[8px] font-black bg-rose-500 text-white animate-pulse">
-                  {tab.isBadge}
-                </span>
-              )}
+          {/* Tab 5: BrainPal Reels (Quick Access) */}
+          <button
+            type="button"
+            onClick={() => handleSelect('reels')}
+            className={`flex flex-col items-center justify-center py-1 px-2 transition-all cursor-pointer relative ${
+              activeTab === 'reels'
+                ? 'text-rose-400 font-bold'
+                : 'text-stone-400 hover:text-stone-200'
+            }`}
+            title="BrainPal Reels & Shorts Counter"
+          >
+            <Film className={`w-5 h-5 transition-transform ${activeTab === 'reels' ? 'text-rose-400 scale-110 stroke-[2.5]' : 'text-stone-400'}`} />
+            <span className={`text-[10px] mt-1 tracking-tight ${activeTab === 'reels' ? 'text-rose-400 font-bold' : 'text-stone-400'}`}>
+              Reels
+            </span>
+            {activeTab !== 'reels' && (
+              <span className="absolute -top-1 right-1 w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+            )}
+          </button>
 
-              {isActive && (
-                <span className="w-1 h-1 rounded-full bg-emerald-400 mt-0.5" />
-              )}
-            </button>
-          );
-        })}
+        </div>
+
+        {/* Separate Blocks Pill Card (Exact Match to ReGain App Screenshot) */}
+        <button
+          type="button"
+          onClick={() => handleSelect('blocks')}
+          className={`h-16 px-5 rounded-[28px] border shadow-2xl transition-all flex flex-col items-center justify-center cursor-pointer shrink-0 ${
+            activeTab === 'blocks'
+              ? 'bg-[#0d0e11]/95 border-emerald-500/80 text-emerald-400 shadow-emerald-950/60'
+              : 'bg-[#0d0e11]/95 border-stone-800/80 text-stone-400 hover:text-stone-200 hover:border-stone-700'
+          }`}
+          title="App Limits & Shorts Blocking"
+        >
+          {/* Circle with diagonal slash (prohibited / block icon) */}
+          <div className="relative w-5 h-5 flex items-center justify-center">
+            <div className={`w-5 h-5 rounded-full border-2 ${activeTab === 'blocks' ? 'border-emerald-400' : 'border-stone-400'} flex items-center justify-center relative`}>
+              <div className={`w-4 h-0.5 ${activeTab === 'blocks' ? 'bg-emerald-400' : 'bg-stone-400'} rotate-45 transform`} />
+            </div>
+          </div>
+          <span className={`text-[10px] mt-1 tracking-tight font-medium ${activeTab === 'blocks' ? 'text-emerald-400 font-bold' : 'text-stone-400'}`}>
+            Blocks
+          </span>
+        </button>
+
       </div>
     </div>
   );

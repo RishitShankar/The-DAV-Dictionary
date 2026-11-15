@@ -4,7 +4,7 @@ import {
   Settings as SettingsIcon, User, Palette, Moon, Sun, Key, Sparkles, 
   Users, Shield, Check, AlertCircle, Save, Train, Eye, ArrowRight,
   Printer, Camera, RefreshCw, X, CheckCircle2, Lock, ChevronRight, Play,
-  Monitor, Volume2, Zap, Sliders, EyeOff
+  Monitor, Volume2, Zap, Sliders, EyeOff, Plus
 } from 'lucide-react';
 import { VFX_MASTER_CATALOG } from './vfx/VfxMasterDirector';
 import { StudentProfileSection } from './StudentProfileSection';

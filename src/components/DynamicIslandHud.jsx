@@ -1,0 +1,253 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Sparkles, Clock, Flame, Play, Pause, RotateCcw, 
+  Bus, CloudSun, ChevronDown, ChevronUp, Search, 
+  FlaskConical, FileText, CheckCircle, ShieldCheck, X
+} from 'lucide-react';
+import { getGamificationState, subscribeToGamification } from '../services/scholasticGamificationStore';
+
+export function DynamicIslandHud({ 
+  onOpenCommandPalette, 
+  onOpenVirtualLab, 
+  onOpenMistakeVault, 
+  onOpenAdmitCard 
+}) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [gamification, setGamification] = useState(getGamificationState);
+
+  // Focus Timer state in HUD
+  const [timerSeconds, setTimerSeconds] = useState(25 * 60);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+
+  useEffect(() => {
+    const unsub = subscribeToGamification(setGamification);
+    return unsub;
+  }, []);
+
+  useEffect(() => {
+    let interval = null;
+    if (isTimerRunning && timerSeconds > 0) {
+      interval = setInterval(() => {
+        setTimerSeconds(prev => prev - 1);
+      }, 1000);
+    } else if (timerSeconds === 0) {
+      setIsTimerRunning(false);
+    }
+    return () => clearInterval(interval);
+  }, [isTimerRunning, timerSeconds]);
+
+  const formatTimer = (totalSec) => {
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const toggleTimer = (e) => {
+    e.stopPropagation();
+    setIsTimerRunning(prev => !prev);
+  };
+
+  const resetTimer = (e) => {
+    e.stopPropagation();
+    setIsTimerRunning(false);
+    setTimerSeconds(25 * 60);
+  };
+
+  return (
+    <div className="fixed top-2.5 left-1/2 -translate-x-1/2 z-[9990] transition-all duration-300 font-sans pointer-events-auto">
+      <div 
+        onClick={() => setIsExpanded(prev => !prev)}
+        className={`bg-stone-950/95 backdrop-blur-xl border border-stone-800/90 shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden ${
+          isExpanded 
+            ? 'w-[92vw] sm:w-[480px] rounded-3xl p-5 border-amber-400/50 shadow-amber-500/10' 
+            : 'h-10 px-4 rounded-full flex items-center gap-3.5 hover:border-stone-700 hover:scale-[1.02]'
+        }`}
+      >
+        {!isExpanded ? (
+          /* =========================================================================
+             COMPACT PILL MODE (Dynamic Island Normal State)
+          ========================================================================= */
+          <div className="flex items-center justify-between w-full text-xs font-mono select-none">
+            
+            {/* Left: Flame Streak / Focus */}
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <div className="flex items-center gap-1 text-amber-400 font-bold">
+                <Flame className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                <span>{gamification.streakDays}d</span>
+              </div>
+            </div>
+
+            {/* Center: Live Timer or Campus Badge */}
+            <div className="flex items-center gap-2 px-2 text-stone-200">
+              {isTimerRunning ? (
+                <div className="flex items-center gap-1.5 text-amber-300 font-black">
+                  <Clock className="w-3.5 h-3.5 animate-spin" />
+                  <span>{formatTimer(timerSeconds)}</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1.5 text-stone-300">
+                  <CloudSun className="w-3.5 h-3.5 text-amber-400" />
+                  <span>27°C • Khabra</span>
+                </div>
+              )}
+            </div>
+
+            {/* Right: Quick Action / Level Pill */}
+            <div className="flex items-center gap-1.5 text-stone-400">
+              <span className="text-[10px] bg-stone-900 border border-stone-800 text-amber-400 px-2 py-0.5 rounded-full font-bold">
+                Lv.{gamification.level}
+              </span>
+              <ChevronDown className="w-3.5 h-3.5 text-stone-500" />
+            </div>
+
+          </div>
+        ) : (
+          /* =========================================================================
+             EXPANDED COMMAND HUD (Full Campus Dynamic Island Cockpit)
+          ========================================================================= */
+          <div className="space-y-4 animate-in fade-in duration-200 text-stone-200" onClick={(e) => e.stopPropagation()}>
+            
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-stone-850 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-amber-400/20 text-amber-400 flex items-center justify-center font-bold">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-black text-white uppercase tracking-wider">
+                    Campus Dynamic Island HUD
+                  </h4>
+                  <p className="text-[10px] text-stone-400">
+                    DAVDixence Real-Time Focus &amp; Telemetry Cockpit
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setIsExpanded(false)}
+                  className="p-1.5 text-stone-400 hover:text-white rounded-lg hover:bg-stone-900 transition"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Pomodoro Focus Controller */}
+            <div className="bg-stone-900/90 rounded-2xl p-3.5 border border-stone-800 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center font-mono font-black text-amber-400 text-sm">
+                  {formatTimer(timerSeconds)}
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <span>Pomodoro Deep Study</span>
+                    {isTimerRunning && (
+                      <span className="text-[10px] text-emerald-400 bg-emerald-950/60 px-1.5 py-0.2 rounded font-black animate-pulse">
+                        RUNNING
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-stone-400">
+                    25-min scholastic block • 40Hz focus active
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={toggleTimer}
+                  className={`p-2 rounded-xl font-bold text-xs transition cursor-pointer ${
+                    isTimerRunning
+                      ? 'bg-amber-400 text-stone-950'
+                      : 'bg-emerald-500 text-stone-950'
+                  }`}
+                >
+                  {isTimerRunning ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+                </button>
+                <button
+                  onClick={resetTimer}
+                  className="p-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 transition cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Quick Campus Telemetry Strip */}
+            <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+              <div className="bg-stone-900/60 rounded-xl p-2.5 border border-stone-850 flex items-center gap-2">
+                <Bus className="w-4 h-4 text-cyan-400" />
+                <div>
+                  <span className="text-[10px] text-stone-500 block">Bus Fleet:</span>
+                  <span className="text-stone-300 font-bold text-[11px]">Bus #101 on route</span>
+                </div>
+              </div>
+
+              <div className="bg-stone-900/60 rounded-xl p-2.5 border border-stone-850 flex items-center gap-2">
+                <Flame className="w-4 h-4 text-orange-400 fill-orange-400" />
+                <div>
+                  <span className="text-[10px] text-stone-500 block">Scholastic Rank:</span>
+                  <span className="text-amber-400 font-bold text-[11px]">{gamification.levelTitle}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Action Launchers */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+              <button
+                onClick={() => {
+                  setIsExpanded(false);
+                  onOpenCommandPalette?.();
+                }}
+                className="p-2.5 rounded-xl bg-stone-900 border border-stone-800 hover:border-amber-400 text-left transition cursor-pointer group"
+              >
+                <Search className="w-4 h-4 text-amber-400 mb-1 group-hover:scale-110 transition-transform" />
+                <span className="text-[11px] font-bold text-white block">Spotlight</span>
+                <span className="text-[9px] text-stone-500">Ctrl + K</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsExpanded(false);
+                  onOpenVirtualLab?.();
+                }}
+                className="p-2.5 rounded-xl bg-stone-900 border border-stone-800 hover:border-cyan-400 text-left transition cursor-pointer group"
+              >
+                <FlaskConical className="w-4 h-4 text-cyan-400 mb-1 group-hover:scale-110 transition-transform" />
+                <span className="text-[11px] font-bold text-white block">Virtual Lab</span>
+                <span className="text-[9px] text-stone-500">3D Simulator</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsExpanded(false);
+                  onOpenMistakeVault?.();
+                }}
+                className="p-2.5 rounded-xl bg-stone-900 border border-stone-800 hover:border-rose-400 text-left transition cursor-pointer group"
+              >
+                <FileText className="w-4 h-4 text-rose-400 mb-1 group-hover:scale-110 transition-transform" />
+                <span className="text-[11px] font-bold text-white block">Mistake Vault</span>
+                <span className="text-[9px] text-stone-500">Error Notebook</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsExpanded(false);
+                  onOpenAdmitCard?.();
+                }}
+                className="p-2.5 rounded-xl bg-stone-900 border border-stone-800 hover:border-emerald-400 text-left transition cursor-pointer group"
+              >
+                <ShieldCheck className="w-4 h-4 text-emerald-400 mb-1 group-hover:scale-110 transition-transform" />
+                <span className="text-[11px] font-bold text-white block">Admit Card</span>
+                <span className="text-[9px] text-stone-500">Verified QR</span>
+              </button>
+            </div>
+
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

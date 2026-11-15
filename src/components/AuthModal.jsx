@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { 
   X, User, Lock, Mail, Shield, CheckCircle, Database, Sparkles, 
-  Key, ArrowRight, UserCheck, RefreshCw 
+  Key, ArrowRight, UserCheck, RefreshCw, LogOut 
 } from 'lucide-react';
 import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
 import { saveCloudStudent } from '../services/supabaseClient';

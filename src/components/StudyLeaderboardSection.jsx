@@ -19,9 +19,9 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
   const [activeSectionTab, setActiveSectionTab] = useState(() => {
     try {
       const saved = localStorage.getItem('dav_section9_tab');
-      return saved === 'focus' ? 'focus' : 'leaderboard';
+      return saved === 'leaderboard' ? 'leaderboard' : 'focus';
     } catch (e) {
-      return 'leaderboard';
+      return 'focus';
     }
   });
 
@@ -407,19 +407,6 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
             <div className="flex items-center gap-1.5 bg-stone-900/90 p-1.5 rounded-2xl border border-stone-800 shadow-inner">
               <button
                 type="button"
-                onClick={() => handleSelectSectionTab('leaderboard')}
-                className={`py-2 px-4 rounded-xl text-xs font-black transition flex items-center gap-2 cursor-pointer ${
-                  activeSectionTab === 'leaderboard'
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 shadow-md ring-1 ring-amber-300/40'
-                    : 'text-stone-400 hover:text-white hover:bg-stone-800/60'
-                }`}
-              >
-                <Trophy className="w-4 h-4" />
-                <span>1. Campus Leaderboard</span>
-              </button>
-
-              <button
-                type="button"
                 onClick={() => handleSelectSectionTab('focus')}
                 className={`py-2 px-4 rounded-xl text-xs font-black transition flex items-center gap-2 cursor-pointer ${
                   activeSectionTab === 'focus'
@@ -428,7 +415,20 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
                 }`}
               >
                 <Target className="w-4 h-4" />
-                <span>2. Deep Study Focus Suite</span>
+                <span>1. ReGain Focus OS (Screen Time &amp; App Limits)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSelectSectionTab('leaderboard')}
+                className={`py-2 px-4 rounded-xl text-xs font-black transition flex items-center gap-2 cursor-pointer ${
+                  activeSectionTab === 'leaderboard'
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 shadow-md ring-1 ring-amber-300/40'
+                    : 'text-stone-400 hover:text-white hover:bg-stone-800/60'
+                }`}
+              >
+                <Trophy className="w-4 h-4" />
+                <span>2. Campus Leaderboard</span>
               </button>
             </div>
 

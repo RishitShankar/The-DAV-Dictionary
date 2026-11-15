@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { 
   X, Check, Sparkles, Shield, IndianRupee, QrCode, 
   ArrowRight, ArrowLeft, CheckCircle2, Clock, Smartphone, 
-  Banknote, AlertCircle, User, Mail, GraduationCap, School
+  Banknote, AlertCircle, User, Mail, GraduationCap, School, ShieldCheck
 } from 'lucide-react';
 import { submitPurchaseRequest, getPurchases } from '../services/purchaseService';
 
@@ -650,7 +650,7 @@ export function CustomPurchaseModal({isOpen, onClose, user, onPurchaseSubmitted 
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
                     <span className="text-[10px] text-stone-400 block">Student:</span>
-                    <span className="font-bold text-white">{submittedData?.studentName || studentName}</span>
+                    <span className="font-bold text-white">{submittedData?.studentName || profileDetails?.fullName || 'Student'}</span>
                   </div>
                   <div className="text-right">
                     <span className="text-[10px] text-stone-400 block">Plan:</span>

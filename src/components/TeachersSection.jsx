@@ -2124,7 +2124,7 @@ export function TeachersSection({
               reason: 'timeout'
             });
           }
-          setRecentCalls(prev => [
+          setCallHistory(prev => [
             {
               id: Date.now(),
               contactId: data.callerId || 'peer',
@@ -2859,7 +2859,7 @@ export function TeachersSection({
     // Demo Plan Account Gate: Prompt user to purchase a plan
     if (user?.isDemo || user?.plan === 'demo' || user?.plan === 'guest') {
       alert('Please purchase a Student Plan to send messages in Faculty Channels.');
-      if (onOpenUpgradeModal) onOpenUpgradeModal();
+      if (typeof onOpenUpgradeModal === 'function') onOpenUpgradeModal();
       return;
     }
     setIsSendingMessage(true);

@@ -316,6 +316,19 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
       tag: '110 Concepts Active',
       tagColor: 'bg-emerald-100 text-emerald-900 border-emerald-300 font-bold',
       description: 'Comprehensive compendium of 110 foundational curriculum concepts across Mathematics, Science, Social Studies, English Grammar, Computer Science, and Sanskrit with interactive quizzes and flashcards.'
+    },
+    {
+      id: 'concepts200',
+      title: '200 Master Platform Concepts Architecture',
+      shortTitle: '200 Concepts Blueprint',
+      icon: Sparkles,
+      emoji: '⚡',
+      color: 'from-amber-400 to-orange-600',
+      cardBg: 'from-amber-500/10 via-orange-50/80 to-white',
+      borderHover: 'hover:border-amber-400',
+      tag: '200 Concepts Mastered',
+      tagColor: 'bg-amber-100 text-amber-900 border-amber-300 font-bold',
+      description: 'The master architecture of 200 website design, UI/UX, AI intelligence, 3D virtual lab, and enterprise concepts engineered for DAV Public School, Khabra.'
     }
   ], []);
 

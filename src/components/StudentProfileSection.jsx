@@ -11,6 +11,122 @@ import { safeSetItem, compressImageFile } from '../utils/safeStorage';
 
 const PROFILE_STORAGE_KEY = 'dav_student_personal_profile';
 
+export const DAV_HOUSE_OPTIONS = [
+  { 
+    id: 'black', 
+    name: 'Ashoka House', 
+    colorName: 'Midnight Stealth Black', 
+    swatch: '#0a0a0a',
+    borderHex: '#525252',
+    bgClass: 'bg-[#000000]', 
+    cardBg: 'bg-[#0d0d0d] border-neutral-800 text-white',
+    bannerGradient: 'from-neutral-950 via-black to-neutral-950 border-neutral-700',
+    accentText: 'text-neutral-200',
+    badgeBg: 'bg-black text-white border border-neutral-600',
+    ringClass: 'ring-neutral-400',
+    glowColor: 'rgba(255, 255, 255, 0.08)'
+  },
+  { 
+    id: 'green', 
+    name: 'Hansraj House', 
+    colorName: 'Emerald Green', 
+    swatch: '#059669',
+    borderHex: '#10b981',
+    bgClass: 'bg-[#022c22]', 
+    cardBg: 'bg-[#064e3b]/60 border-emerald-500/40 text-white',
+    bannerGradient: 'from-emerald-950 via-stone-900 to-emerald-950 border-emerald-500/50',
+    accentText: 'text-emerald-400',
+    badgeBg: 'bg-emerald-600 text-white',
+    ringClass: 'ring-emerald-500',
+    glowColor: 'rgba(16, 185, 129, 0.15)'
+  },
+  { 
+    id: 'pink', 
+    name: 'Sarojini House', 
+    colorName: 'Rose Pink', 
+    swatch: '#db2777',
+    borderHex: '#f43f5e',
+    bgClass: 'bg-[#4c0519]', 
+    cardBg: 'bg-[#831843]/50 border-pink-500/40 text-white',
+    bannerGradient: 'from-pink-950 via-stone-900 to-rose-950 border-pink-500/50',
+    accentText: 'text-pink-400',
+    badgeBg: 'bg-pink-600 text-white',
+    ringClass: 'ring-pink-400',
+    glowColor: 'rgba(244, 63, 94, 0.15)'
+  },
+  { 
+    id: 'navy', 
+    name: 'Tagore House', 
+    colorName: 'Dark Navy Blue', 
+    swatch: '#1e3a8a',
+    borderHex: '#3b82f6',
+    bgClass: 'bg-[#020617]', 
+    cardBg: 'bg-[#0f172a] border-blue-900/60 text-white',
+    bannerGradient: 'from-blue-950 via-slate-900 to-indigo-950 border-blue-500/50',
+    accentText: 'text-blue-400',
+    badgeBg: 'bg-blue-900 text-blue-100',
+    ringClass: 'ring-blue-600',
+    glowColor: 'rgba(59, 130, 246, 0.15)'
+  },
+  { 
+    id: 'red', 
+    name: 'Dayanand House', 
+    colorName: 'Ruby Red', 
+    swatch: '#dc2626',
+    borderHex: '#ef4444',
+    bgClass: 'bg-[#450a0a]', 
+    cardBg: 'bg-[#7f1d1d]/50 border-red-500/40 text-white',
+    bannerGradient: 'from-red-950 via-stone-900 to-rose-950 border-red-500/50',
+    accentText: 'text-red-400',
+    badgeBg: 'bg-red-600 text-white',
+    ringClass: 'ring-red-500',
+    glowColor: 'rgba(239, 68, 68, 0.15)'
+  },
+  { 
+    id: 'gold', 
+    name: 'Vivekanand House', 
+    colorName: 'Amber Gold', 
+    swatch: '#d97706',
+    borderHex: '#f59e0b',
+    bgClass: 'bg-[#291305]', 
+    cardBg: 'bg-[#451a03]/60 border-amber-500/40 text-white',
+    bannerGradient: 'from-stone-900 via-amber-950 to-stone-900 border-amber-500/50',
+    accentText: 'text-amber-400',
+    badgeBg: 'bg-amber-500 text-stone-950',
+    ringClass: 'ring-amber-400',
+    glowColor: 'rgba(245, 158, 11, 0.15)'
+  },
+  { 
+    id: 'blue', 
+    name: 'Shraddhanand House', 
+    colorName: 'Sky Blue', 
+    swatch: '#0284c7',
+    borderHex: '#0ea5e9',
+    bgClass: 'bg-[#082f49]', 
+    cardBg: 'bg-[#0c4a6e]/50 border-sky-500/40 text-white',
+    bannerGradient: 'from-sky-950 via-slate-900 to-blue-950 border-sky-500/50',
+    accentText: 'text-sky-400',
+    badgeBg: 'bg-sky-500 text-white',
+    ringClass: 'ring-sky-400',
+    glowColor: 'rgba(14, 165, 233, 0.15)'
+  },
+  { 
+    id: 'orange', 
+    name: 'Shivaji House', 
+    colorName: 'Vedic Saffron Orange', 
+    swatch: '#ea580c',
+    borderHex: '#f97316',
+    bgClass: 'bg-[#431407]', 
+    cardBg: 'bg-[#7c2d12]/50 border-orange-500/40 text-white',
+    bannerGradient: 'from-orange-950 via-stone-900 to-amber-950 border-orange-500/50',
+    accentText: 'text-orange-400',
+    badgeBg: 'bg-orange-600 text-white',
+    ringClass: 'ring-orange-400',
+    glowColor: 'rgba(249, 115, 22, 0.15)'
+  }
+];
+
+
 export function StudentProfileSection({ user, onLogout }) {
   const currentUserId = user?.id || 'guest';
   const isMasterRishit = currentUserId.toLowerCase() === 'rishibhai';
@@ -40,7 +156,9 @@ export function StudentProfileSection({ user, onLogout }) {
         dislikes: 'Superficial memorization, lack of discipline, cheating',
         favoriteSubject: 'Social Science, Sanskrit & Science',
         photoUrl: '/rishit_shankar.jpg',
-        tierPlan: 'Master Developer Account'
+        tierPlan: 'Master Developer Account',
+        houseColor: 'gold',
+        houseName: 'Vivekanand House'
       };
     }
 
@@ -67,7 +185,9 @@ export function StudentProfileSection({ user, onLogout }) {
       dislikes: '',
       favoriteSubject: '',
       photoUrl: '', // Ready for student's own photo
-      tierPlan: user?.plan === 'vvip' ? 'VVIP Scholar Pass' : user?.plan === 'vip' ? 'VIP Scholar Pass' : 'Student Scholar Pass'
+      tierPlan: user?.plan === 'vvip' ? 'VVIP Scholar Pass' : user?.plan === 'vip' ? 'VIP Scholar Pass' : 'Student Scholar Pass',
+      houseColor: localStorage.getItem('dav_student_house') || 'gold',
+      houseName: localStorage.getItem('dav_student_house_name') || 'Vivekanand House'
     };
   };
 
@@ -82,6 +202,8 @@ export function StudentProfileSection({ user, onLogout }) {
     }
     return buildDefaultProfile();
   });
+
+  const activeHouseTheme = DAV_HOUSE_OPTIONS.find(h => h.id === profile?.houseColor) || DAV_HOUSE_OPTIONS[5];
 
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [activeProfileTab, setActiveProfileTab] = useState('dossier'); // 'dossier' | 'settings'
@@ -251,14 +373,14 @@ export function StudentProfileSection({ user, onLogout }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white py-10 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden">
+    <div className={`min-h-screen ${activeHouseTheme.bgClass} text-white py-10 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden transition-colors duration-500`}>
       {/* Holographic Ambient Glow Orbs */}
       <div className="absolute top-10 left-10 w-96 h-96 bg-orange-600/15 rounded-full pointer-events-none animate-float-orb" />
       <div className="absolute bottom-10 right-10 w-96 h-96 bg-amber-500/15 rounded-full pointer-events-none animate-float-orb" style={{ animationDelay: '-4s' }} />
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Top Header Banner */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-stone-900 via-orange-950 to-stone-900 border border-orange-500/40 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r ${activeHouseTheme.bannerGradient} border shadow-2xl flex flex-col md:flex-row transition-all duration-300 items-center justify-between gap-6">
           <div className="flex items-center gap-4 text-center md:text-left flex-col md:flex-row">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-stone-950 font-black shadow-lg">
               <GraduationCap className="w-9 h-9" />
@@ -519,6 +641,18 @@ export function StudentProfileSection({ user, onLogout }) {
                 </span>
               </div>
 
+              {/* Official House Ribbon */}
+              <div className="mt-3 py-1.5 px-3 rounded-xl border flex items-center justify-between text-xs font-black shadow-md transition-all duration-300" style={{ backgroundColor: activeHouseTheme.swatch, borderColor: activeHouseTheme.borderHex, color: '#ffffff' }}>
+                <span className="flex items-center gap-1.5">
+                  <Shield className="w-3.5 h-3.5" />
+                  <span>{profile.houseName || activeHouseTheme.name}</span>
+                </span>
+                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-black/60 text-white border border-white/20">
+                  {activeHouseTheme.colorName}
+                </span>
+              </div>
+
+
               {/* Photo & Details Row */}
               <div className="mt-4 flex gap-4 items-center">
                 
@@ -682,6 +816,60 @@ export function StudentProfileSection({ user, onLogout }) {
 
             <form onSubmit={handleManualSave} className="space-y-4 text-xs">
               
+              
+              {/* DAV School House Selection (8 Official School Houses & Colors) */}
+              <div className="p-4 sm:p-5 rounded-2xl bg-stone-950/80 border border-stone-800 space-y-3">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <label className="block text-stone-200 font-black text-xs uppercase tracking-wider flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-amber-400" />
+                    <span>Select Official DAV House Color (8 House Colors):</span>
+                  </label>
+                  <span className="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full border bg-stone-900 text-amber-300 border-stone-700">
+                    Active: {profile.houseName || activeHouseTheme.name}
+                  </span>
+                </div>
+                <p className="text-[11px] text-stone-400">
+                  Choosing a house color dynamically updates your entire profile vault background (Black House gives full midnight stealth black everywhere, Green gives Emerald, etc.)
+                </p>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
+                  {DAV_HOUSE_OPTIONS.map(house => {
+                    const isSelected = (profile.houseColor || 'gold') === house.id;
+                    return (
+                      <button
+                        key={house.id}
+                        type="button"
+                        onClick={() => {
+                          handleChange('houseColor', house.id);
+                          handleChange('houseName', house.name);
+                          try {
+                            localStorage.setItem('dav_student_house', house.id);
+                            localStorage.setItem('dav_student_house_name', house.name);
+                          } catch(e) {}
+                        }}
+                        className={`p-3 rounded-xl border-2 text-left transition-all cursor-pointer flex flex-col justify-between h-24 relative overflow-hidden shadow-sm hover:scale-102 ${
+                          isSelected
+                            ? `${house.ringClass} ring-2 bg-stone-900 shadow-md border-white/80`
+                            : 'border-stone-800 bg-stone-900/60 hover:border-stone-700 opacity-80 hover:opacity-100'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span 
+                            className="w-6 h-6 rounded-lg border border-white/30 shadow-inner flex items-center justify-center text-xs"
+                            style={{ backgroundColor: house.swatch }}
+                          />
+                          {isSelected && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
+                        </div>
+                        <div>
+                          <div className="text-[11px] font-black text-white truncate">{house.name}</div>
+                          <div className="text-[10px] text-stone-400 truncate">{house.colorName}</div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Row 1: Full Name & Gender */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
