@@ -908,7 +908,597 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
         </div>
       </section>
 
-{/* =========================================================================
+
+      {/* =========================================================================
+          INTERACTIVE 14-SECTION VISUAL COMMAND CENTER & LIVE SANDBOX
+      ========================================================================= */}
+      <section id="interactive-sections-hub" className="py-20 bg-gradient-to-b from-[#0d0e12] via-stone-950 to-stone-900 border-b border-stone-800 relative scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          <div className="text-center max-w-3xl mx-auto mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-black uppercase tracking-wider mb-3">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Interactive Campus Command Center</span>
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+              Test Every Academic Section Live
+            </h2>
+            <p className="text-stone-300 text-xs sm:text-sm mt-3 leading-relaxed">
+              Click any section below to test its live capabilities directly on this page before launching into full screen.
+            </p>
+          </div>
+
+          {/* Section Number Selector Tabs (1 to 14) */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-4 scrollbar-thin scroll-smooth mb-8">
+            {[
+              { num: 1, name: 'Overview' },
+              { num: 2, name: '70+ Books' },
+              { num: 3, name: 'Q&A Arcade' },
+              { num: 4, name: 'Rishi AI' },
+              { num: 5, name: 'Faculty OS' },
+              { num: 6, name: 'Video Lectures' },
+              { num: 7, name: 'Bus & Radar' },
+              { num: 8, name: 'CBT Simulator' },
+              { num: 9, name: 'Deep Study' },
+              { num: 10, name: 'Settings & VFX' },
+              { num: 11, name: 'Patron & Pay' },
+              { num: 12, name: 'Reviews' },
+              { num: 13, name: 'ID Generator' },
+              { num: 14, name: 'Founder Bio' }
+            ].map((s) => (
+              <button
+                key={s.num}
+                type="button"
+                onClick={() => setInteractiveSectionTab(s.num)}
+                className={`px-4 py-2.5 rounded-2xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-2 ${
+                  interactiveSectionTab === s.num
+                    ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-stone-950 shadow-lg scale-105 border border-amber-300'
+                    : 'bg-stone-900 border border-stone-800 text-stone-400 hover:text-white hover:bg-stone-850'
+                }`}
+              >
+                <span className="w-5 h-5 rounded-full bg-black/20 flex items-center justify-center text-[10px] font-mono">
+                  {s.num}
+                </span>
+                <span>{s.name}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Selected Section Live Interactive Showcase Card */}
+          <div className="rounded-3xl bg-stone-950 border-2 border-stone-800 p-6 sm:p-10 shadow-2xl relative overflow-hidden animate-fadeIn">
+            
+            {/* SECTION 1 PREVIEW */}
+            {interactiveSectionTab === 1 && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div className="space-y-4">
+                  <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-black uppercase">
+                    Section 1 • Dimension 1
+                  </span>
+                  <h3 className="text-2xl sm:text-3xl font-black text-white">
+                    Campus Overview Hub &amp; Visual Portal Index
+                  </h3>
+                  <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
+                    The central command deck that ties together all 14 academic sections, live school circulars, bell times, and instant shortcuts for daily learning.
+                  </p>
+                  <div className="space-y-2 pt-2">
+                    {['Real-time 14-section status monitor', 'Daily DAV announcement ticker', 'Sub-second section switcher', 'Zero broken links or demo blocks'].map((t, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-xs text-stone-300">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                        <span>{t}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="pt-4 flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => onEnterDemoPreview(1)}
+                      className="px-6 py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-xl cursor-pointer"
+                    >
+                      <span>Launch Overview Hub</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-4">
+                  <div className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                    <Layers className="w-4 h-4" />
+                    <span>Live 14-Portal Radar Map</span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                    {allDimensions.map(d => (
+                      <button
+                        key={d.num}
+                        type="button"
+                        onClick={() => onEnterDemoPreview(d.num)}
+                        className="p-3 rounded-xl bg-stone-950 hover:bg-amber-950/40 border border-stone-800 hover:border-amber-400/50 text-left transition group cursor-pointer"
+                      >
+                        <div className="text-[10px] text-amber-400 font-mono font-bold">Sec {d.num}</div>
+                        <div className="text-xs font-bold text-white truncate group-hover:text-amber-300">{d.shortName}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SECTION 2 PREVIEW */}
+            {interactiveSectionTab === 2 && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div className="space-y-4">
+                  <span className="px-3 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-500/40 text-[10px] font-black uppercase">
+                    Section 2 • 70+ Textbooks
+                  </span>
+                  <h3 className="text-2xl sm:text-3xl font-black text-white">
+                    Official Digital Textbook Vault (LKG to Class 8)
+                  </h3>
+                  <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
+                    Full uncompressed textbooks with zero missing pages. Equipped with neon highlighters, sticky notes, continuous vertical scroll, and text-to-speech.
+                  </p>
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    {['Class 8 (15 Books)', 'Class 7 (12 Books)', 'Class 6 (10 Books)', 'Class 5 (9 Books)', 'Class 4 (8 Books)', 'Class 3-1 (18 Books)', 'LKG & UKG (8 Books)'].map((b, idx) => (
+                      <span key={idx} className="px-3 py-1 rounded-xl bg-stone-900 border border-stone-800 text-stone-300 text-xs font-bold">
+                        {b}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="pt-4 flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => onEnterDemoPreview(2)}
+                      className="px-6 py-3 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-xl cursor-pointer"
+                    >
+                      <BookOpen className="w-4 h-4" />
+                      <span>Open 70+ Textbooks Vault</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-3 text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-red-600/20 text-red-400 mx-auto flex items-center justify-center font-black text-xl">
+                    <BookOpen className="w-8 h-8" />
+                  </div>
+                  <h4 className="text-base font-black text-white">70+ DAV Curriculum Books</h4>
+                  <p className="text-xs text-stone-300 max-w-sm mx-auto">
+                    Featuring Mathematics, The Living World Science, We and Our World SST, Gyan Sagar, Abhyas Sagar, Surbhi Sanskrit, and English Literature.
+                  </p>
+                  <div className="pt-2 text-xs font-mono text-emerald-400">
+                    ⚡ 100% Free Streaming • In-App Fast PDF Reader
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SECTION 4 PREVIEW (RISHI AI) */}
+            {interactiveSectionTab === 4 && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div className="space-y-4">
+                  <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-black uppercase">
+                    Section 4 • Rishi AI Core
+                  </span>
+                  <h3 className="text-2xl sm:text-3xl font-black text-white">
+                    Rishi AI — Curriculum Grounded Dual Intelligence
+                  </h3>
+                  <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
+                    Trained directly on all DAV textbooks from LKG to Class 8. Instant 5-mark model answers, chapter summaries, HOTS explanations, and outer-world knowledge.
+                  </p>
+                  
+                  {/* Interactive AI Prompt Chips */}
+                  <div className="space-y-2 pt-2">
+                    <div className="text-xs font-bold text-stone-400">Try an Interactive Question:</div>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { id: 'science', label: '🔬 Science Ch 1 Summary' },
+                        { id: 'math', label: '📐 Squares & Square Roots Rule' },
+                        { id: 'sanskrit', label: '🕉️ Sanskrit Shloka Meaning' },
+                        { id: 'grammar', label: '✍️ English Tense Rules' }
+                      ].map(p => (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => setInteractiveAiPrompt(p.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition ${
+                            interactiveAiPrompt === p.id
+                              ? 'bg-amber-400 text-stone-950 font-black'
+                              : 'bg-stone-900 border border-stone-800 text-stone-300 hover:text-white'
+                          }`}
+                        >
+                          {p.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => onEnterDemoPreview(4)}
+                      className="px-6 py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-xl cursor-pointer"
+                    >
+                      <Brain className="w-4 h-4" />
+                      <span>Launch Full-Screen Rishi AI</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-5 rounded-2xl bg-stone-900 border border-amber-500/30 space-y-3 font-sans">
+                  <div className="flex items-center justify-between pb-2 border-b border-stone-800">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-lg bg-amber-400 text-stone-950 flex items-center justify-center font-black text-xs">R</div>
+                      <span className="text-xs font-bold text-white">Rishi AI Verified Response</span>
+                    </div>
+                    <span className="text-[10px] text-emerald-400 font-mono font-bold">100% Grounded</span>
+                  </div>
+
+                  <div className="text-xs text-stone-200 space-y-2 leading-relaxed bg-stone-950/80 p-4 rounded-xl border border-stone-800">
+                    {interactiveAiPrompt === 'science' && (
+                      <p>
+                        <strong>🔬 Class 8 Science (The Living World) Ch 1:</strong> Explores cell structure, discovery by Robert Hooke (1665), comparison of plant vs. animal cells, functions of nucleus, mitochondria (powerhouse), and plastids. High board exam probability!
+                      </p>
+                    )}
+                    {interactiveAiPrompt === 'math' && (
+                      <p>
+                        <strong>📐 Squares &amp; Square Roots:</strong> A square number never ends in 2, 3, 7, or 8. The square of an odd number is always odd. Use the prime factorization or division method for square root calculations.
+                      </p>
+                    )}
+                    {interactiveAiPrompt === 'sanskrit' && (
+                      <p>
+                        <strong>🕉️ Sanskrit Surabhi (पाठ १):</strong> 'गुणा गुणज्ञेषु गुणा भवन्ति...' — Qualities are truly valued only among those who know virtues. Follows classical Subhashitani moral wisdom for life.
+                      </p>
+                    )}
+                    {interactiveAiPrompt === 'grammar' && (
+                      <p>
+                        <strong>✍️ English Practice Book (Tenses):</strong> Present Perfect vs. Past Indefinite. Use Present Perfect with indefinite past time with present relevance ('I have completed my homework').
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SECTION 5 PREVIEW (FACULTY OS & CHIMES) */}
+            {interactiveSectionTab === 5 && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div className="space-y-4">
+                  <span className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/40 text-[10px] font-black uppercase">
+                    Section 5 • Faculty &amp; WhatsApp Desk
+                  </span>
+                  <h3 className="text-2xl sm:text-3xl font-black text-white">
+                    Faculty Academic Desk, Calls &amp; WhatsApp Channels
+                  </h3>
+                  <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
+                    Complete teacher-student workspace featuring WebRTC live video/audio calling with auto-pickup, WhatsApp-style broadcast channels, homework hub, and attendance.
+                  </p>
+                  
+                  {/* Interactive Audio Chimes Preview */}
+                  <div className="space-y-2 pt-2">
+                    <div className="text-xs font-bold text-stone-400 flex items-center gap-1.5">
+                      <Volume2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Audition Campus Call Ringtones:</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { id: 'gurukul', label: '🔔 DAV Gurukul Chime' },
+                        { id: 'pulse', label: '⚡ Classic Pulse' },
+                        { id: 'bell', label: '📿 Temple Brass Bell' }
+                      ].map(t => (
+                        <button
+                          key={t.id}
+                          type="button"
+                          onClick={() => {
+                            playHomeChime(t.id);
+                            setPreviewingTone(t.id);
+                            setTimeout(() => setPreviewingTone(null), 1800);
+                          }}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition flex items-center gap-1.5 ${
+                            previewingTone === t.id
+                              ? 'bg-cyan-400 text-stone-950 font-black'
+                              : 'bg-stone-900 border border-stone-800 text-stone-300 hover:text-white'
+                          }`}
+                        >
+                          <Volume2 className="w-3 h-3" />
+                          <span>{t.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => onEnterDemoPreview(5)}
+                      className="px-6 py-3 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-stone-950 font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-xl cursor-pointer"
+                    >
+                      <School className="w-4 h-4" />
+                      <span>Launch Faculty Desk &amp; Channels</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-stone-800">
+                    <div className="flex items-center gap-2">
+                      <MessageCircle className="w-4 h-4 text-emerald-400" />
+                      <span className="text-xs font-bold text-white">DAV Official Broadcast Channels</span>
+                    </div>
+                    <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold">Live</span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="p-3 rounded-xl bg-stone-950 border border-stone-800 flex items-center justify-between">
+                      <div>
+                        <div className="text-xs font-bold text-white">Class 8-D Academic Circulars</div>
+                        <div className="text-[10px] text-stone-400">Code: DAV-8D-TOPPER</div>
+                      </div>
+                      <span className="text-[10px] font-bold text-emerald-400">Official Channel</span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-stone-950 border border-stone-800 flex items-center justify-between">
+                      <div>
+                        <div className="text-xs font-bold text-white">DAV Science &amp; Math Olympiad</div>
+                        <div className="text-[10px] text-stone-400">Code: DAV-OLYMP-2026</div>
+                      </div>
+                      <span className="text-[10px] font-bold text-cyan-400">Board Prep</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SECTION 7 PREVIEW (BUS TRACKER & CALENDAR) */}
+            {interactiveSectionTab === 7 && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div className="space-y-4">
+                  <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-black uppercase">
+                    Section 7 • Transport &amp; Utilities
+                  </span>
+                  <h3 className="text-2xl sm:text-3xl font-black text-white">
+                    Muzaffarpur Bus Radar &amp; 2026–2047 Calendar
+                  </h3>
+                  <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
+                    Official transport radar for DAV Public School, Khabra, Muzaffarpur tracking Buses #1 to #200 with real-time GPS telemetry, weather, and 21-year holiday calendar.
+                  </p>
+                  <div className="grid grid-cols-2 gap-2 pt-2">
+                    <div className="p-3 rounded-xl bg-stone-900 border border-stone-800 text-center">
+                      <div className="text-lg font-black text-amber-400">Bus #1–200</div>
+                      <div className="text-[10px] text-stone-400">Khabra Fleet</div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-stone-900 border border-stone-800 text-center">
+                      <div className="text-lg font-black text-emerald-400">Dec 2047</div>
+                      <div className="text-[10px] text-stone-400">Calendar Range</div>
+                    </div>
+                  </div>
+                  <div className="pt-2 flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => onEnterDemoPreview(7)}
+                      className="px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-xl cursor-pointer"
+                    >
+                      <Bus className="w-4 h-4" />
+                      <span>Launch Bus Radar &amp; Utilities</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-3">
+                  <div className="text-xs font-bold text-emerald-400 flex items-center gap-1.5 pb-2 border-b border-stone-800">
+                    <MapPin className="w-4 h-4" />
+                    <span>DAV Khabra Live GPS Telemetry</span>
+                  </div>
+                  <div className="space-y-2 text-xs text-stone-300">
+                    <div className="flex justify-between">
+                      <span className="text-stone-400">School Hub:</span>
+                      <span className="text-white font-bold">Khabra, Muzaffarpur (842001)</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-stone-400">GPS Coordinates:</span>
+                      <span className="text-cyan-400 font-mono">26.1209° N, 85.3647° E</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-stone-400">Current Fleet Speed:</span>
+                      <span className="text-emerald-400 font-bold">32 km/h • On Schedule</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SECTION 8 PREVIEW (CBT PRACTICE & QUIZ) */}
+            {interactiveSectionTab === 8 && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div className="space-y-4">
+                  <span className="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 text-[10px] font-black uppercase">
+                    Section 8 • CBT Simulator
+                  </span>
+                  <h3 className="text-2xl sm:text-3xl font-black text-white">
+                    Interactive Online CBT Examination Suite
+                  </h3>
+                  <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
+                    Test your preparation with official timed computer-based tests, question palette matrices, and tiered banks across Science, Math, SST, and Hindi.
+                  </p>
+                  
+                  {/* Interactive Sample Question */}
+                  <div className="p-4 rounded-2xl bg-stone-900 border border-indigo-500/40 space-y-3">
+                    <div className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Live Sample Question (Class 8 Science):</span>
+                    </div>
+                    <p className="text-xs text-white font-bold">
+                      Which cell organelle is known as the "Powerhouse of the Cell"?
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { key: 'A', text: 'Golgi Apparatus', correct: false },
+                        { key: 'B', text: 'Mitochondria', correct: true },
+                        { key: 'C', text: 'Ribosome', correct: false },
+                        { key: 'D', text: 'Lysosome', correct: false }
+                      ].map(opt => (
+                        <button
+                          key={opt.key}
+                          type="button"
+                          onClick={() => {
+                            setSampleQuizChoice(opt.key);
+                            setSampleQuizRevealed(true);
+                          }}
+                          className={`p-2.5 rounded-xl text-xs font-bold text-left transition flex items-center gap-2 cursor-pointer ${
+                            sampleQuizRevealed && opt.correct
+                              ? 'bg-emerald-600 text-white font-black'
+                              : sampleQuizRevealed && sampleQuizChoice === opt.key && !opt.correct
+                                ? 'bg-rose-600 text-white font-black'
+                                : 'bg-stone-950 hover:bg-stone-850 text-stone-300 border border-stone-800'
+                          }`}
+                        >
+                          <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-black/30">{opt.key}</span>
+                          <span>{opt.text}</span>
+                        </button>
+                      ))}
+                    </div>
+                    {sampleQuizRevealed && (
+                      <div className="text-[11px] text-emerald-400 font-bold flex items-center gap-1.5 pt-1">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>Correct Answer: (B) Mitochondria generates ATP for cellular energy!</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="pt-2 flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => onEnterDemoPreview(8)}
+                      className="px-6 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-xl cursor-pointer"
+                    >
+                      <Award className="w-4 h-4" />
+                      <span>Launch Full CBT Simulator</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-3">
+                  <h4 className="text-base font-black text-white">Tiered Question Pools</h4>
+                  <div className="space-y-2 text-xs">
+                    <div className="p-3 rounded-xl bg-stone-950 border border-stone-800 flex justify-between">
+                      <span className="font-bold text-stone-300">Normal Plan:</span>
+                      <span className="text-emerald-400 font-mono font-bold">25 Board Questions</span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-stone-950 border border-stone-800 flex justify-between">
+                      <span className="font-bold text-stone-300">VIP Pass:</span>
+                      <span className="text-cyan-400 font-mono font-bold">50 Board Questions</span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-stone-950 border border-stone-800 flex justify-between">
+                      <span className="font-bold text-stone-300">Double VIP Pass:</span>
+                      <span className="text-amber-400 font-mono font-bold">100 Full Exam Questions</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SECTION 9 PREVIEW (DEEP STUDY & GUARDIAN) */}
+            {interactiveSectionTab === 9 && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div className="space-y-4">
+                  <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-black uppercase">
+                    Section 9 • Focus &amp; Anti-Doomscroll
+                  </span>
+                  <h3 className="text-2xl sm:text-3xl font-black text-white">
+                    Deep Study Mode &amp; Screen-Time Guardian
+                  </h3>
+                  <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
+                    Zero-distraction learning with real-time app-switch and tab-blur alarms, 40Hz binaural beats, 25-minute Pomodoro timers, and 15-second dopamine resets.
+                  </p>
+                  <div className="space-y-2 pt-2">
+                    {['Automatic alarm when switching to other apps', 'Flashcard mastery decks for Class 8', 'Synthesized 40Hz binaural focus frequencies', 'Configurable daily short-video budget (5 to 60 mins)'].map((t, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-xs text-stone-300">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                        <span>{t}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="pt-4 flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => onEnterDemoPreview(9)}
+                      className="px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-xl cursor-pointer"
+                    >
+                      <Trophy className="w-4 h-4" />
+                      <span>Start Deep Study Session</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-stone-900 border border-amber-500/30 text-center space-y-4">
+                  <div className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+                    25-Minute Pomodoro Focus Arc
+                  </div>
+                  <div className="w-32 h-32 rounded-full border-4 border-amber-400 flex items-center justify-center mx-auto text-3xl font-mono font-black text-white shadow-xl">
+                    25:00
+                  </div>
+                  <div className="text-xs text-stone-300">
+                    🚨 Anti-Distraction Guardian Active • Alarms Trigger on Tab Switch
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SECTIONS 3, 6, 10, 11, 12, 13, 14 GENERIC COMPREHENSIVE CARD */}
+            {![1, 2, 4, 5, 7, 8, 9].includes(interactiveSectionTab) && (
+              (() => {
+                const cur = allDimensions.find(d => d.num === interactiveSectionTab) || allDimensions[0];
+                const IconC = cur.icon;
+                return (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <div className="space-y-4">
+                      <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-black uppercase">
+                        Section {cur.num} • {cur.badge}
+                      </span>
+                      <h3 className="text-2xl sm:text-3xl font-black text-white">
+                        {cur.name}
+                      </h3>
+                      <p className="text-xs font-bold text-amber-400">
+                        {cur.tagline}
+                      </p>
+                      <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
+                        {cur.desc}
+                      </p>
+                      <div className="space-y-2 pt-2">
+                        {cur.features.map((f, fi) => (
+                          <div key={fi} className="flex items-center gap-2 text-xs text-stone-300">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                            <span>{f}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="pt-4 flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => onEnterDemoPreview(cur.num)}
+                          className="px-6 py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-xl cursor-pointer"
+                        >
+                          <span>Explore Section {cur.num}</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="p-8 rounded-2xl bg-stone-900 border border-stone-800 text-center space-y-4">
+                      <div className={`w-20 h-20 rounded-3xl bg-gradient-to-br ${cur.color} text-white flex items-center justify-center mx-auto shadow-xl`}>
+                        <IconC className="w-10 h-10" />
+                      </div>
+                      <h4 className="text-lg font-black text-white">{cur.name}</h4>
+                      <p className="text-xs text-stone-300 max-w-sm mx-auto">{cur.demoReady}</p>
+                      <div className="pt-2 text-xs font-mono text-amber-400">
+                        100% Operational &amp; Tested
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()
+            )}
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* =========================================================================
           SECTION 2: THE 11 MASTER DIMENSIONS SHOWCASE (INTERACTIVE GRID)
       ========================================================================= */}
       <section id="dimensions" className="py-20 bg-stone-900/50 border-y border-stone-800 relative scroll-mt-20"><div id="sections" className="absolute -top-20" />
@@ -1284,6 +1874,69 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
 
           </div>
 
+        </div>
+      </section>
+
+      
+      {/* =========================================================================
+          COMPREHENSIVE 14-SECTION ACCESS & TIER COMPARISON MATRIX
+      ========================================================================= */}
+      <section id="plan-matrix" className="py-20 bg-stone-950 border-t border-stone-800 relative scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <span className="text-xs font-black uppercase tracking-widest text-emerald-400 px-3 py-1 rounded-full bg-emerald-400/10 border border-emerald-400/30">
+              Commercial Transparency
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-black text-white mt-3 tracking-tight">
+              14-Section Feature &amp; Tier Comparison Matrix
+            </h2>
+            <p className="mt-3 text-stone-300 text-xs sm:text-sm">
+              Clear breakdown of student access across all 14 academic sections for each tier.
+            </p>
+          </div>
+
+          <div className="overflow-x-auto rounded-3xl border border-stone-800 shadow-2xl bg-stone-900/60">
+            <table className="w-full text-left text-xs font-sans">
+              <thead className="bg-stone-950 text-stone-400 uppercase font-mono text-[11px] border-b border-stone-800">
+                <tr>
+                  <th className="py-4 px-6 text-white font-bold">Academic Section</th>
+                  <th className="py-4 px-4 text-emerald-400 font-bold">Normal Plan (₹0)</th>
+                  <th className="py-4 px-4 text-cyan-400 font-bold">VIP Pass</th>
+                  <th className="py-4 px-4 text-amber-400 font-bold">Double VIP</th>
+                  <th className="py-4 px-4 text-purple-400 font-bold">Teacher / Faculty OS</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-stone-800/80 text-stone-200">
+                {[
+                  { sec: 'Sec 1: Overview Hub', normal: 'Full Access', vip: 'Full Access', vvip: 'Full Access', teacher: 'Admin Index' },
+                  { sec: 'Sec 2: 70+ Digital Textbooks', normal: 'Free Streaming LKG-8', vip: 'Highlighters + Cloud', vvip: 'Offline Downloadable', teacher: 'Curriculum Blueprints' },
+                  { sec: 'Sec 3: Questions & Answers', normal: 'SolutionGyan (1 Site)', vip: '2 Sites (LearnCram)', vvip: 'All 3 Sites + HOTS', teacher: 'Answer Matrix' },
+                  { sec: 'Sec 4: Rishi AI Companion', normal: 'Basic Q&A', vip: 'Flashcards & 5-Marks', vvip: 'Unlimited Outer World', teacher: 'Classroom Grounding' },
+                  { sec: 'Sec 5: Faculty Desk & WhatsApp', normal: 'Homework & Read', vip: 'Live Chat + Calls', vvip: 'Priority Faculty Desk', teacher: 'Broadcast Channels + Call' },
+                  { sec: 'Sec 6: Video Explanations & PPT', normal: 'Curated Lectures', vip: 'PYQ 5-Year Papers', vvip: 'Board Marking Schemes', teacher: 'Upload Lesson Plans' },
+                  { sec: 'Sec 7: Bus Radar & Utilities', normal: 'Bus #1–200 Radar', vip: 'Full GPS Telemetry', vvip: 'All Sensors Active', teacher: 'Fleet Dispatch Radar' },
+                  { sec: 'Sec 8: Online CBT Simulator', normal: '25 Questions Test', vip: '50 Questions Bank', vvip: '100 Questions Bank', teacher: 'Auto-Graded Test Hall' },
+                  { sec: 'Sec 9: Deep Study & Guardian', normal: 'Pomodoro + Alarms', vip: '40Hz Gamma Audio', vvip: 'Full Screen-Time Shield', teacher: 'Study Room Host' },
+                  { sec: 'Sec 10: Settings & Animation VFX', normal: 'Standard Themes', vip: '10 Accent Palettes', vvip: 'All Live VFX Unlocked', teacher: 'Custom Classroom UI' },
+                  { sec: 'Sec 11: Patron & Cash Voucher', normal: 'Cash in Hand Desk', vip: 'Digital Stamped Bill', vvip: 'Campus VIP Pass', teacher: 'Fee Record Verified' },
+                  { sec: 'Sec 12: Community Reviews Wall', normal: 'Read Reviews', vip: 'Post Verified Review', vvip: 'Featured Student Voice', teacher: 'Faculty Reviewer' },
+                  { sec: 'Sec 13: ID Generator & Auth', normal: 'Student View', vip: 'Student View', vvip: 'Student View', teacher: 'Classroom ID Desk' },
+                  { sec: 'Sec 14: Head Boy Founder Bio', normal: '100% Unlocked', vip: '100% Unlocked', vvip: '100% Unlocked', teacher: '100% Unlocked' }
+                ].map((row, idx) => (
+                  <tr key={idx} className="hover:bg-stone-850/50 transition">
+                    <td className="py-3.5 px-6 font-bold text-white flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-amber-400" />
+                      <span>{row.sec}</span>
+                    </td>
+                    <td className="py-3.5 px-4 text-emerald-400 font-medium">{row.normal}</td>
+                    <td className="py-3.5 px-4 text-cyan-300 font-medium">{row.vip}</td>
+                    <td className="py-3.5 px-4 text-amber-300 font-medium">{row.vvip}</td>
+                    <td className="py-3.5 px-4 text-purple-300 font-medium">{row.teacher}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
