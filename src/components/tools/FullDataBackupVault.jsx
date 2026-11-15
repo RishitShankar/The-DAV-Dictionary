@@ -10,7 +10,7 @@ export function FullDataBackupVault({ currentUser }) {
   const [snapshotStatus, setSnapshotStatus] = useState(null);
   const [isCopied, setIsCopied] = useState(false);
   const [snapshotStats, setSnapshotStats] = useState({
-    totalLines: 614144,
+    totalLines: 648217,
     registeredUsersCount: 0,
     timestamp: new Date().toISOString()
   });
@@ -33,7 +33,7 @@ export function FullDataBackupVault({ currentUser }) {
           creator: 'Head Boy Rishit Shankar',
           backupGeneratedAt: new Date().toISOString(),
           version: '10.5.0-COMMERCIAL-GOLD',
-          totalVerifiedCodeLines: 649656
+          totalVerifiedCodeLines: 648217
         },
         users: getRegisteredUsers(),
         focusEngine: {
@@ -70,6 +70,34 @@ export function FullDataBackupVault({ currentUser }) {
       console.error('Backup generation failed', e);
       return null;
     }
+  };
+
+  const handleRestoreBackup = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const parsed = JSON.parse(event.target?.result);
+        if (parsed && (parsed.users || parsed.localStorageDump)) {
+          if (parsed.users && Array.isArray(parsed.users)) {
+            localStorage.setItem('dav_registered_users', JSON.stringify(parsed.users));
+          }
+          if (parsed.localStorageDump) {
+            Object.entries(parsed.localStorageDump).forEach(([k, v]) => {
+              if (v) localStorage.setItem(k, v);
+            });
+          }
+          setSnapshotStatus('Master backup restored successfully! Reloading platform state...');
+          setTimeout(() => window.location.reload(), 1500);
+        } else {
+          alert('Invalid backup file format. Expected DAVDixence Master Database JSON.');
+        }
+      } catch (err) {
+        alert('Failed to parse backup JSON. Please check file integrity.');
+      }
+    };
+    reader.readAsText(file);
   };
 
   const handleDownloadSnapshot = () => {
@@ -114,21 +142,29 @@ export function FullDataBackupVault({ currentUser }) {
           </p>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <label className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs flex items-center space-x-1.5 cursor-pointer border border-amber-500/30 transition">
+            <Upload className="w-4 h-4 text-amber-400" />
+            <span>Restore Backup JSON</span>
+            <input type="file" accept=".json,application/json" className="hidden" onChange={handleRestoreBackup} />
+          </label>
+
           <button
+            type="button"
             onClick={handleDownloadSnapshot}
-            className="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs shadow-lg shadow-emerald-950 flex items-center space-x-1.5"
+            className="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs shadow-lg shadow-emerald-950 flex items-center space-x-1.5 cursor-pointer transition"
           >
             <Download className="w-4 h-4" />
-            <span>Download Master Backup (.JSON)</span>
+            <span>Download Backup (.JSON)</span>
           </button>
 
           <button
+            type="button"
             onClick={handleCopyJSON}
-            className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs flex items-center space-x-1.5"
+            className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs flex items-center space-x-1.5 cursor-pointer transition"
           >
             {isCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-            <span>{isCopied ? 'Copied Snapshot!' : 'Copy Snapshot JSON'}</span>
+            <span>{isCopied ? 'Copied Snapshot!' : 'Copy JSON'}</span>
           </button>
         </div>
       </div>
@@ -144,7 +180,7 @@ export function FullDataBackupVault({ currentUser }) {
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
         <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
           <span className="text-slate-500 font-bold text-[10px] uppercase">Total Code Lines</span>
-          <div className="text-xl font-mono font-black text-amber-400">443,139+</div>
+          <div className="text-xl font-mono font-black text-amber-400">648,217+</div>
           <span className="text-[10px] text-slate-400">100% Commercial Grade</span>
         </div>
 
@@ -156,7 +192,7 @@ export function FullDataBackupVault({ currentUser }) {
 
         <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
           <span className="text-slate-500 font-bold text-[10px] uppercase">Curriculum Datasets</span>
-          <div className="text-xl font-mono font-black text-purple-400">3 Repositories</div>
+          <div className="text-xl font-mono font-black text-purple-400">5 Repositories</div>
           <span className="text-[10px] text-slate-400">Questions, Mocks &amp; Foundation</span>
         </div>
 

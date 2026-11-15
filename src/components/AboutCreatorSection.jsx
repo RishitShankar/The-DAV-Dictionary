@@ -45,9 +45,9 @@ export function AboutCreatorSection() {
 
   const summary100Lines = [
   "Full Name: Rishit Shankar (रीशीत शंकर), 14-year-old student leader and technology innovator.",
-  "Current Academic Level: Class 8-D student at DAV School.",
+  "Current Academic Level: Class 8-D student at DAV Public School, Khabra, Muzaffarpur.",
   "Official School Identifier: Roll No. 25 in Class 8-D.",
-  "Elected Designation: Head Boy of DAV School for Academic Session 2026–27.",
+  "Elected Designation: Head Boy of DAV Public School, Khabra, Muzaffarpur for Academic Session 2026–27.",
   "Leadership Selection: Unanimously appointed by Principal Anil Kumar and school administration based on moral integrity, academic brilliance, and discipline.",
   "Primary Responsibility: Chief representative and student advocate for all students from LKG up to Class 8.",
   "Morning Assembly Governance: Coordinates morning assembly order, national pledge, DAV anthem, and queue management.",

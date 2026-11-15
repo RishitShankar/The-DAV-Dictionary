@@ -926,6 +926,45 @@ In the official DAV Education Board curriculum for Class 8, there are **two pres
     };
   }
 
+  // 6c. DAV English Literature & Grammar Master Knowledge Engine
+  if (lowerQ.includes('english grammar') || lowerQ.includes('tenses') || lowerQ.includes('reported speech') || lowerQ.includes('active passive') || lowerQ.includes('preposition') || lowerQ.includes('modals')) {
+    const rules = DAV_MASTER_ENGLISH_GRAMMAR_ENGINE || [];
+    const matchedRule = rules.find(r => 
+      (r.topic && lowerQ.includes(r.topic.toLowerCase())) ||
+      (r.ruleHeading && lowerQ.includes(r.ruleHeading.toLowerCase()))
+    ) || rules[0];
+
+    if (matchedRule) {
+      return {
+        source: 'shankar-english-grammar-engine',
+        isTextbookGrounded: true,
+        chapterInfo: `DAV Class 8 English Grammar • ${matchedRule.topic}`,
+        modelName: getTierBadge(dimension),
+        text: `📖 **DAV English Practice Book — ${matchedRule.topic}**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📌 **${matchedRule.ruleHeading}:**
+${matchedRule.grammaticalPrinciple}
+
+✅ **Correct DAV Board Form:**
+> "${matchedRule.correctExample}"
+
+❌ **Common Error:**
+> "${matchedRule.incorrectExample}"
+
+💡 **Pedagogical Explanation:**
+${matchedRule.explanation}
+
+🎯 **Board Exam Practice Exercise:**
+${matchedRule.boardExamExercise}
+* **Verified Solution:** ${matchedRule.exerciseSolution}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚡ *Curriculum Grounded & Validated by ${matchedRule.pedagogicalValidator || 'Head Boy Rishit Shankar'}*`
+      };
+    }
+  }
+
   // 6d. DAV Complete Textbook Directory Query
   if ((lowerQ.includes('book') || lowerQ.includes('textbook') || lowerQ.includes('kitab')) && (lowerQ.includes('class 8') || lowerQ.includes('std 8') || lowerQ.includes('dav'))) {
     return {
@@ -989,6 +1028,31 @@ The official DAV Board curriculum for Class 8 uses the following prescribed text
           });
         }
         content = sktContent;
+      }
+    }
+
+    // Check English Literature & Grammar Master Grounding
+    if (subj === 'english' || subj.includes('english') || lowerQ.includes('english')) {
+      const engUnits = DAV_MASTER_ENGLISH_LITERATURE_DATA?.units || [];
+      const matchedUnit = engUnits.find(u => 
+        String(u.unitNumber) === String(chNum) || 
+        (u.title && lowerQ.includes(u.title.toLowerCase())) ||
+        (chTitle && u.title && u.title.toLowerCase().includes(chTitle.toLowerCase()))
+      ) || engUnits[0];
+
+      if (matchedUnit) {
+        let engContent = `### 📖 DAV Class 8 English Literature — ${matchedUnit.unitName || `Unit ${matchedUnit.unitNumber}`}: ${matchedUnit.title}\n`;
+        engContent += `* **Core Theme & Moral:** ${matchedUnit.theme || 'Courage, human empathy, and literary nuance.'}\n\n`;
+        if (matchedUnit.summary) {
+          engContent += `#### 📝 Critical Synopsis:\n${matchedUnit.summary}\n\n`;
+        }
+        if (matchedUnit.modelQuestions && matchedUnit.modelQuestions.length > 0) {
+          engContent += `#### 🎯 Board Examination Model Questions & Answers:\n`;
+          matchedUnit.modelQuestions.slice(0, 3).forEach((mq, qIdx) => {
+            engContent += `* **Q${qIdx + 1}: ${mq.question}**\n  * **Model Answer:** ${mq.answer}\n\n`;
+          });
+        }
+        content = engContent;
       }
     }
 
