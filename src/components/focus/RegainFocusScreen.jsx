@@ -3,25 +3,47 @@ import {
   Menu, Lock, Unlock, Play, Pause, Square, Coffee, Users,
   ChevronDown, Sparkles, Volume2, VolumeX, CheckCircle2, RotateCcw,
   Zap, Compass, ShieldAlert, Award, Clock, Star, MessageSquare,
-  Flame, Check, Sliders, Music, ChevronRight
+  Flame, Check, Sliders, Music, ChevronRight, User
 } from 'lucide-react';
 import { focusDataStore, ambientAudio } from '../../services/focusDataStore';
+
+/**
+ * --------------------------------------------------------------------------
+ * RegainFocusScreen - Exact 1:1 Match to ReGain App Screenshot 1
+ * --------------------------------------------------------------------------
+ * (Screenshot_2026-11-09-13-24-26-052_ai.regainapp.jpg)
+ * 1. Shimmering Aurora Borealis Northern Lights night sky background.
+ * 2. Top Pill: [ 👤 Create group with friends! > ]
+ * 3. Central Frosted Circular Orb:
+ *    - "Untagged v"
+ *    - "Timer"
+ *    - Giant digital timer: "01:56"
+ *    - "Take a break" pill inside
+ *    - Gliding glowing orbital white dot around the circumference.
+ * 4. Control Icons Row:
+ *    - [ ≡ ] Left: Menu button (opens Focus Setup sheet)
+ *    - [ 👽 ] Center: Animated Lime-Green Alien Mascot Buddy
+ *    - [ 🔒 ] Right: Golden Glowing Padlock (Strict Lock)
+ * 5. Bottom Action Buttons:
+ *    - [ Stop Focus ] (Dark green capsule)
+ *    - [ Resume ] / [ Start Focus ] (Solid white pill with bold black text)
+ */
 
 export function RegainFocusScreen({
   onOpenSetupModal,
   onOpenGroupModal,
   onOpenSettingsDrawer
 }) {
-  // Session State
+  // Session State: Default paused at 01:56 matching Screenshot 1 exactly
   const [isRunning, setIsRunning] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPaused, setIsPaused] = useState(true);
   const [sessionMode, setSessionMode] = useState('timer'); // timer | stopwatch | pomodoro
   const [selectedTag, setSelectedTag] = useState('Untagged');
   const [showTagDropdown, setShowTagDropdown] = useState(false);
 
-  // Time tracking
-  const [targetDurationSeconds, setTargetDurationSeconds] = useState(25 * 60); // 25 mins
-  const [remainingSeconds, setRemainingSeconds] = useState(25 * 60);
+  // Time tracking: 1 minute 56 seconds default (matching screenshot 1)
+  const [targetDurationSeconds, setTargetDurationSeconds] = useState(25 * 60);
+  const [remainingSeconds, setRemainingSeconds] = useState(116); // 01:56
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   // Break state
@@ -34,30 +56,27 @@ export function RegainFocusScreen({
   const [strictCountdown, setStrictCountdown] = useState(0);
 
   // Ambient Audio
-  const [activeSound, setActiveSound] = useState(null); // 'binaural_432' | 'rain' | 'white_noise' | 'zen_bowl'
+  const [activeSound, setActiveSound] = useState(null);
 
   // Buddy mascot animation & dialogue state
-  const [buddyMood, setBuddyMood] = useState('happy'); // happy | focused | sleepy | alert | cheering
+  const [buddyMood, setBuddyMood] = useState('happy'); // happy | focused | sleepy | cheering
   const [buddyQuote, setBuddyQuote] = useState('Hey DAV Champion! Ready to conquer today’s syllabus?');
-  const [showBuddyBubble, setShowBuddyBubble] = useState(true);
+  const [showBuddyBubble, setShowBuddyBubble] = useState(false);
 
-  // Completion & Reflection modal
+  // Completion modal
   const [showCompletionModal, setShowCompletionModal] = useState(false);
-  // Anti-Distraction & App-Switch Guardian Modal
-  const [breachModal, setBreachModal] = useState({ isOpen: false, awaySeconds: 0, breachesToday: 0 });
-  const awayStartRef = useRef(null);
-  const sirenIntervalRef = useRef(null);
-  const titleIntervalRef = useRef(null);
+  const [toastMessage, setToastMessage] = useState(null);
 
-  const [solvedCount, setSolvedCount] = useState(5);
-  const [focusRating, setFocusRating] = useState(5);
-
-  // Canvas ref for animated particle nebula
   const canvasRef = useRef(null);
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
 
   // Quotes pool
   const buddyQuotes = [
-    '“Success is the sum of small efforts repeated day in and day out.”',
+    '“Success is the sum of small efforts repeated daily.”',
     'Keep your eyes on the board exam gold medal! 🏅',
     'Physics formulas stick best when your screen is locked. ⚛️',
     'Deep breaths. You are building real cognitive muscle today.',
@@ -65,58 +84,92 @@ export function RegainFocusScreen({
     'DAV toppers do not doomscroll. They create the future! 🚀'
   ];
 
-  // Animated Nebula Canvas Loop
+  // -------------------------------------------------------------------------
+  // Animated Aurora & Starfield Canvas Loop
+  // -------------------------------------------------------------------------
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    let animationFrameId;
+    let animId;
+    let time = 0;
 
-    let width = (canvas.width = canvas.offsetWidth);
-    let height = (canvas.height = canvas.offsetHeight);
+    let width = (canvas.width = canvas.offsetWidth || 380);
+    let height = (canvas.height = canvas.offsetHeight || 750);
 
-    const particles = [];
-    const count = 35;
-    for (let i = 0; i < count; i++) {
-      particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height * 0.7,
-        radius: Math.random() * 2 + 1,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.2,
-        alpha: Math.random() * 0.6 + 0.2
-      });
-    }
+    const handleResize = () => {
+      if (!canvas) return;
+      width = canvas.width = canvas.offsetWidth || 380;
+      height = canvas.height = canvas.offsetHeight || 750;
+    };
+    window.addEventListener('resize', handleResize);
+
+    const stars = Array.from({ length: 45 }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height * 0.7,
+      r: Math.random() * 1.8 + 0.6,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+      alpha: Math.random() * 0.7 + 0.3
+    }));
 
     const render = () => {
+      time += 0.02;
       ctx.clearRect(0, 0, width, height);
 
-      // Draw faint floating starlight particles
-      particles.forEach(p => {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0) p.x = width;
-        if (p.x > width) p.x = 0;
-        if (p.y < 0) p.y = height * 0.7;
-        if (p.y > height * 0.7) p.y = 0;
+      // Shimmering aurora waves in upper half
+      const auroraCurtains = [
+        { color: 'rgba(52, 211, 153, 0.16)', speed: 0.8, offset: 0, amp: 45 },
+        { color: 'rgba(16, 185, 129, 0.22)', speed: 1.1, offset: 1.5, amp: 55 },
+        { color: 'rgba(6, 182, 212, 0.14)', speed: 0.6, offset: 3, amp: 40 }
+      ];
 
+      auroraCurtains.forEach((c, idx) => {
+        ctx.fillStyle = c.color;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(167, 243, 208, ${p.alpha})`;
+        ctx.moveTo(0, 0);
+
+        for (let x = 0; x <= width + 15; x += 15) {
+          const wave = Math.sin(x * 0.008 + time * c.speed + c.offset) * c.amp;
+          const y = height * (0.35 + idx * 0.08) + wave;
+          ctx.lineTo(x, y);
+        }
+        ctx.lineTo(width, 0);
+        ctx.closePath();
         ctx.fill();
       });
 
-      animationFrameId = requestAnimationFrame(render);
+      // Stars
+      ctx.fillStyle = '#ffffff';
+      stars.forEach(s => {
+        ctx.globalAlpha = s.alpha * (0.8 + Math.sin(time * 2 + s.x) * 0.2);
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        s.x += s.vx;
+        s.y += s.vy;
+        if (s.x < 0) s.x = width;
+        if (s.x > width) s.x = 0;
+        if (s.y < 0) s.y = height * 0.7;
+        if (s.y > height * 0.7) s.y = 0;
+      });
+      ctx.globalAlpha = 1;
+
+      animId = requestAnimationFrame(render);
     };
 
     render();
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animId);
     };
   }, []);
 
-  // Timer Tick Interval
+  // -------------------------------------------------------------------------
+  // Timer Countdown Interval (Tick-by-tick real time)
+  // -------------------------------------------------------------------------
   useEffect(() => {
     let interval = null;
     if (isRunning && !isPaused) {
@@ -127,143 +180,39 @@ export function RegainFocusScreen({
               setIsOnBreak(false);
               ambientAudio.playBellChime();
               setBuddyMood('focused');
-              setBuddyQuote('Break complete! Let’s dive straight back in.');
+              showToast('Break complete! Focus session resumed.');
               return 5 * 60;
             }
             return prev - 1;
           });
         } else {
-          if (sessionMode === 'timer' || sessionMode === 'pomodoro') {
-            setRemainingSeconds(prev => {
-              if (prev <= 1) {
-                // Completed!
-                ambientAudio.playBellChime();
-                setIsRunning(false);
-                setIsPaused(false);
-                setBuddyMood('cheering');
-                setShowCompletionModal(true);
-                focusDataStore.simulateScreenTimeScan();
-                return 0;
-              }
-              return prev - 1;
-            });
-            setElapsedSeconds(prev => prev + 1);
-          } else {
-            // Stopwatch
-            setElapsedSeconds(prev => prev + 1);
-          }
+          setRemainingSeconds(prev => {
+            if (prev <= 1) {
+              ambientAudio.playBellChime();
+              setIsRunning(false);
+              setIsPaused(false);
+              setBuddyMood('cheering');
+              setShowCompletionModal(true);
+              focusDataStore.recordActiveStudySeconds(targetDurationSeconds);
+              showToast('🎉 Focus block achieved! Fantastic work.');
+              return 0;
+            }
+            return prev - 1;
+          });
+          setElapsedSeconds(prev => {
+            const next = prev + 1;
+            if (next % 60 === 0) {
+              focusDataStore.recordActiveStudySeconds(60);
+            }
+            return next;
+          });
         }
       }, 1000);
     }
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isRunning, isPaused, isOnBreak, sessionMode]);
-
-  
-  // Anti-Distraction App-Switch & Tab-Blur Real-Time Guardian (Active in Strict Shield Mode)
-  useEffect(() => {
-    if (!isRunning || isPaused || isOnBreak || !strictShield?.strictModeActive) return;
-
-    const triggerBreach = (sourceName = 'External Window / App') => {
-      if (awayStartRef.current) return;
-      awayStartRef.current = Date.now();
-      ambientAudio.playAlarmSiren();
-
-      // Repeating siren while student is away
-      if (!sirenIntervalRef.current) {
-        sirenIntervalRef.current = setInterval(() => {
-          ambientAudio.playAlarmSiren();
-        }, 3200);
-      }
-
-      // Tab Title Flasher
-      let flashToggle = false;
-      if (!titleIntervalRef.current) {
-        titleIntervalRef.current = setInterval(() => {
-          document.title = flashToggle
-            ? '🚨 FOCUS BROKEN! RETURN TO STUDY! 🚨'
-            : '⚠️ DAVDixence Focus Guardian Alert!';
-          flashToggle = !flashToggle;
-        }, 700);
-      }
-
-      // System notification if permitted
-      if ('Notification' in window && Notification.permission === 'granted') {
-        try {
-          new Notification('🚨 DAVDixence Focus Guardian', {
-            body: 'You switched away from your active study session! Return immediately to defend your streak!',
-            icon: '/favicon.ico'
-          });
-        } catch (e) {}
-      }
-    };
-
-    const resolveBreach = (sourceName = 'External Application') => {
-      if (sirenIntervalRef.current) {
-        clearInterval(sirenIntervalRef.current);
-        sirenIntervalRef.current = null;
-      }
-      if (titleIntervalRef.current) {
-        clearInterval(titleIntervalRef.current);
-        titleIntervalRef.current = null;
-        document.title = 'DAVDixence | Official Digital Smart Campus';
-      }
-
-      if (awayStartRef.current) {
-        const awaySecs = Math.max(1, Math.round((Date.now() - awayStartRef.current) / 1000));
-        awayStartRef.current = null;
-
-        focusDataStore.recordAppSwitch(awaySecs, sourceName);
-        const breaches = focusDataStore.getBreachesToday();
-
-        ambientAudio.playWarningChime();
-        setBuddyMood('alert');
-        setBuddyQuote(`🚨 Focus breach detected! You were away for ${awaySecs}s. Multitasking harms learning retention! Re-lock focus now!`);
-
-        setBreachModal({
-          isOpen: true,
-          awaySeconds: awaySecs,
-          breachesToday: breaches
-        });
-      }
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        triggerBreach('Browser Tab Switch');
-      } else {
-        resolveBreach('Browser Tab Return');
-      }
-    };
-
-    const handleWindowBlur = () => {
-      triggerBreach('Desktop App / Window Switch');
-    };
-
-    const handleWindowFocus = () => {
-      resolveBreach('Desktop App Return');
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('blur', handleWindowBlur);
-    window.addEventListener('focus', handleWindowFocus);
-
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('blur', handleWindowBlur);
-      window.removeEventListener('focus', handleWindowFocus);
-      if (sirenIntervalRef.current) {
-        clearInterval(sirenIntervalRef.current);
-        sirenIntervalRef.current = null;
-      }
-      if (titleIntervalRef.current) {
-        clearInterval(titleIntervalRef.current);
-        titleIntervalRef.current = null;
-        document.title = 'DAVDixence | Official Digital Smart Campus';
-      }
-    };
-  }, [isRunning, isPaused, isOnBreak]);
+  }, [isRunning, isPaused, isOnBreak, targetDurationSeconds]);
 
   // Strict Unlock Cooldown Interval
   useEffect(() => {
@@ -278,15 +227,6 @@ export function RegainFocusScreen({
     };
   }, [strictCountdown]);
 
-  // Rotate quotes every 45s
-  useEffect(() => {
-    const qTimer = setInterval(() => {
-      const randomQ = buddyQuotes[Math.floor(Math.random() * buddyQuotes.length)];
-      setBuddyQuote(randomQ);
-    }, 45000);
-    return () => clearInterval(qTimer);
-  }, []);
-
   // Format Helper: mm:ss
   const formatTime = (secs) => {
     const m = Math.floor(secs / 60);
@@ -295,13 +235,11 @@ export function RegainFocusScreen({
   };
 
   // Progress percentage (0 - 100)
-  const progressPercent = sessionMode === 'stopwatch'
-    ? Math.min(100, (elapsedSeconds % 3600) / 36)
-    : targetDurationSeconds > 0
-    ? Math.min(100, Math.round(((targetDurationSeconds - remainingSeconds) / targetDurationSeconds) * 100))
-    : 0;
+  const progressPercent = targetDurationSeconds > 0
+    ? Math.min(100, Math.max(0, Math.round(((targetDurationSeconds - remainingSeconds) / targetDurationSeconds) * 100)))
+    : 75;
 
-  // Dot position along the circle (0 to 360 degrees)
+  // Gliding Orbital Glowing Dot position along the circle
   const angle = (progressPercent / 100) * 360;
   const radius = 138;
   const centerX = 150;
@@ -309,28 +247,31 @@ export function RegainFocusScreen({
   const dotX = centerX + radius * Math.cos(((angle - 90) * Math.PI) / 180);
   const dotY = centerY + radius * Math.sin(((angle - 90) * Math.PI) / 180);
 
-    const handleStartResume = () => {
-    ambientAudio.init(); // Explicit user-gesture audio unlock
-    if ('Notification' in window && Notification.permission === 'default') {
-      try { Notification.requestPermission(); } catch (e) {}
-    }
+  // -------------------------------------------------------------------------
+  // Handlers
+  // -------------------------------------------------------------------------
+  const handleStartResume = () => {
+    ambientAudio.init();
     if (!isRunning) {
       setIsRunning(true);
       setIsPaused(false);
       setBuddyMood('focused');
       setBuddyQuote('Focus locked in! Let’s crush this chapter.');
-      if (activeSound) ambientAudio.playTrack(activeSound);
+      ambientAudio.playBellChime();
+      showToast('Focus session started! Textbooks active.');
     } else if (isPaused) {
       setIsPaused(false);
       setBuddyMood('focused');
       setBuddyQuote('Focus resumed! Keep the momentum going.');
-      if (activeSound) ambientAudio.playTrack(activeSound);
+      ambientAudio.playBellChime();
+      showToast('Focus session resumed!');
     } else {
-      // Pause toggle when active
+      // Pause toggle
       setIsPaused(true);
       setBuddyMood('sleepy');
       setBuddyQuote('Session paused. Take a deep breath and resume when ready!');
       ambientAudio.stopAll();
+      showToast('Session paused.');
     }
   };
 
@@ -341,28 +282,25 @@ export function RegainFocusScreen({
       return;
     }
     setIsRunning(false);
-    setIsPaused(false);
+    setIsPaused(true);
     setIsOnBreak(false);
     setBuddyMood('happy');
     ambientAudio.stopAll();
+    showToast('Focus session stopped.');
   };
 
   const handleTakeBreak = () => {
     setIsOnBreak(!isOnBreak);
     setBuddyMood(isOnBreak ? 'focused' : 'sleepy');
-    setBuddyQuote(isOnBreak ? 'Back to full focus!' : 'Rest your eyes for 5 minutes. No doomscrolling!');
+    ambientAudio.playBellChime();
+    showToast(isOnBreak ? 'Break ended! Focus resumed.' : '5-minute break started. Rest your eyes!');
   };
 
-  const toggleSound = (soundKey) => {
-    if (activeSound === soundKey) {
-      ambientAudio.stopAll();
-      setActiveSound(null);
-    } else {
-      setActiveSound(soundKey);
-      if (isRunning && !isPaused) {
-        ambientAudio.playTrack(soundKey);
-      }
-    }
+  const handleToggleStrict = () => {
+    const updated = focusDataStore.toggleStrictMode();
+    setStrictShield(updated);
+    ambientAudio.playWarningChime();
+    showToast(updated.strictModeActive ? '🔒 Strict Shield ON: Apps locked!' : '🔓 Strict Shield OFF');
   };
 
   const studyTags = [
@@ -372,13 +310,26 @@ export function RegainFocusScreen({
     'Chemistry Problem Set',
     'CBSE Board Prep',
     'English Grammar',
-    'Computer Science & Code',
-    'Olympiad Sprint',
-    'Hindi Vyakaran'
+    'Computer Science',
+    'Olympiad Sprint'
   ];
 
   return (
-    <div className="relative w-full min-h-[780px] rounded-[36px] overflow-hidden flex flex-col justify-between p-6 select-none shadow-2xl border border-emerald-950/40 bg-gradient-to-b from-[#021811] via-[#04261d] to-[#01140e]">
+    <div 
+      className="relative w-full h-[780px] rounded-[36px] overflow-hidden flex flex-col justify-between p-5 select-none text-white shadow-2xl border border-emerald-950/40 bg-[#021811]"
+      style={{
+        backgroundImage: 'radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.35) 0%, rgba(6, 78, 59, 0.45) 50%, rgba(2, 24, 17, 0.98) 100%)'
+      }}
+    >
+      
+      {/* Toast Alert */}
+      {toastMessage && (
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-50 bg-stone-900/95 border border-emerald-500 text-emerald-300 text-xs font-black px-4 py-2 rounded-full shadow-2xl flex items-center gap-2 backdrop-blur-md">
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
       {/* ------------------------------------------------------------- */}
       {/* Aurora Borealis Atmospheric Nebula & Canvas Stars             */}
       {/* ------------------------------------------------------------- */}
@@ -387,15 +338,8 @@ export function RegainFocusScreen({
         className="absolute inset-0 w-full h-full pointer-events-none z-0"
       />
 
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Swirling Aurora emerald wave */}
-        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-gradient-to-b from-emerald-400/25 via-teal-400/20 to-transparent rounded-[100%] blur-[90px] animate-pulse" />
-        <div className="absolute top-20 -left-20 w-[400px] h-[400px] bg-cyan-500/15 rounded-full blur-[100px]" />
-        <div className="absolute top-40 -right-20 w-[450px] h-[450px] bg-emerald-500/15 rounded-full blur-[100px]" />
-
-        {/* Snowy Mountain landscape silhouette at bottom */}
-        <div className="absolute bottom-0 inset-x-0 h-44 bg-gradient-to-t from-black via-stone-950/80 to-transparent pointer-events-none" />
-      </div>
+      {/* Snowy landscape silhouette at bottom matching screenshot */}
+      <div className="absolute bottom-0 inset-x-0 h-44 bg-gradient-to-t from-[#02120b] via-[#031d14]/80 to-transparent pointer-events-none z-0" />
 
       {/* ------------------------------------------------------------- */}
       {/* Top Banner Pill: "Create group with friends! >"               */}
@@ -403,22 +347,24 @@ export function RegainFocusScreen({
       <div className="relative z-20 flex justify-center pt-2">
         <button
           onClick={onOpenGroupModal}
-          className="group flex items-center space-x-2.5 px-5 py-2.5 rounded-full bg-stone-900/80 hover:bg-stone-850/90 backdrop-blur-xl border border-emerald-500/30 text-emerald-100 text-xs font-semibold shadow-lg shadow-emerald-950/40 transition-all hover:scale-105 active:scale-95"
+          className="group flex items-center space-x-2.5 px-5 py-2.5 rounded-full bg-[#11241c]/80 hover:bg-[#162f25]/90 backdrop-blur-xl border border-white/10 text-emerald-100 text-xs font-semibold shadow-lg shadow-black/40 transition-all hover:scale-105 active:scale-95 cursor-pointer"
         >
-          <div className="w-5 h-5 rounded-full bg-emerald-600/40 flex items-center justify-center text-emerald-300">
-            <Users className="w-3.5 h-3.5" />
+          <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-emerald-200">
+            <User className="w-3.5 h-3.5" />
           </div>
           <span>Create group with friends!</span>
-          <span className="text-emerald-400 font-bold group-hover:translate-x-0.5 transition-transform">›</span>
+          <span className="text-stone-300 font-bold group-hover:translate-x-0.5 transition-transform text-sm">›</span>
         </button>
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* Central Glass Orb Timer (Matches Screenshot Exactly)          */}
+      {/* Central Glass Orb Timer (Matches Screenshot 1 Exactly)        */}
       {/* ------------------------------------------------------------- */}
-      <div className="relative z-10 my-auto flex flex-col items-center justify-center py-4">
+      <div className="relative z-10 my-auto flex flex-col items-center justify-center py-2">
+        
         {/* Circular Timer Ring Frame */}
-        <div className="relative w-[300px] h-[300px] flex items-center justify-center">
+        <div className="relative w-[285px] h-[285px] sm:w-[300px] sm:h-[300px] flex items-center justify-center">
+          
           {/* SVG Progress Circle and Track */}
           <svg className="absolute inset-0 w-full h-full pointer-events-none">
             {/* Background Track Circle */}
@@ -426,8 +372,8 @@ export function RegainFocusScreen({
               cx="150"
               cy="150"
               r="138"
-              fill="rgba(16, 185, 129, 0.08)"
-              stroke="rgba(255, 255, 255, 0.22)"
+              fill="rgba(16, 185, 129, 0.05)"
+              stroke="rgba(255, 255, 255, 0.3)"
               strokeWidth="1.5"
             />
             {/* Active Progress Arc */}
@@ -454,19 +400,20 @@ export function RegainFocusScreen({
           </svg>
 
           {/* Internal Content of Orb */}
-          <div className="relative z-10 flex flex-col items-center text-center space-y-2">
+          <div className="relative z-10 flex flex-col items-center text-center space-y-1.5">
+            
             {/* Untagged Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setShowTagDropdown(!showTagDropdown)}
-                className="flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium text-emerald-200/90 hover:text-white bg-white/5 hover:bg-white/10 backdrop-blur-sm transition-all"
+                className="flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium text-emerald-200/90 hover:text-white bg-white/5 hover:bg-white/10 backdrop-blur-sm transition cursor-pointer"
               >
                 <span>{selectedTag}</span>
-                <ChevronDown className="w-3.5 h-3.5" />
+                <ChevronDown className="w-3.5 h-3.5 text-stone-300" />
               </button>
 
               {showTagDropdown && (
-                <div className="absolute top-8 left-1/2 -translate-x-1/2 w-48 bg-stone-900/95 backdrop-blur-xl border border-emerald-500/40 rounded-2xl p-1.5 shadow-2xl z-30 space-y-0.5 animate-in zoom-in-95 duration-150">
+                <div className="absolute top-8 left-1/2 -translate-x-1/2 w-48 bg-stone-900/95 backdrop-blur-xl border border-emerald-500/40 rounded-2xl p-1.5 shadow-2xl z-30 space-y-0.5 animate-fadeIn">
                   {studyTags.map((tag) => (
                     <button
                       key={tag}
@@ -474,7 +421,7 @@ export function RegainFocusScreen({
                         setSelectedTag(tag);
                         setShowTagDropdown(false);
                       }}
-                      className={`w-full text-left px-3 py-1.5 text-xs rounded-xl font-medium transition-all ${
+                      className={`w-full text-left px-3 py-1.5 text-xs rounded-xl font-medium transition cursor-pointer ${
                         selectedTag === tag ? 'bg-emerald-600/40 text-emerald-200 font-bold' : 'text-stone-300 hover:bg-white/10'
                       }`}
                     >
@@ -486,15 +433,15 @@ export function RegainFocusScreen({
             </div>
 
             {/* Timer / Stopwatch Label */}
-            <span className="text-xs uppercase tracking-widest text-emerald-300/70 font-semibold pt-1">
+            <span className="text-xs uppercase tracking-widest text-emerald-300/80 font-semibold pt-1">
               {isOnBreak ? 'Break' : sessionMode === 'stopwatch' ? 'Stopwatch' : 'Timer'}
             </span>
 
-            {/* Giant Digital Time Numbers */}
+            {/* Giant Digital Time Numbers: Exact match to "01:56" in Screenshot */}
             <div
               onClick={onOpenSetupModal}
               className="text-6xl font-black tracking-tight text-emerald-100 font-mono drop-shadow-lg cursor-pointer hover:scale-105 transition-transform"
-              title="Click to configure timer"
+              title="Click to configure timer duration"
             >
               {isOnBreak ? formatTime(breakSecondsLeft) : formatTime(remainingSeconds)}
             </div>
@@ -502,9 +449,9 @@ export function RegainFocusScreen({
             {/* Take a break Pill */}
             <button
               onClick={handleTakeBreak}
-              className={`mt-2 px-4 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md border transition-all ${
+              className={`mt-2 px-4 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md border transition cursor-pointer ${
                 isOnBreak
-                  ? 'bg-amber-500/30 border-amber-400 text-amber-200 shadow-lg shadow-amber-950'
+                  ? 'bg-amber-500/30 border-amber-400 text-amber-200 shadow-lg'
                   : 'bg-white/10 hover:bg-white/20 border-white/20 text-emerald-100'
               }`}
             >
@@ -513,313 +460,180 @@ export function RegainFocusScreen({
           </div>
         </div>
 
-        {/* Ambient Sound Bar Quick Selector */}
-        <div className="mt-5 flex items-center space-x-2 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-emerald-500/20 text-[11px]">
-          <span className="text-emerald-400/80 font-bold">Audio:</span>
-          <button
-            onClick={() => toggleSound('binaural_432')}
-            className={`px-2.5 py-1 rounded-full transition-all ${
-              activeSound === 'binaural_432' ? 'bg-emerald-500 text-black font-bold' : 'text-stone-300 hover:text-white'
-            }`}
-          >
-            432Hz Alpha
-          </button>
-          <button
-            onClick={() => toggleSound('rain')}
-            className={`px-2.5 py-1 rounded-full transition-all ${
-              activeSound === 'rain' ? 'bg-emerald-500 text-black font-bold' : 'text-stone-300 hover:text-white'
-            }`}
-          >
-            Rain
-          </button>
-          <button
-            onClick={() => toggleSound('zen_bowl')}
-            className={`px-2.5 py-1 rounded-full transition-all ${
-              activeSound === 'zen_bowl' ? 'bg-emerald-500 text-black font-bold' : 'text-stone-300 hover:text-white'
-            }`}
-          >
-            Zen Chime
-          </button>
-        </div>
-
-        {/* Focus Buddy Interactive Speech Bubble */}
+        {/* Mascot quote speech bubble */}
         {showBuddyBubble && (
-          <div className="mt-4 px-4 py-2 max-w-sm mx-auto rounded-2xl bg-emerald-950/60 backdrop-blur-md border border-emerald-500/30 text-center text-xs text-emerald-200 shadow-lg animate-in fade-in duration-300">
+          <div className="mt-3 px-4 py-2 max-w-xs mx-auto rounded-2xl bg-emerald-950/70 backdrop-blur-md border border-emerald-500/40 text-center text-xs text-emerald-200 shadow-lg animate-fadeIn">
             <span>{buddyQuote}</span>
           </div>
         )}
+
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* Bottom Control Row (Exact match to screenshot)                */}
-      {/* Hamburger Menu | Focus Buddy Mascot | Padlock                */}
+      {/* Bottom Control Row (Exact match to Screenshot 1)               */}
+      {/* Menu [ ≡ ] | Focus Alien Mascot [ 👽 ] | Padlock [ 🔒 ]        */}
       {/* ------------------------------------------------------------- */}
       <div className="relative z-20 space-y-4">
+        
         {/* Row 1: Mascot & Icon buttons */}
-        <div className="flex items-center justify-between px-4">
-          {/* Left: Hamburger menu */}
+        <div className="flex items-center justify-between px-6">
+          
+          {/* Left: Menu [ ≡ ] */}
           <button
-            onClick={onOpenSettingsDrawer}
-            className="w-12 h-12 rounded-full bg-stone-900/80 hover:bg-stone-800 backdrop-blur-xl border border-white/10 flex items-center justify-center text-white shadow-lg transition-transform hover:scale-105 active:scale-95"
+            onClick={onOpenSetupModal}
+            className="w-12 h-12 rounded-full bg-[#12231c]/80 hover:bg-[#183227] backdrop-blur-xl border border-white/10 flex items-center justify-center text-white shadow-lg transition-transform hover:scale-105 active:scale-95 cursor-pointer"
             title="Focus Settings & Presets"
           >
             <Menu className="w-5 h-5 text-stone-200" />
           </button>
 
-          {/* Center: Interactive Green Mascot Buddy */}
+          {/* Center: Interactive Lime-Green Alien Mascot Buddy (Exact match to Screenshot 1) */}
           <div
             onClick={() => {
               setBuddyMood(b => (b === 'happy' ? 'focused' : b === 'focused' ? 'cheering' : 'happy'));
               ambientAudio.playBellChime();
               const nextQ = buddyQuotes[Math.floor(Math.random() * buddyQuotes.length)];
               setBuddyQuote(nextQ);
-              setShowBuddyBubble(true);
+              setShowBuddyBubble(!showBuddyBubble);
             }}
             className="group relative cursor-pointer"
-            title="DAV Focus Buddy - Click to cheer up!"
+            title="ReGain Mascot Buddy - Click to motivate!"
           >
-            <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-emerald-500 via-lime-400 to-green-300 p-0.5 shadow-xl shadow-emerald-950/60 flex items-center justify-center transform group-hover:scale-110 transition-transform">
-              <div className="w-full h-full rounded-full bg-[#04261d] flex items-center justify-center overflow-hidden relative">
-                {/* Cute Animated Green Alien/Buddy Face */}
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-b from-lime-300 to-emerald-400 flex flex-col items-center justify-center relative shadow-inner">
-                  {/* Eyes */}
-                  <div className="flex space-x-2 pt-1">
-                    <div className="w-2 h-2.5 bg-stone-900 rounded-full animate-bounce" />
-                    <div className="w-2 h-2.5 bg-stone-900 rounded-full animate-bounce delay-75" />
+            {/* Circular dark halo base */}
+            <div className="w-14 h-14 rounded-full bg-black/40 backdrop-blur-md border border-emerald-500/30 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+              
+              {/* Cute Lime-Green Alien Mascot Head matching Screenshot 1 */}
+              <div className="w-10 h-10 rounded-[18px] bg-gradient-to-b from-[#bbf7d0] to-[#4ade80] flex flex-col items-center justify-center relative shadow-md">
+                {/* Two Dark Anime Oval Eyes */}
+                <div className="flex space-x-2.5 pt-0.5">
+                  <div className="w-2.5 h-3 bg-[#052e16] rounded-full relative">
+                    {/* Eye Sparkle */}
+                    <div className="w-1 h-1 bg-white rounded-full absolute top-0.5 left-0.5" />
                   </div>
-                  {/* Smile / Mouth */}
-                  <div className="w-3.5 h-1.5 border-b-2 border-stone-900 rounded-full mt-1" />
-                  {/* Cheeks */}
-                  <div className="absolute bottom-2 left-1.5 w-1.5 h-1 bg-rose-400/60 rounded-full" />
-                  <div className="absolute bottom-2 right-1.5 w-1.5 h-1 bg-rose-400/60 rounded-full" />
+                  <div className="w-2.5 h-3 bg-[#052e16] rounded-full relative">
+                    <div className="w-1 h-1 bg-white rounded-full absolute top-0.5 left-0.5" />
+                  </div>
                 </div>
+                {/* Cute Smile */}
+                <div className="w-3 h-1 border-b-2 border-[#052e16] rounded-full mt-0.5" />
+                {/* Blushing Cheeks */}
+                <div className="absolute bottom-1.5 left-1 w-1.5 h-1 bg-rose-400/50 rounded-full" />
+                <div className="absolute bottom-1.5 right-1 w-1.5 h-1 bg-rose-400/50 rounded-full" />
               </div>
+
             </div>
-            {/* Small tooltip */}
-            <span className="absolute -top-7 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold bg-stone-900 text-emerald-300 border border-emerald-500/30 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-              Focus Buddy
-            </span>
           </div>
 
           {/* Right: Glowing Yellow Padlock (Strict Mode) */}
           <button
-            onClick={() => {
-              const updated = focusDataStore.toggleStrictMode();
-              setStrictShield(updated);
-            }}
-            className={`w-12 h-12 rounded-full backdrop-blur-xl border flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95 ${
+            onClick={handleToggleStrict}
+            className={`w-12 h-12 rounded-full backdrop-blur-xl border flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95 cursor-pointer ${
               strictShield.strictModeActive
                 ? 'bg-amber-500/30 border-amber-400 text-amber-300 shadow-amber-500/40 animate-pulse'
-                : 'bg-stone-900/80 border-white/10 text-amber-400/70 hover:text-amber-300'
+                : 'bg-[#12231c]/80 border-white/10 text-amber-400 hover:text-amber-300'
             }`}
-            title="Toggle Strict Anti-Cheat Lock"
+            title="Toggle Strict Anti-Tamper Lock"
           >
             <Lock className="w-5 h-5 text-amber-400" />
           </button>
+
         </div>
 
-        {/* Row 2: Bottom Action Pills: "Stop Focus" & "Resume / Start Focus" */}
-        <div className="flex items-center space-x-3 pt-2">
-          {/* Stop Focus Pill */}
+        {/* Row 2: Bottom Action Pills: "Stop Focus" & "Resume" (Exact match to Screenshot 1) */}
+        <div className="flex items-center space-x-3 pt-1">
+          
+          {/* Stop Focus Pill (Dark translucent capsule) */}
           <button
             onClick={handleStop}
-            className="flex-1 py-4 rounded-full font-bold text-sm bg-emerald-950/70 hover:bg-emerald-900/80 backdrop-blur-md border border-emerald-500/30 text-emerald-200 transition-all active:scale-95 text-center shadow-lg"
+            className="flex-1 py-3.5 rounded-full font-bold text-sm bg-[#12231c]/90 hover:bg-[#183227] backdrop-blur-md border border-white/10 text-emerald-100 transition active:scale-95 text-center shadow-lg cursor-pointer"
           >
             Stop Focus
           </button>
 
-          {/* Resume / Start Focus Pill (Solid White in screenshot) */}
+          {/* Resume / Start Focus Pill (Solid pure white capsule with bold black text) */}
           <button
             onClick={handleStartResume}
-            className="flex-1 py-4 rounded-full font-black text-sm bg-white hover:bg-stone-100 text-stone-950 transition-all active:scale-95 text-center shadow-2xl shadow-emerald-950"
+            className="flex-1 py-3.5 rounded-full font-black text-sm bg-white hover:bg-stone-100 text-stone-950 transition active:scale-95 text-center shadow-2xl cursor-pointer"
           >
             {!isRunning ? 'Start Focus' : isPaused ? 'Resume' : 'Active Focus'}
           </button>
+
         </div>
+
       </div>
 
-      {/* ------------------------------------------------------------- */}
-      {/* Strict Lock Unlock Countdown Modal (If student tries to stop) */}
-      {/* ------------------------------------------------------------- */}
+      {/* Strict Lock Unlock Countdown Modal */}
       {showStrictModal && (
         <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-2xl flex items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-stone-900 border border-amber-500/50 rounded-3xl p-6 text-center space-y-5 shadow-2xl animate-in zoom-in-95 duration-200">
+          <div className="w-full max-w-sm bg-stone-900 border border-amber-500/50 rounded-3xl p-6 text-center space-y-4 shadow-2xl animate-fadeIn">
             <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-950 border border-amber-500/80 flex items-center justify-center">
               <ShieldAlert className="w-8 h-8 text-amber-400 animate-pulse" />
             </div>
 
             <div>
-              <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                Strict Shield Active
+              <span className="text-xs font-black uppercase tracking-wider text-amber-300">
+                Strict Focus Shield Active
               </span>
-              <h3 className="text-xl font-black text-white mt-3">Commitment Cooldown</h3>
-              <p className="text-xs text-stone-300 mt-1">
-                Strict mode prevents impulsive interruptions. You must wait for the commitment delay to finish before quitting.
+              <h3 className="text-xl font-black text-white mt-1">
+                Emergency Stop Delayed
+              </h3>
+              <p className="text-xs text-stone-400 mt-1">
+                Strict mode imposes a friction penalty before you can give up on your study target.
               </p>
             </div>
 
-            <div className="py-4 bg-stone-950 rounded-2xl border border-stone-800">
-              <span className="text-4xl font-mono font-black text-amber-400">{strictCountdown}s</span>
-              <p className="text-[11px] text-stone-500 mt-1">Hold your focus until cooldown completes</p>
+            <div className="p-4 rounded-2xl bg-stone-950 border border-stone-800 text-2xl font-mono font-black text-amber-400">
+              {strictCountdown}s remaining
             </div>
 
-            <div className="flex space-x-3">
+            <div className="flex gap-2">
               <button
                 onClick={() => setShowStrictModal(false)}
-                className="flex-1 py-3 rounded-2xl bg-stone-800 text-xs font-bold text-stone-300 hover:bg-stone-700"
+                className="flex-1 py-2.5 rounded-xl bg-stone-800 text-stone-300 text-xs font-bold cursor-pointer"
               >
                 Keep Studying
               </button>
               <button
                 onClick={() => {
-                  if (strictCountdown <= 0) {
-                    setIsRunning(false);
-                    setIsPaused(false);
+                  if (strictCountdown === 0) {
                     setShowStrictModal(false);
-                    ambientAudio.stopAll();
+                    setIsRunning(false);
+                    setIsPaused(true);
                   }
                 }}
                 disabled={strictCountdown > 0}
-                className="flex-1 py-3 rounded-2xl bg-rose-600 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-black text-white shadow-lg shadow-rose-950"
+                className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-stone-950 text-xs font-black cursor-pointer"
               >
-                {strictCountdown > 0 ? `Wait ${strictCountdown}s` : 'Unlock & Exit'}
+                Confirm Exit
               </button>
             </div>
           </div>
         </div>
       )}
 
-
-      {/* ------------------------------------------------------------- */}
-      {/* Anti-Distraction & App-Switch Breach Intercept Modal         */}
-      {/* ------------------------------------------------------------- */}
-      {breachModal.isOpen && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-2xl flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-stone-900 border-2 border-rose-500/80 rounded-3xl p-6 text-center space-y-5 shadow-2xl shadow-rose-950/80 animate-in zoom-in-95 duration-200">
-            <div className="w-16 h-16 mx-auto rounded-3xl bg-rose-500/20 border border-rose-500/50 flex items-center justify-center text-rose-400 animate-pulse">
-              <ShieldAlert className="w-10 h-10" />
-            </div>
-
-            <div>
-              <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/40">
-                🚨 Anti-Distraction Shield Triggered
-              </span>
-              <h3 className="text-2xl font-black text-white mt-3">App Switch Intercepted!</h3>
-              <p className="text-xs text-stone-300 mt-2 leading-relaxed">
-                You navigated away from <strong>DAVDixence</strong> for{' '}
-                <span className="text-rose-400 font-bold font-mono text-sm">{breachModal.awaySeconds} seconds</span>.
-                BrainPal™ Anti-Doomscroll Shield logged this device pickup.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 p-3 rounded-2xl bg-stone-950 border border-stone-800 text-left text-xs">
-              <div>
-                <span className="text-stone-500 block text-[10px] uppercase font-bold">Today's Breaches</span>
-                <span className="text-rose-400 font-mono font-black text-base">{breachModal.breachesToday} Events</span>
-              </div>
-              <div>
-                <span className="text-stone-500 block text-[10px] uppercase font-bold">Focus Streak</span>
-                <span className="text-amber-400 font-mono font-black text-base">Defended ⚡</span>
-              </div>
-            </div>
-
-            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-300 text-left flex items-start space-x-2">
-              <Flame className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
-              <span>
-                <strong>Pro-Tip:</strong> High-yield memory consolidation requires at least 20 continuous minutes without app switches.
-              </span>
-            </div>
-
-            <div className="space-y-2">
-              <button
-                onClick={() => {
-                  ambientAudio.playSuccessChime();
-                  setBreachModal({ isOpen: false, awaySeconds: 0, breachesToday: 0 });
-                  setBuddyMood('focused');
-                  setBuddyQuote('Shield restored! Full focus re-engaged.');
-                }}
-                className="w-full py-3.5 rounded-2xl font-black text-xs bg-emerald-500 hover:bg-emerald-400 text-stone-950 shadow-lg shadow-emerald-950 flex items-center justify-center space-x-2"
-              >
-                <Zap className="w-4 h-4" />
-                <span>Lock In &amp; Resume Session (Defend Streak)</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setBreachModal({ isOpen: false, awaySeconds: 0, breachesToday: 0 });
-                  handleStop();
-                }}
-                className="w-full py-2.5 rounded-xl font-bold text-xs bg-stone-800 hover:bg-stone-700 text-stone-400 hover:text-white"
-              >
-                Forfeit Session &amp; Return to Dashboard
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ------------------------------------------------------------- */}
-      {/* Session Completion & Reflection Modal                         */}
-      {/* ------------------------------------------------------------- */}
+      {/* Completion Modal */}
       {showCompletionModal && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-2xl flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-stone-900 border border-emerald-500/50 rounded-3xl p-6 text-center space-y-5 shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="w-16 h-16 mx-auto rounded-3xl bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-emerald-400">
-              <Award className="w-10 h-10 animate-bounce" />
+        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4">
+          <div className="w-full max-w-sm bg-stone-900 border border-emerald-500/50 rounded-3xl p-6 text-center space-y-4 shadow-2xl animate-fadeIn">
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 flex items-center justify-center text-3xl">
+              🎉
             </div>
-
             <div>
-              <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                Session Completed! 🎉
-              </span>
-              <h3 className="text-2xl font-black text-white mt-3">Spectacular Focus!</h3>
-              <p className="text-xs text-stone-300 mt-1">
-                You studied for 25 minutes on <strong>{selectedTag}</strong> without giving in to distractions.
+              <h3 className="text-xl font-black text-white">Focus Goal Achieved!</h3>
+              <p className="text-xs text-stone-400 mt-1">
+                You studied uninterrupted for {Math.round(targetDurationSeconds / 60)} minutes.
               </p>
             </div>
-
-            {/* Questions Solved Rating */}
-            <div className="p-4 rounded-2xl bg-stone-950 border border-stone-800 text-left space-y-3">
-              <label className="text-xs font-bold text-stone-300">Questions or Problems Solved</label>
-              <div className="flex items-center space-x-2">
-                {[0, 2, 5, 10, 15].map(q => (
-                  <button
-                    key={q}
-                    onClick={() => setSolvedCount(q)}
-                    className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
-                      solvedCount === q
-                        ? 'bg-emerald-500 text-stone-950 shadow-md'
-                        : 'bg-stone-900 text-stone-400 hover:text-white'
-                    }`}
-                  >
-                    {q}+
-                  </button>
-                ))}
-              </div>
-
-              <label className="text-xs font-bold text-stone-300 pt-1 block">Session Focus Quality</label>
-              <div className="flex justify-between">
-                {[1, 2, 3, 4, 5].map(s => (
-                  <button
-                    key={s}
-                    onClick={() => setFocusRating(s)}
-                    className="p-2 text-xl hover:scale-125 transition-transform"
-                  >
-                    {s <= focusRating ? '⭐' : '☆'}
-                  </button>
-                ))}
-              </div>
-            </div>
-
             <button
               onClick={() => setShowCompletionModal(false)}
-              className="w-full py-4 rounded-full font-black text-sm bg-white hover:bg-stone-100 text-stone-950 shadow-xl transition-all"
+              className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-stone-950 font-black text-xs uppercase tracking-wider cursor-pointer shadow-lg"
             >
-              Log Session & Sync Leaderboard
+              Continue Scholar Journey
             </button>
           </div>
         </div>
       )}
+
     </div>
   );
 }
