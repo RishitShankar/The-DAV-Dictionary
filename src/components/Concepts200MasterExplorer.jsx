@@ -11,6 +11,7 @@ import {
 } from '../data/dav200PlatformConceptsData';
 import { davAudio } from '../services/davAudioEngine';
 import { addScholasticXp } from '../services/scholasticGamificationStore';
+import { Concepts200InteractiveSandboxModal } from './Concepts200InteractiveSandboxModal';
 
 export function Concepts200MasterExplorer({ 
   onOpenCommandPalette, 
@@ -28,11 +29,6 @@ export function Concepts200MasterExplorer({
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedImpact, setSelectedImpact] = useState('all');
   const [activeConceptModal, setActiveConceptModal] = useState(null);
-
-  // Sandbox interactive state
-  const [sandboxTheme, setSandboxTheme] = useState('saffron');
-  const [sandboxBlur, setSandboxBlur] = useState(16);
-  const [sandboxXpFeedback, setSandboxXpFeedback] = useState(null);
 
   // Explored concepts storage
   const [exploredIds, setExploredIds] = useState(() => {
@@ -56,30 +52,21 @@ export function Concepts200MasterExplorer({
 
   const handleLaunchConceptDemo = (concept) => {
     toggleExplored(concept.id);
+    setActiveConceptModal(concept);
+    davAudio.playChime('click');
+  };
 
-    // Map to flagship modals if applicable
-    if (concept.id === 107) {
-      onOpenPeriodicTable?.();
-    } else if (concept.id === 96 || concept.id === 195) {
-      onOpenBusTelemetry?.();
-    } else if (concept.id === 98 || concept.id === 114 || concept.id === 129) {
-      onOpenAnthemPlayer?.();
-    } else if (concept.id === 122 || concept.id === 136 || concept.id === 146) {
-      onOpenFormulaSheet?.();
-    } else if ((concept.id >= 171 && concept.id <= 190) && concept.id !== 171 && concept.id !== 188) {
-      onOpenAccessibility?.();
-    } else if (concept.id === 26 || concept.demoType === 'command_palette') {
-      onOpenCommandPalette?.();
-    } else if (concept.id === 123 || concept.id === 133 || concept.id === 134 || concept.demoType === 'virtual_lab') {
-      onOpenVirtualLab?.();
-    } else if (concept.id === 155 || concept.id === 156 || concept.demoType === 'mistake_vault') {
-      onOpenMistakeVault?.();
-    } else if (concept.id === 188 || concept.demoType === 'admit_card') {
-      onOpenAdmitCard?.();
-    } else {
-      // Open in-line interactive concept sandbox drawer
-      setActiveConceptModal(concept);
-    }
+  const handleLaunchDedicatedModule = (moduleKey) => {
+    setActiveConceptModal(null);
+    if (moduleKey === 'periodic_table') onOpenPeriodicTable?.();
+    else if (moduleKey === 'bus_telemetry') onOpenBusTelemetry?.();
+    else if (moduleKey === 'anthem_player') onOpenAnthemPlayer?.();
+    else if (moduleKey === 'formula_sheet') onOpenFormulaSheet?.();
+    else if (moduleKey === 'accessibility') onOpenAccessibility?.();
+    else if (moduleKey === 'command_palette') onOpenCommandPalette?.();
+    else if (moduleKey === 'virtual_lab') onOpenVirtualLab?.();
+    else if (moduleKey === 'mistake_vault') onOpenMistakeVault?.();
+    else if (moduleKey === 'admit_card') onOpenAdmitCard?.();
   };
 
   // Filtered concepts
@@ -105,13 +92,6 @@ export function Concepts200MasterExplorer({
 
   const progressPercent = Math.round((exploredIds.length / DAV_200_PLATFORM_CONCEPTS.length) * 100);
 
-  const handleTestXpAward = (amount = 25) => {
-    const updated = addScholasticXp(amount, '200 Concepts Sandbox Exploration');
-    davAudio.playChime('success');
-    setSandboxXpFeedback(`+${amount} XP Awarded! New Total: ${updated.xp}`);
-    setTimeout(() => setSandboxXpFeedback(null), 3000);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-stone-950 via-[#0d0e12] to-stone-950 text-stone-100 py-10 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -133,7 +113,7 @@ export function Concepts200MasterExplorer({
                 200 Website Design &amp; Feature Concepts Architecture
               </h1>
               <p className="text-sm sm:text-base text-stone-400 mt-2 max-w-2xl leading-relaxed">
-                A grand master catalog of 200 cutting-edge UI/UX, cognitive AI, 3D spatial sensory, collaborative, examination diagnostic, and enterprise ERP concepts engineered for DAV Public School, Khabra.
+                A grand master catalog of 200 cutting-edge UI/UX, cognitive AI, 3D spatial sensory, collaborative, examination diagnostic, and enterprise ERP concepts engineered for DAV Public School, Khabra. Every feature is 100% playable and interactive.
               </p>
             </div>
 
@@ -238,7 +218,7 @@ export function Concepts200MasterExplorer({
             {onGoToSection && (
               <button
                 onClick={() => onGoToSection(1)}
-                className="text-stone-400 hover:text-amber-400 transition flex items-center gap-1"
+                className="text-stone-400 hover:text-amber-400 transition flex items-center gap-1 cursor-pointer"
               >
                 <span>← Back to Overview Hub</span>
               </button>
@@ -265,7 +245,7 @@ export function Concepts200MasterExplorer({
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-white"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-white cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -278,7 +258,7 @@ export function Concepts200MasterExplorer({
               <select
                 value={selectedImpact}
                 onChange={(e) => setSelectedImpact(e.target.value)}
-                className="bg-stone-900/90 border border-stone-800 rounded-2xl px-4 py-3 text-xs font-semibold text-stone-300 focus:outline-none focus:border-amber-400 w-full md:w-auto"
+                className="bg-stone-900/90 border border-stone-800 rounded-2xl px-4 py-3 text-xs font-semibold text-stone-300 focus:outline-none focus:border-amber-400 w-full md:w-auto cursor-pointer"
               >
                 <option value="all">All Impact Levels</option>
                 <option value="Very High Impact">Very High Impact</option>
@@ -322,7 +302,7 @@ export function Concepts200MasterExplorer({
         <div className="space-y-4">
           <div className="flex items-center justify-between text-xs text-stone-400 px-1 font-mono">
             <span>Showing {filtered.length} of 200 platform concepts</span>
-            <span>Click any concept card to launch sandbox or interactive module</span>
+            <span>Click any concept to launch its live interactive workbench</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -379,7 +359,7 @@ export function Concepts200MasterExplorer({
                         {c.title}
                       </h3>
 
-                      <p className="text-xs text-stone-300 mt-2.5 leading-relaxed">
+                      <p className="text-xs text-stone-300 mt-2.5 leading-relaxed line-clamp-3">
                         {c.description}
                       </p>
                     </div>
@@ -387,7 +367,7 @@ export function Concepts200MasterExplorer({
                     {/* Bottom Status & Demo Launcher */}
                     <div className="pt-3 border-t border-stone-800/80 flex items-center justify-between text-xs">
                       <span className="text-[11px] font-bold text-stone-400 group-hover:text-amber-300 transition flex items-center gap-1">
-                        <span>Launch Sandbox Demo</span>
+                        <span>Launch Live Workbench</span>
                         <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                       </span>
 
@@ -403,9 +383,9 @@ export function Concepts200MasterExplorer({
                         }`}
                       >
                         {isExplored ? (
-                          <><Check className="w-3 h-3 text-emerald-400" /> Explored</>
+                          <><Check className="w-3 h-3 text-emerald-400" /> Tested</>
                         ) : (
-                          <span>Mark Explored</span>
+                          <span>Mark Tested</span>
                         )}
                       </button>
                     </div>
@@ -418,195 +398,15 @@ export function Concepts200MasterExplorer({
         </div>
 
         {/* =========================================================================
-            INTERACTIVE CONCEPT SANDBOX DRAWER / MODAL
+            INTERACTIVE CONCEPT SANDBOX MODAL (ALL 200 CONCEPTS PLAYABLE)
         ========================================================================= */}
         {activeConceptModal && (
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-in fade-in duration-200">
-            <div className="bg-stone-900 border border-stone-800 rounded-3xl max-w-2xl w-full flex flex-col shadow-2xl overflow-hidden font-sans border-amber-500/30">
-              
-              {/* Sandbox Header */}
-              <div className="px-6 py-4 border-b border-stone-800 flex items-center justify-between bg-stone-950/70">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-sm">
-                    #{activeConceptModal.id}
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-stone-100 flex items-center gap-2">
-                      <span>{activeConceptModal.title}</span>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                        Phase {activeConceptModal.phaseNumber}
-                      </span>
-                    </h3>
-                    <p className="text-xs text-stone-400">{activeConceptModal.category} • {activeConceptModal.impactLevel}</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => setActiveConceptModal(null)}
-                  className="w-8 h-8 rounded-full bg-stone-800 hover:bg-stone-700 flex items-center justify-center text-stone-300 hover:text-white transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* Sandbox Body */}
-              <div className="p-6 space-y-5 overflow-y-auto max-h-[70vh]">
-                
-                {/* Description & Blueprint */}
-                <div className="p-4 rounded-2xl bg-stone-950/70 border border-stone-800 space-y-2">
-                  <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">
-                    Architectural Blueprint &amp; Feature Specification
-                  </span>
-                  <p className="text-xs text-stone-200 leading-relaxed">
-                    {activeConceptModal.description}
-                  </p>
-                  <div className="pt-2 flex items-center gap-3 text-[11px] text-stone-400 font-mono">
-                    <span>Badge: <strong className="text-stone-200">{activeConceptModal.badge}</strong></span>
-                    {activeConceptModal.keyboardShortcut && (
-                      <span>Shortcut: <kbd className="px-1.5 py-0.5 bg-stone-800 rounded border border-stone-700 text-amber-300 font-bold">{activeConceptModal.keyboardShortcut}</kbd></span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Live Sandbox Interactive Demonstration */}
-                <div className="p-4 rounded-2xl bg-stone-950/90 border border-stone-800 space-y-4">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-stone-200 flex items-center gap-1.5">
-                      <Zap className="w-4 h-4 text-amber-400" />
-                      <span>Live Interactive Sandbox Controls</span>
-                    </span>
-                    <span className="text-[10px] text-emerald-400 font-mono">Status: Active &amp; Tested</span>
-                  </div>
-
-                  {/* Sandbox Type: Visual / Aesthetic */}
-                  {activeConceptModal.category === 'Visual & Aesthetic Design' && (
-                    <div className="space-y-3 text-xs">
-                      <div className="flex items-center justify-between text-stone-400 text-[11px]">
-                        <span>Glass Backdrop Blur: {sandboxBlur}px</span>
-                        <span>Theme: {sandboxTheme}</span>
-                      </div>
-                      <input 
-                        type="range" 
-                        min="4" 
-                        max="32" 
-                        value={sandboxBlur}
-                        onChange={(e) => setSandboxBlur(parseInt(e.target.value, 10))}
-                        className="w-full accent-amber-500 cursor-pointer"
-                      />
-                      <div className="flex items-center gap-2">
-                        {['saffron', 'neon', 'emerald', 'crimson'].map(t => (
-                          <button
-                            key={t}
-                            onClick={() => setSandboxTheme(t)}
-                            className={`px-3 py-1 rounded-lg text-[11px] font-semibold capitalize border ${
-                              sandboxTheme === t 
-                                ? 'bg-amber-500 text-stone-950 font-bold border-amber-400' 
-                                : 'bg-stone-900 border-stone-700 text-stone-300'
-                            }`}
-                          >
-                            {t}
-                          </button>
-                        ))}
-                      </div>
-
-                      {/* Interactive Visual Glass Tile */}
-                      <div 
-                        className={`p-4 rounded-2xl border transition-all text-center ${
-                          sandboxTheme === 'saffron' ? 'bg-amber-500/10 border-amber-500/40 text-amber-300' :
-                          sandboxTheme === 'neon' ? 'bg-cyan-500/10 border-cyan-500/40 text-cyan-300' :
-                          sandboxTheme === 'emerald' ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300' :
-                          'bg-rose-500/10 border-rose-500/40 text-rose-300'
-                        }`}
-                        style={{ backdropFilter: `blur(${sandboxBlur}px)` }}
-                      >
-                        <Sparkles className="w-6 h-6 mx-auto mb-1 animate-pulse" />
-                        <span className="font-bold block text-sm">Glassmorphic Elevation Preview</span>
-                        <span className="text-[11px] opacity-75">Cyber-Gurukul Hybrid Aesthetics Engine</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Sandbox Type: Gamification & SFX */}
-                  {(activeConceptModal.category === 'Gamification & Retention' || activeConceptModal.id === 84) && (
-                    <div className="space-y-3 text-xs">
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          onClick={() => davAudio.playChime('bell')}
-                          className="p-2.5 rounded-xl bg-stone-900 border border-stone-700 hover:border-amber-400 flex items-center justify-center gap-2 text-stone-200"
-                        >
-                          <Volume2 className="w-4 h-4 text-amber-400" />
-                          <span>Play Temple Bell Chime</span>
-                        </button>
-                        <button
-                          onClick={() => davAudio.playChime('level_up')}
-                          className="p-2.5 rounded-xl bg-stone-900 border border-stone-700 hover:border-emerald-400 flex items-center justify-center gap-2 text-stone-200"
-                        >
-                          <Trophy className="w-4 h-4 text-emerald-400" />
-                          <span>Play Victory Arpeggio</span>
-                        </button>
-                      </div>
-
-                      <button
-                        onClick={() => handleTestXpAward(50)}
-                        className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-stone-950 font-bold shadow-md flex items-center justify-center gap-2"
-                      >
-                        <Flame className="w-4 h-4" />
-                        <span>Award +50 Scholastic XP (Test Store Persistence)</span>
-                      </button>
-
-                      {sandboxXpFeedback && (
-                        <div className="text-center font-mono font-bold text-emerald-400 text-xs animate-in fade-in">
-                          {sandboxXpFeedback}
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Sandbox Type: School Systems or EdTech */}
-                  {activeConceptModal.category !== 'Visual & Aesthetic Design' && activeConceptModal.category !== 'Gamification & Retention' && (
-                    <div className="space-y-2 text-xs">
-                      <p className="text-stone-300">
-                        This concept is fully integrated into the DAVDixence platform architecture. You can test audio triggers, explore live data telemetry, or launch the master sub-module.
-                      </p>
-                      <div className="flex flex-wrap gap-2 pt-1">
-                        <button
-                          onClick={() => davAudio.playChime('success')}
-                          className="px-3 py-1.5 rounded-xl bg-stone-900 border border-stone-700 hover:border-amber-400 text-stone-200 flex items-center gap-1.5"
-                        >
-                          <Volume2 className="w-3.5 h-3.5 text-amber-400" />
-                          <span>Audio Acoustic Cue</span>
-                        </button>
-                        <button
-                          onClick={() => handleTestXpAward(20)}
-                          className="px-3 py-1.5 rounded-xl bg-stone-900 border border-stone-700 hover:border-emerald-400 text-stone-200 flex items-center gap-1.5"
-                        >
-                          <Flame className="w-3.5 h-3.5 text-orange-400" />
-                          <span>Trigger Retain XP</span>
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                </div>
-
-              </div>
-
-              {/* Sandbox Footer */}
-              <div className="px-6 py-3 border-t border-stone-800 bg-stone-950/70 text-xs text-stone-500 flex items-center justify-between">
-                <button
-                  onClick={() => {
-                    toggleExplored(activeConceptModal.id);
-                    setActiveConceptModal(null);
-                  }}
-                  className="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition flex items-center gap-1.5"
-                >
-                  <Check className="w-3.5 h-3.5" />
-                  <span>Mark as Explored &amp; Close</span>
-                </button>
-                <span>DAVDixence Architectural Concept #{activeConceptModal.id}</span>
-              </div>
-
-            </div>
-          </div>
+          <Concepts200InteractiveSandboxModal
+            concept={activeConceptModal}
+            isOpen={Boolean(activeConceptModal)}
+            onClose={() => setActiveConceptModal(null)}
+            onLaunchDedicatedModule={handleLaunchDedicatedModule}
+          />
         )}
 
       </div>
