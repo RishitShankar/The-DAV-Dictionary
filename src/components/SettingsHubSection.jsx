@@ -268,9 +268,10 @@ export function SettingsHubSection({ user, onLogout, onSelectSection }) {
     }
   };
 
-  // Handle Save Section Animations to Local & Cloud
-  const handleSaveVfxMap = () => {
+  // Handle Save Section Animations to Local & Cloud and Live Navigate
+  const handleSaveVfxMap = (shouldJump = false) => {
     try {
+      const targetSec = editingSection;
       const updated = { ...sectionVfxMap, [editingSection]: previewVfxId };
       setSectionVfxMap(updated);
       localStorage.setItem('dav_section_vfx_map', JSON.stringify(updated));
@@ -278,6 +279,10 @@ export function SettingsHubSection({ user, onLogout, onSelectSection }) {
       setVfxSavedSuccess(true);
       setTimeout(() => setVfxSavedSuccess(false), 3000);
       setEditingSection(null);
+
+      if (shouldJump && onSelectSection && targetSec) {
+        onSelectSection(targetSec);
+      }
     } catch (e) {
       alert('Could not save animation map to storage.');
     }
@@ -969,13 +974,23 @@ export function SettingsHubSection({ user, onLogout, onSelectSection }) {
 
                     <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between">
                       <span className="text-xs text-amber-200">Like this look? Click Save on the bottom left!</span>
-                      <button
-                        type="button"
-                        onClick={handleSaveVfxMap}
-                        className="py-1.5 px-4 rounded-xl bg-amber-500 text-stone-950 font-black text-xs cursor-pointer shadow-md hover:bg-amber-400"
-                      >
-                        Save This Animation
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleSaveVfxMap(false)}
+                          className="py-1.5 px-3 rounded-xl bg-stone-800 text-white font-bold text-xs cursor-pointer shadow-md hover:bg-stone-700"
+                        >
+                          Save VFX
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSaveVfxMap(true)}
+                          className="py-1.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 font-black text-xs cursor-pointer shadow-md hover:from-amber-400 hover:to-orange-400 flex items-center gap-1.5"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>Save &amp; Jump to Section {editingSection} 🚀</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

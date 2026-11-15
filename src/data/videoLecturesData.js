@@ -496,7 +496,7 @@ export const VERIFIED_CREATORS_BY_VIDEO_ID = {
   "y2rX-jv0Amw": "vkpdt",
   "BzH5c7lZTxs": "edumagnet",
   "a9S2jaHfj8w": "edumagnet",
-  "PW7iluOCz0c": "edumagnet",
+  "esWgCeeSG0c": "edumagnet",
   "NC0VBzBGm60": "vkpdt",
   "8k0KU7MFtB8": "studywithdeep",
   "deW5qPeoaEM": "studywithdeep",
@@ -3728,37 +3728,4 @@ export const DAV_SAMPLE_PAPERS = [
       'सभी खंडों के प्रश्नों का उत्तर देना अनिवार्य है।'
     ]
   },
-  {
-    id: 'sp_7_sci_2025',
-    classId: '7',
-    subject: 'Science',
-    title: 'DAV Class 7 Annual Exam Practice Set 2024-25',
-    blueprint: '80 Marks • Balanced Theory & Numerical',
-    badge: 'School Topper Choice',
-    rating: '4.8 ★',
-    downloadPdf: 'sample_papers/dav_class_7_science_model_2025.pdf',
-    instructions: ['Full syllabus test based on The Living World textbook.']
-  },
-  {
-    id: 'sp_6_sst_2025',
-    classId: '6',
-    subject: 'Social Science',
-    title: 'DAV Class 6 Model Test Paper 2024-25',
-    blueprint: '80 Marks • We and Our World Book',
-    badge: 'Comprehensive Revision',
-    rating: '4.8 ★',
-    downloadPdf: 'sample_papers/dav_class_6_sst_model_2025.pdf',
-    instructions: ['Includes Earth in Solar System, Indus Valley, and Local Government.']
-  },
-  {
-    id: 'sp_5_math_2025',
-    classId: '5',
-    subject: 'Primary Mathematics',
-    title: 'DAV Class 5 Primary Mathematics Practice Paper 2024-25',
-    blueprint: '50 Marks • Operations, Decimals, Fractions, Geometry',
-    badge: 'Fundamental Mastery',
-    rating: '4.9 ★',
-    downloadPdf: 'sample_papers/dav_class_5_maths_model_2025.pdf',
-    instructions: ['Designed for STD-5 DAV examination format.']
-  }
 ];

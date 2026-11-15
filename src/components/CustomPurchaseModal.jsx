@@ -31,11 +31,11 @@ export function CustomPurchaseModal({isOpen, onClose, user, onPurchaseSubmitted 
 
   // Page 2: Student Profile Details
   const [fullName, setFullName] = useState(user?.name || user?.fullName || '');
-  const [classNum, setClassNum] = useState(user?.classNum || user?.class || '8');
+  const [classNum, setClassNum] = useState(user?.classNum || user?.class || '');
   const [section, setSection] = useState(user?.section || 'A');
   const [email, setEmail] = useState(user?.email || user?.googleEmail || '');
   const [phone, setPhone] = useState(user?.phone || '');
-  const [admissionNo, setAdmissionNo] = useState(user?.admissionNumber || `ADM-${Math.floor(1000 + Math.random() * 9000)}`);
+  const [admissionNo, setAdmissionNo] = useState(user?.admissionNumber || '');
 
   // Page 3: Payment Mode ('cash' | 'online')
   const [paymentMode, setPaymentMode] = useState('online'); // 'cash' | 'online'
@@ -532,123 +532,51 @@ export function CustomPurchaseModal({isOpen, onClose, user, onPurchaseSubmitted 
                 </div>
               </div>
 
-              {/* Two Payment Modes Only: Cash or Online */}
+              {/* Single Verified Mode: Cash in Hand Only */}
               <div>
                 <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
-                  Select Payment Mode (Only Two Options):
+                  Official Campus Payment Mode:
                 </label>
-                <div className="grid grid-cols-2 gap-3">
-                  
-                  {/* Mode 1: Cash */}
-                  <div
-                    onClick={() => setPaymentMode('cash')}
-                    className={`p-4 rounded-2xl border-2 cursor-pointer transition text-center ${
-                      paymentMode === 'cash'
-                        ? 'border-amber-500 bg-amber-50/60 shadow-md ring-2 ring-amber-400/20'
-                        : 'border-slate-200 hover:border-slate-300 bg-white'
-                    }`}
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 mx-auto flex items-center justify-center mb-2">
-                      <Banknote className="w-5 h-5" />
-                    </div>
-                    <div className="font-black text-xs text-slate-900">1. Cash in Hand</div>
-                    <div className="text-[10px] text-slate-500 mt-0.5">Pay at School Campus</div>
+                <div className="p-4 rounded-2xl border-2 border-amber-500 bg-amber-50/70 shadow-md ring-2 ring-amber-400/20 text-center">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-600 to-yellow-400 text-white mx-auto flex items-center justify-center mb-2 shadow-md shadow-amber-500/30">
+                    <Banknote className="w-6 h-6" />
                   </div>
-
-                  {/* Mode 2: Online (Paytm QR) */}
-                  <div
-                    onClick={() => setPaymentMode('online')}
-                    className={`p-4 rounded-2xl border-2 cursor-pointer transition text-center ${
-                      paymentMode === 'online'
-                        ? 'border-amber-500 bg-amber-50/60 shadow-md ring-2 ring-amber-400/20'
-                        : 'border-slate-200 hover:border-slate-300 bg-white'
-                    }`}
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 mx-auto flex items-center justify-center mb-2">
-                      <QrCode className="w-5 h-5" />
-                    </div>
-                    <div className="font-black text-xs text-slate-900">2. Online (Paytm QR)</div>
-                    <div className="text-[10px] text-slate-500 mt-0.5">GPay / PhonePe / Paytm</div>
-                  </div>
-
+                  <div className="font-black text-sm text-slate-900">Cash in Hand (Official Campus Desk)</div>
+                  <div className="text-xs text-amber-800 font-semibold mt-0.5">Direct Handover to Head Boy Rishit Shankar</div>
                 </div>
               </div>
 
-              {/* Cash Instructions */}
-              {paymentMode === 'cash' && (
-                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-2">
-                  <div className="font-black text-amber-950 flex items-center gap-1.5">
-                    <Banknote className="w-4 h-4 text-amber-700" />
-                    <span>Cash Payment Instructions:</span>
+              {/* Cash in Hand Campus Protocol */}
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 text-xs text-amber-950 space-y-3 shadow-sm">
+                <div className="font-black text-xs text-amber-950 flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Campus Verification Protocol:</span>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                  <div className="bg-white/80 p-2.5 rounded-xl border border-amber-200/80">
+                    <span className="font-bold text-amber-900 block mb-0.5">🏫 Handover Location</span>
+                    <span>Class 8-D / Head Boy Office / Recess Campus Desk</span>
                   </div>
-                  <p className="leading-relaxed">
-                    You can pay the ₹{customAmount} contribution in cash directly at school to <strong>Head Boy Rishit Shankar</strong>.
-                  </p>
-                  <div>
-                    <label className="block text-[11px] font-bold text-amber-950 mb-1">
-                      Cash Note / When will you hand over? (Optional):
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Handing over cash in Class 8-D tomorrow morning"
-                      value={referenceNote}
-                      onChange={(e) => setReferenceNote(e.target.value)}
-                      className="w-full px-3 py-2 text-xs rounded-xl border border-amber-300 bg-white"
-                    />
+                  <div className="bg-white/80 p-2.5 rounded-xl border border-amber-200/80">
+                    <span className="font-bold text-amber-900 block mb-0.5">⚡ Activation Speed</span>
+                    <span>Instant upgrade upon physical verification</span>
                   </div>
                 </div>
-              )}
 
-              {/* Online Paytm QR Instructions */}
-              {paymentMode === 'online' && (
-                <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-50/60 to-slate-50 border border-blue-200 text-center space-y-3">
-                  <div className="text-xs font-black text-blue-950 flex items-center justify-center gap-1.5">
-                    <QrCode className="w-4 h-4 text-blue-700" />
-                    <span>Paytm QR Code &amp; UPI Gateway</span>
-                  </div>
-
-                  {/* Paytm QR SVG Image */}
-                  <div className="w-44 h-44 bg-white border border-slate-300 rounded-2xl p-2 mx-auto shadow-inner flex flex-col items-center justify-center">
-                    <svg className="w-full h-full text-slate-900" viewBox="0 0 100 100" fill="currentColor">
-                      <rect x="10" y="10" width="25" height="25" fill="#002e6e" />
-                      <rect x="15" y="15" width="15" height="15" fill="#ffffff" />
-                      <rect x="18" y="18" width="9" height="9" fill="#002e6e" />
-                      <rect x="65" y="10" width="25" height="25" fill="#002e6e" />
-                      <rect x="70" y="15" width="15" height="15" fill="#ffffff" />
-                      <rect x="73" y="18" width="9" height="9" fill="#002e6e" />
-                      <rect x="10" y="65" width="25" height="25" fill="#002e6e" />
-                      <rect x="15" y="70" width="15" height="15" fill="#ffffff" />
-                      <rect x="18" y="73" width="9" height="9" fill="#002e6e" />
-                      <rect x="42" y="15" width="16" height="8" fill="#002e6e" />
-                      <rect x="45" y="35" width="10" height="30" fill="#00b9f1" />
-                      <rect x="65" y="65" width="15" height="15" fill="#002e6e" />
-                      <rect x="75" y="45" width="15" height="12" fill="#00b9f1" />
-                    </svg>
-                  </div>
-
-                  <div className="space-y-0.5">
-                    <div className="text-xs font-mono font-bold text-slate-800">
-                      UPI ID: <span className="text-[#002e6e]">9470033984@ptyes</span>
-                    </div>
-                    <div className="text-[11px] font-mono text-slate-500">
-                      BHIM / GPay UPI: 9470033984@upi
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 text-left mb-1">
-                      UPI Transaction / UTR / Reference ID (Optional):
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Paytm Ref 42918820192"
-                      value={referenceNote}
-                      onChange={(e) => setReferenceNote(e.target.value)}
-                      className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-[11px] font-bold text-amber-950 mb-1">
+                    Handover Note / Expected Time (Optional):
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Handing over cash during morning recess in Class 8-D"
+                    value={referenceNote}
+                    onChange={(e) => setReferenceNote(e.target.value)}
+                    className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-amber-300 bg-white shadow-inner focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
                 </div>
-              )}
+              </div>
 
               {/* Spam Protection Notice */}
               <div className="p-2.5 rounded-xl bg-slate-100 text-[11px] text-slate-600 flex items-center justify-between">
@@ -680,43 +608,69 @@ export function CustomPurchaseModal({isOpen, onClose, user, onPurchaseSubmitted 
           )}
 
           {/* =========================================================================
-              PAGE 4: SUCCESS CONFIRMATION
+              PAGE 4: SUCCESS CONFIRMATION - ULTRA-COOL HOLOGRAPHIC ANIMATION
               ========================================================================= */}
           {currentPage === 4 && (
-            <div className="py-8 text-center space-y-4 animate-scaleUp">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center shadow-md">
-                <CheckCircle2 className="w-10 h-10" />
+            <div className="py-6 text-center space-y-5 animate-scaleUp">
+              
+              {/* Pulsing Hologram Badge */}
+              <div className="relative w-24 h-24 mx-auto flex items-center justify-center">
+                <div className="absolute inset-0 rounded-full bg-emerald-500/20 animate-ping opacity-75" />
+                <div className="absolute inset-2 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-400 opacity-30 blur-md animate-pulse" />
+                <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-amber-500 text-white flex items-center justify-center shadow-xl shadow-emerald-950/40 transform hover:rotate-6 transition">
+                  <CheckCircle2 className="w-10 h-10 animate-bounce" />
+                </div>
               </div>
 
               <div>
-                <span className="text-[11px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">
-                  Request Dispatched to Rishit Shankar
-                </span>
-                <h3 className="text-2xl font-black text-slate-900 mt-2">
-                  Payment Request Submitted!
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 text-[10px] font-black uppercase tracking-widest shadow-sm">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-spin" style={{ animationDuration: '4s' }} />
+                  <span>Encrypted Request Transmitted</span>
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 mt-2 tracking-tight">
+                  Payment Request Dispatched!
                 </h3>
                 <p className="text-xs text-slate-600 mt-1 max-w-md mx-auto leading-relaxed">
-                  Your verification request for <strong>{submittedData?.planName}</strong> (₹{submittedData?.amount}) has been sent directly to Administrator Rishit Shankar's Admin Vault.
+                  Your campus cash voucher for <strong>{submittedData?.planName}</strong> (₹{submittedData?.amount}) has been logged in Head Boy Rishit Shankar's Master Admin Portal.
                 </p>
               </div>
 
-              {/* Live Upgrade Instructions */}
-              <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900 text-left space-y-1.5 max-w-md mx-auto">
-                <div className="font-bold flex items-center gap-1.5 text-amber-950">
-                  <Sparkles className="w-4 h-4 text-amber-600" />
-                  <span>How your account automatically upgrades:</span>
+              {/* Digital Voucher Pass */}
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-stone-900 via-stone-850 to-stone-900 text-white text-left space-y-2.5 max-w-md mx-auto shadow-xl border border-stone-700/80 relative overflow-hidden">
+                <div className="absolute -right-6 -bottom-6 w-28 h-28 bg-amber-500/10 rounded-full blur-xl pointer-events-none" />
+                
+                <div className="flex items-center justify-between border-b border-stone-800 pb-2">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                    DAVDixence Official Pass
+                  </span>
+                  <span className="text-[10px] font-mono text-stone-400">
+                    ID: {submittedData?.id || 'DAV-REQ-' + Math.floor(1000 + Math.random() * 9000)}
+                  </span>
                 </div>
-                <p className="leading-relaxed">
-                  As soon as Administrator Rishit Shankar approves your request, simply <strong>refresh this webpage</strong> or <strong>log in again</strong>. Your account will automatically develop and upgrade to {submittedData?.planName} with full access unlocked!
-                </p>
+
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <span className="text-[10px] text-stone-400 block">Student:</span>
+                    <span className="font-bold text-white">{submittedData?.studentName || studentName}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[10px] text-stone-400 block">Plan:</span>
+                    <span className="font-bold text-amber-300">{submittedData?.planName}</span>
+                  </div>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-200/90 leading-relaxed">
+                  ⚡ <strong>Next Step:</strong> Hand over the cash of ₹{submittedData?.amount} to Head Boy Rishit Shankar. Once approved, simply refresh your browser to enjoy full VIP benefits!
+                </div>
               </div>
 
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full max-w-md py-3.5 px-6 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white font-black text-xs uppercase tracking-wider shadow-lg mx-auto transition cursor-pointer"
+                className="w-full max-w-md py-3.5 px-6 rounded-2xl bg-gradient-to-r from-stone-900 to-stone-850 hover:from-black hover:to-stone-900 text-white font-black text-xs uppercase tracking-wider shadow-lg mx-auto transition cursor-pointer border border-stone-700 hover:border-amber-400"
               >
-                Close &amp; Continue Exploring
+                Close &amp; Return to Dashboard
               </button>
             </div>
           )}

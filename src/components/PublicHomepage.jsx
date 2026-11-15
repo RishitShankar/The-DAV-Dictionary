@@ -81,13 +81,13 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
       category: 'core',
       name: 'Overview Hub',
       shortName: 'Overview Hub',
-      tagline: 'Interactive Campus Navigator & Dimension Gateway',
+      tagline: 'Interactive Campus Navigator & Section Gateway',
       icon: Layers,
       color: 'from-amber-500 to-orange-600',
       glowClass: 'hover:border-amber-400/60 shadow-amber-500/10',
-      badge: 'Launchpad',
-      desc: 'Central control deck and visual index connecting all 11 dimensions. Real-time portal status, quick jumps, daily notifications, and student shortcuts.',
-      features: ['Dimension Quick Switcher', 'Live Campus Announcements', 'Academic Shortcuts', 'Quick Jump Radar'],
+      badge: 'Section 1',
+      desc: 'Central control deck and visual index connecting all 14 academic sections. Real-time portal status, quick jumps, daily notifications, and student shortcuts.',
+      features: ['14-Section Quick Switcher', 'Live Campus Announcements', 'Academic Shortcuts', 'Interactive Radar'],
       demoReady: '100% Unlocked in Demo'
     },
     {
@@ -100,7 +100,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
       icon: BookOpen,
       color: 'from-red-600 to-rose-700',
       glowClass: 'hover:border-red-400/60 shadow-red-500/10',
-      badge: '70+ Books',
+      badge: 'Section 2',
       desc: 'The official digital archive of 70 textbooks across LKG, UKG, and Classes 1 to 8. Zero missing pages, embedded with neon highlighters, sticky notes, and full-screen reading.',
       features: ['LKG to Class 8 Streaming', 'Neon Cyber Highlighters', 'Google Drive Cloud Annotator', 'Searchable Chapters'],
       demoReady: 'Preview Catalog Free • Login to Read Book'
@@ -115,7 +115,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
       icon: FileText,
       color: 'from-purple-600 to-indigo-700',
       glowClass: 'hover:border-purple-400/60 shadow-purple-500/10',
-      badge: 'Solution Matrix',
+      badge: 'Section 3',
       desc: 'Dual-mode Question & Answer engine supporting Normal, VIP, and VVIP study tracks. Connects every DAV chapter to verified solutions, exercises, and model answers.',
       features: ['Normal & VIP Plan Modes', 'Solution Gyan Integration', 'Class 1-8 Chapter Banks', 'Audio Chapter Pronunciation'],
       demoReady: 'Explore All Chapters • Login to Open Solution'
@@ -124,15 +124,15 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
       num: 4,
       id: 'rishi_ai',
       category: 'ai',
-      name: 'Rishi AI Companion',
+      name: 'Rishi AI Intelligent Companion',
       shortName: 'Rishi AI',
       tagline: 'Curriculum-Trained Dual Engine (Academics & Outer World)',
       icon: Brain,
       color: 'from-amber-400 via-orange-500 to-yellow-500',
       glowClass: 'hover:border-amber-400/80 shadow-amber-500/20',
-      badge: '24/7 AI Tutor',
+      badge: 'Section 4',
       desc: 'Proprietary artificial intelligence grounded in DAV textbooks and CBSE syllabus. Switch between Academic Curriculum Intelligence and Global Non-Academic Knowledge.',
-      features: ['DAV Textbook Grounded', 'Class 1-8 Specific Tuning', 'Speech-to-Text Voice Q&A', 'Chapter Quiz Auto-Generator'],
+      features: ['DAV Textbook Grounded', 'Class 1-8 Specific Tuning', 'Speech Voice Q&A', 'Chapter Quiz Auto-Generator'],
       demoReady: 'Explore Modes & Prompts • Login to Ask AI'
     },
     {
@@ -140,14 +140,14 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
       id: 'erp',
       category: 'erp',
       name: 'Smart School ERP & Faculty Desk',
-      shortName: 'Smart ERP Suite',
+      shortName: 'Faculty & ERP',
       tagline: '6-in-1 Daily Academic Desk & Live Virtual Schooling',
       icon: School,
       color: 'from-blue-600 to-cyan-600',
       glowClass: 'hover:border-cyan-400/60 shadow-cyan-500/10',
-      badge: '6-in-1 Suite',
-      desc: 'Comprehensive school operations: Page 1 Daily Homework Hub, Page 2 Faculty Desk, Page 3 WebRTC Live Video Classrooms, Page 4 Online CBT Exam Suite, Page 5 Digital Attendance, and Page 6 Leaderboard.',
-      features: ['Daily Homework Hub (100% Free)', 'WebRTC HD Live Classes', 'CBT Test Palette Simulator', '75% Attendance Register'],
+      badge: 'Section 5',
+      desc: 'Comprehensive school operations: Daily Homework Hub, Faculty Desk, WebRTC Live Video Classrooms, WhatsApp Channels, Digital Attendance, and Exam Hall.',
+      features: ['Daily Homework Hub (100% Free)', 'WebRTC HD Live Classes', 'WhatsApp Channels Hub', 'Digital Attendance Register'],
       demoReady: 'Homework & Attendance 100% Free'
     },
     {
@@ -156,93 +156,138 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
       category: 'academics',
       name: 'Video Explanations & PYQ Bank',
       shortName: 'Video Lectures',
-      tagline: 'Curated YouTube Lectures & Previous Year Question Papers',
+      tagline: 'Curated DAV Board Lectures & Previous Year Question Papers',
       icon: Video,
       color: 'from-rose-600 to-pink-600',
       glowClass: 'hover:border-rose-400/60 shadow-rose-500/10',
-      badge: 'Video & PYQs',
+      badge: 'Section 6',
       desc: 'Expert video lessons linked to every chapter of Class 8, 6, and 4. Accompanied by official past-year board examination question papers and step-by-step marking schemes.',
-      features: ['Multi-Part Video Lessons', 'Official DAV Past Papers', 'Chapter Playlist Switcher', 'Zero Dead-Screen Embeds'],
+      features: ['Multi-Part Video Lessons', 'Official DAV Past Papers', 'Chapter Playlist Switcher', 'Multi-Part Brain Teasers'],
       demoReady: 'Browse Video Syllabus • Login to Watch'
     },
     {
       num: 7,
       id: 'utilities',
       category: 'utilities',
-      name: 'Campus Smart Utilities & Radar',
-      shortName: 'Campus Utilities',
-      tagline: 'DAV School Navigation, Weather, Bus, Scientific Tools',
+      name: 'Kids Fun Navigator & Utilities',
+      shortName: 'Kids Navigator',
+      tagline: 'Live Bus Radar, Muzaffarpur Weather, 2026-2047 Calendar, Tools',
       icon: Compass,
       color: 'from-emerald-600 to-teal-700',
       glowClass: 'hover:border-emerald-400/60 shadow-emerald-500/10',
-      badge: 'Smart Tools',
-      desc: 'Live interactive tools: Turn-by-turn Google Maps navigation to DAV School, Live Bus Fleet Radar, Real-Time Muzaffarpur Weather, Scientific Calculator, Calendar, Compass, and World/School Clock.',
-      features: ['Turn-by-Turn GPS to DAV School', 'Live Bus Radar Fleet', 'Working Scientific Calculator', 'Live Weather, Compass & Clock'],
-      demoReady: 'Calculator, Weather & Clock 100% Free'
+      badge: 'Section 7',
+      desc: 'Live interactive tools: Principal Anil Kumar Singh Live Bus Fleet Radar, Live Muzaffarpur GPS Weather, Scientific Calculator, 2026-2047 Festival Calendar, Compass, and World Clock.',
+      features: ['Live Bus Radar Fleet', 'Live Area Weather via GPS', '2026-2047 Complete Festival Calendar', 'Working Scientific Calculator'],
+      demoReady: 'Bus Radar, Weather & Tools 100% Free'
     },
     {
       num: 8,
-      id: 'focus',
-      category: 'utilities',
-      name: 'Campus Leaderboard & Deep Study Focus Mode',
-      shortName: 'Leaderboard & Focus (Stopped)',
-      tagline: 'This feature will be available when we will launch the app',
-      icon: Trophy,
-      color: 'from-rose-600 to-rose-700',
-      glowClass: 'hover:border-rose-400/60 shadow-rose-500/10',
-      badge: 'Available In App Launch',
-      desc: 'Campus Leaderboard and Deep Study Focus Mode are temporarily stopped on the web version. This feature will be available when we will launch the app.',
-      features: ['This feature will be available when we will launch the app', 'Hardware-Level Distraction Shield', 'Verified Campus Ranks'],
-      demoReady: 'This feature will be available when we will launch the app'
+      id: 'exam_practice',
+      category: 'academics',
+      name: 'Online CBT Exam Practice Suite',
+      shortName: 'Exam Practice',
+      tagline: 'Class 8 Science CBT Simulation & Tiered Question Banks',
+      icon: Award,
+      color: 'from-indigo-600 to-purple-700',
+      glowClass: 'hover:border-indigo-400/60 shadow-indigo-500/10',
+      badge: 'Section 8',
+      desc: 'Official CBT exam simulator with real-time timers, question palettes, and tiered question banks (Normal: 25 Qs, VIP: 50 Qs, Double VIP: 100 Qs) for Class 8 Science.',
+      features: ['Class 8 Science Practice Bank', '25/50/100 Tiered Question Pools', 'Real-time Scorecards & Analytics', 'Official Board Simulation'],
+      demoReady: 'Normal 25 Qs Free • VIP for Extended'
     },
     {
       num: 9,
-      id: 'vault',
+      id: 'focus',
       category: 'utilities',
-      name: 'Secure Student Personal Vault',
-      shortName: 'Student Vault',
-      tagline: 'Encrypted Cloud Storage for IDs, Credentials & Records',
-      icon: Shield,
-      color: 'from-slate-700 to-zinc-900',
+      name: 'Deep Study Mode',
+      shortName: 'Deep Study Mode',
+      tagline: 'Pomodoro Focus Timer, Binaural Audio, Study Planner & Flashcards',
+      icon: Trophy,
+      color: 'from-amber-600 to-red-600',
       glowClass: 'hover:border-amber-400/60 shadow-amber-500/10',
-      badge: 'Zero-Knowledge',
-      desc: 'Personal encrypted student locker. Safely store report cards, school ID cards, admission numbers, fee receipts, and private academic goals with end-to-end security.',
-      features: ['Encrypted Cloud Storage', 'Digital School ID Generator', 'Academic Performance Ledger', 'Secure Password Vault'],
-      demoReady: 'Protected Vault • Login to Open'
+      badge: 'Section 9',
+      desc: 'Complete distraction-free study suite featuring custom Pomodoro focus timers, synthesized ambient binaural audio (rain, alpha waves, study lo-fi), flashcard decks, and daily revision planners.',
+      features: ['Pomodoro Study Timer', 'Binaural Audio Generator', 'Daily Revision Planner', 'Flashcard Mastery Deck'],
+      demoReady: '100% Free & Active in Web Version'
     },
     {
       num: 10,
-      id: 'donate',
-      category: 'community',
-      name: 'Donate to Developer (Patron)',
-      shortName: 'Developer Patron',
-      tagline: 'Sponsor Digital Education & Instant Stamped Receipt',
-      icon: Heart,
-      color: 'from-amber-600 to-yellow-600',
-      glowClass: 'hover:border-amber-400/60 shadow-amber-500/10',
-      badge: 'Official Bill',
-      desc: 'Community patronage gateway to keep servers running free for all students. Choose ₹5 Chai Support or custom amount via UPI, Paytm, Card, or Cash with an instant official bill.',
-      features: ['Instant Stamped Invoice PDF', 'UPI, Paytm, Cash, Cards', 'Sponsor Cloud GPU Servers', 'Donor Hall of Fame'],
-      demoReady: 'Interactive Form • Login to Generate Bill'
+      id: 'settings_vfx',
+      category: 'utilities',
+      name: 'Settings Hub & Animation Studio',
+      shortName: 'Settings & VFX',
+      tagline: 'Live Section VFX Customizer, 10 Accent Themes, High-Speed Train',
+      icon: Sparkles,
+      color: 'from-cyan-600 to-blue-700',
+      glowClass: 'hover:border-cyan-400/60 shadow-cyan-500/10',
+      badge: 'Section 10',
+      desc: 'Customize the portal interface with 10 vibrant accent colors, light/dark themes, and the Animation Studio where clicking "Customize VFX" live-applies animations directly to target sections.',
+      features: ['10 Live Accent Color Palettes', 'Interactive Animation Studio', 'High-Speed Bullet Train VFX', 'Section Background Customizer'],
+      demoReady: '100% Unlocked in Demo'
     },
     {
       num: 11,
-      id: 'about',
+      id: 'donate',
       category: 'community',
-      name: 'About Developer & Community Hub',
-      shortName: 'Creator & Community',
-      tagline: 'Chat with Head Boy Rishit Shankar & Launch Confetti',
+      name: 'Patron Donation Section',
+      shortName: 'Developer Patron',
+      tagline: 'Sponsor Digital Education Infrastructure & Stamped Receipt',
+      icon: Heart,
+      color: 'from-rose-600 to-amber-600',
+      glowClass: 'hover:border-rose-400/60 shadow-rose-500/10',
+      badge: 'Section 11',
+      desc: 'Community support portal to maintain high-speed cloud GPU servers and textbook storage for every DAVian. Includes official stamped digital receipt generator.',
+      features: ['Official Stamped Receipt PDF', 'Sponsor Cloud GPU Servers', 'Donor Hall of Fame', 'Direct Head Boy Support'],
+      demoReady: 'Interactive Form • Login to Generate Bill'
+    },
+    {
+      num: 12,
+      id: 'reviews',
+      category: 'community',
+      name: 'Developer Reviews Section',
+      shortName: 'Community Reviews',
+      tagline: 'Verified Student & Parent Feedback & Campus Ratings',
+      icon: Star,
+      color: 'from-yellow-500 to-amber-600',
+      glowClass: 'hover:border-yellow-400/60 shadow-yellow-500/10',
+      badge: 'Section 12',
+      desc: 'Official platform review wall where DAV students, teachers, and parents share verified experiences and feature ratings with zero hardcoded demo reviews.',
+      features: ['Verified Student Reviews', '5-Star Campus Rating Matrix', 'Direct Developer Feedback', 'Real-time Review Posting'],
+      demoReady: 'Read Reviews • Login to Submit'
+    },
+    {
+      num: 13,
+      id: 'dev_id',
+      category: 'erp',
+      name: 'Developer ID Generator Section',
+      shortName: 'ID Generator Vault',
+      tagline: 'All Sections ID Development, Credential Vault & Role Provisioning',
+      icon: Shield,
+      color: 'from-slate-700 to-zinc-900',
+      glowClass: 'hover:border-amber-400/60 shadow-amber-500/10',
+      badge: 'Section 13',
+      desc: 'Master developer control room for generating specialized access IDs across all sections, viewing registered student accounts, managing credentials, and auditing permissions.',
+      features: ['Universal Section ID Generator', 'Student Credential Directory', 'Role & Tier Provisioning', 'Developer Vault Access'],
+      demoReady: 'Developer Role Access'
+    },
+    {
+      num: 14,
+      id: 'about_creator',
+      category: 'community',
+      name: 'About Creator (Head Boy Rishit Shankar)',
+      shortName: 'Creator Showcase',
+      tagline: 'Meet Head Boy Rishit Shankar — Academics, Tech Stack, Chess Champion',
       icon: Crown,
       color: 'from-amber-500 to-orange-500',
       glowClass: 'hover:border-amber-400/80 shadow-amber-500/20',
-      badge: 'Double VIP',
-      desc: 'Meet Head Boy Rishit Shankar (Class 8, Roll 25), DAV Cluster 3 Chess Gold Medalist, 96% academic topper. Direct sub-second chat, Launch Celebration Confetti, and community reviews.',
-      features: ['Direct Chat with Rishit Shankar', 'Screen Shake Party Popper', 'Verified Social Handles', 'Official Student Endorsements'],
-      demoReady: '100% Unlocked for Demo (Double VIP!)'
+      badge: 'Section 14',
+      desc: 'Explore the full journey of platform creator Rishit Shankar (Head Boy, Class 8 Roll 25): 95% Half-Yearly score, DAV Cluster 3 Chess Gold Medalist, full-stack tech architecture, and 3-second Cyclone Vortex.',
+      features: ['Full Academic & Leadership Story', 'DAV Cluster 3 Chess Trophies', 'Interactive Tech Stack Matrix', 'Direct Founder Endorsements'],
+      demoReady: '100% Unlocked for All Students'
     }
   ];
 
-  const filteredDimensions = activeDimensionFilter === 'all' 
+    const filteredDimensions = activeDimensionFilter === 'all' 
     ? allDimensions 
     : allDimensions.filter(d => d.category === activeDimensionFilter);
 
@@ -284,24 +329,24 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
 
   const faqs = [
     {
-      q: "What is DAV Dictionary & Smart Digital Campus?",
-      a: "DAV Dictionary is an all-in-one next-generation educational ecosystem engineered specifically for students, parents, and faculty of DAV Public Schools. Across 11 super-dimensions, it hosts the complete digital curriculum of 70+ verified DAV textbooks (LKG to Class 8), paired with Rishi AI, daily homework tracking, online CBT exam simulation, live video classrooms, student attendance, study focus timer, and campus utilities."
+      q: "What is DAVDixence & Smart Digital Campus?",
+      a: "DAVDixence is the official next-generation digital learning and academic management platform engineered specifically for DAV Public Schools by Head Boy Rishit Shankar. Spanning 14 comprehensive academic sections, DAVDixence delivers 70+ complete, uncompressed DAV textbooks from Class LKG to Class 8, proprietary curriculum-grounded Rishi AI, chapter-by-chapter Q&A solutions, daily homework tracking, online CBT exam practice, WebRTC video classrooms, Deep Study Mode with Pomodoro & binaural audio, and live Muzaffarpur bus radar & weather utilities."
     },
     {
       q: "What does 'Have a Demo Preview' allow me to do?",
-      a: "The Demo Preview gives you instant, 1-click access to the entire 11-dimension platform without needing to register or enter credentials first! You can explore the Overview Hub, view the complete 70+ textbook library, test chapter Q&A selectors, try Rishi AI interfaces, inspect daily homework and attendance, run the scientific calculator, weather, and compass, explore deep study focus modes, and chat directly with Head Boy Rishit Shankar. Full textbook PDF viewing and AI chatting unlock as soon as you sign in."
+      a: "The Demo Preview grants instant 1-click access to all 14 Academic Sections of DAVDixence without requiring any registration or login! You can browse the Overview Hub, explore all 70+ digital textbooks, test verified Chapter Q&A selectors, interact with Rishi AI interfaces, inspect daily homework and attendance records, test the scientific calculator, weather radar, and 2026–2047 festival calendar, launch Deep Study Mode, and explore the developer showcase. Full textbook reading, custom chat, and exam practice are available upon entering your student credentials."
     },
     {
       q: "Is access to the textbooks, Rishi AI, and Homework Hub free?",
-      a: "Yes, 100%! The core textbooks, Rishi AI questions, daily homework hub, attendance tracker, and school utilities are completely free for all students. There are also specialized VIP and VVIP scholarship tiers with expanded multi-device sync and premium study vaults."
+      a: "Yes, 100%! All core textbooks, homework tracking, digital attendance, live campus utilities, and curriculum guides are completely free for all students. Specialized VIP and Double VIP scholarship tiers provide extended CBT question pools (up to 100 questions) and multi-source study guides."
     },
     {
       q: "How do I register or log in with my Student ID?",
       a: "Click on 'Register Now / Student Login' at the top of this page. You will enter the authentic Blackboard Login Gatekeeper where you can sign in with your ID and password or click Free Preview."
     },
     {
-      q: "Who is the developer of DAV Dictionary?",
-      a: "The platform was conceived, designed, and developed by Rishit Shankar (Head Boy, Class 8 DAV School, Roll 25). He scored 95% in his Class 8 Half-Yearly exams (with 80/80 in Sanskrit and 79/80 in Hindi), 93% in PT-1, and is a DAV Cluster 3 Gold Medalist. He engineered this platform as a student-led initiative to empower every DAVian."
+      q: "Who is the developer of DAVDixence?",
+      a: "DAVDixence was conceived, architected, and engineered by Rishit Shankar (Head Boy, Class 8 DAV School, Roll 25). He scored 95% in his Class 8 Half-Yearly exams (including 80/80 in Sanskrit and 79/80 in Hindi), 93% in PT-1, and is a DAV Cluster 3 Gold Medalist in Chess. He developed DAVDixence as an empowering, student-led innovation for the entire DAV fraternity."
     }
   ];
 
@@ -333,7 +378,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
                 </span>
                 <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-gradient-to-r from-amber-400 to-orange-500 text-stone-950 shadow-xs">
                   <Sparkles className="w-2.5 h-2.5 text-stone-950 fill-current" />
-                  11 Dimensions
+                  14 Sections
                 </span>
               </div>
               <p className="text-[11px] text-amber-300/80 font-medium hidden xs:block">
@@ -345,7 +390,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
           {/* Desktop Nav Links */}
           <nav className="hidden lg:flex items-center gap-6 text-xs font-bold text-stone-300">
             <a href="#dimensions" className="hover:text-amber-400 transition-colors flex items-center gap-1">
-              <span>11 Dimensions</span>
+              <span>14 Sections</span>
               <span className="px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 text-[10px] font-black">All</span>
             </a>
             <a href="#features-overview" className="hover:text-amber-400 transition-colors">Campus Features</a>
@@ -420,7 +465,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
             <span>DAV School • Next-Gen Digital Learning Platform</span>
             <span className="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[10px] font-black uppercase">
-              11 Dimensions Active
+              14 Sections Active
             </span>
           </div>
 
@@ -470,7 +515,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
           </div>
 
           <p className="mt-3 text-xs text-stone-400 font-medium">
-            ✨ No account required for Demo Preview • Test all 11 dimensions in 1 click
+            ✨ No account required for Demo Preview • Test all 14 Academic Sections in 1 click
           </p>
 
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
@@ -601,7 +646,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
       {/* =========================================================================
           NETFLIX-STYLE 5-SECTION MASTER DIRECTORY & GOOGLE SITELINKS
       ========================================================================= */}
-      <section className="py-14 bg-gradient-to-b from-[#141414] via-[#0d0e12] to-[#141414] border-b border-stone-800/90 relative overflow-hidden">
+      <section id="features-overview" className="py-14 bg-gradient-to-b from-[#141414] via-[#0d0e12] to-[#141414] border-b border-stone-800/90 relative overflow-hidden">
         {/* Subtle Ambient Red/Amber Glow */}
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-red-600/5 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
@@ -704,7 +749,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
 {/* =========================================================================
           SECTION 2: THE 11 MASTER DIMENSIONS SHOWCASE (INTERACTIVE GRID)
       ========================================================================= */}
-      <section id="dimensions" className="py-20 bg-stone-900/50 border-y border-stone-800 relative">
+      <section id="dimensions" className="py-20 bg-stone-900/50 border-y border-stone-800 relative scroll-mt-20"><div id="sections" className="absolute -top-20" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center max-w-3xl mx-auto mb-12">
@@ -721,7 +766,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
             {/* Filter Tabs */}
             <div className="flex flex-wrap items-center justify-center gap-2 mt-8">
               {[
-                { id: 'all', label: 'All 11 Dimensions' },
+                { id: 'all', label: 'All 14 Academic Sections' },
                 { id: 'academics', label: 'Core Academics & Books' },
                 { id: 'ai', label: 'Rishi AI Intelligence' },
                 { id: 'erp', label: 'Smart School ERP Desk' },
@@ -743,7 +788,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
             </div>
           </div>
 
-          {/* 11 Dimensions Showcase Cards */}
+          {/* 14 Academic Sections Showcase Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredDimensions.map((dim) => {
               const IconComp = dim.icon;
@@ -965,7 +1010,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
                 
                 <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold">
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>The Vision Behind The 11 Dimensions</span>
+                  <span>The Vision Behind The 14 Academic Sections</span>
                 </div>
 
                 <h2 className="text-2xl sm:text-3xl font-black text-white leading-tight">
@@ -1144,7 +1189,7 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
           </h2>
           
           <p className="mt-3 text-stone-300 text-sm max-w-xl mx-auto">
-            Choose between full Student Login or instant Free Demo Preview to experience all 11 dimensions today!
+            Choose between full Student Login or instant Free Demo Preview to experience all 14 Academic Sections today!
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">

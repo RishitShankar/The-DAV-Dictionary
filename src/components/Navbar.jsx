@@ -127,6 +127,7 @@ export function Navbar({
           {/* Left: 3-Lines Hamburger Icon + Brand Logo + Title */}
           <div className="flex items-center gap-3 shrink-0">
             <button
+              id="navbar-sections-btn"
               onClick={onToggleSidebar}
               className={`p-2.5 rounded-xl transition border shadow-2xs flex items-center gap-2 cursor-pointer ${
                 isLight 
@@ -171,6 +172,7 @@ export function Navbar({
               </div>
 
               <button
+                id="navbar-profile-btn"
                 onClick={onOpenAuth}
                 className="w-10 h-10 rounded-full bg-gradient-to-tr from-red-800 to-amber-600 text-white font-black text-sm flex items-center justify-center border-2 border-amber-400 shadow-sm hover:scale-105 transition cursor-pointer overflow-hidden shrink-0"
                 title="Account Details & Profile Photo"
@@ -188,6 +190,7 @@ export function Navbar({
               </button>
 
               <button
+                id="navbar-logout-btn"
                 onClick={onLogout}
                 className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition border border-transparent hover:border-rose-200 cursor-pointer"
                 title="Log Out"

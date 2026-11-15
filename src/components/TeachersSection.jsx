@@ -886,29 +886,9 @@ export function TeachersSection({
     return () => window.removeEventListener('keydown', handleKeyNav);
   }, [activePage, currentPageIdx]);
 
-  // Helper to extract real enrolled students from localStorage registered database
+  // Helper to extract verified enrolled students for Digital Attendance Register:
+  // Requires manual teacher enrollment and explicit verification via "+ Enroll Student"
   const getInitialRosterForClass = (classNum, sec) => {
-    try {
-      let raw = localStorage.getItem('dav_registered_users');
-      let users = raw ? JSON.parse(raw) : [];
-      if (!Array.isArray(users) || users.length === 0) {
-        users = typeof getRegisteredUsers === 'function' ? getRegisteredUsers() : [];
-      }
-      if (Array.isArray(users)) {
-        const matching = users.filter(u => 
-          !u.isTeacher && u.dimension !== 5 &&
-          String(u.classNum || '8') === String(classNum) &&
-          (!u.section || String(u.section).toUpperCase() === String(sec).toUpperCase())
-        );
-        if (matching.length > 0) {
-          return matching.map((u, idx) => ({
-            roll: idx + 1,
-            name: u.name || u.id,
-            status: 'present'
-          }));
-        }
-      }
-    } catch (e) {}
     return [];
   };
 
@@ -1174,12 +1154,12 @@ export function TeachersSection({
   // WhatsApp Dock View: 'chats' | 'calls' | 'channels' | 'contacts' | 'ai'
   const [whatsAppDockView, setWhatsAppDockView] = useState('chats');
 
-  // Dedicated Google Gemini AI Tutor Messages inside Head Chat
+  // Dedicated Rishi AI Tutor Messages inside Head Chat
   const [headChatAiMessages, setHeadChatAiMessages] = useState(() => [
     {
       id: 'ai_init_1',
       role: 'assistant',
-      text: 'Hello! I am Google Gemini Academic AI, your 100% free institutional tutor for DAV Public School. Ask me any syllabus question, math derivation, science reaction, or homework doubt!',
+      text: 'Hello! I am Rishi AI, your 100% free institutional tutor for DAV Public School. Ask me any syllabus question, math derivation, science reaction, or homework doubt!',
       time: 'Just now'
     }
   ]);
@@ -1227,7 +1207,7 @@ export function TeachersSection({
       const fallbackMsg = {
         id: `ai_bot_${Date.now()}`,
         role: 'assistant',
-        text: `✨ **Google Gemini 3.5 Academic Explanation:**\n\n**Topic:** *"${textToSend}"*\n\n1. **Core Principle:** Follow standard DAV CBSE textbook definitions and formulas.\n2. **Step-by-Step Working:** Express reasoning systematically with units and theorems.\n3. **Exam Practice:** Review previous year board questions in Section 6.\n\n*(Tip: You can also tap "Chats" on the left dock to consult your verified faculty directly!)*`,
+        text: `✨ **Rishi AI Academic Explanation:**\n\n**Topic:** *"${textToSend}"*\n\n1. **Core Principle:** Follow standard DAV CBSE textbook definitions and formulas.\n2. **Step-by-Step Working:** Express reasoning systematically with units and theorems.\n3. **Exam Practice:** Review previous year board questions in Section 6.\n\n*(Tip: You can also tap "Chats" on the left dock to consult your verified faculty directly!)*`,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setHeadChatAiMessages(prev => [...prev, fallbackMsg]);
@@ -2829,6 +2809,13 @@ export function TeachersSection({
     if (isSendingMessage) return;
     if (!chatInputText.trim() && !pendingMedia) return;
     if (!activeContact) return;
+
+    // Demo Plan Account Gate: Prompt user to purchase a plan
+    if (user?.isDemo || user?.plan === 'demo' || user?.plan === 'guest') {
+      alert('Please purchase a Student Plan to send messages in Faculty Channels.');
+      if (onOpenUpgradeModal) onOpenUpgradeModal();
+      return;
+    }
     setIsSendingMessage(true);
 
     const senderRole = isDimension5 ? 'teacher' : 'student';
@@ -5034,7 +5021,7 @@ export function TeachersSection({
                           className={`relative p-2.5 rounded-xl shadow-xs cursor-pointer transition ${
                             whatsAppDockView === 'ai' ? 'bg-[#d9fdd3] text-[#008069]' : 'text-[#54656f] hover:bg-[#e9edef] hover:text-[#111b21]'
                           }`}
-                          title="Google Gemini AI Tutor (Free)"
+                          title="Rishi AI Tutor (Free)"
                         >
                           <Sparkles className="w-5 h-5 text-purple-600" />
                         </button>
@@ -5470,7 +5457,7 @@ export function TeachersSection({
                             </div>
                             <div>
                               <h3 className="text-sm font-bold text-[#111b21] flex items-center gap-1.5">
-                                <span>Google Gemini Academic AI</span>
+                                <span>Rishi AI</span>
                                 <span className="px-1.5 py-0.2 rounded bg-[#d9fdd3] text-[#008069] text-[9px] font-black uppercase">Gemini 3.5 • Free</span>
                               </h3>
                               <p className="text-[11px] font-semibold text-[#00a884]">Live Google Gemini Intelligence • Zero Cost</p>
@@ -5531,7 +5518,7 @@ export function TeachersSection({
                                   {!isUser && (
                                     <div className="flex items-center gap-1.5 text-[10px] font-black text-[#008069]">
                                       <Sparkles className="w-3 h-3 text-[#00a884]" />
-                                      <span>Google Gemini Academic AI</span>
+                                      <span>Rishi AI</span>
                                     </div>
                                   )}
                                   <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap font-medium">

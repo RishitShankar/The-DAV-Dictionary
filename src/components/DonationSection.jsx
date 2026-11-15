@@ -582,7 +582,7 @@ export function DonationSection({ currentUser, onRequireLogin }) {
                     <span>Paytm Direct Developer Payment</span>
                   </div>
                   <p className="leading-relaxed">
-                    You can donate directly using Paytm Wallet, Paytm UPI, or net banking via Rishit's Paytm link.
+                    Patron donations are officially recognized on the DAVDixence Institutional Donor Wall.
                   </p>
                   <div>
                     <label className="text-[10px] font-bold uppercase text-blue-800 block mb-1">

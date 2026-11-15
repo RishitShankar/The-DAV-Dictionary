@@ -18,56 +18,7 @@ const DEVELOPER_REVIEWS_STORAGE_KEY = 'dav_developer_reviews';
 const DEVELOPER_REVIEWS_VAULT_UUID = '00000000-0000-0000-0000-000000000012';
 
 // Seed demo reviews so the developer can see Section 12 working immediately
-const DEFAULT_REVIEWS = [
-  {
-    id: 'rev_1719200001',
-    studentName: 'Saharsh Shankar',
-    studentId: 'saharsh_vvip',
-    classNum: '8-D',
-    reviewText: 'DAV Dictionary and Smart Portal created by Rishit Shankar is absolutely revolutionary. Having our entire DAV curriculum, chapter-wise questions, and Rishi AI integrated in one single application makes revision effortless. Super proud of my brother Rishit!',
-    wordCount: 36,
-    rating: 5,
-    voiceAudioUrl: null,
-    voiceAudioName: null,
-    videoUrl: null,
-    videoName: null,
-    attachments: [],
-    createdAt: new Date(Date.now() - 3600000 * 24 * 2).toISOString(),
-    readByDeveloper: false
-  },
-  {
-    id: 'rev_1719200002',
-    studentName: 'Ananya Patel',
-    studentId: 'dav802',
-    classNum: '8-A',
-    reviewText: 'The textbook reading mode and Sanskrit shloka explanations helped me score 95+ in unit tests. Highly recommend every DAV student to bookmark this portal on their phone.',
-    wordCount: 26,
-    rating: null, // "nothing" given for stars
-    voiceAudioUrl: null,
-    voiceAudioName: null,
-    videoUrl: null,
-    videoName: null,
-    attachments: [],
-    createdAt: new Date(Date.now() - 3600000 * 12).toISOString(),
-    readByDeveloper: false
-  },
-  {
-    id: 'rev_1719200003',
-    studentName: 'Aarav Kumar Sharma',
-    studentId: 'dav805',
-    classNum: '8-C',
-    reviewText: 'Awesome work Rishit bhaiya! Section 8 Study Leaderboard and Section 4 Rishi AI give instant answers whenever I have doubts in Science & Mathematics late at night. Looking forward to the DAV Hindi book updates.',
-    wordCount: 34,
-    rating: 5,
-    voiceAudioUrl: null,
-    voiceAudioName: null,
-    videoUrl: null,
-    videoName: null,
-    attachments: [],
-    createdAt: new Date(Date.now() - 3600000 * 3).toISOString(),
-    readByDeveloper: false
-  }
-];
+const DEFAULT_REVIEWS = [];
 
 /**
  * Fetch all submitted reviews (from Supabase Cloud or LocalStorage fallback)

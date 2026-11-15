@@ -756,7 +756,7 @@ export function App() {
         ) : activeSection === 2 ? (
           <div className={`relative min-h-[100dvh] ${sectionVfxMap[2] && sectionVfxMap[2] !== 'clean_none' ? 'bg-[#030712]/35 backdrop-blur-[1px]' : 'bg-[#030712]'} text-white`}>
             {/* Section 2 Cosmic Solar System Canvas (The Sun, 9 Planets, Rocket, Spaceship, Starfield) */}
-            {/* VfxSolarSystemGalaxy removed */}
+            <VfxSolarSystemGalaxy />
             <div className="relative z-10">
               <Hero
                 onOpenAI={() => {

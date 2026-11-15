@@ -52,10 +52,10 @@ export function AuthModal({isOpen, onClose, user, onLogin, onLogout, onOpenDbGui
 
   const profilePhoto = savedProfile?.photoUrl || user?.photoUrl || (isMasterRishit ? '/rishit_shankar.jpg' : null);
   const studentFullName = savedProfile?.fullName || user?.name || (isMasterRishit ? 'Rishit Shankar' : 'DAV Student');
-  const classDisplay = savedProfile?.classNum || user?.classNum || '8';
+  const classDisplay = savedProfile?.classNum || user?.classNum || 'Not Selected (Tap to Update)';
   const sectionDisplay = savedProfile?.section || user?.section || 'D';
   const rollDisplay = savedProfile?.rollNumber || (isMasterRishit ? '25' : 'N/A');
-  const admissionDisplay = savedProfile?.admissionNumber || (isMasterRishit ? 'ADM-8921-DAV' : `ADM-${currentUid.toUpperCase()}`);
+  const admissionDisplay = savedProfile?.admissionNumber || user?.admissionNumber || (isMasterRishit ? 'ADM-8921-DAV' : 'Not Assigned');
   const tierPlan = savedProfile?.tierPlan || user?.dimensionName || (user?.plan === 'vvip' ? 'Dimension 3: VVIP Plan' : user?.plan === 'vip' ? 'Dimension 2: VIP Plan' : isMasterRishit ? 'Dimension 4: Master Developer' : 'Dimension 1: Normal Plan');
 
   const generateStudentId = () => {
@@ -197,35 +197,33 @@ export function AuthModal({isOpen, onClose, user, onLogin, onLogout, onOpenDbGui
               </div>
             </div>
 
-            {/* Direct Navigation to Section 9 Student ID Vault */}
+            {/* Direct Navigation to Profile & Settings (Section 10) or Master Vault (Section 13) */}
             <button
               type="button"
               onClick={() => {
-                if (onGoToSection) onGoToSection(9);
-                else onClose();
+                if (onGoToSection) {
+                  if (user?.role === 'developer' || user?.role === 'admin' || isMasterRishit) {
+                    onGoToSection(13);
+                  } else {
+                    onGoToSection(10);
+                  }
+                } else {
+                  onClose();
+                }
               }}
               className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-red-800 to-amber-600 hover:from-red-700 hover:to-amber-500 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md shadow-red-950/20 transition cursor-pointer"
             >
               <UserCheck className="w-4 h-4 text-amber-300" />
-              <span>Open Student ID Vault (Section 9) 🎓</span>
+              <span>{ (user?.role === 'developer' || isMasterRishit) ? 'Open Master ID Vault (Section 13) 🎓' : 'Open Student Profile & Settings (Section 10) 🎓' }</span>
             </button>
 
             <div className="pt-1 flex gap-2">
               <button
                 onClick={onLogout}
-                className="flex-1 py-2 rounded-xl border border-red-200 text-red-700 hover:bg-red-50 text-xs font-bold transition cursor-pointer"
+                className="w-full py-2.5 rounded-xl border border-red-200 text-red-700 hover:bg-red-50 text-xs font-bold transition cursor-pointer flex items-center justify-center gap-2"
               >
-                Log Out
-              </button>
-              <button
-                onClick={() => {
-                  onClose();
-                  onOpenDbGuide && onOpenDbGuide();
-                }}
-                className="flex-1 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <Database className="w-3.5 h-3.5 text-amber-400" />
-                <span>Cloud DB Settings</span>
+                <LogOut className="w-4 h-4 text-red-600" />
+                <span>Sign Out of DAVDixence</span>
               </button>
             </div>
           </div>

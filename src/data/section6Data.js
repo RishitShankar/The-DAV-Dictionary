@@ -729,7 +729,9 @@ export function getSection6SolutionParts(classId, subjectId, chapterNum) {
       list.push({ id: `ws${i}`, label: `Worksheet ${i}`, type: 'worksheet' });
     }
     list.push({ id: 'vbq', label: 'Value Based Questions (VBQ)', type: 'vbq' });
-    list.push({ id: 'brain_teasers', label: 'Brain Teasers (कठिन प्रश्न)', type: 'brain_teasers' });
+    list.push({ id: 'brain_teasers_p1', label: 'Brain Teasers Part 1 (Q1–Q3)', type: 'brain_teasers' });
+    list.push({ id: 'brain_teasers_p2', label: 'Brain Teasers Part 2 (Q4–Q6)', type: 'brain_teasers' });
+    list.push({ id: 'brain_teasers_p3', label: 'Brain Teasers Part 3 (Q7+ & Multi-Step)', type: 'brain_teasers' });
     list.push({ id: 'hots', label: 'HOTS Questions', type: 'hots' });
     list.push({ id: 'enrichment', label: 'Enrichment Questions', type: 'enrichment' });
     return list;

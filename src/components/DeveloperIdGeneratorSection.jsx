@@ -511,6 +511,8 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
                   <option value="normal">Normal Plan (Dimension 2)</option>
                   <option value="vip">VIP Pass (Dimension 3)</option>
                   <option value="vvip">Double VIP Pass (Dimension 4)</option>
+                  <option value="teacher">Faculty / Teacher (Dimension 5)</option>
+                  <option value="developer">Developer Master (Dimension 4 - Admin)</option>
                 </select>
               </div>
 
@@ -582,7 +584,20 @@ export function DeveloperIdGeneratorSection({ currentUser }) {
                           {u.plan || u.role || 'normal'}
                         </span>
                       </td>
-                      <td className="py-2.5 px-4 font-mono text-slate-400">{u.password}</td>
+                      <td className="py-2.5 px-4 font-mono text-slate-300 flex items-center justify-between gap-2">
+                        <span>{u.password || '••••'}</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard?.writeText(`ID: ${u.id || u.studentId} | Pass: ${u.password}`);
+                            alert(`Copied credentials for ${u.id || u.studentId}`);
+                          }}
+                          className="px-2 py-0.5 rounded bg-slate-800 hover:bg-amber-500 hover:text-stone-950 text-[10px] font-bold text-amber-300 transition cursor-pointer"
+                          title="Copy ID & Password to clipboard"
+                        >
+                          Copy
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

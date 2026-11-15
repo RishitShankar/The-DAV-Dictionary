@@ -116,7 +116,7 @@ export function RishiAI({ isOpen, onClose, initialPrompt = '', user, isSectionVi
   const [activeMode, setActiveMode] = useState('academics');
 
   // Wizard Step State: 'select_mode' | 'select_class' | 'select_subject' | 'select_chapter' | null
-  const [wizardStep, setWizardStep] = useState(initialPrompt ? null : 'select_mode');
+  const [wizardStep, setWizardStep] = useState(null);
 
   // Cascading Academic Selections
   const [selectedClass, setSelectedClass] = useState('8');
@@ -141,19 +141,17 @@ export function RishiAI({ isOpen, onClose, initialPrompt = '', user, isSectionVi
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      text: `👋 **Welcome to Rishi AI** — the proprietary full-screen intelligence engine of DAV Dictionary!
+      text: `👋 **Welcome to Rishi AI, made by Rishit Shankar**
 
-Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system architecture:
+Your 24/7 intelligent curriculum companion grounded in official DAV textbooks (LKG to Class 8 & beyond).
 
-📚 **1. Academic Intelligence (DAV Textbooks & Syllabus):**
-* Lock into any **Class (LKG to 8)** $\\rightarrow$ **Subject** $\\rightarrow$ **Chapter**.
-* The official DAV textbook PDF is **automatically grounded and locked** into memory.
-* Generate instant **Chapter Summaries**, **High-Yield Short Notes**, **5-Mark Model Answers**, **Bullet Glossaries**, **Back-of-Chapter Q&A (Part A-E)**, **HOTS**, and launch live **Interactive MCQ Test Quizzes**!
+✨ **Features at your fingertips:**
+• **5-Mark Model Answers** with verified examination scoring points
+• **Bullet Glossaries & High-Yield Revision Notes**
+• **Official Back-of-Chapter Q&A (अभ्यास & HOTS)**
+• **Non-Academic Outer World Intelligence** (Geopolitics, ISRO, Weather & Code)
 
-🌍 **2. Non-Academic Intelligence (Outer World Knowledge):**
-* Proprietary global intelligence for **World Geopolitics**, **ISRO Space Exploration**, **Meteorology & Monsoons**, **Software Development**, and **Chess Tactics**.
-
-*Select an option above or type your question below!*`
+*Type your question below or click an action button to begin!*`
     }
   ]);
 
@@ -303,25 +301,14 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
       };
 
       recognition.onresult = (event) => {
-        let finalTranscript = '';
-        let interimTranscript = '';
-
-        for (let i = 0; i < event.results.length; i++) {
-          const item = event.results[i];
-          if (item.isFinal) {
-            finalTranscript += item[0].transcript + ' ';
-          } else {
-            interimTranscript += item[0].transcript;
-          }
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
         }
-
-        const combinedSpoken = (finalTranscript + interimTranscript).trim();
-        const base = baseInputRef.current ? baseInputRef.current.trim() : '';
-
-        if (base && combinedSpoken) {
-          setInput(`${base} ${combinedSpoken}`);
-        } else if (combinedSpoken) {
-          setInput(combinedSpoken);
+        transcript = transcript.trim();
+        if (transcript) {
+          const base = baseInputRef.current ? baseInputRef.current.trim() : '';
+          setInput(base ? `${base} ${transcript}` : transcript);
         }
       };
 
@@ -625,13 +612,26 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
                 </span>
               </div>
 
-              <button
-                onClick={() => setWizardStep('select_class')}
-                className="text-[11px] font-bold text-amber-300 hover:text-white bg-stone-950 hover:bg-stone-800 border border-orange-500/40 px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer"
-              >
-                <span>Change Chapter</span>
-                <ChevronDown className="w-3 h-3 text-amber-400" />
-              </button>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setWizardStep('select_chapter')}
+                  className="text-[11px] font-bold text-amber-300 hover:text-white bg-stone-950 hover:bg-stone-800 border border-amber-500/40 px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer shadow-xs"
+                  title="Pick another chapter in this textbook"
+                >
+                  <BookOpen className="w-3 h-3 text-amber-400" />
+                  <span>Change Chapter</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setWizardStep('select_class')}
+                  className="text-[11px] font-bold text-orange-200 hover:text-white bg-stone-950 hover:bg-stone-800 border border-orange-500/40 px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer shadow-xs"
+                  title="Switch to another Class or Subject"
+                >
+                  <GraduationCap className="w-3 h-3 text-orange-400" />
+                  <span>Change Class</span>
+                </button>
+              </div>
             </div>
 
             {/* Academics Quick Action Buttons (Summarize, Short Notes, 5-Mark, Bullets, QA, Test) */}
@@ -922,7 +922,16 @@ Engineered by **Head Boy Rishit Shankar** with an uncompromising dual-system arc
                     {/* Header badge on AI response */}
                     {!isUser && (
                       <div className="mb-3 pb-2 border-b border-orange-200 flex items-center justify-between text-orange-950 font-bold text-xs bg-amber-100/90 -mx-4 -mt-4 px-4 pt-3 rounded-t-2xl flex-wrap gap-1">
-                        <span className="flex items-center gap-1.5 text-orange-900 font-extrabold">
+                        <span 
+                          onClick={() => {
+                            setMessages(prev => [...prev, {
+                              role: 'assistant',
+                              text: '👋 **Welcome to Rishi AI, made by Rishit Shankar**\n\nYour official DAV educational companion ready to assist!'
+                            }]);
+                          }}
+                          className="flex items-center gap-1.5 text-orange-900 font-extrabold cursor-pointer hover:underline transition"
+                          title="Click to greet Rishi AI"
+                        >
                           <Flame className="w-4 h-4 text-orange-600 fill-orange-500 animate-pulse" />
                           <span>{msg.modelName || 'Rishi AI Master Intelligence'}</span>
                         </span>

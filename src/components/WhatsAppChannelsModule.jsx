@@ -138,6 +138,22 @@ const INITIAL_DAV_CHANNELS = [
   }
 ];
 
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const joinCode = params.get('joinChannel');
+      if (joinCode) {
+        const found = channels.find(c => c.inviteCode?.toUpperCase() === joinCode.toUpperCase() || c.id === joinCode);
+        if (found) {
+          setActiveChannelId(found.id);
+          if (!mySubscribedChannelIds.includes(found.id)) {
+            setMySubscribedChannelIds(prev => [...prev, found.id]);
+          }
+        }
+      }
+    } catch (e) {}
+  }, [channels]);
+
 export function WhatsAppChannelsModule({ user, isDimension5, onSwitchToChats }) {
   // Dimension 4 (Developer Master) and Dimension 5 (Teacher / Staff) are authorized to create & broadcast
   const userDimension = Number(user?.dimension ?? (user?.isAdmin ? 4 : 1));
@@ -684,7 +700,7 @@ export function WhatsAppChannelsModule({ user, isDimension5, onSwitchToChats }) 
 
   // Copy Invite Link
   const handleCopyInviteLink = (code) => {
-    const inviteUrl = `dav://whatsapp/channel/${code}`;
+    const inviteUrl = `${window.location.origin}${window.location.pathname}?joinChannel=${code}`;
     navigator.clipboard?.writeText(inviteUrl);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);
@@ -1709,7 +1725,7 @@ export function WhatsAppChannelsModule({ user, isDimension5, onSwitchToChats }) 
                       {currentChannel.inviteCode}
                     </div>
                     <div className="text-[10px] text-[#667781] select-all font-mono">
-                      dav://whatsapp/channel/{currentChannel.inviteCode}
+                      {window.location.origin}{window.location.pathname}?joinChannel={currentChannel.inviteCode}
                     </div>
                   </div>
 

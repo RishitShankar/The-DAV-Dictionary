@@ -202,7 +202,7 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
                 </span>
               </div>
               <h1 className="text-xl sm:text-2xl font-black text-white">
-                {isApkMode ? 'DAV Focus Suite & Campus Leaderboard' : 'DAV Campus Study Leaderboard'}
+                'DAV Deep Study Mode & Campus Focus Suite'
               </h1>
             </div>
           </div>
@@ -429,7 +429,7 @@ export function StudyLeaderboardSection({ user, onRequireLogin }) {
                   }`}
                 >
                   <Target className="w-4 h-4" />
-                  <span>1. Deep Focus & Screen Time Suite</span>
+                  <span>1. Deep Study Focus Suite</span>
                 </button>
 
                 <button

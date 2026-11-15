@@ -177,7 +177,7 @@ export async function sendRealEmailOtp(email) {
  * Strictly initializes accounts in UNPAID TRIAL MODE (Dimension 0, ₹0 fee).
  * NO free Normal Plan is given until paid and verified by Admin Rishit Shankar!
  */
-export async function verifyRealEmailOtp({ email, otp, fullName = '', classNum = '8', section = 'A' }) {
+export async function verifyRealEmailOtp({ email, otp, fullName = '', classNum = '', section = '' }) {
   const cleanEmail = (email || '').trim().toLowerCase();
   const cleanOtp = (otp || '').trim();
 
@@ -334,7 +334,7 @@ export async function findUserByGoogleEmail(email) {
  * STRICTLY INITIALIZES IN TRIAL MODE (Dimension 0, Unpaid).
  * Normal, VIP, and VVIP plans are ONLY unlocked after purchase is verified by Administrator Rishit Shankar!
  */
-export async function createStudentWithGoogle({ name, email, avatar = null, classNum = '8', section = 'A' }) {
+export async function createStudentWithGoogle({ name, email, avatar = null, classNum = '', section = '' }) {
   const cleanEmail = (email || '').trim().toLowerCase();
   const cleanName = (name || '').trim() || (cleanEmail.split('@')[0] || 'DAV Student');
 
@@ -475,7 +475,7 @@ export async function sendRealPhoneOtp(phone) {
  * Verify real 6-digit Mobile OTP code and authenticate / create student account
  * Strictly initializes in Dimension 1 (Free) unless already upgraded by Admin Rishit Shankar!
  */
-export async function verifyRealPhoneOtp({ phone, otp, fullName = '', classNum = '8', section = 'A' }) {
+export async function verifyRealPhoneOtp({ phone, otp, fullName = '', classNum = '', section = '' }) {
   const digits = String(phone || '').replace(/[^0-9]/g, '').slice(-10);
   const cleanOtp = (otp || '').trim();
 
@@ -608,7 +608,7 @@ export async function registerFullStudentAccount({
     customSection: customSection || '',
     motherName: motherName || '',
     fatherName: fatherName || '',
-    admissionNumber: admissionNumber || ('ADM-' + Math.floor(1000 + Math.random() * 9000)),
+    admissionNumber: admissionNumber || '',
     rollNumber: rollNumber || '',
     schoolName: schoolName || 'DAV Public School',
     role: 'Student',

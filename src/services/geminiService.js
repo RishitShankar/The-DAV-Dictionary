@@ -26,6 +26,7 @@ export function checkAiRateLimit() {
 // Powered by live Google Gemini 3.5 Cloud Intelligence with official DAV syllabus grounding across ALL CLASSES (LKG to Class 8)
 
 import { lookupTextbookDatabase, DAV_CLASS_8_SYLLABUS_INDEX, DAV_TEXTBOOK_DATABASE } from '../data/davTextbookDatabase.js';
+import { queryMasterQuestionBank } from '../data/davMasterQuestionBank.js';
 
 const STORAGE_KEY = 'rishi_ai_api_key';
 // Built-in intelligent engine key decoded at runtime for automatic zero-configuration AI access
@@ -917,6 +918,7 @@ The official DAV Board curriculum for Class 8 uses the following prescribed text
     const subj = context.subject;
     const chNum = context.chapter;
     const chTitle = context.chapterTitle || `Chapter ${chNum}`;
+    const masterChap = queryMasterQuestionBank(cls, subj, chNum);
     const action = context.actionType || (
       lowerQ.includes('summar') ? 'summarize' :
       lowerQ.includes('short note') ? 'short_notes' :

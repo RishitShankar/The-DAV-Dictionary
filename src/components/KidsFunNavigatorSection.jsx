@@ -161,7 +161,7 @@ export function KidsFunNavigatorSection({ user, onRequireLogin }) {
 
 
 
-  const [activeSubSection, setActiveSubSection] = useState(() => isBusDriver ? 'track_bus' : 'go_to_khabra');
+  const [activeSubSection, setActiveSubSection] = useState(() => 'track_bus');
 
 
 

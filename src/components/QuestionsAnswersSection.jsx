@@ -59,9 +59,10 @@ export function QuestionsAnswersSection({
   const [redirectToast, setRedirectToast] = useState(null);
 
   // Plan unlock rules
+  // Strict tier gating strictly respecting user selected plan (Normal: 1 site, VIP: 2 sites, VVIP: 3 sites)
   const isNormalUnlocked = true;
-  const isVipUnlocked = activePlan === 'vip' || activePlan === 'vvip' || currentUser?.isAdmin;
-  const isVvipUnlocked = activePlan === 'vvip' || currentUser?.isAdmin;
+  const isVipUnlocked = (activePlan === 'vip' || activePlan === 'vvip');
+  const isVvipUnlocked = (activePlan === 'vvip');
 
   // Synthesized game-like sound effects (Web Audio API)
   const playSfx = (type = 'click') => {
@@ -571,7 +572,7 @@ export function QuestionsAnswersSection({
           </h1>
 
           <p className="text-sm sm:text-base text-purple-200 max-w-2xl mx-auto font-medium">
-            Click on your subscription plan below to launch the **Level 1 Grade Pop-Up**. Step into 900+ DAV textbook solved chapters with verified links!
+            Click on your subscription plan below to launch the Level 1 Grade Pop-Up. Step into 900+ DAV textbook solved chapters with verified links!
           </p>
 
           {/* 3 Interactive Plan Cards (Normal, VIP, VVIP) */}
@@ -594,7 +595,7 @@ export function QuestionsAnswersSection({
               </div>
               <h3 className="text-xl font-black text-white mb-1">Standard Explorer</h3>
               <p className="text-xs text-purple-200/80 mb-6 leading-relaxed">
-                Unlock direct chapter-by-chapter verified answers from **Solution Gyan**.
+                Unlock direct chapter-by-chapter verified answers from Solution Gyan.
               </p>
               <div className="space-y-2 text-xs font-semibold text-purple-200 mb-6">
                 <div className="flex items-center gap-2 text-emerald-400">
@@ -633,7 +634,7 @@ export function QuestionsAnswersSection({
               </div>
               <h3 className="text-xl font-black text-white mb-1">Elite Scholar</h3>
               <p className="text-xs text-purple-200/80 mb-6 leading-relaxed">
-                Double source coverage with **Solution Gyan** and **Learn Cram** textbook solutions.
+                Double source coverage with Solution Gyan and Learn Cram textbook solutions.
               </p>
               <div className="space-y-2 text-xs font-semibold text-purple-200 mb-6">
                 <div className="flex items-center gap-2 text-emerald-400">
@@ -676,7 +677,7 @@ export function QuestionsAnswersSection({
               </div>
               <h3 className="text-xl font-black text-white mb-1">Supreme Champion 👑</h3>
               <p className="text-xs text-purple-200/80 mb-6 leading-relaxed">
-                Maximum power across **Solution Gyan**, **Learn Cram**, and **ncertbookpdf.com**!
+                Maximum power across Solution Gyan, Learn Cram, and ncertbookpdf.com!
               </p>
               <div className="space-y-2 text-xs font-semibold text-purple-200 mb-6">
                 <div className="flex items-center gap-2 text-emerald-400">
@@ -1374,60 +1375,15 @@ export function QuestionsAnswersSection({
               </div>
 
               {isHindiSubject ? (
-                /* HINDI SUBJECTS: "A Guide to Hindi" (onlinehindi.in) is PRIMARY & UNLOCKED FOR ALL */
+                /* HINDI SUBJECTS: Strict Tier-Gated 3-Tier Access */
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                   
-                  {/* Card 1: A Guide to Hindi (onlinehindi.in) - UNLOCKED FOR ALL */}
-                  <div className="p-5 rounded-2xl bg-gradient-to-b from-amber-950/70 via-purple-950/80 to-purple-900/80 border-2 border-amber-400 shadow-xl shadow-amber-500/20 flex flex-col justify-between space-y-4">
-                    <div className="space-y-2.5">
-                      <div className="flex items-center justify-between">
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-400 text-slate-950">
-                          Primary Source • Unlocked for All
-                        </span>
-                        <span className="inline-flex items-center gap-1 text-[11px] font-black text-amber-400">
-                          <CheckCircle2 className="w-4 h-4" />
-                          <span>UNLOCKED</span>
-                        </span>
-                      </div>
-
-                      <h4 className="font-black text-lg text-white">
-                        A Guide to Hindi (OnlineHindi.in)
-                      </h4>
-                      <div className="text-[11px] font-bold text-amber-300">
-                        By Avinash Ranjan Gupta (Literary Scholar)
-                      </div>
-                      <p className="text-xs text-purple-200/90 leading-relaxed">
-                        Official solved Hindi textbook questions, शब्दार्थ (word meanings), भावार्थ (stanza explanations), कविता सारांश, and अभ्यास प्रश्नोत्तर.
-                      </p>
-
-                      {sourceUrls.onlineHindiIsDirect && (
-                        <div className="pt-1">
-                          <span className="text-[10px] font-black text-amber-300 bg-amber-950/80 border border-amber-500/50 px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5 shadow-sm">
-                            <Check className="w-3.5 h-3.5 text-amber-400" />
-                            <span>Direct Chapter Solution Verified!</span>
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="pt-2">
-                      <button
-                        type="button"
-                        onClick={() => handleLaunchWebsite('onlinehindi', sourceUrls.onlineHindi)}
-                        className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-amber-500/30 transition cursor-pointer"
-                      >
-                        <span>Open A Guide to Hindi 🚀</span>
-                        <ExternalLink className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Card 2: Solution Gyan (UNLOCKED FOR ALL) */}
+                  {/* Card 1: Solution Gyan (SITE 1 - UNLOCKED FOR NORMAL & ALL) */}
                   <div className="p-5 rounded-2xl bg-gradient-to-b from-emerald-950/60 to-purple-950/80 border-2 border-emerald-400/80 shadow-lg shadow-emerald-500/10 flex flex-col justify-between space-y-4">
                     <div className="space-y-2.5">
                       <div className="flex items-center justify-between">
                         <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-400 text-slate-950">
-                          Site 2 • Normal Plan
+                          Site 1 • Normal Plan
                         </span>
                         <span className="inline-flex items-center gap-1 text-[11px] font-black text-emerald-400">
                           <CheckCircle2 className="w-4 h-4" />
@@ -1464,7 +1420,7 @@ export function QuestionsAnswersSection({
                     </div>
                   </div>
 
-                  {/* Card 3: Learn Cram (UNLOCKED FOR VIP & VVIP) */}
+                  {/* Card 2: Learn Cram (SITE 2 - VIP & VVIP ONLY) */}
                   <div className={`p-5 rounded-2xl border-2 flex flex-col justify-between space-y-4 ${
                     isVipUnlocked
                       ? 'bg-gradient-to-b from-blue-950/60 to-purple-950/80 border-blue-400/80 shadow-lg shadow-blue-500/10'
@@ -1473,7 +1429,7 @@ export function QuestionsAnswersSection({
                     <div className="space-y-2.5">
                       <div className="flex items-center justify-between">
                         <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-blue-400 text-slate-950">
-                          Site 3 • VIP Plan
+                          Site 2 • VIP Plan
                         </span>
                         <span className={`inline-flex items-center gap-1 text-[11px] font-black ${isVipUnlocked ? 'text-blue-400' : 'text-purple-400'}`}>
                           {isVipUnlocked ? <CheckCircle2 className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
@@ -1519,6 +1475,66 @@ export function QuestionsAnswersSection({
                         >
                           <Lock className="w-4 h-4" />
                           <span>Unlock VIP 2nd Site</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Card 3: A Guide to Hindi (SITE 3 - VVIP ONLY) */}
+                  <div className={`p-5 rounded-2xl border-2 flex flex-col justify-between space-y-4 ${
+                    isVvipUnlocked
+                      ? 'bg-gradient-to-b from-purple-950/60 to-purple-950/80 border-amber-400/80 shadow-lg shadow-amber-500/10'
+                      : 'bg-purple-950/40 border-purple-800/60 opacity-80'
+                  }`}>
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-gradient-to-r from-amber-400 to-orange-400 text-slate-950">
+                          Site 3 • VVIP Plan
+                        </span>
+                        <span className={`inline-flex items-center gap-1 text-[11px] font-black ${isVvipUnlocked ? 'text-amber-400' : 'text-purple-400'}`}>
+                          {isVvipUnlocked ? <CheckCircle2 className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+                          <span>{isVvipUnlocked ? 'UNLOCKED' : 'LOCKED (VVIP)'}</span>
+                        </span>
+                      </div>
+
+                      <h4 className="font-black text-lg text-white">
+                        A Guide to Hindi (OnlineHindi.in)
+                      </h4>
+                      <p className="text-xs text-purple-200/80 leading-relaxed">
+                        Dedicated Hindi literature scholar guide, word meanings, and stanza explanations.
+                      </p>
+
+                      {sourceUrls.onlineHindiIsDirect && (
+                        <div className="pt-1">
+                          <span className="text-[10px] font-black text-amber-300 bg-amber-950/80 border border-amber-500/50 px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5 shadow-sm">
+                            <Check className="w-3.5 h-3.5 text-amber-400" />
+                            <span>Direct Chapter Solution Verified!</span>
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-2">
+                      {isVvipUnlocked ? (
+                        <button
+                          type="button"
+                          onClick={() => handleLaunchWebsite('onlinehindi', sourceUrls.onlineHindi)}
+                          className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-amber-500/30 transition cursor-pointer"
+                        >
+                          <span>Open A Guide to Hindi 🚀</span>
+                          <ExternalLink className="w-4 h-4" />
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleCloseModal();
+                            onOpenUpgradeModal && onOpenUpgradeModal();
+                          }}
+                          className="w-full py-3 px-4 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-amber-300 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer border border-purple-700"
+                        >
+                          <Lock className="w-4 h-4" />
+                          <span>Unlock VVIP 3rd Site</span>
                         </button>
                       )}
                     </div>

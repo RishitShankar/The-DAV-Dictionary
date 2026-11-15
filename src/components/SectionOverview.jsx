@@ -42,7 +42,7 @@ function CleanSectionCard({ sec, isCurrent, isBeingClicked, onClick }) {
   return (
     <div
       onClick={onClick}
-      className={`p-6 sm:p-7 rounded-3xl bg-gradient-to-br ${sec.cardBg} border-2 relative overflow-hidden flex flex-col justify-between shadow-md hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 cursor-pointer group select-none ${
+      id={`section-card-${sec.id}`} className={`p-6 sm:p-7 rounded-3xl bg-gradient-to-br ${sec.cardBg} border-2 relative overflow-hidden flex flex-col justify-between shadow-md hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 cursor-pointer group select-none ${
         isCurrent
           ? 'border-amber-400 ring-4 ring-amber-400/20'
           : `border-slate-200/90 ${sec.borderHover}`

@@ -1,140 +1,100 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
-  Sparkles, BookOpen, Layers, Award, Heart, Star, 
-  ChevronRight, ChevronLeft, X, CheckCircle2, ArrowDown,
-  Info, Compass, Trophy, User, Zap, Lock, Eye, Video
+  Sparkles, ChevronRight, ChevronLeft, X, CheckCircle2, 
+  ArrowDown, ArrowUp, Compass, Layers, BookOpen, Brain, 
+  School, Trophy, User, LogOut, Check
 } from 'lucide-react';
 
-export const MASTER_HUB_GUIDE_STEPS = [
+export const BLINKIT_COACHMARK_STEPS = [
   {
-    hubId: 1,
-    title: 'Master Hub 1 • Core Academic Foundation',
-    badge: 'Step 1 of 5',
+    step: 1,
+    targetId: 'section1-hero-header',
+    title: 'Welcome to DAVDixence • Campus Overview',
+    badge: 'Step 1 of 9',
+    description: 'This is your central academic command center. Right above each section line, explore verified school announcements, curriculum updates, and 1-click shortcuts to all DAV study tools.',
+    icon: Layers,
     color: 'from-amber-500 to-orange-600',
-    borderColor: 'border-amber-500/40',
-    description: 'The foundation of your daily DAV studies. Houses 3 core academic sections accessible to all students:',
-    sections: [
-      {
-        num: 1,
-        title: 'Section 1: Campus Overview',
-        desc: 'Interactive school homepage, daily announcements, statistics, and 1-click directory navigation.'
-      },
-      {
-        num: 2,
-        title: 'Section 2: Digital Textbooks (Classes LKG to 8)',
-        desc: '70+ uncompressed authentic DAV textbooks with cloud streaming, highlighter, and PDF reader.'
-      },
-      {
-        num: 3,
-        title: 'Section 3: Q&A Arcade',
-        desc: 'Chapter-wise solved exercises, textbook back-question answers, and DAV exam revision quests.'
-      }
-    ]
+    preferredPlacement: 'bottom'
   },
   {
-    hubId: 2,
-    title: 'Master Hub 2 • AI Intelligence & Faculty OS',
-    badge: 'Step 2 of 5',
-    color: 'from-orange-500 to-amber-600',
-    borderColor: 'border-orange-500/40',
-    description: 'Your intelligent academic companion and teacher connectivity headquarters:',
-    sections: [
-      {
-        num: 4,
-        title: 'Section 4: Rishi AI Workspace',
-        desc: 'Curriculum-grounded 24/7 AI tutor for instant step-by-step doubt solving and exam practice.'
-      },
-      {
-        num: 5,
-        title: 'Section 5: Homework & Teachers OS',
-        desc: 'Daily homework assignments, verified teacher roster, live doubt clearing, and classes.'
-      },
-      {
-        num: 6,
-        title: 'Section 6: Chapter Explanations & Videos',
-        desc: 'Detailed conceptual lectures, video breakdowns, and downloadable chapter revision notes.'
-      }
-    ]
+    step: 2,
+    targetId: 'section-card-2',
+    title: 'Section 2 • 70+ Digital Textbooks',
+    badge: 'Step 2 of 9',
+    description: 'The official digital archive of 70+ uncompressed DAV Board textbooks from Class LKG to Class 8. Enjoy zero missing pages, neon cyber highlighters, sticky notes, and full-screen reading.',
+    icon: BookOpen,
+    color: 'from-red-600 to-rose-700',
+    preferredPlacement: 'top'
   },
   {
-    hubId: 3,
-    title: 'Master Hub 3 • Practice Suite & Growth Leaderboard',
-    badge: 'Step 3 of 5',
+    step: 3,
+    targetId: 'section-card-3',
+    title: 'Section 3 • Chapter Q&A & Solutions',
+    badge: 'Step 3 of 9',
+    description: 'Direct chapter-by-chapter verified answers from SolutionGyan and NCERT solutions. Normal Plan gives verified solutions, while VIP unlocks multi-source answer matrices and model papers.',
+    icon: Sparkles,
+    color: 'from-purple-600 to-indigo-700',
+    preferredPlacement: 'top'
+  },
+  {
+    step: 4,
+    targetId: 'section-card-4',
+    title: 'Section 4 • Rishi AI Intelligent Companion',
+    badge: 'Step 4 of 9',
+    description: 'Your 24/7 intelligent curriculum companion engineered by Head Boy Rishit Shankar. Grounded directly in DAV textbooks to solve doubts step-by-step and generate instant chapter revision tests.',
+    icon: Brain,
+    color: 'from-amber-400 to-yellow-500',
+    preferredPlacement: 'top'
+  },
+  {
+    step: 5,
+    targetId: 'section-card-5',
+    title: 'Section 5 • Faculty Desk & WebRTC Live Classes',
+    badge: 'Step 5 of 9',
+    description: 'Stay connected with school operations: Daily Homework Hub, verified teacher WhatsApp channels, and WebRTC HD virtual classrooms for interactive live lessons.',
+    icon: School,
+    color: 'from-blue-600 to-cyan-600',
+    preferredPlacement: 'top'
+  },
+  {
+    step: 6,
+    targetId: 'section-card-7',
+    title: 'Section 7 • Bus Fleet Radar & Weather',
+    badge: 'Step 6 of 9',
+    description: 'Live interactive tools: Principal Anil Kumar Singh Live School Bus Radar, real-time GPS weather for Muzaffarpur, working scientific calculator, and the 2026–2047 Indian festival calendar.',
+    icon: Compass,
+    color: 'from-emerald-600 to-teal-700',
+    preferredPlacement: 'top'
+  },
+  {
+    step: 7,
+    targetId: 'section-card-9',
+    title: 'Section 9 • Deep Study Mode',
+    badge: 'Step 7 of 9',
+    description: 'Distraction-free focus sanctuary! Features custom Pomodoro study timers, synthesized ambient binaural soundscapes (rain, forest, alpha waves), and daily revision flashcard decks.',
+    icon: Trophy,
+    color: 'from-amber-600 to-red-600',
+    preferredPlacement: 'top'
+  },
+  {
+    step: 8,
+    targetId: 'navbar-sections-btn',
+    title: 'Top Navigation • Sections Quick Jumper',
+    badge: 'Step 8 of 9',
+    description: 'Tap this 3-line hamburger menu at the top of your screen anytime to instantly navigate between all 14 academic sections or open the Parent Portal in 1 click.',
+    icon: Layers,
+    color: 'from-amber-500 to-yellow-500',
+    preferredPlacement: 'bottom'
+  },
+  {
+    step: 9,
+    targetId: 'navbar-profile-btn',
+    title: 'Profile & Account Controls',
+    badge: 'Step 9 of 9',
+    description: 'Manage your student profile, upload your custom photo, review verified credentials, or log out safely. Congratulations! You are now fully oriented with DAVDixence.',
+    icon: User,
     color: 'from-emerald-500 to-teal-600',
-    borderColor: 'border-emerald-500/40',
-    description: 'Test your knowledge, compete with classmates, and track school bus routes:',
-    sections: [
-      {
-        num: 7,
-        title: 'Section 7: Kids Fun Navigator',
-        desc: 'Live DAV school bus tracking radar with Bus ID, interactive puzzles, and educational arcade.'
-      },
-      {
-        num: 8,
-        title: 'Section 8: Examination & VVI Practice Suite (NEW!)',
-        desc: 'Full-length 25/50/100-Q timed MCQ exams, 20 VVI board long-answer questions, and SST map skills.'
-      },
-      {
-        num: 9,
-        title: 'Section 9: Study Leaderboard',
-        desc: 'Track classroom ranks, study streaks, quiz badges, and academic honors across DAV campuses.'
-      }
-    ]
-  },
-  {
-    hubId: 4,
-    title: 'Master Hub 4 • Student ID Vault & Developer HQ',
-    badge: 'Step 4 of 5',
-    color: 'from-purple-600 to-indigo-600',
-    borderColor: 'border-purple-500/40',
-    description: 'Your personal identity records, school support, and developer review center:',
-    sections: [
-      {
-        num: 10,
-        title: 'Section 10: Student ID Vault & Profile',
-        desc: 'Encrypted digital ID card, academic dossier, roll number, and custom profile photo sync.'
-      },
-      {
-        num: 11,
-        title: 'Section 11: School Donation Hub',
-        desc: 'Support smart classroom equipment, DAV digital infrastructure, and audio-video feedback.'
-      },
-      {
-        num: 12,
-        title: 'Section 12: Developer Reviews (Developer Only)',
-        desc: 'Reserved exclusively for Developer Rishit Shankar to review ratings, voice notes, and approvals.'
-      },
-      {
-        num: 13,
-        title: 'Section 13: About Creator',
-        desc: 'Meet Head Boy Rishit Shankar. Developer vision, social links, and Digital India tribute.'
-      }
-    ]
-  },
-  {
-    hubId: 5,
-    title: 'Master Hub 5 • Next-Gen Technology & Future Labs',
-    badge: 'Step 5 of 5',
-    color: 'from-cyan-500 to-blue-600',
-    borderColor: 'border-cyan-500/40',
-    description: 'Future-ready innovation arriving in upcoming DAV smart portal updates:',
-    sections: [
-      {
-        num: 14,
-        title: 'Section 14: DAV Next-Gen VR Lab',
-        desc: 'Upcoming 3D virtual science experiments, chemical reactions, and interactive molecule labs.'
-      },
-      {
-        num: 15,
-        title: 'Section 15: 3D Digital Campus',
-        desc: 'Upcoming 3D virtual walkthrough of DAV Khabra campus, sports grounds, and science halls.'
-      },
-      {
-        num: 16,
-        title: 'Section 16: National Olympiad',
-        desc: 'Upcoming all-India DAV inter-school competitive exam arena and scholarship leaderboard.'
-      }
-    ]
+    preferredPlacement: 'bottom'
   }
 ];
 
@@ -144,22 +104,63 @@ export function NewUserOnboardingGuide({
   onSelectHub 
 }) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const step = MASTER_HUB_GUIDE_STEPS[currentStepIndex];
+  const [targetRect, setTargetRect] = useState(null);
+  const currentStep = BLINKIT_COACHMARK_STEPS[currentStepIndex];
 
-  // Prevent background scroll
+  // Measure and scroll target into view
+  const updateTargetPosition = useCallback(() => {
+    if (!currentStep) return;
+
+    // For top navbar elements, scroll smoothly to the very top first
+    if (currentStep.targetId === 'navbar-sections-btn' || currentStep.targetId === 'navbar-profile-btn') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    const el = document.getElementById(currentStep.targetId);
+    if (el) {
+      // Auto-scroll target into view with smooth animation
+      if (currentStep.targetId !== 'navbar-sections-btn' && currentStep.targetId !== 'navbar-profile-btn') {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      // Allow a brief delay for smooth scroll to finish, then compute coordinates
+      setTimeout(() => {
+        const rect = el.getBoundingClientRect();
+        setTargetRect({
+          top: rect.top,
+          left: rect.left,
+          width: rect.width,
+          height: rect.height,
+          bottom: rect.bottom,
+          right: rect.right
+        });
+      }, 350);
+    } else {
+      // Fallback if target element not in DOM
+      setTargetRect({
+        top: window.innerHeight * 0.25,
+        left: window.innerWidth * 0.1,
+        width: window.innerWidth * 0.8,
+        height: 140,
+        bottom: window.innerHeight * 0.25 + 140,
+        right: window.innerWidth * 0.9
+      });
+    }
+  }, [currentStep]);
+
   useEffect(() => {
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    updateTargetPosition();
+    window.addEventListener('resize', updateTargetPosition);
+    window.addEventListener('scroll', updateTargetPosition);
     return () => {
-      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('resize', updateTargetPosition);
+      window.removeEventListener('scroll', updateTargetPosition);
     };
-  }, []);
+  }, [updateTargetPosition]);
 
   const handleNext = () => {
-    if (currentStepIndex < MASTER_HUB_GUIDE_STEPS.length - 1) {
-      const nextIdx = currentStepIndex + 1;
-      setCurrentStepIndex(nextIdx);
-      onSelectHub?.(MASTER_HUB_GUIDE_STEPS[nextIdx].hubId);
+    if (currentStepIndex < BLINKIT_COACHMARK_STEPS.length - 1) {
+      setCurrentStepIndex(prev => prev + 1);
     } else {
       handleComplete();
     }
@@ -167,9 +168,7 @@ export function NewUserOnboardingGuide({
 
   const handlePrev = () => {
     if (currentStepIndex > 0) {
-      const prevIdx = currentStepIndex - 1;
-      setCurrentStepIndex(prevIdx);
-      onSelectHub?.(MASTER_HUB_GUIDE_STEPS[prevIdx].hubId);
+      setCurrentStepIndex(prev => prev - 1);
     }
   };
 
@@ -183,130 +182,158 @@ export function NewUserOnboardingGuide({
     onClose?.();
   };
 
+  if (!currentStep) return null;
+
+  const IconComp = currentStep.icon || Sparkles;
+
+  // Calculate Tooltip placement (above or below spotlight)
+  const isTopPlacement = targetRect 
+    ? (targetRect.top > window.innerHeight * 0.55 || currentStep.preferredPlacement === 'top') && targetRect.top > 250
+    : false;
+
+  const tooltipTop = targetRect 
+    ? (isTopPlacement ? Math.max(16, targetRect.top - 230) : Math.min(window.innerHeight - 260, targetRect.bottom + 20))
+    : window.innerHeight * 0.4;
+
+  const tooltipLeft = targetRect
+    ? Math.max(16, Math.min(window.innerWidth - 420, targetRect.left + (targetRect.width / 2) - 200))
+    : window.innerWidth * 0.5 - 200;
+
   return (
-    <div className="fixed inset-0 z-[200] flex flex-col justify-end sm:justify-center items-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md animate-fadeIn select-none font-sans">
+    <div className="fixed inset-0 z-[300] select-none font-sans overflow-hidden">
       
-      {/* Semi-transparent Spotlight Card */}
-      <div className={`w-full max-w-xl bg-slate-900/95 border ${step.borderColor} rounded-3xl shadow-2xl overflow-hidden text-slate-100 flex flex-col max-h-[85vh] sm:max-h-[90vh] relative mb-16 sm:mb-0`}>
-        
-        {/* Glow Header */}
-        <div className={`p-4 sm:p-5 bg-gradient-to-r ${step.color} text-white flex items-center justify-between shadow-lg`}>
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center font-black">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <div>
-              <div className="text-[10px] font-black uppercase tracking-wider text-amber-200">
-                New Student Onboarding Manual • {step.badge}
-              </div>
-              <h3 className="font-black text-sm sm:text-base text-white">
-                {step.title}
-              </h3>
-            </div>
-          </div>
-
-          <button
-            onClick={handleComplete}
-            className="p-1.5 rounded-full hover:bg-white/20 text-white/80 hover:text-white transition cursor-pointer"
-            title="Skip Guide"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Step Progress Dots */}
-        <div className="flex items-center justify-between px-6 py-2.5 bg-slate-950/80 border-b border-slate-800 text-xs">
-          <div className="flex items-center gap-1.5">
-            {MASTER_HUB_GUIDE_STEPS.map((s, idx) => (
-              <span
-                key={s.hubId}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  currentStepIndex === idx
-                    ? 'w-6 bg-amber-400'
-                    : idx < currentStepIndex
-                    ? 'w-2 bg-emerald-500'
-                    : 'w-2 bg-slate-700'
-                }`}
+      {/* 100% Transparent Cutout Spotlight Overlay (Clicks to background blocked) */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-auto" style={{ fillRule: 'evenodd' }}>
+        <defs>
+          <mask id="spotlight-mask">
+            {/* White area = dimmed background */}
+            <rect x="0" y="0" width="100%" height="100%" fill="white" />
+            {/* Black area = 100% transparent cutout spotlight */}
+            {targetRect && (
+              <rect
+                x={Math.max(4, targetRect.left - 8)}
+                y={Math.max(4, targetRect.top - 8)}
+                width={targetRect.width + 16}
+                height={targetRect.height + 16}
+                rx="20"
+                ry="20"
+                fill="black"
               />
-            ))}
-          </div>
-          <span className="text-[11px] font-bold text-slate-400">
-            Hub {currentStepIndex + 1} of 5
-          </span>
-        </div>
+            )}
+          </mask>
+        </defs>
 
-        {/* Scrollable Explanations */}
-        <div className="p-5 sm:p-6 space-y-4 overflow-y-auto flex-1 scrollbar-thin">
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
-            {step.description}
+        {/* Semi-transparent dark scrim */}
+        <rect
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          fill="rgba(3, 7, 18, 0.78)"
+          mask="url(#spotlight-mask)"
+        />
+      </svg>
+
+      {/* Glowing Spotlight Frame Border over the Target Element */}
+      {targetRect && (
+        <div
+          className="absolute pointer-events-none transition-all duration-300 rounded-2xl border-2 border-amber-400 shadow-[0_0_30px_rgba(245,158,11,0.7)] animate-pulse"
+          style={{
+            top: `${Math.max(4, targetRect.top - 8)}px`,
+            left: `${Math.max(4, targetRect.left - 8)}px`,
+            width: `${targetRect.width + 16}px`,
+            height: `${targetRect.height + 16}px`
+          }}
+        />
+      )}
+
+      {/* Floating Spotlight Tooltip Card (Blinkit / Mobile App Style) */}
+      <div
+        className="absolute z-[310] w-[94vw] max-w-md transition-all duration-300 animate-fadeIn"
+        style={{
+          top: `${tooltipTop}px`,
+          left: `${tooltipLeft}px`
+        }}
+      >
+        <div className="relative bg-slate-900/95 border-2 border-amber-400/80 rounded-3xl shadow-[0_10px_50px_rgba(0,0,0,0.9)] p-5 sm:p-6 backdrop-blur-xl text-white">
+          
+          {/* Header Row */}
+          <div className="flex items-center justify-between gap-3 mb-2.5">
+            <div className="flex items-center gap-2">
+              <div className={`w-8 h-8 rounded-xl bg-gradient-to-tr ${currentStep.color} flex items-center justify-center text-white shadow-md`}>
+                <IconComp size={16} />
+              </div>
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 block">
+                  {currentStep.badge}
+                </span>
+                <h3 className="font-black text-sm sm:text-base text-white tracking-tight leading-tight">
+                  {currentStep.title}
+                </h3>
+              </div>
+            </div>
+
+            <button
+              onClick={handleComplete}
+              className="p-1 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+              title="Skip Tour"
+            >
+              <X size={18} />
+            </button>
+          </div>
+
+          {/* Description */}
+          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium mb-4">
+            {currentStep.description}
           </p>
 
-          <div className="space-y-3">
-            {step.sections.map(sec => (
-              <div 
-                key={sec.num} 
-                className="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800 hover:border-slate-700 transition"
+          {/* Progress Dots & Buttons */}
+          <div className="flex items-center justify-between pt-3 border-t border-slate-800">
+            {/* Step Dots */}
+            <div className="flex items-center gap-1.5">
+              {BLINKIT_COACHMARK_STEPS.map((s, idx) => (
+                <span
+                  key={s.step}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    currentStepIndex === idx
+                      ? 'w-5 bg-amber-400'
+                      : idx < currentStepIndex
+                      ? 'w-1.5 bg-emerald-500'
+                      : 'w-1.5 bg-slate-700'
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Nav Buttons */}
+            <div className="flex items-center gap-2">
+              {currentStepIndex > 0 && (
+                <button
+                  onClick={handlePrev}
+                  className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs flex items-center gap-1 transition"
+                >
+                  <ChevronLeft size={14} />
+                  <span>Back</span>
+                </button>
+              )}
+
+              <button
+                onClick={handleNext}
+                className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-1.5 transition transform hover:scale-105 active:scale-95"
               >
-                <div className="text-xs font-black text-amber-400 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                  <span>{sec.title}</span>
-                </div>
-                <div className="text-xs text-slate-300 mt-1 leading-relaxed">
-                  {sec.desc}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="p-3 rounded-xl bg-slate-950/50 border border-slate-800/80 text-[11px] text-slate-400 flex items-center gap-2">
-            <Info className="w-4 h-4 text-amber-400 shrink-0" />
-            <span>On mobile, tap the 5 dock buttons at the very bottom of the screen to open each Master Hub anytime!</span>
+                <span>{currentStepIndex === BLINKIT_COACHMARK_STEPS.length - 1 ? 'Finish Tour ✓' : 'Next →'}</span>
+                <ChevronRight size={14} />
+              </button>
+            </div>
           </div>
         </div>
-
-        {/* Footer Navigation Bar */}
-        <div className="p-4 bg-slate-950 border-t border-slate-800 flex items-center justify-between gap-3">
-          <button
-            disabled={currentStepIndex === 0}
-            onClick={handlePrev}
-            className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-30 text-slate-300 font-bold text-xs transition cursor-pointer flex items-center gap-1.5"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            <span>Previous</span>
-          </button>
-
-          <button
-            onClick={handleComplete}
-            className="text-xs text-slate-500 hover:text-slate-300 transition cursor-pointer font-semibold"
-          >
-            Skip Manual
-          </button>
-
-          <button
-            onClick={handleNext}
-            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 text-stone-950 font-black text-xs transition cursor-pointer flex items-center gap-1.5 shadow-md shadow-amber-500/20"
-          >
-            <span>{currentStepIndex === MASTER_HUB_GUIDE_STEPS.length - 1 ? 'Finish & Explore 🎉' : 'Next Hub'}</span>
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-
       </div>
-
-      {/* Floating Animated Pointer Indicator pointing to bottom Master Hubs on mobile */}
-      <div className="flex flex-col items-center animate-bounce mb-2 pointer-events-none sm:hidden">
-        <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 bg-black/80 px-2 py-0.5 rounded-full border border-amber-500/40">
-          Master Hub {step.hubId} Located in Bottom Dock ↓
-        </span>
-        <ArrowDown className="w-5 h-5 text-amber-400 mt-1" />
-      </div>
-
     </div>
   );
 }
 
 // -----------------------------------------------------------------------------
-// SECTION FIRST-VISIT TRANSPARENT COACHMARK BANNER (Step 6)
+// SECTION FIRST-VISIT TRANSPARENT COACHMARK BANNER
 // -----------------------------------------------------------------------------
 export const SECTION_FIRST_VISIT_TEXTS = {
   2: {
@@ -341,7 +368,7 @@ export const SECTION_FIRST_VISIT_TEXTS = {
   },
   8: {
     title: 'Section 8 • Examination & Practice Suite',
-    text: '📝 Timed Exams & VVI Questions: Take 25/50/100-Q JEE exams, explore 20 VVI board questions & master SST map skills.',
+    text: '📝 Timed Exams & VVI Questions: Take 25/50/100-Q exams, explore 20 VVI board questions & master SST map skills.',
     color: 'border-emerald-500/40 text-emerald-200'
   }
 };
