@@ -6,6 +6,7 @@ import {
   MapPin, Check, Send, Eye, EyeOff, Layers, Compass, Brain,
   Info, ExternalLink, BarChart3, Shuffle, Volume2, UserCheck
 } from 'lucide-react';
+import { OlympiadBoardMockSuite } from './exam/OlympiadBoardMockSuite';
 import { 
   VALID_EXAM_CLASSES, 
   VALID_EXAM_SUBJECTS, 
@@ -373,7 +374,7 @@ export function ExamPracticeSection({
 
       {/* 2. SUBSECTION TABS NAVIGATION (Sub 1, Sub 2, Sub 3) */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           
           <button
             onClick={() => setActiveSubSection('tests')}
@@ -438,11 +439,43 @@ export function ExamPracticeSection({
             </p>
           </button>
 
+          <button
+            onClick={() => setActiveSubSection('olympiad')}
+            className={`p-4 rounded-2xl border text-left transition cursor-pointer relative overflow-hidden ${
+              activeSubSection === 'olympiad'
+                ? 'bg-gradient-to-br from-amber-500/20 via-yellow-950/40 to-slate-900 border-amber-400 text-white shadow-xl'
+                : 'bg-slate-900/60 hover:bg-slate-900 border-slate-800 text-slate-400'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] font-black uppercase tracking-wider text-amber-400">Subsection 4</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono font-bold">Board &amp; Olympiad</span>
+            </div>
+            <div className="text-base font-black text-white flex items-center gap-2">
+              <Award className="w-4 h-4 text-amber-400" />
+              <span>National Board Papers</span>
+            </div>
+            <p className="text-xs text-slate-400 mt-1">
+              80-mark DAV mock sets, Olympiad HOTS &amp; formula vault
+            </p>
+          </button>
         </div>
       </div>
 
       {/* 3. MAIN CONTENT CONTAINER */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
+
+        {/* ========================================================================= */}
+        {/* SUBSECTION 4: NATIONAL BOARD MOCK PAPERS & OLYMPIAD SPRINT               */}
+        {/* ========================================================================= */}
+        {activeSubSection === 'olympiad' && (
+          <OlympiadBoardMockSuite
+            selectedClass={selectedClass}
+            selectedSubject={selectedSubject}
+            currentUser={currentUser}
+          />
+        )}
+
         
         {/* ========================================================================= */}
         {/* SUBSECTION 1: TESTS (MCQ & SUBJECTIVE)                                    */}

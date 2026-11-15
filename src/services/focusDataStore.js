@@ -225,6 +225,75 @@ class AmbientAudioEngine {
       });
     } catch (e) {}
   }
+
+  playAlarmSiren() {
+    this.init();
+    if (!this.audioCtx) return;
+    const ctx = this.audioCtx;
+    try {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      
+      const now = ctx.currentTime;
+      osc.frequency.setValueAtTime(750, now);
+      for (let i = 0; i < 6; i++) {
+        osc.frequency.linearRampToValueAtTime(1150, now + i * 0.35 + 0.17);
+        osc.frequency.linearRampToValueAtTime(750, now + i * 0.35 + 0.35);
+      }
+      gain.gain.setValueAtTime(0.35, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.4);
+      osc.connect(gain);
+      gain.connect(this.masterGain);
+      osc.start(now);
+      osc.stop(now + 2.5);
+      this.activeNodes.push(osc, gain);
+    } catch (e) {}
+  }
+
+  playWarningChime() {
+    this.init();
+    if (!this.audioCtx) return;
+    const ctx = this.audioCtx;
+    try {
+      const now = ctx.currentTime;
+      [360, 220].forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+        gain.gain.setValueAtTime(0.3, now + idx * 0.12);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.12 + 0.8);
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+        osc.start(now + idx * 0.12);
+        osc.stop(now + idx * 0.12 + 0.85);
+        this.activeNodes.push(osc, gain);
+      });
+    } catch (e) {}
+  }
+
+  playSuccessChime() {
+    this.init();
+    if (!this.audioCtx) return;
+    const ctx = this.audioCtx;
+    try {
+      const now = ctx.currentTime;
+      [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+        gain.gain.setValueAtTime(0.25, now + idx * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.08 + 1.2);
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+        osc.start(now + idx * 0.08);
+        osc.stop(now + idx * 0.08 + 1.2);
+        this.activeNodes.push(osc, gain);
+      });
+    } catch (e) {}
+  }
 }
 
 export const ambientAudio = new AmbientAudioEngine();
@@ -971,6 +1040,46 @@ class FocusDataStore {
     const headers = ['Date', 'Day', 'UsefulMinutes', 'DistractedMinutes', 'TotalMinutes', 'ReelsWatched', 'Pickups', 'ComplianceScore'].join(',') + '\n';
     const rows = days.map(d => [d.date, d.dayOfWeek, d.usefulMinutes, d.distractedMinutes, d.totalMinutes, d.reelsWatched, d.pickups, d.complianceScore + '%'].join(',')).join('\n');
     return headers + rows;
+  }
+
+  // --- App Switch & Distraction Breach Guardian ---
+  recordAppSwitch(awaySeconds = 5, appName = 'External Window / App') {
+    const st = this.getScreenTimeData();
+    const updatedSt = {
+      ...st,
+      devicePickups: (st.devicePickups || 0) + 1,
+      distractedMinutes: (st.distractedMinutes || 0) + Math.max(1, Math.round(awaySeconds / 60))
+    };
+    this.saveScreenTimeData(updatedSt);
+
+    // Save persistent breach audit log
+    try {
+      const logsKey = 'dav_focus_breach_logs_v1';
+      const existing = JSON.parse(localStorage.getItem(logsKey) || '[]');
+      const breachEntry = {
+        id: 'breach_' + Date.now(),
+        timestamp: new Date().toISOString(),
+        awaySeconds,
+        appName,
+        streakPreserved: true
+      };
+      existing.unshift(breachEntry);
+      localStorage.setItem(logsKey, JSON.stringify(existing.slice(0, 50)));
+    } catch (e) {}
+
+    this.notify('app_switch_detected', { awaySeconds, appName });
+    return updatedSt;
+  }
+
+  getBreachesToday() {
+    try {
+      const logsKey = 'dav_focus_breach_logs_v1';
+      const existing = JSON.parse(localStorage.getItem(logsKey) || '[]');
+      const todayStr = new Date().toISOString().split('T')[0];
+      return existing.filter(l => l.timestamp && l.timestamp.startsWith(todayStr)).length;
+    } catch (e) {
+      return 0;
+    }
   }
 
 }

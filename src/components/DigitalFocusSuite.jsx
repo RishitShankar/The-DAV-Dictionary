@@ -225,6 +225,12 @@ export function DigitalFocusSuite({ user, accumulatedStudyMs, onAccumulateMs }) 
           />
         )}
 
+        
+        {/* Tab: BrainPal Reels & Shorts Counter */}
+        {activeTab === 'reels' && (
+          <BrainPalReelsTracker user={user} />
+        )}
+
         {/* Tab 2: Interactive Flashcards & Daily Revision Tracker */}
         {activeTab === 'flashcards' && (
           <div className="p-6 rounded-3xl bg-stone-900 border border-stone-800 space-y-6 animate-fadeIn">

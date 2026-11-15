@@ -27,6 +27,7 @@ export function checkAiRateLimit() {
 
 import { lookupTextbookDatabase, DAV_CLASS_8_SYLLABUS_INDEX, DAV_TEXTBOOK_DATABASE } from '../data/davTextbookDatabase.js';
 import { queryMasterQuestionBank } from '../data/davMasterQuestionBank.js';
+import { DAV_MASTER_BOARD_EXAMS, DAV_NATIONAL_OLYMPIAD_SPRINT, DAV_MASTER_FORMULA_DIRECTORY } from '../data/davMasterOlympiadAndBoardExams.js';
 
 const STORAGE_KEY = 'rishi_ai_api_key';
 // Built-in intelligent engine key decoded at runtime for automatic zero-configuration AI access
@@ -38,6 +39,35 @@ const getBuiltinKey = () => {
   } catch (e) {}
   return '';
 };
+
+
+// Query helper for DAV National Board Examination sample papers
+export function queryMasterBoardExamSet(className = 'Class 8', subjectId = 'science', setIndex = 0) {
+  try {
+    const classKey = className.replace(' ', '_');
+    const classData = DAV_MASTER_BOARD_EXAMS[classKey] || DAV_MASTER_BOARD_EXAMS['Class_8'];
+    if (!classData || !classData.subjects) return null;
+    const subData = classData.subjects[subjectId] || classData.subjects['science'];
+    if (!subData || !subData.examSets) return null;
+    return subData.examSets[setIndex % subData.examSets.length];
+  } catch (e) {
+    return null;
+  }
+}
+
+// Query helper for Olympiad Sprint HOTS questions
+export function queryOlympiadSprintQuestions(subjectFilter = null, limit = 5) {
+  try {
+    if (!subjectFilter) return DAV_NATIONAL_OLYMPIAD_SPRINT.slice(0, limit);
+    const filtered = DAV_NATIONAL_OLYMPIAD_SPRINT.filter(q =>
+      q.subject.toLowerCase().includes(subjectFilter.toLowerCase()) ||
+      q.conceptDomain.toLowerCase().includes(subjectFilter.toLowerCase())
+    );
+    return (filtered.length ? filtered : DAV_NATIONAL_OLYMPIAD_SPRINT).slice(0, limit);
+  } catch (e) {
+    return [];
+  }
+}
 
 export function getSavedApiKey() {
   let localKey = '';

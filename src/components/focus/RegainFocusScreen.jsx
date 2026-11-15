@@ -43,6 +43,12 @@ export function RegainFocusScreen({
 
   // Completion & Reflection modal
   const [showCompletionModal, setShowCompletionModal] = useState(false);
+  // Anti-Distraction & App-Switch Guardian Modal
+  const [breachModal, setBreachModal] = useState({ isOpen: false, awaySeconds: 0, breachesToday: 0 });
+  const awayStartRef = useRef(null);
+  const sirenIntervalRef = useRef(null);
+  const titleIntervalRef = useRef(null);
+
   const [solvedCount, setSolvedCount] = useState(5);
   const [focusRating, setFocusRating] = useState(5);
 
@@ -154,6 +160,125 @@ export function RegainFocusScreen({
     };
   }, [isRunning, isPaused, isOnBreak, sessionMode]);
 
+  
+  // Anti-Distraction App-Switch & Tab-Blur Real-Time Guardian
+  useEffect(() => {
+    if (!isRunning || isPaused || isOnBreak) return;
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Student switched away to another application / tab!
+        awayStartRef.current = Date.now();
+        ambientAudio.playAlarmSiren();
+
+        // Repeating siren if user remains away
+        if (!sirenIntervalRef.current) {
+          sirenIntervalRef.current = setInterval(() => {
+            if (document.hidden) {
+              ambientAudio.playAlarmSiren();
+            }
+          }, 3500);
+        }
+
+        // Title Flash Alert in browser tab bar
+        let flashToggle = false;
+        if (!titleIntervalRef.current) {
+          titleIntervalRef.current = setInterval(() => {
+            document.title = flashToggle
+              ? '🚨 FOCUS BROKEN! RETURN TO STUDY! 🚨'
+              : '⚠️ DAVDixence Focus Guardian Alert!';
+            flashToggle = !flashToggle;
+          }, 700);
+        }
+
+        // Push desktop notification if permitted
+        if ('Notification' in window && Notification.permission === 'granted') {
+          try {
+            new Notification('🚨 DAVDixence Focus Guardian', {
+              body: 'You switched away from your active study session! Return immediately to defend your streak!',
+              icon: '/favicon.ico'
+            });
+          } catch (e) {}
+        }
+      } else {
+        // Student returned back to DAVDixence!
+        if (sirenIntervalRef.current) {
+          clearInterval(sirenIntervalRef.current);
+          sirenIntervalRef.current = null;
+        }
+        if (titleIntervalRef.current) {
+          clearInterval(titleIntervalRef.current);
+          titleIntervalRef.current = null;
+          document.title = 'DAVDixence | Official Digital Smart Campus';
+        }
+
+        if (awayStartRef.current) {
+          const awaySecs = Math.max(1, Math.round((Date.now() - awayStartRef.current) / 1000));
+          awayStartRef.current = null;
+
+          // Record breach event in persistent data store
+          focusDataStore.recordAppSwitch(awaySecs, 'External Application');
+          const breaches = focusDataStore.getBreachesToday();
+
+          // Play warning chime & trigger mood
+          ambientAudio.playWarningChime();
+          setBuddyMood('alert');
+          setBuddyQuote(`🚨 Focus breach detected! You were away for ${awaySecs}s. Multitasking harms learning retention! Re-lock focus now!`);
+
+          // Display Breach Intercept HUD modal
+          setBreachModal({
+            isOpen: true,
+            awaySeconds: awaySecs,
+            breachesToday: breaches
+          });
+        }
+      }
+    };
+
+    const handleWindowBlur = () => {
+      if (!awayStartRef.current && !document.hidden) {
+        awayStartRef.current = Date.now();
+        ambientAudio.playAlarmSiren();
+      }
+    };
+
+    const handleWindowFocus = () => {
+      if (awayStartRef.current && !document.hidden) {
+        const awaySecs = Math.max(1, Math.round((Date.now() - awayStartRef.current) / 1000));
+        awayStartRef.current = null;
+        focusDataStore.recordAppSwitch(awaySecs, 'Multi-Window App');
+        const breaches = focusDataStore.getBreachesToday();
+        ambientAudio.playWarningChime();
+        setBuddyMood('alert');
+        setBuddyQuote(`🚨 App switch intercepted! ${awaySecs}s away from study material.`);
+        setBreachModal({
+          isOpen: true,
+          awaySeconds: awaySecs,
+          breachesToday: breaches
+        });
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('blur', handleWindowBlur);
+    window.addEventListener('focus', handleWindowFocus);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('blur', handleWindowBlur);
+      window.removeEventListener('focus', handleWindowFocus);
+      if (sirenIntervalRef.current) {
+        clearInterval(sirenIntervalRef.current);
+        sirenIntervalRef.current = null;
+      }
+      if (titleIntervalRef.current) {
+        clearInterval(titleIntervalRef.current);
+        titleIntervalRef.current = null;
+        document.title = 'DAVDixence | Official Digital Smart Campus';
+      }
+    };
+  }, [isRunning, isPaused, isOnBreak]);
+
   // Strict Unlock Cooldown Interval
   useEffect(() => {
     let timer = null;
@@ -198,7 +323,10 @@ export function RegainFocusScreen({
   const dotX = centerX + radius * Math.cos(((angle - 90) * Math.PI) / 180);
   const dotY = centerY + radius * Math.sin(((angle - 90) * Math.PI) / 180);
 
-  const handleStartResume = () => {
+    const handleStartResume = () => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      try { Notification.requestPermission(); } catch (e) {}
+    }
     if (!isRunning) {
       setIsRunning(true);
       setIsPaused(false);
@@ -561,6 +689,75 @@ export function RegainFocusScreen({
                 className="flex-1 py-3 rounded-2xl bg-rose-600 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-black text-white shadow-lg shadow-rose-950"
               >
                 {strictCountdown > 0 ? `Wait ${strictCountdown}s` : 'Unlock & Exit'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      {/* ------------------------------------------------------------- */}
+      {/* Anti-Distraction & App-Switch Breach Intercept Modal         */}
+      {/* ------------------------------------------------------------- */}
+      {breachModal.isOpen && (
+        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-2xl flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-stone-900 border-2 border-rose-500/80 rounded-3xl p-6 text-center space-y-5 shadow-2xl shadow-rose-950/80 animate-in zoom-in-95 duration-200">
+            <div className="w-16 h-16 mx-auto rounded-3xl bg-rose-500/20 border border-rose-500/50 flex items-center justify-center text-rose-400 animate-pulse">
+              <ShieldAlert className="w-10 h-10" />
+            </div>
+
+            <div>
+              <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                🚨 Anti-Distraction Shield Triggered
+              </span>
+              <h3 className="text-2xl font-black text-white mt-3">App Switch Intercepted!</h3>
+              <p className="text-xs text-stone-300 mt-2 leading-relaxed">
+                You navigated away from <strong>DAVDixence</strong> for{' '}
+                <span className="text-rose-400 font-bold font-mono text-sm">{breachModal.awaySeconds} seconds</span>.
+                BrainPal™ Anti-Doomscroll Shield logged this device pickup.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 p-3 rounded-2xl bg-stone-950 border border-stone-800 text-left text-xs">
+              <div>
+                <span className="text-stone-500 block text-[10px] uppercase font-bold">Today's Breaches</span>
+                <span className="text-rose-400 font-mono font-black text-base">{breachModal.breachesToday} Events</span>
+              </div>
+              <div>
+                <span className="text-stone-500 block text-[10px] uppercase font-bold">Focus Streak</span>
+                <span className="text-amber-400 font-mono font-black text-base">Defended ⚡</span>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-300 text-left flex items-start space-x-2">
+              <Flame className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+              <span>
+                <strong>Pro-Tip:</strong> High-yield memory consolidation requires at least 20 continuous minutes without app switches.
+              </span>
+            </div>
+
+            <div className="space-y-2">
+              <button
+                onClick={() => {
+                  ambientAudio.playSuccessChime();
+                  setBreachModal({ isOpen: false, awaySeconds: 0, breachesToday: 0 });
+                  setBuddyMood('focused');
+                  setBuddyQuote('Shield restored! Full focus re-engaged.');
+                }}
+                className="w-full py-3.5 rounded-2xl font-black text-xs bg-emerald-500 hover:bg-emerald-400 text-stone-950 shadow-lg shadow-emerald-950 flex items-center justify-center space-x-2"
+              >
+                <Zap className="w-4 h-4" />
+                <span>Lock In &amp; Resume Session (Defend Streak)</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setBreachModal({ isOpen: false, awaySeconds: 0, breachesToday: 0 });
+                  handleStop();
+                }}
+                className="w-full py-2.5 rounded-xl font-bold text-xs bg-stone-800 hover:bg-stone-700 text-stone-400 hover:text-white"
+              >
+                Forfeit Session &amp; Return to Dashboard
               </button>
             </div>
           </div>
