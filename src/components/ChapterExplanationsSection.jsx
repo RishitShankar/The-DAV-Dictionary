@@ -27,7 +27,8 @@ import {
   DAV_PYQ_ARCHIVE, 
   DAV_SAMPLE_PAPERS 
 } from '../data/videoLecturesData.js';
-import { OFFICIAL_CHAPTER_NOTES } from '../data/officialChapterNotesData.js';
+import { OFFICIAL_CHAPTER_NOTES } from '../data/officialChapterNotesData.js';
+import { VirtualScienceLabSuite } from './lab/VirtualScienceLabSuite';
 
 export function ChapterExplanationsSection({ user, onOpenAIWithQuestion, onOpenPdfReader, onRequireLogin }) {
   // Sub-Section Tabs (1: Video Lectures, 2: Notes, 3: PYQs, 4: Sample Papers)
@@ -834,6 +835,21 @@ Please write each question clearly and show all steps, formulas, and reasoning s
             >
               <Award className="w-4 h-4" />
               <span>4. DAV Sample Papers</span>
+            </button>
+
+            <button
+              onClick={() => setActiveSubTab('virtual_lab')}
+              className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition cursor-pointer flex items-center gap-2 ${
+                activeSubTab === 'virtual_lab'
+                  ? 'bg-gradient-to-r from-amber-500 to-indigo-600 text-white shadow-md scale-[1.02]'
+                  : 'text-stone-400 hover:text-white hover:bg-stone-800'
+              }`}
+            >
+              <Atom className="w-4 h-4 text-amber-400" />
+              <span>Virtual Science Lab</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono">
+                Interactive
+              </span>
             </button>
           </div>
         </div>
@@ -842,6 +858,16 @@ Please write each question clearly and show all steps, formulas, and reasoning s
       {/* ========================================================= */}
       {/* SUB-SECTION 1: VIDEO HUB & WORKSHEET PLAYER */}
       {/* ========================================================= */}
+      
+      {/* ========================================================================= */}
+      {/* SUB-SECTION 5: INTERACTIVE VIRTUAL SCIENCE & PHYSICS LABORATORY           */}
+      {/* ========================================================================= */}
+      {activeSubTab === 'virtual_lab' && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
+          <VirtualScienceLabSuite />
+        </div>
+      )}
+
       {activeSubTab === 'videos' && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
 

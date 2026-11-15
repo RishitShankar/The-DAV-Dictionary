@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
+  Database, 
   Settings as SettingsIcon, User, Palette, Moon, Sun, Key, Sparkles, 
   Users, Shield, Check, AlertCircle, Save, Train, Eye, ArrowRight,
   Printer, Camera, RefreshCw, X, CheckCircle2, Lock, ChevronRight, Play,
@@ -7,6 +8,7 @@ import {
 } from 'lucide-react';
 import { VFX_MASTER_CATALOG } from './vfx/VfxMasterDirector';
 import { StudentProfileSection } from './StudentProfileSection';
+import { FullDataBackupVault } from './tools/FullDataBackupVault';
 import { getRegisteredUsers, saveRegisteredUsers } from '../data/preloadedUsers';
 import { updateCloudPassword, saveCloudStudent, fetchCloudStudents } from '../services/supabaseClient';
 
@@ -448,11 +450,32 @@ export function SettingsHubSection({ user, onLogout, onSelectSection }) {
               {parentAccounts.length}/{parentQuota}
             </span>
           </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('data_vault')}
+            className={`py-2 px-4 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
+              activeTab === 'data_vault'
+                ? 'bg-emerald-500 text-stone-950 shadow-lg font-black'
+                : 'bg-slate-900 text-slate-300 hover:bg-slate-800'
+            }`}
+          >
+            <Database className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Master Data Vault &amp; Backup</span>
+          </button>
         </div>
       </div>
 
       {/* Main Content Area */}
       <div className="max-w-6xl w-full mx-auto px-4 py-8 space-y-8">
+        
+        {/* TAB 5: MASTER DATA VAULT & FULL BACKUP */}
+        {activeTab === 'data_vault' && (
+          <div className="w-full animate-fadeIn">
+            <FullDataBackupVault currentUser={user} />
+          </div>
+        )}
+
         {/* TAB 1: GENERAL SETTINGS */}
         {activeTab === 'main' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeIn">

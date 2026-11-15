@@ -28,6 +28,7 @@ export function checkAiRateLimit() {
 import { lookupTextbookDatabase, DAV_CLASS_8_SYLLABUS_INDEX, DAV_TEXTBOOK_DATABASE } from '../data/davTextbookDatabase.js';
 import { queryMasterQuestionBank } from '../data/davMasterQuestionBank.js';
 import { DAV_MASTER_BOARD_EXAMS, DAV_NATIONAL_OLYMPIAD_SPRINT, DAV_MASTER_FORMULA_DIRECTORY } from '../data/davMasterOlympiadAndBoardExams.js';
+import { DAV_MASTER_COMPETITIVE_FOUNDATION, DAV_FOUNDATION_DIAGNOSTIC_ROADMAP } from '../data/davMasterCompetitiveFoundation.js';
 
 const STORAGE_KEY = 'rishi_ai_api_key';
 // Built-in intelligent engine key decoded at runtime for automatic zero-configuration AI access
@@ -66,6 +67,18 @@ export function queryOlympiadSprintQuestions(subjectFilter = null, limit = 5) {
     return (filtered.length ? filtered : DAV_NATIONAL_OLYMPIAD_SPRINT).slice(0, limit);
   } catch (e) {
     return [];
+  }
+}
+
+
+// Query helper for JEE/NEET/NTSE Competitive Foundation
+export function queryCompetitiveFoundationTopic(subjectId = 'physics_foundation', unitIndex = 0) {
+  try {
+    const subj = DAV_MASTER_COMPETITIVE_FOUNDATION[subjectId] || DAV_MASTER_COMPETITIVE_FOUNDATION['physics_foundation'];
+    if (!subj || !subj.units) return null;
+    return subj.units[unitIndex % subj.units.length];
+  } catch (e) {
+    return null;
   }
 }
 
