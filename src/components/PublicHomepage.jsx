@@ -13,6 +13,7 @@ import {
 import { WhatsAppLogo, InstagramLogo, LinkedInLogo, SnapchatLogo, YouTubeLogo, XTwitterLogo } from './SocialLogos';
 import { RangoliCursorEffect } from './RangoliCursorEffect';
 import { GoogleIcon } from './GoogleIcon';
+import { DAV_106_CONCEPTS } from '../data/dav106ConceptsData';
 
 export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinematic }) {
   const [activeGradeFilter, setActiveGradeFilter] = useState('8');
@@ -24,6 +25,9 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
   const [sampleQuizRevealed, setSampleQuizRevealed] = useState(false);
   const [previewingTone, setPreviewingTone] = useState(null);
   const [interactiveAiPrompt, setInteractiveAiPrompt] = useState('science');
+  const [homeConceptIndex, setHomeConceptIndex] = useState(0);
+  const [homeConceptQuizChoice, setHomeConceptQuizChoice] = useState(null);
+  const [homeConceptSubject, setHomeConceptSubject] = useState('all');
 
 
   // Web Audio Synthesized Campus Chimes for Section 5 Live Preview
@@ -1937,6 +1941,276 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
               </tbody>
             </table>
           </div>
+        </div>
+      </section>
+
+      
+      {/* =========================================================================
+          106+ MASTER ACADEMIC CONCEPTS COMPENDIUM & RAPID QUIZZER SHOWCASE
+      ========================================================================= */}
+      <section id="concepts-vault-showcase" className="py-20 bg-gradient-to-b from-stone-950 via-[#0e1017] to-stone-950 border-t border-stone-800 relative scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          
+          {/* Section Header */}
+          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-12">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-black uppercase tracking-wider mb-3">
+                <Brain className="w-3.5 h-3.5" />
+                <span>106+ Master Concepts • Board &amp; Olympiad Knowledge Hall</span>
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+                The 106+ Master Academic Concepts Compendium
+              </h2>
+              <p className="mt-3 text-stone-300 text-xs sm:text-sm max-w-2xl leading-relaxed">
+                110 foundational curriculum concepts across Mathematics, Physics, Chemistry, Biology, Social Science, English Grammar, Computer Science, and Sanskrit. Complete with formulas, memory tricks, real-world examples, and instant self-check quizzes.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => onEnterDemoPreview('concepts')}
+                className="px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 text-stone-950 font-black text-xs uppercase tracking-wider hover:opacity-95 transition shadow-xl shadow-amber-400/20 cursor-pointer flex items-center gap-2"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>Launch Full 106 Concepts Vault</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Subject Filter Pills */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-4 scrollbar-none text-xs mb-8">
+            {[
+              { id: 'all', label: 'All 110 Concepts' },
+              { id: 'Mathematics', label: 'Mathematics (24)' },
+              { id: 'Physics', label: 'Physics (18)' },
+              { id: 'Chemistry', label: 'Chemistry (18)' },
+              { id: 'Biology', label: 'Biology (18)' },
+              { id: 'Social Science', label: 'Social Science (18)' },
+              { id: 'English', label: 'English Grammar (10)' },
+              { id: 'Computer Science', label: 'Computer Science (2)' },
+              { id: 'Hindi & Sanskrit', label: 'Hindi & Sanskrit (2)' }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setHomeConceptSubject(tab.id);
+                  setHomeConceptIndex(0);
+                  setHomeConceptQuizChoice(null);
+                }}
+                className={`px-3.5 py-1.5 rounded-xl font-bold whitespace-nowrap transition cursor-pointer ${
+                  homeConceptSubject === tab.id
+                    ? 'bg-rose-500 text-white font-black shadow-md shadow-rose-500/20'
+                    : 'bg-stone-900 border border-stone-800 text-stone-400 hover:text-white'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Interactive Concept Showcase Spotlight Card */}
+          {(() => {
+            const list = DAV_106_CONCEPTS.filter(c => 
+              homeConceptSubject === 'all' || c.subject === homeConceptSubject
+            );
+            const activeConcept = list[homeConceptIndex % list.length] || DAV_106_CONCEPTS[0];
+            const hasChosen = homeConceptQuizChoice !== null;
+            const isCorrect = homeConceptQuizChoice === activeConcept.quickQuiz.correctIndex;
+
+            return (
+              <div className="rounded-3xl bg-gradient-to-b from-stone-900 via-stone-900/90 to-stone-950 border border-stone-800 p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-80 h-80 bg-rose-500/5 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                  
+                  {/* Left Column: Concept Details (7 Cols) */}
+                  <div className="lg:col-span-7 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-mono font-black uppercase text-amber-400 bg-amber-400/10 px-2.5 py-0.5 rounded-md border border-amber-400/30">
+                          Concept #{activeConcept.id}
+                        </span>
+                        <span className="text-[11px] font-bold text-stone-400 uppercase tracking-wide">
+                          {activeConcept.subject} • {activeConcept.category}
+                        </span>
+                      </div>
+                      <span className="text-xs font-mono font-bold text-stone-500">
+                        {homeConceptIndex + 1} of {list.length} in this filter
+                      </span>
+                    </div>
+
+                    <h3 className="text-2xl sm:text-3xl font-black text-white leading-tight">
+                      {activeConcept.title}
+                    </h3>
+
+                    <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
+                      {activeConcept.coreDefinition}
+                    </p>
+
+                    {/* Formula / Principle Box */}
+                    {activeConcept.keyFormulaOrLaw && (
+                      <div className="rounded-2xl bg-stone-950/90 border border-stone-800 p-4 font-mono">
+                        <span className="text-[10px] font-sans font-bold uppercase text-stone-500 block mb-1">
+                          Core Law / Mathematical Formula:
+                        </span>
+                        <div className="text-amber-300 text-xs sm:text-sm font-bold tracking-wide break-words">
+                          {activeConcept.keyFormulaOrLaw}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Real World + Mnemonic */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                      <div className="bg-stone-950/60 rounded-xl p-3 border border-stone-850">
+                        <span className="text-[10px] font-bold uppercase text-cyan-400 block mb-1">
+                          🌍 Real-World Application
+                        </span>
+                        <p className="text-stone-300 text-[11px] leading-relaxed">
+                          {activeConcept.realWorldExample}
+                        </p>
+                      </div>
+
+                      <div className="bg-amber-500/10 rounded-xl p-3 border border-amber-500/20">
+                        <span className="text-[10px] font-bold uppercase text-amber-400 block mb-1">
+                          💡 Memory Mnemonic
+                        </span>
+                        <p className="text-amber-200 text-[11px] font-medium leading-relaxed">
+                          {activeConcept.mnemonicOrMemoryHook}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* DAV Board Tip */}
+                    <div className="bg-rose-500/10 rounded-xl p-3 border border-rose-500/20">
+                      <span className="text-[10px] font-bold uppercase text-rose-400 block mb-1">
+                        🎯 DAV Board Examination Strategy
+                      </span>
+                      <p className="text-rose-200 text-[11px] leading-relaxed">
+                        {activeConcept.davExamTip}
+                      </p>
+                    </div>
+
+                    {/* Concept Switcher Controls */}
+                    <div className="flex items-center gap-3 pt-2">
+                      <button
+                        onClick={() => {
+                          setHomeConceptIndex(prev => (prev - 1 + list.length) % list.length);
+                          setHomeConceptQuizChoice(null);
+                        }}
+                        className="px-4 py-2 rounded-xl bg-stone-950 border border-stone-800 text-stone-300 font-bold text-xs hover:border-amber-400 transition cursor-pointer flex items-center gap-1.5"
+                      >
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                        <span>Previous Concept</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setHomeConceptIndex(prev => (prev + 1) % list.length);
+                          setHomeConceptQuizChoice(null);
+                        }}
+                        className="px-4 py-2 rounded-xl bg-stone-950 border border-stone-800 text-stone-300 font-bold text-xs hover:border-amber-400 transition cursor-pointer flex items-center gap-1.5"
+                      >
+                        <span>Next Concept</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          const rand = Math.floor(Math.random() * list.length);
+                          setHomeConceptIndex(rand);
+                          setHomeConceptQuizChoice(null);
+                        }}
+                        className="px-4 py-2 rounded-xl bg-stone-800 text-amber-300 font-bold text-xs hover:bg-stone-700 transition cursor-pointer flex items-center gap-1.5"
+                      >
+                        <Shuffle className="w-3.5 h-3.5" />
+                        <span>Random</span>
+                      </button>
+                    </div>
+
+                  </div>
+
+                  {/* Right Column: Live Interactive Quiz Widget (5 Cols) */}
+                  <div className="lg:col-span-5 bg-stone-950 rounded-2xl border border-stone-800 p-5 sm:p-6 shadow-inner space-y-4">
+                    <div className="flex items-center justify-between border-b border-stone-850 pb-3">
+                      <div className="flex items-center gap-2">
+                        <HelpCircle className="w-4 h-4 text-amber-400" />
+                        <span className="text-xs font-black uppercase text-white tracking-wider">
+                          Interactive Self-Check Quiz
+                        </span>
+                      </div>
+                      {hasChosen && (
+                        <span className={`text-[10px] font-black uppercase ${isCorrect ? 'text-emerald-400' : 'text-rose-400'}`}>
+                          {isCorrect ? '✓ Correct Answer!' : '✗ Review Answer'}
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="text-xs sm:text-sm text-stone-200 font-bold leading-snug">
+                      {activeConcept.quickQuiz.question}
+                    </p>
+
+                    {/* Quiz Choice Options */}
+                    <div className="space-y-2 pt-1">
+                      {activeConcept.quickQuiz.options.map((opt, optIdx) => {
+                        const isSelected = homeConceptQuizChoice === optIdx;
+                        const isThisCorrect = optIdx === activeConcept.quickQuiz.correctIndex;
+                        let btnStyle = 'bg-stone-900 border-stone-800 text-stone-300 hover:border-stone-700';
+
+                        if (hasChosen) {
+                          if (isThisCorrect) {
+                            btnStyle = 'bg-emerald-950/60 border-emerald-500 text-emerald-200 font-bold';
+                          } else if (isSelected && !isThisCorrect) {
+                            btnStyle = 'bg-rose-950/60 border-rose-500 text-rose-200';
+                          } else {
+                            btnStyle = 'bg-stone-900/40 border-stone-850 text-stone-500 opacity-60';
+                          }
+                        }
+
+                        return (
+                          <button
+                            key={optIdx}
+                            onClick={() => setHomeConceptQuizChoice(optIdx)}
+                            className={`w-full text-left p-3 rounded-xl border text-xs transition cursor-pointer flex items-center justify-between ${btnStyle}`}
+                          >
+                            <span>{opt}</span>
+                            {hasChosen && isThisCorrect && (
+                              <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                            )}
+                            {hasChosen && isSelected && !isThisCorrect && (
+                              <XCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Explanation */}
+                    {hasChosen && (
+                      <div className="p-3 rounded-xl bg-stone-900 border border-stone-800 text-xs text-stone-300 leading-relaxed">
+                        <span className="font-bold text-amber-300">Explanation: </span>
+                        {activeConcept.quickQuiz.explanation}
+                      </div>
+                    )}
+
+                    {/* Bottom CTA to explore all concepts */}
+                    <div className="pt-2">
+                      <button
+                        onClick={() => onEnterDemoPreview('concepts')}
+                        className="w-full py-2.5 rounded-xl bg-stone-900 hover:bg-stone-850 border border-stone-800 hover:border-amber-400/50 text-xs text-amber-300 font-bold transition flex items-center justify-center gap-1.5 cursor-pointer"
+                      >
+                        <Brain className="w-3.5 h-3.5" />
+                        <span>Explore All 110 Concepts in Interactive Hall →</span>
+                      </button>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            );
+          })()}
+
         </div>
       </section>
 

@@ -51,6 +51,7 @@ const AdminPanelModal = lazy(() => import('./components/AdminPanelModal').then(m
 const PdfReaderModal = lazy(() => import('./components/PdfReaderModal').then(m => ({ default: m.PdfReaderModal })));
 const CustomPurchaseModal = lazy(() => import('./components/CustomPurchaseModal').then(m => ({ default: m.CustomPurchaseModal })));
 const UploadPdfModal = lazy(() => import('./components/UploadPdfModal').then(m => ({ default: m.UploadPdfModal })));
+const ConceptsMasterVaultSection = lazy(() => import('./components/ConceptsMasterVaultSection').then(m => ({ default: m.ConceptsMasterVaultSection })));
 
 function SectionLoadingFallback() {
   return (
@@ -68,6 +69,7 @@ export function App() {
       if (search.includes('joinChannel') || search.includes('channel')) return 5;
       const params = new URLSearchParams(search);
       const s = params.get('section');
+      if (s === 'concepts' || s === 'vault') return 'concepts';
       if (s) {
         const n = parseInt(s, 10);
         if (!isNaN(n) && n >= 1 && n <= 14) return n;
@@ -871,6 +873,11 @@ export function App() {
           <DeveloperIdGeneratorSection currentUser={activeUser || user} />
         ) : activeSection === 14 ? (
           <AboutCreatorSection />
+        ) : (activeSection === 'concepts' || activeSection === 15 || activeSection === 'vault') ? (
+          <ConceptsMasterVaultSection 
+            currentUser={activeUser || user} 
+            onGoToSection={handleSelectSection} 
+          />
         ) : (
           <UntitledSection sectionNumber={activeSection} />
         )}

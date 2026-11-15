@@ -303,6 +303,19 @@ export function SectionOverview({ currentUser, onSelectSection, onOpenPurchaseMo
       tag: 'Head Boy Profile',
       tagColor: 'bg-yellow-100 text-yellow-900 border-yellow-300 font-bold',
       description: 'Meet Rishit Shankar (Head Boy, Class 8 DAV School, 95% scholar, 80/80 in Sanskrit, DAV Cluster 3 Gold Medalist). Contact directly via WhatsApp, Call, and social profiles.'
+    },
+    {
+      id: 'concepts',
+      title: 'Master Academic Concepts (106+ Vault)',
+      shortTitle: '106+ Concepts Vault',
+      icon: Brain,
+      emoji: '🧠',
+      color: 'from-amber-500 to-rose-600',
+      cardBg: 'from-amber-500/10 via-rose-50/80 to-white',
+      borderHover: 'hover:border-amber-500',
+      tag: '110 Concepts Active',
+      tagColor: 'bg-emerald-100 text-emerald-900 border-emerald-300 font-bold',
+      description: 'Comprehensive compendium of 110 foundational curriculum concepts across Mathematics, Science, Social Studies, English Grammar, Computer Science, and Sanskrit with interactive quizzes and flashcards.'
     }
   ], []);
 
