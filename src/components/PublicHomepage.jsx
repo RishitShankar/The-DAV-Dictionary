@@ -7,7 +7,8 @@ import {
   Flame, Laptop, Check, ArrowUpRight, School, Phone, Mail, MessageCircle,
   Play, Compass, Calculator, Calendar as CalendarIcon, Clock as ClockIcon,
   CloudSun, Bus, MapPin, Eye, Trophy, Layers, Video, ClipboardList,
-  UserCheck as UserCheckIcon, Shield, Zap, ExternalLink, Rocket
+  UserCheck as UserCheckIcon, Shield, Zap, ExternalLink, Rocket,
+  Volume2, VolumeX, Pause, RefreshCw, Smartphone, Key, Upload, Database, Radio, Sparkle
 } from 'lucide-react';
 import { WhatsAppLogo, InstagramLogo, LinkedInLogo, SnapchatLogo, YouTubeLogo, XTwitterLogo } from './SocialLogos';
 import { RangoliCursorEffect } from './RangoliCursorEffect';
@@ -18,6 +19,74 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
   const [activeDimensionFilter, setActiveDimensionFilter] = useState('all');
   const [activeHeroTab, setActiveHeroTab] = useState(0);
+  const [interactiveSectionTab, setInteractiveSectionTab] = useState(1);
+  const [sampleQuizChoice, setSampleQuizChoice] = useState(null);
+  const [sampleQuizRevealed, setSampleQuizRevealed] = useState(false);
+  const [previewingTone, setPreviewingTone] = useState(null);
+  const [interactiveAiPrompt, setInteractiveAiPrompt] = useState('science');
+
+
+  // Web Audio Synthesized Campus Chimes for Section 5 Live Preview
+  const playHomeChime = (toneId) => {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      if (ctx.state === 'suspended') ctx.resume();
+
+      if (toneId === 'gurukul') {
+        const freqs = [523.25, 587.33, 659.25, 783.99, 880.00];
+        freqs.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          const t = ctx.currentTime + (idx * 0.22);
+          gain.gain.setValueAtTime(0.12, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.6);
+        });
+      } else if (toneId === 'pulse') {
+        [0, 0.4].forEach(offset => {
+          const osc1 = ctx.createOscillator();
+          const osc2 = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc1.frequency.value = 440;
+          osc2.frequency.value = 480;
+          const t = ctx.currentTime + offset;
+          gain.gain.setValueAtTime(0.1, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(ctx.destination);
+          osc1.start(t);
+          osc2.start(t);
+          osc1.stop(t + 0.3);
+          osc2.stop(t + 0.3);
+        });
+      } else if (toneId === 'bell') {
+        [587.33, 880.00].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = freq;
+          const t = ctx.currentTime + (idx * 0.05);
+          gain.gain.setValueAtTime(0.14, t);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t + 1.2);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 1.2);
+        });
+      }
+      setTimeout(() => {
+        try { ctx.close(); } catch (e) {}
+      }, 2000);
+    } catch (e) {}
+  };
 
   const toggleFaq = (idx) => {
     setOpenFaqIndex(openFaqIndex === idx ? null : idx);
@@ -689,6 +758,53 @@ export function PublicHomepage({ onGoToLogin, onEnterDemoPreview, onOpenCinemati
       </section>
 
       
+      {/* =========================================================================
+          LIVE CAMPUS PULSE & SENSORS TICKER BAR
+      ========================================================================= */}
+      <div className="bg-stone-950 border-y border-stone-800/80 py-3.5 px-4 overflow-x-auto relative z-20">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-6 min-w-max text-xs">
+          
+          {/* Item 1: Location & School */}
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+            <span className="font-mono text-stone-400">Campus:</span>
+            <span className="font-bold text-white flex items-center gap-1">
+              <School className="w-3.5 h-3.5 text-amber-400" />
+              <span>DAV Public School, Khabra, Muzaffarpur</span>
+            </span>
+          </div>
+
+          {/* Item 2: Weather & Sensor */}
+          <div className="flex items-center gap-2">
+            <CloudSun className="w-4 h-4 text-amber-400" />
+            <span className="font-mono text-stone-400">Muzaffarpur Weather:</span>
+            <span className="font-bold text-emerald-400">27°C • Clear Sky • AQI Good</span>
+          </div>
+
+          {/* Item 3: Bus Transport Fleet */}
+          <div className="flex items-center gap-2">
+            <Bus className="w-4 h-4 text-cyan-400" />
+            <span className="font-mono text-stone-400">Bus Fleet Radar:</span>
+            <span className="font-bold text-cyan-300">Buses #1–200 Monitored</span>
+          </div>
+
+          {/* Item 4: Rishi AI Cloud Grounding */}
+          <div className="flex items-center gap-2">
+            <Brain className="w-4 h-4 text-amber-400" />
+            <span className="font-mono text-stone-400">Rishi AI Core:</span>
+            <span className="font-bold text-amber-300">648,317 Lines Grounded</span>
+          </div>
+
+          {/* Item 5: Academic Session */}
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="w-4 h-4 text-purple-400" />
+            <span className="font-mono text-stone-400">Academic Session:</span>
+            <span className="font-bold text-purple-300">2026–27 Board Term</span>
+          </div>
+
+        </div>
+      </div>
+
       {/* =========================================================================
           NETFLIX-STYLE 5-SECTION MASTER DIRECTORY & GOOGLE SITELINKS
       ========================================================================= */}
