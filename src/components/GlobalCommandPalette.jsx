@@ -3,7 +3,7 @@ import {
   Search, BookOpen, Compass, Sparkles, Video, Bus, CheckSquare, 
   Trophy, Settings, Heart, Star, Key, Award, FlaskConical, 
   FileText, ShieldCheck, ArrowRight, CornerDownLeft, X, Layers, Brain,
-  Atom, Music, Calculator, Sliders, Rocket
+  Atom, Music, Calculator, Sliders, Rocket, Zap
 } from 'lucide-react';
 import { DAV_200_PLATFORM_CONCEPTS } from '../data/dav200PlatformConceptsData';
 import { DAV_300_FUTURE_FEATURES } from '../data/dav300FutureFeaturesData';
